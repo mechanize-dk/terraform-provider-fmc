@@ -52,11 +52,11 @@ func TestAccDataSourceFmcRadiusServerGroup(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcRadiusServerGroupConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 			{
 				Config: testAccNamedDataSourceFmcRadiusServerGroupConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})

@@ -41,8 +41,8 @@ func TestAccDataSourceFmcFTDPlatformSettingsSyslogRateLimit(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcFTDPlatformSettingsSyslogRateLimitPrerequisitesConfig + testAccDataSourceFmcFTDPlatformSettingsSyslogRateLimitConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcFTDPlatformSettingsSyslogRateLimitPrerequisitesConfig+testAccDataSourceFmcFTDPlatformSettingsSyslogRateLimitConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -57,7 +57,6 @@ resource "fmc_ftd_platform_settings" "test" {
   name        = "ftd_platform_settings_rate_limit"
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -79,5 +78,7 @@ func testAccDataSourceFmcFTDPlatformSettingsSyslogRateLimitConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

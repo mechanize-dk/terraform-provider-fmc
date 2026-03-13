@@ -77,7 +77,7 @@ func (r *FTDPlatformSettingsSNMPResource) Schema(ctx context.Context, req resour
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -87,6 +87,7 @@ func (r *FTDPlatformSettingsSNMPResource) Schema(ctx context.Context, req resour
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"type": schema.StringAttribute{
@@ -94,6 +95,7 @@ func (r *FTDPlatformSettingsSNMPResource) Schema(ctx context.Context, req resour
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"server_enabled": schema.BoolAttribute{
@@ -129,7 +131,7 @@ func (r *FTDPlatformSettingsSNMPResource) Schema(ctx context.Context, req resour
 				Validators: []validator.Int64{
 					int64validator.Between(1, 65535),
 				},
-				Default: int64default.StaticInt64(161),
+				Default:             int64default.StaticInt64(161),
 			},
 			"management_hosts": schema.ListNestedAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("List of SNMP management hosts.").String,
@@ -141,10 +143,10 @@ func (r *FTDPlatformSettingsSNMPResource) Schema(ctx context.Context, req resour
 							Required:            true,
 						},
 						"snmp_version": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("SNMP version to be used.").AddStringEnumDescription("SNMPv1", "SNMPv2c", "SNMPv3").String,
+							MarkdownDescription: helpers.NewAttributeDescription("SNMP version to be used.").AddStringEnumDescription("SNMPv1", "SNMPv2c", "SNMPv3", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("SNMPv1", "SNMPv2c", "SNMPv3"),
+								stringvalidator.OneOf("SNMPv1", "SNMPv2c", "SNMPv3", ),
 							},
 						},
 						"username": schema.StringAttribute{
@@ -171,7 +173,7 @@ func (r *FTDPlatformSettingsSNMPResource) Schema(ctx context.Context, req resour
 							Validators: []validator.Int64{
 								int64validator.Between(1, 65535),
 							},
-							Default: int64default.StaticInt64(162),
+							Default:             int64default.StaticInt64(162),
 						},
 						"use_management_interface": schema.BoolAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Use the device management interface to reach SNMP management station.").String,
@@ -192,10 +194,10 @@ func (r *FTDPlatformSettingsSNMPResource) Schema(ctx context.Context, req resour
 										Required:            true,
 									},
 									"type": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Type of the interface object; either 'SecurityZone' or 'InterfaceGroup'.").AddStringEnumDescription("SecurityZone", "InterfaceGroup").String,
+										MarkdownDescription: helpers.NewAttributeDescription("Type of the interface object; either 'SecurityZone' or 'InterfaceGroup'.").AddStringEnumDescription("SecurityZone", "InterfaceGroup", ).String,
 										Required:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("SecurityZone", "InterfaceGroup"),
+											stringvalidator.OneOf("SecurityZone", "InterfaceGroup", ),
 										},
 									},
 									"name": schema.StringAttribute{
@@ -214,10 +216,10 @@ func (r *FTDPlatformSettingsSNMPResource) Schema(ctx context.Context, req resour
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"security_level": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Select desired security level.").AddStringEnumDescription("Auth", "NoAuth", "Priv").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Select desired security level.").AddStringEnumDescription("Auth", "NoAuth", "Priv", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("Auth", "NoAuth", "Priv"),
+								stringvalidator.OneOf("Auth", "NoAuth", "Priv", ),
 							},
 						},
 						"username": schema.StringAttribute{
@@ -228,17 +230,17 @@ func (r *FTDPlatformSettingsSNMPResource) Schema(ctx context.Context, req resour
 							},
 						},
 						"password_type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Whether `authentication_password` and `encryption_password` are in clear text or encrypted.").AddStringEnumDescription("Clear", "Encrypted").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Whether `authentication_password` and `encryption_password` are in clear text or encrypted.").AddStringEnumDescription("Clear", "Encrypted", ).String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("Clear", "Encrypted"),
+								stringvalidator.OneOf("Clear", "Encrypted", ),
 							},
 						},
 						"authentication_algorithm": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Type of authentication algorithm.").AddStringEnumDescription("SHA", "SHA224", "SHA256", "SHA384").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Type of authentication algorithm.").AddStringEnumDescription("SHA", "SHA224", "SHA256", "SHA384", ).String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("SHA", "SHA224", "SHA256", "SHA384"),
+								stringvalidator.OneOf("SHA", "SHA224", "SHA256", "SHA384", ),
 							},
 						},
 						"authentication_password": schema.StringAttribute{
@@ -250,10 +252,10 @@ func (r *FTDPlatformSettingsSNMPResource) Schema(ctx context.Context, req resour
 							},
 						},
 						"encryption_algorithm": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Type of encryption algorithm.").AddStringEnumDescription("AES128", "AES192", "AES256").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Type of encryption algorithm.").AddStringEnumDescription("AES128", "AES192", "AES256", ).String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("AES128", "AES192", "AES256"),
+								stringvalidator.OneOf("AES128", "AES192", "AES256", ),
 							},
 						},
 						"encryption_password": schema.StringAttribute{
@@ -457,13 +459,14 @@ func (r *FTDPlatformSettingsSNMPResource) Read(ctx context.Context, req resource
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
+	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-
+	
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else if err != nil {
+	} else  if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -516,7 +519,7 @@ func (r *FTDPlatformSettingsSNMPResource) Update(ctx context.Context, req resour
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -564,23 +567,22 @@ func (r *FTDPlatformSettingsSNMPResource) Delete(ctx context.Context, req resour
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *FTDPlatformSettingsSNMPResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Parse import ID
-	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<ftd_platform_settings_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
-	match := inputPattern.FindStringSubmatch(req.ID)
-	if match == nil {
-		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<ftd_platform_settings_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		// Parse import ID
+		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<ftd_platform_settings_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
+		match := inputPattern.FindStringSubmatch(req.ID)
+		if match == nil {
+			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<ftd_platform_settings_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	// Set domain, if provided
-	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("ftd_platform_settings_id"), match[inputPattern.SubexpIndex("ftd_platform_settings_id")])...)
+		// Set domain, if provided
+		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("ftd_platform_settings_id"), match[inputPattern.SubexpIndex("ftd_platform_settings_id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import

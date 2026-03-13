@@ -31,7 +31,7 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSource
 
 func TestAccDataSourceFmcFTDPlatformSettingsSyslogSettingsSyslogID(t *testing.T) {
-	if v := os.Getenv("FMC_VERSION"); v != "" && slices.Contains([]string{"7.7", "CDFMC"}, v) {
+	if v := os.Getenv("FMC_VERSION"); v != "" && slices.Contains([]string{"7.7", "CDFMC" }, v) {
 		t.Skip("skipping test for FMC version " + v)
 	}
 	var checks []resource.TestCheckFunc
@@ -45,8 +45,8 @@ func TestAccDataSourceFmcFTDPlatformSettingsSyslogSettingsSyslogID(t *testing.T)
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcFTDPlatformSettingsSyslogSettingsSyslogIDPrerequisitesConfig + testAccDataSourceFmcFTDPlatformSettingsSyslogSettingsSyslogIDConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcFTDPlatformSettingsSyslogSettingsSyslogIDPrerequisitesConfig+testAccDataSourceFmcFTDPlatformSettingsSyslogSettingsSyslogIDConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -65,7 +65,6 @@ resource "fmc_ftd_platform_settings_syslog_settings" "test" {
  ftd_platform_settings_id = fmc_ftd_platform_settings.test.id
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -88,5 +87,7 @@ func testAccDataSourceFmcFTDPlatformSettingsSyslogSettingsSyslogIDConfig() strin
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

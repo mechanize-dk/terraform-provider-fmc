@@ -35,18 +35,28 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type DynamicObjects struct {
-	Id     types.String                   `tfsdk:"id"`
-	Domain types.String                   `tfsdk:"domain"`
-	Items  map[string]DynamicObjectsItems `tfsdk:"items"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Items map[string]DynamicObjectsItems `tfsdk:"items"`
 }
 
+
 type DynamicObjectsItems struct {
-	Id          types.String `tfsdk:"id"`
-	Type        types.String `tfsdk:"type"`
+	Id types.String `tfsdk:"id"`
+	Type types.String `tfsdk:"type"`
 	Description types.String `tfsdk:"description"`
-	ObjectType  types.String `tfsdk:"object_type"`
-	Mappings    types.Set    `tfsdk:"mappings"`
+	ObjectType types.String `tfsdk:"object_type"`
+	Mappings types.Set `tfsdk:"mappings"`
 }
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -67,7 +77,7 @@ type DynamicObjectsMappingsItems struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data DynamicObjects) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/dynamicobjects"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/dynamicobjects"
 }
 
 // End of section. //template:end getPath
@@ -87,13 +97,13 @@ func (data DynamicObjects) toBody(ctx context.Context, state DynamicObjects) str
 		body, _ = sjson.Set(body, "items", []any{})
 		for key, item := range data.Items {
 			itemBody, _ := sjson.Set("{}", "name", key)
-			if !item.Id.IsNull() && !item.Id.IsUnknown() {
+			if !item.Id.IsNull() && !item.Id.IsUnknown()  {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Description.IsNull() {
+			if !item.Description.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "description", item.Description.ValueString())
 			}
-			if !item.ObjectType.IsNull() {
+			if !item.ObjectType.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "objectType", item.ObjectType.ValueString())
 			}
 			if !item.Mappings.IsNull() {
@@ -124,36 +134,35 @@ func (data *DynamicObjects) fromBody(ctx context.Context, res gjson.Result) {
 		parent := &data
 		data := (*parent).Items[k]
 		res, found := itemsByName[k]
-		if !found {
-			tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
+		if !found {tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
 			delete((*parent).Items, k)
 			continue
 		}
-		if value := res.Get("id"); value.Exists() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("type"); value.Exists() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
-		if value := res.Get("description"); value.Exists() {
-			data.Description = types.StringValue(value.String())
-		} else {
-			data.Description = types.StringNull()
-		}
-		if value := res.Get("objectType"); value.Exists() {
-			data.ObjectType = types.StringValue(value.String())
-		} else {
-			data.ObjectType = types.StringNull()
-		}
-		if value := res.Get("mappings"); value.Exists() {
-			data.Mappings = helpers.GetStringSet(value.Array())
-		} else {
-			data.Mappings = types.SetNull(types.StringType)
-		}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
+	if value := res.Get("description"); value.Exists() {
+		data.Description = types.StringValue(value.String())
+	} else {
+		data.Description = types.StringNull()
+	}
+	if value := res.Get("objectType"); value.Exists() {
+		data.ObjectType = types.StringValue(value.String())
+	} else {
+		data.ObjectType = types.StringNull()
+	}
+	if value := res.Get("mappings"); value.Exists() {
+		data.Mappings = helpers.GetStringSet(value.Array())
+	} else {
+		data.Mappings = types.SetNull(types.StringType)
+	}
 		(*parent).Items[k] = data
 	}
 }
@@ -161,6 +170,7 @@ func (data *DynamicObjects) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -182,35 +192,35 @@ func (data *DynamicObjects) fromBodyPartial(ctx context.Context, res gjson.Resul
 			continue
 		}
 		res, _ := itemsById[data.Id.ValueString()]
-		if value := res.Get("id"); value.Exists() {
-			data.Id = types.StringValue(value.String())
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
+	if value := res.Get("description"); value.Exists() && !data.Description.IsNull() {
+		data.Description = types.StringValue(value.String())
+	} else {
+		if !data.Description.IsNull() && data.Description.ValueString() == "" {
+			data.Description = types.StringValue("")
 		} else {
-			data.Id = types.StringNull()
+			data.Description = types.StringNull()
 		}
-		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
-		if value := res.Get("description"); value.Exists() && !data.Description.IsNull() {
-			data.Description = types.StringValue(value.String())
-		} else {
-			if !data.Description.IsNull() && data.Description.ValueString() == "" {
-				data.Description = types.StringValue("")
-			} else {
-				data.Description = types.StringNull()
-			}
-		}
-		if value := res.Get("objectType"); value.Exists() && !data.ObjectType.IsNull() {
-			data.ObjectType = types.StringValue(value.String())
-		} else {
-			data.ObjectType = types.StringNull()
-		}
-		if value := res.Get("mappings"); value.Exists() && !data.Mappings.IsNull() {
-			data.Mappings = helpers.GetStringSet(value.Array())
-		} else {
-			data.Mappings = types.SetNull(types.StringType)
-		}
+	}
+	if value := res.Get("objectType"); value.Exists() && !data.ObjectType.IsNull() {
+		data.ObjectType = types.StringValue(value.String())
+	} else {
+		data.ObjectType = types.StringNull()
+	}
+	if value := res.Get("mappings"); value.Exists() && !data.Mappings.IsNull() {
+		data.Mappings = helpers.GetStringSet(value.Array())
+	} else {
+		data.Mappings = types.SetNull(types.StringType)
+	}
 		(*parent).Items[i] = data
 	}
 }
@@ -264,6 +274,7 @@ func (data *DynamicObjects) fromBodyUnknowns(ctx context.Context, res gjson.Resu
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
 func (data *DynamicObjects) Clone() DynamicObjects {
 	ret := *data
 	ret.Items = maps.Clone(data.Items)
@@ -274,6 +285,7 @@ func (data *DynamicObjects) Clone() DynamicObjects {
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
 
 // Updates done one-by-one require different API body
 func (data DynamicObjects) toBodyNonBulk(ctx context.Context, state DynamicObjects) string {

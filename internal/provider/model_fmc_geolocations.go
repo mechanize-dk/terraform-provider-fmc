@@ -37,17 +37,21 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type Geolocations struct {
-	Id     types.String                 `tfsdk:"id"`
-	Domain types.String                 `tfsdk:"domain"`
-	Items  map[string]GeolocationsItems `tfsdk:"items"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Items map[string]GeolocationsItems `tfsdk:"items"`
 }
 
+
 type GeolocationsItems struct {
-	Id         types.String                  `tfsdk:"id"`
-	Type       types.String                  `tfsdk:"type"`
+	Id types.String `tfsdk:"id"`
+	Type types.String `tfsdk:"type"`
 	Continents []GeolocationsItemsContinents `tfsdk:"continents"`
-	Countries  []GeolocationsItemsCountries  `tfsdk:"countries"`
+	Countries []GeolocationsItemsCountries `tfsdk:"countries"`
 }
+
+
+
 
 type GeolocationsItemsContinents struct {
 	Id types.Int64 `tfsdk:"id"`
@@ -55,6 +59,13 @@ type GeolocationsItemsContinents struct {
 type GeolocationsItemsCountries struct {
 	Id types.Int64 `tfsdk:"id"`
 }
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -67,7 +78,7 @@ var minFMCVersionBulkDeleteGeolocations = version.Must(version.NewVersion("999")
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data Geolocations) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/geolocations"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/geolocations"
 }
 
 // End of section. //template:end getPath
@@ -83,14 +94,14 @@ func (data Geolocations) toBody(ctx context.Context, state Geolocations) string 
 		body, _ = sjson.Set(body, "items", []any{})
 		for key, item := range data.Items {
 			itemBody, _ := sjson.Set("{}", "name", key)
-			if !item.Id.IsNull() && !item.Id.IsUnknown() {
+			if !item.Id.IsNull() && !item.Id.IsUnknown()  {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			if len(item.Continents) > 0 {
 				itemBody, _ = sjson.Set(itemBody, "continents", []any{})
 				for _, childItem := range item.Continents {
 					itemChildBody := ""
-					if !childItem.Id.IsNull() {
+					if !childItem.Id.IsNull()  {
 						itemChildBody, _ = sjson.Set(itemChildBody, "id", childItem.Id.ValueInt64())
 					}
 					itemBody, _ = sjson.SetRaw(itemBody, "continents.-1", itemChildBody)
@@ -100,7 +111,7 @@ func (data Geolocations) toBody(ctx context.Context, state Geolocations) string 
 				itemBody, _ = sjson.Set(itemBody, "countries", []any{})
 				for _, childItem := range item.Countries {
 					itemChildBody := ""
-					if !childItem.Id.IsNull() {
+					if !childItem.Id.IsNull()  {
 						itemChildBody, _ = sjson.Set(itemChildBody, "id", childItem.Id.ValueInt64())
 					}
 					itemBody, _ = sjson.SetRaw(itemBody, "countries.-1", itemChildBody)
@@ -129,49 +140,48 @@ func (data *Geolocations) fromBody(ctx context.Context, res gjson.Result) {
 		parent := &data
 		data := (*parent).Items[k]
 		res, found := itemsByName[k]
-		if !found {
-			tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
+		if !found {tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
 			delete((*parent).Items, k)
 			continue
 		}
-		if value := res.Get("id"); value.Exists() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("type"); value.Exists() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
-		if value := res.Get("continents"); value.Exists() {
-			data.Continents = make([]GeolocationsItemsContinents, 0)
-			value.ForEach(func(k, res gjson.Result) bool {
-				parent := &data
-				data := GeolocationsItemsContinents{}
-				if value := res.Get("id"); value.Exists() {
-					data.Id = types.Int64Value(value.Int())
-				} else {
-					data.Id = types.Int64Null()
-				}
-				(*parent).Continents = append((*parent).Continents, data)
-				return true
-			})
-		}
-		if value := res.Get("countries"); value.Exists() {
-			data.Countries = make([]GeolocationsItemsCountries, 0)
-			value.ForEach(func(k, res gjson.Result) bool {
-				parent := &data
-				data := GeolocationsItemsCountries{}
-				if value := res.Get("id"); value.Exists() {
-					data.Id = types.Int64Value(value.Int())
-				} else {
-					data.Id = types.Int64Null()
-				}
-				(*parent).Countries = append((*parent).Countries, data)
-				return true
-			})
-		}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
+	if value := res.Get("continents"); value.Exists() {
+		data.Continents = make([]GeolocationsItemsContinents, 0)
+		value.ForEach(func(k, res gjson.Result) bool {
+			parent := &data
+			data := GeolocationsItemsContinents{}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.Int64Value(value.Int())
+	} else {
+		data.Id = types.Int64Null()
+	}
+			(*parent).Continents = append((*parent).Continents, data)
+			return true
+		})
+	}
+	if value := res.Get("countries"); value.Exists() {
+		data.Countries = make([]GeolocationsItemsCountries, 0)
+		value.ForEach(func(k, res gjson.Result) bool {
+			parent := &data
+			data := GeolocationsItemsCountries{}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.Int64Value(value.Int())
+	} else {
+		data.Id = types.Int64Null()
+	}
+			(*parent).Countries = append((*parent).Countries, data)
+			return true
+		})
+	}
 		(*parent).Items[k] = data
 	}
 }
@@ -179,6 +189,7 @@ func (data *Geolocations) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -200,102 +211,102 @@ func (data *Geolocations) fromBodyPartial(ctx context.Context, res gjson.Result)
 			continue
 		}
 		res, _ := itemsById[data.Id.ValueString()]
-		if value := res.Get("id"); value.Exists() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
-		for i := 0; i < len(data.Continents); i++ {
-			keys := [...]string{"id"}
-			keyValues := [...]string{strconv.FormatInt(data.Continents[i].Id.ValueInt64(), 10)}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
+	for i := 0; i < len(data.Continents); i++ {
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ strconv.FormatInt(data.Continents[i].Id.ValueInt64(), 10),  }
 
-			parent := &data
-			data := (*parent).Continents[i]
-			parentRes := &res
-			var res gjson.Result
+		parent := &data
+		data := (*parent).Continents[i]
+		parentRes := &res
+		var res gjson.Result
 
-			parentRes.Get("continents").ForEach(
-				func(_, v gjson.Result) bool {
-					found := false
-					for ik := range keys {
-						if v.Get(keys[ik]).String() != keyValues[ik] {
-							found = false
-							break
-						}
-						found = true
+		parentRes.Get("continents").ForEach(
+			func(_, v gjson.Result) bool {
+				found := false
+				for ik := range keys {
+					if v.Get(keys[ik]).String() != keyValues[ik] {
+						found = false
+						break
 					}
-					if found {
-						res = v
-						return false
-					}
-					return true
-				},
-			)
-			if !res.Exists() {
-				tflog.Debug(ctx, fmt.Sprintf("removing Continents[%d] = %+v",
-					i,
-					(*parent).Continents[i],
-				))
-				(*parent).Continents = slices.Delete((*parent).Continents, i, i+1)
-				i--
+					found = true
+				}
+				if found {
+					res = v
+					return false
+				}
+				return true
+			},
+		)
+		if !res.Exists() {
+			tflog.Debug(ctx, fmt.Sprintf("removing Continents[%d] = %+v",
+				i,
+				(*parent).Continents[i],
+			))
+			(*parent).Continents = slices.Delete((*parent).Continents, i, i+1)
+			i--
 
-				continue
-			}
-			if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-				data.Id = types.Int64Value(value.Int())
-			} else {
-				data.Id = types.Int64Null()
-			}
-			(*parent).Continents[i] = data
+			continue
 		}
-		for i := 0; i < len(data.Countries); i++ {
-			keys := [...]string{"id"}
-			keyValues := [...]string{strconv.FormatInt(data.Countries[i].Id.ValueInt64(), 10)}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.Int64Value(value.Int())
+	} else {
+		data.Id = types.Int64Null()
+	}
+		(*parent).Continents[i] = data
+	}
+	for i := 0; i < len(data.Countries); i++ {
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ strconv.FormatInt(data.Countries[i].Id.ValueInt64(), 10),  }
 
-			parent := &data
-			data := (*parent).Countries[i]
-			parentRes := &res
-			var res gjson.Result
+		parent := &data
+		data := (*parent).Countries[i]
+		parentRes := &res
+		var res gjson.Result
 
-			parentRes.Get("countries").ForEach(
-				func(_, v gjson.Result) bool {
-					found := false
-					for ik := range keys {
-						if v.Get(keys[ik]).String() != keyValues[ik] {
-							found = false
-							break
-						}
-						found = true
+		parentRes.Get("countries").ForEach(
+			func(_, v gjson.Result) bool {
+				found := false
+				for ik := range keys {
+					if v.Get(keys[ik]).String() != keyValues[ik] {
+						found = false
+						break
 					}
-					if found {
-						res = v
-						return false
-					}
-					return true
-				},
-			)
-			if !res.Exists() {
-				tflog.Debug(ctx, fmt.Sprintf("removing Countries[%d] = %+v",
-					i,
-					(*parent).Countries[i],
-				))
-				(*parent).Countries = slices.Delete((*parent).Countries, i, i+1)
-				i--
+					found = true
+				}
+				if found {
+					res = v
+					return false
+				}
+				return true
+			},
+		)
+		if !res.Exists() {
+			tflog.Debug(ctx, fmt.Sprintf("removing Countries[%d] = %+v",
+				i,
+				(*parent).Countries[i],
+			))
+			(*parent).Countries = slices.Delete((*parent).Countries, i, i+1)
+			i--
 
-				continue
-			}
-			if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-				data.Id = types.Int64Value(value.Int())
-			} else {
-				data.Id = types.Int64Null()
-			}
-			(*parent).Countries[i] = data
+			continue
 		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.Int64Value(value.Int())
+	} else {
+		data.Id = types.Int64Null()
+	}
+		(*parent).Countries[i] = data
+	}
 		(*parent).Items[i] = data
 	}
 }
@@ -349,6 +360,7 @@ func (data *Geolocations) fromBodyUnknowns(ctx context.Context, res gjson.Result
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
 func (data *Geolocations) Clone() Geolocations {
 	ret := *data
 	ret.Items = maps.Clone(data.Items)
@@ -359,6 +371,7 @@ func (data *Geolocations) Clone() Geolocations {
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
 
 // Updates done one-by-one require different API body
 func (data Geolocations) toBodyNonBulk(ctx context.Context, state Geolocations) string {
@@ -378,20 +391,30 @@ func (data Geolocations) toBodyNonBulk(ctx context.Context, state Geolocations) 
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
+
+
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
+
+
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
+
+
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
+
+
 
 // End of section. //template:end adjustBodyBulk

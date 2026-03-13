@@ -78,7 +78,7 @@ func (r *VPNRAIPSecIKEParametersResource) Schema(ctx context.Context, req resour
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -88,6 +88,7 @@ func (r *VPNRAIPSecIKEParametersResource) Schema(ctx context.Context, req resour
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"type": schema.StringAttribute{
@@ -95,13 +96,14 @@ func (r *VPNRAIPSecIKEParametersResource) Schema(ctx context.Context, req resour
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"ikev2_identity_sent_to_peer": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Identity sent to the peer during IKEv2 session establishment.").AddStringEnumDescription("IP_ADDRESS", "HOST_NAME", "AUTO_OR_DN").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Identity sent to the peer during IKEv2 session establishment.").AddStringEnumDescription("IP_ADDRESS", "HOST_NAME", "AUTO_OR_DN", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("IP_ADDRESS", "HOST_NAME", "AUTO_OR_DN"),
+					stringvalidator.OneOf("IP_ADDRESS", "HOST_NAME", "AUTO_OR_DN", ),
 				},
 			},
 			"ikev2_notification_on_tunnel_disconnect": schema.BoolAttribute{
@@ -113,10 +115,10 @@ func (r *VPNRAIPSecIKEParametersResource) Schema(ctx context.Context, req resour
 				Optional:            true,
 			},
 			"ikev2_cookie_challenge": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Whether to send cookie challenges to peer devices in response to SA initiated packets.").AddStringEnumDescription("CUSTOM", "ALWAYS", "NEVER").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Whether to send cookie challenges to peer devices in response to SA initiated packets.").AddStringEnumDescription("CUSTOM", "ALWAYS", "NEVER", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("CUSTOM", "ALWAYS", "NEVER"),
+					stringvalidator.OneOf("CUSTOM", "ALWAYS", "NEVER", ),
 				},
 			},
 			"ikev2_threshold_to_challenge_incoming_cookies": schema.Int64Attribute{
@@ -400,23 +402,22 @@ func (r *VPNRAIPSecIKEParametersResource) Delete(ctx context.Context, req resour
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *VPNRAIPSecIKEParametersResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Parse import ID
-	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<vpn_ra_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
-	match := inputPattern.FindStringSubmatch(req.ID)
-	if match == nil {
-		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<vpn_ra_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		// Parse import ID
+		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<vpn_ra_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
+		match := inputPattern.FindStringSubmatch(req.ID)
+		if match == nil {
+			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<vpn_ra_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	// Set domain, if provided
-	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vpn_ra_id"), match[inputPattern.SubexpIndex("vpn_ra_id")])...)
+		// Set domain, if provided
+		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vpn_ra_id"), match[inputPattern.SubexpIndex("vpn_ra_id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import

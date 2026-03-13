@@ -35,13 +35,16 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type Geolocation struct {
-	Id         types.String            `tfsdk:"id"`
-	Domain     types.String            `tfsdk:"domain"`
-	Name       types.String            `tfsdk:"name"`
-	Type       types.String            `tfsdk:"type"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Name types.String `tfsdk:"name"`
+	Type types.String `tfsdk:"type"`
 	Continents []GeolocationContinents `tfsdk:"continents"`
-	Countries  []GeolocationCountries  `tfsdk:"countries"`
+	Countries []GeolocationCountries `tfsdk:"countries"`
 }
+
+
+
 
 type GeolocationContinents struct {
 	Id types.Int64 `tfsdk:"id"`
@@ -50,6 +53,23 @@ type GeolocationContinents struct {
 type GeolocationCountries struct {
 	Id types.Int64 `tfsdk:"id"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -60,7 +80,7 @@ type GeolocationCountries struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data Geolocation) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/geolocations"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/geolocations"
 }
 
 // End of section. //template:end getPath
@@ -72,14 +92,14 @@ func (data Geolocation) toBody(ctx context.Context, state Geolocation) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
 	if len(data.Continents) > 0 {
 		body, _ = sjson.Set(body, "continents", []any{})
 		for _, item := range data.Continents {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueInt64())
 			}
 			body, _ = sjson.SetRaw(body, "continents.-1", itemBody)
@@ -89,7 +109,7 @@ func (data Geolocation) toBody(ctx context.Context, state Geolocation) string {
 		body, _ = sjson.Set(body, "countries", []any{})
 		for _, item := range data.Countries {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueInt64())
 			}
 			body, _ = sjson.SetRaw(body, "countries.-1", itemBody)
@@ -118,11 +138,11 @@ func (data *Geolocation) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := GeolocationContinents{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.Int64Value(value.Int())
-			} else {
-				data.Id = types.Int64Null()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.Int64Value(value.Int())
+	} else {
+		data.Id = types.Int64Null()
+	}
 			(*parent).Continents = append((*parent).Continents, data)
 			return true
 		})
@@ -132,11 +152,11 @@ func (data *Geolocation) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := GeolocationCountries{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.Int64Value(value.Int())
-			} else {
-				data.Id = types.Int64Null()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.Int64Value(value.Int())
+	} else {
+		data.Id = types.Int64Null()
+	}
 			(*parent).Countries = append((*parent).Countries, data)
 			return true
 		})
@@ -146,6 +166,7 @@ func (data *Geolocation) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -163,8 +184,8 @@ func (data *Geolocation) fromBodyPartial(ctx context.Context, res gjson.Result) 
 		data.Type = types.StringNull()
 	}
 	for i := 0; i < len(data.Continents); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{strconv.FormatInt(data.Continents[i].Id.ValueInt64(), 10)}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ strconv.FormatInt(data.Continents[i].Id.ValueInt64(), 10),  }
 
 		parent := &data
 		data := (*parent).Continents[i]
@@ -198,16 +219,16 @@ func (data *Geolocation) fromBodyPartial(ctx context.Context, res gjson.Result) 
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.Int64Value(value.Int())
-		} else {
-			data.Id = types.Int64Null()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.Int64Value(value.Int())
+	} else {
+		data.Id = types.Int64Null()
+	}
 		(*parent).Continents[i] = data
 	}
 	for i := 0; i < len(data.Countries); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{strconv.FormatInt(data.Countries[i].Id.ValueInt64(), 10)}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ strconv.FormatInt(data.Countries[i].Id.ValueInt64(), 10),  }
 
 		parent := &data
 		data := (*parent).Countries[i]
@@ -241,11 +262,11 @@ func (data *Geolocation) fromBodyPartial(ctx context.Context, res gjson.Result) 
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.Int64Value(value.Int())
-		} else {
-			data.Id = types.Int64Null()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.Int64Value(value.Int())
+	} else {
+		data.Id = types.Int64Null()
+	}
 		(*parent).Countries[i] = data
 	}
 }
@@ -270,28 +291,42 @@ func (data *Geolocation) fromBodyUnknowns(ctx context.Context, res gjson.Result)
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
+
+
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
+
+
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
+
+
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
+
+
 
 // End of section. //template:end adjustBodyBulk

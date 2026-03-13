@@ -41,7 +41,7 @@ func TestAccDataSourceFmcDynamicObjects(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcDynamicObjectsConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -74,5 +74,7 @@ func testAccDataSourceFmcDynamicObjectsConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

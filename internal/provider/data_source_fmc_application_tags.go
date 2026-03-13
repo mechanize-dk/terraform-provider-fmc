@@ -63,7 +63,7 @@ func (d *ApplicationTagsDataSource) Schema(ctx context.Context, req datasource.S
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 			},
 			"items": schema.MapNestedAttribute{
 				MarkdownDescription: "Map of Application Tags. The key of the map is the name of the individual Application Tag.",
@@ -115,7 +115,7 @@ func (d *ApplicationTagsDataSource) Read(ctx context.Context, req datasource.Rea
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
-
+	
 	// Get all objects from FMC
 	urlPath := config.getPath() + "?expanded=true"
 	res, err := d.client.Get(urlPath, reqMods...)

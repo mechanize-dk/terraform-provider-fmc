@@ -77,7 +77,7 @@ func (r *NetworkOverridesResource) Schema(ctx context.Context, req resource.Sche
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -87,6 +87,7 @@ func (r *NetworkOverridesResource) Schema(ctx context.Context, req resource.Sche
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"parent_id": schema.StringAttribute{
@@ -94,6 +95,7 @@ func (r *NetworkOverridesResource) Schema(ctx context.Context, req resource.Sche
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"overrides": schema.ListNestedAttribute{
@@ -106,10 +108,10 @@ func (r *NetworkOverridesResource) Schema(ctx context.Context, req resource.Sche
 							Required:            true,
 						},
 						"target_type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Type of the target.").AddStringEnumDescription("Device", "Domain").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Type of the target.").AddStringEnumDescription("Device", "Domain", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("Device", "Domain"),
+								stringvalidator.OneOf("Device", "Domain", ),
 							},
 						},
 						"description": schema.StringAttribute{
@@ -159,7 +161,7 @@ func (r *NetworkOverridesResource) Create(ctx context.Context, req resource.Crea
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 	body := plan.toBodyOverrides(ctx, NetworkOverrides{})
-	res, err := r.client.Post(plan.getPath()+"?bulk=true", body, reqMods...)
+	res, err := r.client.Post(plan.getPath() + "?bulk=true", body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
 		return
@@ -196,13 +198,14 @@ func (r *NetworkOverridesResource) Read(ctx context.Context, req resource.ReadRe
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
+	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()) + "/overrides"
 	res, err := r.client.Get(urlPath, reqMods...)
-
+	
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else if err != nil {
+	} else  if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -455,24 +458,23 @@ func (r *NetworkOverridesResource) Delete(ctx context.Context, req resource.Dele
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *NetworkOverridesResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Parse import ID
-	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
-	match := inputPattern.FindStringSubmatch(req.ID)
-	if match == nil {
-		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		// Parse import ID
+		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
+		match := inputPattern.FindStringSubmatch(req.ID)
+		if match == nil {
+			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	// Set domain, if provided
-	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+		// Set domain, if provided
+		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import
 
 // Section below is generated&owned by "gen/generator.go". //template:begin createSubresources

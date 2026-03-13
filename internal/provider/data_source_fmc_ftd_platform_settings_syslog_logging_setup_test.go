@@ -49,8 +49,8 @@ func TestAccDataSourceFmcFTDPlatformSettingsSyslogLoggingSetup(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcFTDPlatformSettingsSyslogLoggingSetupPrerequisitesConfig + testAccDataSourceFmcFTDPlatformSettingsSyslogLoggingSetupConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcFTDPlatformSettingsSyslogLoggingSetupPrerequisitesConfig+testAccDataSourceFmcFTDPlatformSettingsSyslogLoggingSetupConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -75,7 +75,6 @@ resource "fmc_interface_group" "test" {
   interface_type = "ROUTED"
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -110,5 +109,7 @@ func testAccDataSourceFmcFTDPlatformSettingsSyslogLoggingSetupConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

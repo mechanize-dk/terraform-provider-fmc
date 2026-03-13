@@ -76,7 +76,7 @@ func (r *FTDPlatformSettingsSyslogLoggingDestinationResource) Schema(ctx context
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -86,6 +86,7 @@ func (r *FTDPlatformSettingsSyslogLoggingDestinationResource) Schema(ctx context
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"type": schema.StringAttribute{
@@ -93,22 +94,23 @@ func (r *FTDPlatformSettingsSyslogLoggingDestinationResource) Schema(ctx context
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"logging_destination": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Logging destination.").AddStringEnumDescription("INTERNAL_BUFFER", "CONSOLE", "SYSLOG_SERVERS", "SNMP_TRAP", "EMAIL", "SSH_SESSION").AddDefaultValueDescription("INTERNAL_BUFFER").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Logging destination.").AddStringEnumDescription("INTERNAL_BUFFER", "CONSOLE", "SYSLOG_SERVERS", "SNMP_TRAP", "EMAIL", "SSH_SESSION", ).AddDefaultValueDescription("INTERNAL_BUFFER").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("INTERNAL_BUFFER", "CONSOLE", "SYSLOG_SERVERS", "SNMP_TRAP", "EMAIL", "SSH_SESSION"),
+					stringvalidator.OneOf("INTERNAL_BUFFER", "CONSOLE", "SYSLOG_SERVERS", "SNMP_TRAP", "EMAIL", "SSH_SESSION", ),
 				},
-				Default: stringdefault.StaticString("INTERNAL_BUFFER"),
+				Default:             stringdefault.StaticString("INTERNAL_BUFFER"),
 			},
 			"global_event_class_filter_criteria": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Filter that will apply to all classes not listed in `event_class_filters`.").AddStringEnumDescription("SEVERITY", "EVENT_LIST", "DISABLE").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Filter that will apply to all classes not listed in `event_class_filters`.").AddStringEnumDescription("SEVERITY", "EVENT_LIST", "DISABLE", ).String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("SEVERITY", "EVENT_LIST", "DISABLE"),
+					stringvalidator.OneOf("SEVERITY", "EVENT_LIST", "DISABLE", ),
 				},
 			},
 			"global_event_class_filter_value": schema.StringAttribute{
@@ -121,17 +123,17 @@ func (r *FTDPlatformSettingsSyslogLoggingDestinationResource) Schema(ctx context
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"class": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Event class.").AddStringEnumDescription("AUTH", "BRIDGE", "CA", "CONFIG", "CSD", "DAP", "EAPOUDP", "EIGRP", "HA", "IDS", "IP", "IPAA", "IPS", "NP", "OSPF", "RM", "RULE_ENGINE", "SESSION", "SNMP", "SSL", "SVC", "SYS", "TAG_SWITCHING", "VM", "VPDN", "VPN", "VPNC", "VPNFO", "VPNLB", "WEBFO", "WEBVPN").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Event class.").AddStringEnumDescription("AUTH", "BRIDGE", "CA", "CONFIG", "CSD", "DAP", "EAPOUDP", "EIGRP", "HA", "IDS", "IP", "IPAA", "IPS", "NP", "OSPF", "RM", "RULE_ENGINE", "SESSION", "SNMP", "SSL", "SVC", "SYS", "TAG_SWITCHING", "VM", "VPDN", "VPN", "VPNC", "VPNFO", "VPNLB", "WEBFO", "WEBVPN", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("AUTH", "BRIDGE", "CA", "CONFIG", "CSD", "DAP", "EAPOUDP", "EIGRP", "HA", "IDS", "IP", "IPAA", "IPS", "NP", "OSPF", "RM", "RULE_ENGINE", "SESSION", "SNMP", "SSL", "SVC", "SYS", "TAG_SWITCHING", "VM", "VPDN", "VPN", "VPNC", "VPNFO", "VPNLB", "WEBFO", "WEBVPN"),
+								stringvalidator.OneOf("AUTH", "BRIDGE", "CA", "CONFIG", "CSD", "DAP", "EAPOUDP", "EIGRP", "HA", "IDS", "IP", "IPAA", "IPS", "NP", "OSPF", "RM", "RULE_ENGINE", "SESSION", "SNMP", "SSL", "SVC", "SYS", "TAG_SWITCHING", "VM", "VPDN", "VPN", "VPNC", "VPNFO", "VPNLB", "WEBFO", "WEBVPN", ),
 							},
 						},
 						"severity": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Syslog severity level.").AddStringEnumDescription("EMERG", "ALERT", "CRIT", "ERR", "WARNING", "NOTICE", "INFO", "DEBUG").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Syslog severity level.").AddStringEnumDescription("EMERG", "ALERT", "CRIT", "ERR", "WARNING", "NOTICE", "INFO", "DEBUG", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("EMERG", "ALERT", "CRIT", "ERR", "WARNING", "NOTICE", "INFO", "DEBUG"),
+								stringvalidator.OneOf("EMERG", "ALERT", "CRIT", "ERR", "WARNING", "NOTICE", "INFO", "DEBUG", ),
 							},
 						},
 					},
@@ -221,13 +223,14 @@ func (r *FTDPlatformSettingsSyslogLoggingDestinationResource) Read(ctx context.C
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
+	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-
+	
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else if err != nil {
+	} else  if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -281,7 +284,7 @@ func (r *FTDPlatformSettingsSyslogLoggingDestinationResource) Update(ctx context
 
 	body := plan.toBody(ctx, state)
 	body = plan.adjustBody(ctx, body)
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -313,7 +316,7 @@ func (r *FTDPlatformSettingsSyslogLoggingDestinationResource) Delete(ctx context
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString()), reqMods...)
+	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()), reqMods...)
 	if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
@@ -328,23 +331,22 @@ func (r *FTDPlatformSettingsSyslogLoggingDestinationResource) Delete(ctx context
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *FTDPlatformSettingsSyslogLoggingDestinationResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Parse import ID
-	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<ftd_platform_settings_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
-	match := inputPattern.FindStringSubmatch(req.ID)
-	if match == nil {
-		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<ftd_platform_settings_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		// Parse import ID
+		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<ftd_platform_settings_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
+		match := inputPattern.FindStringSubmatch(req.ID)
+		if match == nil {
+			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<ftd_platform_settings_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	// Set domain, if provided
-	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("ftd_platform_settings_id"), match[inputPattern.SubexpIndex("ftd_platform_settings_id")])...)
+		// Set domain, if provided
+		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("ftd_platform_settings_id"), match[inputPattern.SubexpIndex("ftd_platform_settings_id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import

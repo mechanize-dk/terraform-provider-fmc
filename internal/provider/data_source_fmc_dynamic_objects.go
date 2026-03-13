@@ -64,7 +64,7 @@ func (d *DynamicObjectsDataSource) Schema(ctx context.Context, req datasource.Sc
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 			},
 			"items": schema.MapNestedAttribute{
 				MarkdownDescription: "Map of Dynamic Objects. The key of the map is the name of the individual Dynamic Object.",
@@ -129,7 +129,7 @@ func (d *DynamicObjectsDataSource) Read(ctx context.Context, req datasource.Read
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
-
+	
 	// Get all objects from FMC
 	urlPath := config.getPath() + "?expanded=true"
 	res, err := d.client.Get(urlPath, reqMods...)

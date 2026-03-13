@@ -31,11 +31,11 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSource
 
 func TestAccDataSourceFmcDeviceBridgeGroupInterface(t *testing.T) {
-	if v := os.Getenv("FMC_VERSION"); v != "" && slices.Contains([]string{"7.7"}, v) {
+	if v := os.Getenv("FMC_VERSION"); v != "" && slices.Contains([]string{"7.7" }, v) {
 		t.Skip("skipping test for FMC version " + v)
 	}
 	if os.Getenv("TF_VAR_device_id") == "" || os.Getenv("TF_VAR_interface_name") == "" {
-		t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_interface_name")
+        t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_interface_name")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("data.fmc_device_bridge_group_interface.test", "type"))
@@ -56,12 +56,12 @@ func TestAccDataSourceFmcDeviceBridgeGroupInterface(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcDeviceBridgeGroupInterfacePrerequisitesConfig + testAccDataSourceFmcDeviceBridgeGroupInterfaceConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcDeviceBridgeGroupInterfacePrerequisitesConfig+testAccDataSourceFmcDeviceBridgeGroupInterfaceConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcDeviceBridgeGroupInterfacePrerequisitesConfig + testAccNamedDataSourceFmcDeviceBridgeGroupInterfaceConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcDeviceBridgeGroupInterfacePrerequisitesConfig+testAccNamedDataSourceFmcDeviceBridgeGroupInterfaceConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -80,7 +80,6 @@ data "fmc_device_physical_interface" "test" {
 variable "device_id" { default = null } // tests will set $TF_VAR_device_ha_id
 variable "interface_name" {default = null} // tests will set $TF_VAR_interface_name
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

@@ -69,7 +69,7 @@ func (d *DeviceHAPairFailoverInterfaceMACAddressDataSource) Schema(ctx context.C
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 			},
 			"ha_pair_id": schema.StringAttribute{
 				MarkdownDescription: "Id of the parent HA Pair device.",
@@ -104,12 +104,12 @@ func (d *DeviceHAPairFailoverInterfaceMACAddressDataSource) Schema(ctx context.C
 	}
 }
 func (d *DeviceHAPairFailoverInterfaceMACAddressDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
-	return []datasource.ConfigValidator{
-		datasourcevalidator.ExactlyOneOf(
-			path.MatchRoot("id"),
+    return []datasource.ConfigValidator{
+        datasourcevalidator.ExactlyOneOf(
+            path.MatchRoot("id"),
 			path.MatchRoot("interface_name"),
-		),
-	}
+        ),
+    }
 }
 
 func (d *DeviceHAPairFailoverInterfaceMACAddressDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
@@ -146,14 +146,14 @@ func (d *DeviceHAPairFailoverInterfaceMACAddressDataSource) Read(ctx context.Con
 		limit := 1000
 		for page := 1; ; page++ {
 			queryString := fmt.Sprintf("?limit=%d&offset=%d&expanded=true", limit, offset)
-			res, err := d.client.Get(config.getPath()+queryString, reqMods...)
+			res, err := d.client.Get(config.getPath() + queryString, reqMods...)
 			if err != nil {
 				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve objects, got error: %s", err))
 				return
 			}
 			if value := res.Get("items"); len(value.Array()) > 0 {
 				value.ForEach(func(k, v gjson.Result) bool {
-					if config.InterfaceName.ValueString() == v.Get("physicalInterface.name").String() {
+					if config.InterfaceName.ValueString()== v.Get("physicalInterface.name").String(){
 						config.Id = types.StringValue(v.Get("id").String())
 						tflog.Debug(ctx, fmt.Sprintf("%s: Found object with interface_name '%v', id: %v", config.Id.ValueString(), config.InterfaceName.ValueString(), config.Id.ValueString()))
 						return false
@@ -172,7 +172,7 @@ func (d *DeviceHAPairFailoverInterfaceMACAddressDataSource) Read(ctx context.Con
 			return
 		}
 	}
-	urlPath := config.getPath() + "/" + url.QueryEscape(config.Id.ValueString())
+	urlPath := config.getPath()+"/"+url.QueryEscape(config.Id.ValueString())
 	res, err := d.client.Get(urlPath, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object, got error: %s", err))

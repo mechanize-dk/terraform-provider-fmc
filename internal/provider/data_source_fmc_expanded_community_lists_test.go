@@ -41,7 +41,7 @@ func TestAccDataSourceFmcExpandedCommunityLists(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcExpandedCommunityListsConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -75,5 +75,7 @@ func testAccDataSourceFmcExpandedCommunityListsConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

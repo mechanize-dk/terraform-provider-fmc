@@ -35,17 +35,27 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type SGTs struct {
-	Id     types.String         `tfsdk:"id"`
-	Domain types.String         `tfsdk:"domain"`
-	Items  map[string]SGTsItems `tfsdk:"items"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Items map[string]SGTsItems `tfsdk:"items"`
 }
 
+
 type SGTsItems struct {
-	Id          types.String `tfsdk:"id"`
-	Type        types.String `tfsdk:"type"`
+	Id types.String `tfsdk:"id"`
+	Type types.String `tfsdk:"type"`
 	Description types.String `tfsdk:"description"`
-	Tag         types.String `tfsdk:"tag"`
+	Tag types.String `tfsdk:"tag"`
 }
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -59,7 +69,7 @@ var minFMCVersionBulkDeleteSGTs = version.Must(version.NewVersion("999"))
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data SGTs) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/securitygrouptags"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/securitygrouptags"
 }
 
 // End of section. //template:end getPath
@@ -75,13 +85,13 @@ func (data SGTs) toBody(ctx context.Context, state SGTs) string {
 		body, _ = sjson.Set(body, "items", []any{})
 		for key, item := range data.Items {
 			itemBody, _ := sjson.Set("{}", "name", key)
-			if !item.Id.IsNull() && !item.Id.IsUnknown() {
+			if !item.Id.IsNull() && !item.Id.IsUnknown()  {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Description.IsNull() {
+			if !item.Description.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "description", item.Description.ValueString())
 			}
-			if !item.Tag.IsNull() {
+			if !item.Tag.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "tag", item.Tag.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "items.-1", itemBody)
@@ -107,31 +117,30 @@ func (data *SGTs) fromBody(ctx context.Context, res gjson.Result) {
 		parent := &data
 		data := (*parent).Items[k]
 		res, found := itemsByName[k]
-		if !found {
-			tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
+		if !found {tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
 			delete((*parent).Items, k)
 			continue
 		}
-		if value := res.Get("id"); value.Exists() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("type"); value.Exists() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
-		if value := res.Get("description"); value.Exists() {
-			data.Description = types.StringValue(value.String())
-		} else {
-			data.Description = types.StringNull()
-		}
-		if value := res.Get("tag"); value.Exists() {
-			data.Tag = types.StringValue(value.String())
-		} else {
-			data.Tag = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
+	if value := res.Get("description"); value.Exists() {
+		data.Description = types.StringValue(value.String())
+	} else {
+		data.Description = types.StringNull()
+	}
+	if value := res.Get("tag"); value.Exists() {
+		data.Tag = types.StringValue(value.String())
+	} else {
+		data.Tag = types.StringNull()
+	}
 		(*parent).Items[k] = data
 	}
 }
@@ -139,6 +148,7 @@ func (data *SGTs) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -160,30 +170,30 @@ func (data *SGTs) fromBodyPartial(ctx context.Context, res gjson.Result) {
 			continue
 		}
 		res, _ := itemsById[data.Id.ValueString()]
-		if value := res.Get("id"); value.Exists() {
-			data.Id = types.StringValue(value.String())
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
+	if value := res.Get("description"); value.Exists() && !data.Description.IsNull() {
+		data.Description = types.StringValue(value.String())
+	} else {
+		if !data.Description.IsNull() && data.Description.ValueString() == "" {
+			data.Description = types.StringValue("")
 		} else {
-			data.Id = types.StringNull()
+			data.Description = types.StringNull()
 		}
-		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
-		if value := res.Get("description"); value.Exists() && !data.Description.IsNull() {
-			data.Description = types.StringValue(value.String())
-		} else {
-			if !data.Description.IsNull() && data.Description.ValueString() == "" {
-				data.Description = types.StringValue("")
-			} else {
-				data.Description = types.StringNull()
-			}
-		}
-		if value := res.Get("tag"); value.Exists() && !data.Tag.IsNull() {
-			data.Tag = types.StringValue(value.String())
-		} else {
-			data.Tag = types.StringNull()
-		}
+	}
+	if value := res.Get("tag"); value.Exists() && !data.Tag.IsNull() {
+		data.Tag = types.StringValue(value.String())
+	} else {
+		data.Tag = types.StringNull()
+	}
 		(*parent).Items[i] = data
 	}
 }
@@ -237,6 +247,7 @@ func (data *SGTs) fromBodyUnknowns(ctx context.Context, res gjson.Result) {
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
 func (data *SGTs) Clone() SGTs {
 	ret := *data
 	ret.Items = maps.Clone(data.Items)
@@ -247,6 +258,7 @@ func (data *SGTs) Clone() SGTs {
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
 
 // Updates done one-by-one require different API body
 func (data SGTs) toBodyNonBulk(ctx context.Context, state SGTs) string {

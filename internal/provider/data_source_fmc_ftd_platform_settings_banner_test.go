@@ -38,8 +38,8 @@ func TestAccDataSourceFmcFTDPlatformSettingsBanner(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcFTDPlatformSettingsBannerPrerequisitesConfig + testAccDataSourceFmcFTDPlatformSettingsBannerConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcFTDPlatformSettingsBannerPrerequisitesConfig+testAccDataSourceFmcFTDPlatformSettingsBannerConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -54,7 +54,6 @@ resource "fmc_ftd_platform_settings" "test" {
   name        = "ftd_platform_settings_banner"
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -73,5 +72,7 @@ func testAccDataSourceFmcFTDPlatformSettingsBannerConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

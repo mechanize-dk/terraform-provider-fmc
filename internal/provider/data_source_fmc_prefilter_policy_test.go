@@ -60,12 +60,12 @@ func TestAccDataSourceFmcPrefilterPolicy(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcPrefilterPolicyPrerequisitesConfig + testAccDataSourceFmcPrefilterPolicyConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcPrefilterPolicyPrerequisitesConfig+testAccDataSourceFmcPrefilterPolicyConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcPrefilterPolicyPrerequisitesConfig + testAccNamedDataSourceFmcPrefilterPolicyConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcPrefilterPolicyPrerequisitesConfig+testAccNamedDataSourceFmcPrefilterPolicyConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -103,7 +103,6 @@ resource "fmc_security_zone" "test" {
   interface_type = "ROUTED"
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

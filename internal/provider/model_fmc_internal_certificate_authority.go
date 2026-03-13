@@ -31,14 +31,35 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type InternalCertificateAuthority struct {
-	Id          types.String `tfsdk:"id"`
-	Domain      types.String `tfsdk:"domain"`
-	Name        types.String `tfsdk:"name"`
-	Type        types.String `tfsdk:"type"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Name types.String `tfsdk:"name"`
+	Type types.String `tfsdk:"type"`
 	Certificate types.String `tfsdk:"certificate"`
-	PrivateKey  types.String `tfsdk:"private_key"`
-	Password    types.String `tfsdk:"password"`
+	PrivateKey types.String `tfsdk:"private_key"`
+	Password types.String `tfsdk:"password"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -49,7 +70,7 @@ type InternalCertificateAuthority struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data InternalCertificateAuthority) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/internalcas"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/internalcas"
 }
 
 // End of section. //template:end getPath
@@ -61,16 +82,16 @@ func (data InternalCertificateAuthority) toBody(ctx context.Context, state Inter
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Certificate.IsNull() {
+	if !data.Certificate.IsNull()   {
 		body, _ = sjson.Set(body, "cert", data.Certificate.ValueString())
 	}
-	if !data.PrivateKey.IsNull() {
+	if !data.PrivateKey.IsNull()   {
 		body, _ = sjson.Set(body, "privateKey", data.PrivateKey.ValueString())
 	}
-	if !data.Password.IsNull() {
+	if !data.Password.IsNull()   {
 		body, _ = sjson.Set(body, "passPhrase", data.Password.ValueString())
 	}
 	return body
@@ -101,6 +122,7 @@ func (data *InternalCertificateAuthority) fromBody(ctx context.Context, res gjso
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -144,28 +166,42 @@ func (data *InternalCertificateAuthority) fromBodyUnknowns(ctx context.Context, 
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
+
+
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
+
+
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
+
+
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
+
+
 
 // End of section. //template:end adjustBodyBulk

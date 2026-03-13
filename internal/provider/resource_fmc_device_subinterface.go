@@ -81,7 +81,7 @@ func (r *DeviceSubinterfaceResource) Schema(ctx context.Context, req resource.Sc
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -91,6 +91,7 @@ func (r *DeviceSubinterfaceResource) Schema(ctx context.Context, req resource.Sc
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"type": schema.StringAttribute{
@@ -98,6 +99,7 @@ func (r *DeviceSubinterfaceResource) Schema(ctx context.Context, req resource.Sc
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"name": schema.StringAttribute{
@@ -105,6 +107,7 @@ func (r *DeviceSubinterfaceResource) Schema(ctx context.Context, req resource.Sc
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"is_multi_instance": schema.BoolAttribute{
@@ -112,6 +115,7 @@ func (r *DeviceSubinterfaceResource) Schema(ctx context.Context, req resource.Sc
 				Computed:            true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"logical_name": schema.StringAttribute{
@@ -159,6 +163,7 @@ func (r *DeviceSubinterfaceResource) Schema(ctx context.Context, req resource.Sc
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"sub_interface_id": schema.Int64Attribute{
@@ -169,6 +174,7 @@ func (r *DeviceSubinterfaceResource) Schema(ctx context.Context, req resource.Sc
 				},
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.RequiresReplace(),
+					
 				},
 			},
 			"vlan_id": schema.Int64Attribute{
@@ -214,10 +220,10 @@ func (r *DeviceSubinterfaceResource) Schema(ctx context.Context, req resource.Sc
 				Optional:            true,
 			},
 			"ipv4_pppoe_authentication": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("PPPoE Configuration - PPPoE Authentication, can be one of PAP, CHAP, MSCHAP.").AddStringEnumDescription("PAP", "CHAP", "MSCHAP").String,
+				MarkdownDescription: helpers.NewAttributeDescription("PPPoE Configuration - PPPoE Authentication, can be one of PAP, CHAP, MSCHAP.").AddStringEnumDescription("PAP", "CHAP", "MSCHAP", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("PAP", "CHAP", "MSCHAP"),
+					stringvalidator.OneOf("PAP", "CHAP", "MSCHAP", ),
 				},
 			},
 			"ipv4_pppoe_route_metric": schema.Int64Attribute{
@@ -371,10 +377,10 @@ func (r *DeviceSubinterfaceResource) Schema(ctx context.Context, req resource.Sc
 				Optional:            true,
 			},
 			"ip_based_monitoring_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("PPPoE Configuration - PPPoE route metric, [ AUTO, PEER_IPV4, PEER_IPV6, AUTO4, AUTO6 ]").AddStringEnumDescription("AUTO", "PEER_IPV4", "PEER_IPV6", "AUTO4", "AUTO6").String,
+				MarkdownDescription: helpers.NewAttributeDescription("PPPoE Configuration - PPPoE route metric, [ AUTO, PEER_IPV4, PEER_IPV6, AUTO4, AUTO6 ]").AddStringEnumDescription("AUTO", "PEER_IPV4", "PEER_IPV6", "AUTO4", "AUTO6", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("AUTO", "PEER_IPV4", "PEER_IPV6", "AUTO4", "AUTO6"),
+					stringvalidator.OneOf("AUTO", "PEER_IPV4", "PEER_IPV6", "AUTO4", "AUTO6", ),
 				},
 			},
 			"ip_based_monitoring_next_hop": schema.StringAttribute{
@@ -695,23 +701,22 @@ func (r *DeviceSubinterfaceResource) Delete(ctx context.Context, req resource.De
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *DeviceSubinterfaceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Parse import ID
-	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<device_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
-	match := inputPattern.FindStringSubmatch(req.ID)
-	if match == nil {
-		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<device_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		// Parse import ID
+		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<device_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
+		match := inputPattern.FindStringSubmatch(req.ID)
+		if match == nil {
+			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<device_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	// Set domain, if provided
-	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), match[inputPattern.SubexpIndex("device_id")])...)
+		// Set domain, if provided
+		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), match[inputPattern.SubexpIndex("device_id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import

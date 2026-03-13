@@ -42,8 +42,8 @@ func TestAccDataSourceFmcFTDPlatformSettingsTrustedDNSServers(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcFTDPlatformSettingsTrustedDNSServersPrerequisitesConfig + testAccDataSourceFmcFTDPlatformSettingsTrustedDNSServersConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcFTDPlatformSettingsTrustedDNSServersPrerequisitesConfig+testAccDataSourceFmcFTDPlatformSettingsTrustedDNSServersConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -63,7 +63,6 @@ resource "fmc_host" "test" {
   ip   = "10.0.2.1"
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -90,5 +89,7 @@ func testAccDataSourceFmcFTDPlatformSettingsTrustedDNSServersConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

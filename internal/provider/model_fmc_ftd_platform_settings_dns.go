@@ -37,27 +37,56 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type FTDPlatformSettingsDNS struct {
-	Id                     types.String                             `tfsdk:"id"`
-	Domain                 types.String                             `tfsdk:"domain"`
-	FtdPlatformSettingsId  types.String                             `tfsdk:"ftd_platform_settings_id"`
-	Type                   types.String                             `tfsdk:"type"`
-	DnsServerGroups        []FTDPlatformSettingsDNSDnsServerGroups  `tfsdk:"dns_server_groups"`
-	ExpireEntryTimer       types.Int64                              `tfsdk:"expire_entry_timer"`
-	PollTimer              types.Int64                              `tfsdk:"poll_timer"`
-	InterfaceObjects       []FTDPlatformSettingsDNSInterfaceObjects `tfsdk:"interface_objects"`
-	UseManagementInterface types.Bool                               `tfsdk:"use_management_interface"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	FtdPlatformSettingsId types.String `tfsdk:"ftd_platform_settings_id"`
+	Type types.String `tfsdk:"type"`
+	DnsServerGroups []FTDPlatformSettingsDNSDnsServerGroups `tfsdk:"dns_server_groups"`
+	ExpireEntryTimer types.Int64 `tfsdk:"expire_entry_timer"`
+	PollTimer types.Int64 `tfsdk:"poll_timer"`
+	InterfaceObjects []FTDPlatformSettingsDNSInterfaceObjects `tfsdk:"interface_objects"`
+	UseManagementInterface types.Bool `tfsdk:"use_management_interface"`
 }
+
+
+
 
 type FTDPlatformSettingsDNSDnsServerGroups struct {
-	Id            types.String `tfsdk:"id"`
-	IsDefault     types.Bool   `tfsdk:"is_default"`
-	FilterDomains types.List   `tfsdk:"filter_domains"`
+	Id types.String `tfsdk:"id"`
+	IsDefault types.Bool `tfsdk:"is_default"`
+	FilterDomains types.List `tfsdk:"filter_domains"`
 }
 
+
+
 type FTDPlatformSettingsDNSInterfaceObjects struct {
-	Id   types.String `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	Type types.String `tfsdk:"type"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -69,7 +98,7 @@ var minFMCVersionFTDPlatformSettingsDNS = version.Must(version.NewVersion("7.7")
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data FTDPlatformSettingsDNS) getPath() string {
-	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/dnssettings", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
+		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/dnssettings", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -85,10 +114,10 @@ func (data FTDPlatformSettingsDNS) toBody(ctx context.Context, state FTDPlatform
 		body, _ = sjson.Set(body, "dnsServerGroups", []any{})
 		for _, item := range data.DnsServerGroups {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "dnsServerGroup.id", item.Id.ValueString())
 			}
-			if !item.IsDefault.IsNull() {
+			if !item.IsDefault.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "isDefault", item.IsDefault.ValueBool())
 			}
 			if !item.FilterDomains.IsNull() {
@@ -99,26 +128,26 @@ func (data FTDPlatformSettingsDNS) toBody(ctx context.Context, state FTDPlatform
 			body, _ = sjson.SetRaw(body, "dnsServerGroups.-1", itemBody)
 		}
 	}
-	if !data.ExpireEntryTimer.IsNull() {
+	if !data.ExpireEntryTimer.IsNull()   {
 		body, _ = sjson.Set(body, "expiryTimerInMins", data.ExpireEntryTimer.ValueInt64())
 	}
-	if !data.PollTimer.IsNull() {
+	if !data.PollTimer.IsNull()   {
 		body, _ = sjson.Set(body, "pollTimerInMins", data.PollTimer.ValueInt64())
 	}
 	if len(data.InterfaceObjects) > 0 {
 		body, _ = sjson.Set(body, "interfaceObjects", []any{})
 		for _, item := range data.InterfaceObjects {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Type.IsNull() {
+			if !item.Type.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "type", item.Type.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "interfaceObjects.-1", itemBody)
 		}
 	}
-	if !data.UseManagementInterface.IsNull() {
+	if !data.UseManagementInterface.IsNull()   {
 		body, _ = sjson.Set(body, "enableLookupViaMgmt", data.UseManagementInterface.ValueBool())
 	}
 	return body
@@ -139,21 +168,21 @@ func (data *FTDPlatformSettingsDNS) fromBody(ctx context.Context, res gjson.Resu
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := FTDPlatformSettingsDNSDnsServerGroups{}
-			if value := res.Get("dnsServerGroup.id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
-			if value := res.Get("isDefault"); value.Exists() {
-				data.IsDefault = types.BoolValue(value.Bool())
-			} else {
-				data.IsDefault = types.BoolNull()
-			}
-			if value := res.Get("bypassDomains"); value.Exists() {
-				data.FilterDomains = helpers.GetStringList(value.Array())
-			} else {
-				data.FilterDomains = types.ListNull(types.StringType)
-			}
+	if value := res.Get("dnsServerGroup.id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("isDefault"); value.Exists() {
+		data.IsDefault = types.BoolValue(value.Bool())
+	} else {
+		data.IsDefault = types.BoolNull()
+	}
+	if value := res.Get("bypassDomains"); value.Exists() {
+		data.FilterDomains = helpers.GetStringList(value.Array())
+	} else {
+		data.FilterDomains = types.ListNull(types.StringType)
+	}
 			(*parent).DnsServerGroups = append((*parent).DnsServerGroups, data)
 			return true
 		})
@@ -173,16 +202,16 @@ func (data *FTDPlatformSettingsDNS) fromBody(ctx context.Context, res gjson.Resu
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := FTDPlatformSettingsDNSInterfaceObjects{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
-			if value := res.Get("type"); value.Exists() {
-				data.Type = types.StringValue(value.String())
-			} else {
-				data.Type = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
 			(*parent).InterfaceObjects = append((*parent).InterfaceObjects, data)
 			return true
 		})
@@ -198,6 +227,7 @@ func (data *FTDPlatformSettingsDNS) fromBody(ctx context.Context, res gjson.Resu
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
 
+
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
 // easily change across versions of the backend API.) For List/Set/Map attributes, the func only updates the
@@ -209,8 +239,8 @@ func (data *FTDPlatformSettingsDNS) fromBodyPartial(ctx context.Context, res gjs
 		data.Type = types.StringNull()
 	}
 	for i := 0; i < len(data.DnsServerGroups); i++ {
-		keys := [...]string{"dnsServerGroup.id"}
-		keyValues := [...]string{data.DnsServerGroups[i].Id.ValueString()}
+		keys := [...]string{ "dnsServerGroup.id",  }
+		keyValues := [...]string{ data.DnsServerGroups[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).DnsServerGroups[i]
@@ -244,21 +274,21 @@ func (data *FTDPlatformSettingsDNS) fromBodyPartial(ctx context.Context, res gjs
 
 			continue
 		}
-		if value := res.Get("dnsServerGroup.id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("isDefault"); value.Exists() && !data.IsDefault.IsNull() {
-			data.IsDefault = types.BoolValue(value.Bool())
-		} else {
-			data.IsDefault = types.BoolNull()
-		}
-		if value := res.Get("bypassDomains"); value.Exists() && !data.FilterDomains.IsNull() {
-			data.FilterDomains = helpers.GetStringList(value.Array())
-		} else {
-			data.FilterDomains = types.ListNull(types.StringType)
-		}
+	if value := res.Get("dnsServerGroup.id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("isDefault"); value.Exists() && !data.IsDefault.IsNull() {
+		data.IsDefault = types.BoolValue(value.Bool())
+	} else {
+		data.IsDefault = types.BoolNull()
+	}
+	if value := res.Get("bypassDomains"); value.Exists() && !data.FilterDomains.IsNull() {
+		data.FilterDomains = helpers.GetStringList(value.Array())
+	} else {
+		data.FilterDomains = types.ListNull(types.StringType)
+	}
 		(*parent).DnsServerGroups[i] = data
 	}
 	if value := res.Get("expiryTimerInMins"); value.Exists() && !data.ExpireEntryTimer.IsNull() {
@@ -272,8 +302,8 @@ func (data *FTDPlatformSettingsDNS) fromBodyPartial(ctx context.Context, res gjs
 		data.PollTimer = types.Int64Null()
 	}
 	for i := 0; i < len(data.InterfaceObjects); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.InterfaceObjects[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.InterfaceObjects[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).InterfaceObjects[i]
@@ -307,16 +337,16 @@ func (data *FTDPlatformSettingsDNS) fromBodyPartial(ctx context.Context, res gjs
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
 		(*parent).InterfaceObjects[i] = data
 	}
 	if value := res.Get("enableLookupViaMgmt"); value.Exists() && !data.UseManagementInterface.IsNull() {
@@ -345,6 +375,7 @@ func (data *FTDPlatformSettingsDNS) fromBodyUnknowns(ctx context.Context, res gj
 // End of section. //template:end fromBodyUnknowns
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
+
 
 // toBodyPutDelete is used to create the body for PUT requests to clear the resource state
 func (data FTDPlatformSettingsDNS) toBodyPutDelete(ctx context.Context) string {

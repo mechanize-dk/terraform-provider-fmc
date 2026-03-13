@@ -31,11 +31,11 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSource
 
 func TestAccDataSourceFmcDeviceVirtualTunnelInterface(t *testing.T) {
-	if v := os.Getenv("FMC_VERSION"); v != "" && slices.Contains([]string{"7.2"}, v) {
+	if v := os.Getenv("FMC_VERSION"); v != "" && slices.Contains([]string{"7.2" }, v) {
 		t.Skip("skipping test for FMC version " + v)
 	}
 	if os.Getenv("TF_VAR_device_id") == "" || os.Getenv("TF_VAR_interface_name") == "" {
-		t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_interface_name")
+        t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_interface_name")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("data.fmc_device_virtual_tunnel_interface.test", "type"))
@@ -58,12 +58,12 @@ func TestAccDataSourceFmcDeviceVirtualTunnelInterface(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcDeviceVirtualTunnelInterfacePrerequisitesConfig + testAccDataSourceFmcDeviceVirtualTunnelInterfaceConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcDeviceVirtualTunnelInterfacePrerequisitesConfig+testAccDataSourceFmcDeviceVirtualTunnelInterfaceConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcDeviceVirtualTunnelInterfacePrerequisitesConfig + testAccNamedDataSourceFmcDeviceVirtualTunnelInterfaceConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcDeviceVirtualTunnelInterfacePrerequisitesConfig+testAccNamedDataSourceFmcDeviceVirtualTunnelInterfaceConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -91,7 +91,6 @@ resource "fmc_security_zone" "test" {
   interface_type = "ROUTED"
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

@@ -43,8 +43,8 @@ func TestAccDataSourceFmcFTDPlatformSettingsSyslogSettings(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcFTDPlatformSettingsSyslogSettingsPrerequisitesConfig + testAccDataSourceFmcFTDPlatformSettingsSyslogSettingsConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcFTDPlatformSettingsSyslogSettingsPrerequisitesConfig+testAccDataSourceFmcFTDPlatformSettingsSyslogSettingsConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -59,7 +59,6 @@ resource "fmc_ftd_platform_settings" "test" {
   name        = "ftd_platform_settings_syslog_settings"
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -83,5 +82,7 @@ func testAccDataSourceFmcFTDPlatformSettingsSyslogSettingsConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

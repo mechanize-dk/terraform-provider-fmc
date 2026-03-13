@@ -34,25 +34,79 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type DeviceClusterHealthMonitor struct {
-	Id                                          types.String  `tfsdk:"id"`
-	Domain                                      types.String  `tfsdk:"domain"`
-	ClusterId                                   types.String  `tfsdk:"cluster_id"`
-	Type                                        types.String  `tfsdk:"type"`
-	HealthCheck                                 types.Bool    `tfsdk:"health_check"`
-	HoldTime                                    types.Float64 `tfsdk:"hold_time"`
-	DebounceTime                                types.Int64   `tfsdk:"debounce_time"`
-	DataInterfaceAutoRejoinAttempts             types.Int64   `tfsdk:"data_interface_auto_rejoin_attempts"`
-	DataInterfaceAutoRejoinInterval             types.Int64   `tfsdk:"data_interface_auto_rejoin_interval"`
-	DataInterfaceAutoRejoinIntervalVariation    types.Int64   `tfsdk:"data_interface_auto_rejoin_interval_variation"`
-	ClusterInterfaceAutoRejoinAttempts          types.Int64   `tfsdk:"cluster_interface_auto_rejoin_attempts"`
-	ClusterInterfaceAutoRejoinInterval          types.Int64   `tfsdk:"cluster_interface_auto_rejoin_interval"`
-	ClusterInterfaceAutoRejoinIntervalVariation types.Int64   `tfsdk:"cluster_interface_auto_rejoin_interval_variation"`
-	SystemAutoRejoinAttempts                    types.Int64   `tfsdk:"system_auto_rejoin_attempts"`
-	SystemAutoRejoinInterval                    types.Int64   `tfsdk:"system_auto_rejoin_interval"`
-	SystemAutoRejoinIntervalVariation           types.Int64   `tfsdk:"system_auto_rejoin_interval_variation"`
-	UnmonitoredInterfaces                       types.Set     `tfsdk:"unmonitored_interfaces"`
-	ServiceApplicationMonitoring                types.Bool    `tfsdk:"service_application_monitoring"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	ClusterId types.String `tfsdk:"cluster_id"`
+	Type types.String `tfsdk:"type"`
+	HealthCheck types.Bool `tfsdk:"health_check"`
+	HoldTime types.Float64 `tfsdk:"hold_time"`
+	DebounceTime types.Int64 `tfsdk:"debounce_time"`
+	DataInterfaceAutoRejoinAttempts types.Int64 `tfsdk:"data_interface_auto_rejoin_attempts"`
+	DataInterfaceAutoRejoinInterval types.Int64 `tfsdk:"data_interface_auto_rejoin_interval"`
+	DataInterfaceAutoRejoinIntervalVariation types.Int64 `tfsdk:"data_interface_auto_rejoin_interval_variation"`
+	ClusterInterfaceAutoRejoinAttempts types.Int64 `tfsdk:"cluster_interface_auto_rejoin_attempts"`
+	ClusterInterfaceAutoRejoinInterval types.Int64 `tfsdk:"cluster_interface_auto_rejoin_interval"`
+	ClusterInterfaceAutoRejoinIntervalVariation types.Int64 `tfsdk:"cluster_interface_auto_rejoin_interval_variation"`
+	SystemAutoRejoinAttempts types.Int64 `tfsdk:"system_auto_rejoin_attempts"`
+	SystemAutoRejoinInterval types.Int64 `tfsdk:"system_auto_rejoin_interval"`
+	SystemAutoRejoinIntervalVariation types.Int64 `tfsdk:"system_auto_rejoin_interval_variation"`
+	UnmonitoredInterfaces types.Set `tfsdk:"unmonitored_interfaces"`
+	ServiceApplicationMonitoring types.Bool `tfsdk:"service_application_monitoring"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -63,7 +117,7 @@ type DeviceClusterHealthMonitor struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data DeviceClusterHealthMonitor) getPath() string {
-	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/deviceclusters/ftddevicecluster/%v/clusterhealthmonitorsettings", url.QueryEscape(data.ClusterId.ValueString()))
+		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/deviceclusters/ftddevicecluster/%v/clusterhealthmonitorsettings", url.QueryEscape(data.ClusterId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -75,40 +129,40 @@ func (data DeviceClusterHealthMonitor) toBody(ctx context.Context, state DeviceC
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.HealthCheck.IsNull() {
+	if !data.HealthCheck.IsNull()   {
 		body, _ = sjson.Set(body, "isHealthCheckEnabled", data.HealthCheck.ValueBool())
 	}
-	if !data.HoldTime.IsNull() {
+	if !data.HoldTime.IsNull()   {
 		body, _ = sjson.Set(body, "holdTime", data.HoldTime.ValueFloat64())
 	}
-	if !data.DebounceTime.IsNull() {
+	if !data.DebounceTime.IsNull()   {
 		body, _ = sjson.Set(body, "monitorInterface.debounceTime", data.DebounceTime.ValueInt64())
 	}
-	if !data.DataInterfaceAutoRejoinAttempts.IsNull() {
+	if !data.DataInterfaceAutoRejoinAttempts.IsNull()   {
 		body, _ = sjson.Set(body, "interfaceAutoRejoin.dataInterface.attempts", data.DataInterfaceAutoRejoinAttempts.ValueInt64())
 	}
-	if !data.DataInterfaceAutoRejoinInterval.IsNull() {
+	if !data.DataInterfaceAutoRejoinInterval.IsNull()   {
 		body, _ = sjson.Set(body, "interfaceAutoRejoin.dataInterface.interval", data.DataInterfaceAutoRejoinInterval.ValueInt64())
 	}
-	if !data.DataInterfaceAutoRejoinIntervalVariation.IsNull() {
+	if !data.DataInterfaceAutoRejoinIntervalVariation.IsNull()   {
 		body, _ = sjson.Set(body, "interfaceAutoRejoin.dataInterface.nextInterval", data.DataInterfaceAutoRejoinIntervalVariation.ValueInt64())
 	}
-	if !data.ClusterInterfaceAutoRejoinAttempts.IsNull() {
+	if !data.ClusterInterfaceAutoRejoinAttempts.IsNull()   {
 		body, _ = sjson.Set(body, "interfaceAutoRejoin.clusterInterface.attempts", data.ClusterInterfaceAutoRejoinAttempts.ValueInt64())
 	}
-	if !data.ClusterInterfaceAutoRejoinInterval.IsNull() {
+	if !data.ClusterInterfaceAutoRejoinInterval.IsNull()   {
 		body, _ = sjson.Set(body, "interfaceAutoRejoin.clusterInterface.interval", data.ClusterInterfaceAutoRejoinInterval.ValueInt64())
 	}
-	if !data.ClusterInterfaceAutoRejoinIntervalVariation.IsNull() {
+	if !data.ClusterInterfaceAutoRejoinIntervalVariation.IsNull()   {
 		body, _ = sjson.Set(body, "interfaceAutoRejoin.clusterInterface.nextInterval", data.ClusterInterfaceAutoRejoinIntervalVariation.ValueInt64())
 	}
-	if !data.SystemAutoRejoinAttempts.IsNull() {
+	if !data.SystemAutoRejoinAttempts.IsNull()   {
 		body, _ = sjson.Set(body, "systemAutoRejoin.attempts", data.SystemAutoRejoinAttempts.ValueInt64())
 	}
-	if !data.SystemAutoRejoinInterval.IsNull() {
+	if !data.SystemAutoRejoinInterval.IsNull()   {
 		body, _ = sjson.Set(body, "systemAutoRejoin.interval", data.SystemAutoRejoinInterval.ValueInt64())
 	}
-	if !data.SystemAutoRejoinIntervalVariation.IsNull() {
+	if !data.SystemAutoRejoinIntervalVariation.IsNull()   {
 		body, _ = sjson.Set(body, "systemAutoRejoin.nextInterval", data.SystemAutoRejoinIntervalVariation.ValueInt64())
 	}
 	if !data.UnmonitoredInterfaces.IsNull() {
@@ -116,7 +170,7 @@ func (data DeviceClusterHealthMonitor) toBody(ctx context.Context, state DeviceC
 		data.UnmonitoredInterfaces.ElementsAs(ctx, &values, false)
 		body, _ = sjson.Set(body, "unMonitorInterface", values)
 	}
-	if !data.ServiceApplicationMonitoring.IsNull() {
+	if !data.ServiceApplicationMonitoring.IsNull()   {
 		body, _ = sjson.Set(body, "monitorInterface.isServiceApplicationEnabled", data.ServiceApplicationMonitoring.ValueBool())
 	}
 	return body
@@ -207,6 +261,7 @@ func (data *DeviceClusterHealthMonitor) fromBody(ctx context.Context, res gjson.
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -310,16 +365,24 @@ func (data *DeviceClusterHealthMonitor) fromBodyUnknowns(ctx context.Context, re
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
+
+
 
 // End of section. //template:end clearItemIds

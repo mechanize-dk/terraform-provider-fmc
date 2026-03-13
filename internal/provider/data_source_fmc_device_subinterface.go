@@ -70,7 +70,7 @@ func (d *DeviceSubinterfaceDataSource) Schema(ctx context.Context, req datasourc
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 			},
 			"device_id": schema.StringAttribute{
 				MarkdownDescription: "Id of the parent device.",
@@ -361,12 +361,12 @@ func (d *DeviceSubinterfaceDataSource) Schema(ctx context.Context, req datasourc
 	}
 }
 func (d *DeviceSubinterfaceDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
-	return []datasource.ConfigValidator{
-		datasourcevalidator.ExactlyOneOf(
-			path.MatchRoot("id"),
+    return []datasource.ConfigValidator{
+        datasourcevalidator.ExactlyOneOf(
+            path.MatchRoot("id"),
 			path.MatchRoot("name"),
-		),
-	}
+        ),
+    }
 }
 
 func (d *DeviceSubinterfaceDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {

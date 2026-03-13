@@ -31,7 +31,7 @@ import (
 
 func TestAccFmcChassisLogicalDevice(t *testing.T) {
 	if os.Getenv("TF_VAR_chassis_id") == "" {
-		t.Skip("skipping test, set environment variable TF_VAR_chassis_id")
+        t.Skip("skipping test, set environment variable TF_VAR_chassis_id")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("fmc_chassis_logical_device.test", "type"))
@@ -70,14 +70,14 @@ func TestAccFmcChassisLogicalDevice(t *testing.T) {
 	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccFmcChassisLogicalDeviceConfig_all(),
-		Check:  resource.ComposeTestCheckFunc(checks...),
+		Check: resource.ComposeTestCheckFunc(checks...),
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps:                    steps,
+		Steps: steps,
 	})
 }
 
@@ -104,7 +104,6 @@ func testAccFmcChassisLogicalDeviceConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
-
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

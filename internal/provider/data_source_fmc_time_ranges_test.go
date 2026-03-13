@@ -47,7 +47,7 @@ func TestAccDataSourceFmcTimeRanges(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcTimeRangesConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -87,5 +87,7 @@ func testAccDataSourceFmcTimeRangesConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

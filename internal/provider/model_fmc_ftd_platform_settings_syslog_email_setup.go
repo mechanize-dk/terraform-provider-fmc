@@ -37,18 +37,37 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type FTDPlatformSettingsSyslogEmailSetup struct {
-	Id                    types.String                                      `tfsdk:"id"`
-	Domain                types.String                                      `tfsdk:"domain"`
-	FtdPlatformSettingsId types.String                                      `tfsdk:"ftd_platform_settings_id"`
-	Type                  types.String                                      `tfsdk:"type"`
-	SourceEmailAddress    types.String                                      `tfsdk:"source_email_address"`
-	Destinations          []FTDPlatformSettingsSyslogEmailSetupDestinations `tfsdk:"destinations"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	FtdPlatformSettingsId types.String `tfsdk:"ftd_platform_settings_id"`
+	Type types.String `tfsdk:"type"`
+	SourceEmailAddress types.String `tfsdk:"source_email_address"`
+	Destinations []FTDPlatformSettingsSyslogEmailSetupDestinations `tfsdk:"destinations"`
 }
 
+
+
+
+
 type FTDPlatformSettingsSyslogEmailSetupDestinations struct {
-	EmailAddresses types.List   `tfsdk:"email_addresses"`
-	LoggingLevel   types.String `tfsdk:"logging_level"`
+	EmailAddresses types.List `tfsdk:"email_addresses"`
+	LoggingLevel types.String `tfsdk:"logging_level"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -60,7 +79,7 @@ var minFMCVersionFTDPlatformSettingsSyslogEmailSetup = version.Must(version.NewV
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data FTDPlatformSettingsSyslogEmailSetup) getPath() string {
-	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/syslog/loggingemailsetups", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
+		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/syslog/loggingemailsetups", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -72,7 +91,7 @@ func (data FTDPlatformSettingsSyslogEmailSetup) toBody(ctx context.Context, stat
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.SourceEmailAddress.IsNull() {
+	if !data.SourceEmailAddress.IsNull()   {
 		body, _ = sjson.Set(body, "sourceEmail", data.SourceEmailAddress.ValueString())
 	}
 	if len(data.Destinations) > 0 {
@@ -84,7 +103,7 @@ func (data FTDPlatformSettingsSyslogEmailSetup) toBody(ctx context.Context, stat
 				item.EmailAddresses.ElementsAs(ctx, &values, false)
 				itemBody, _ = sjson.Set(itemBody, "emailIds", values)
 			}
-			if !item.LoggingLevel.IsNull() {
+			if !item.LoggingLevel.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "logLevel", item.LoggingLevel.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "destinationEmails.-1", itemBody)
@@ -113,16 +132,16 @@ func (data *FTDPlatformSettingsSyslogEmailSetup) fromBody(ctx context.Context, r
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := FTDPlatformSettingsSyslogEmailSetupDestinations{}
-			if value := res.Get("emailIds"); value.Exists() {
-				data.EmailAddresses = helpers.GetStringList(value.Array())
-			} else {
-				data.EmailAddresses = types.ListNull(types.StringType)
-			}
-			if value := res.Get("logLevel"); value.Exists() {
-				data.LoggingLevel = types.StringValue(value.String())
-			} else {
-				data.LoggingLevel = types.StringNull()
-			}
+	if value := res.Get("emailIds"); value.Exists() {
+		data.EmailAddresses = helpers.GetStringList(value.Array())
+	} else {
+		data.EmailAddresses = types.ListNull(types.StringType)
+	}
+	if value := res.Get("logLevel"); value.Exists() {
+		data.LoggingLevel = types.StringValue(value.String())
+	} else {
+		data.LoggingLevel = types.StringNull()
+	}
 			(*parent).Destinations = append((*parent).Destinations, data)
 			return true
 		})
@@ -132,6 +151,7 @@ func (data *FTDPlatformSettingsSyslogEmailSetup) fromBody(ctx context.Context, r
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -149,8 +169,8 @@ func (data *FTDPlatformSettingsSyslogEmailSetup) fromBodyPartial(ctx context.Con
 		data.SourceEmailAddress = types.StringNull()
 	}
 	for i := 0; i < len(data.Destinations); i++ {
-		keys := [...]string{"logLevel"}
-		keyValues := [...]string{data.Destinations[i].LoggingLevel.ValueString()}
+		keys := [...]string{ "logLevel",  }
+		keyValues := [...]string{ data.Destinations[i].LoggingLevel.ValueString(),  }
 
 		parent := &data
 		data := (*parent).Destinations[i]
@@ -184,16 +204,16 @@ func (data *FTDPlatformSettingsSyslogEmailSetup) fromBodyPartial(ctx context.Con
 
 			continue
 		}
-		if value := res.Get("emailIds"); value.Exists() && !data.EmailAddresses.IsNull() {
-			data.EmailAddresses = helpers.GetStringList(value.Array())
-		} else {
-			data.EmailAddresses = types.ListNull(types.StringType)
-		}
-		if value := res.Get("logLevel"); value.Exists() && !data.LoggingLevel.IsNull() {
-			data.LoggingLevel = types.StringValue(value.String())
-		} else {
-			data.LoggingLevel = types.StringNull()
-		}
+	if value := res.Get("emailIds"); value.Exists() && !data.EmailAddresses.IsNull() {
+		data.EmailAddresses = helpers.GetStringList(value.Array())
+	} else {
+		data.EmailAddresses = types.ListNull(types.StringType)
+	}
+	if value := res.Get("logLevel"); value.Exists() && !data.LoggingLevel.IsNull() {
+		data.LoggingLevel = types.StringValue(value.String())
+	} else {
+		data.LoggingLevel = types.StringNull()
+	}
 		(*parent).Destinations[i] = data
 	}
 }

@@ -37,19 +37,41 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type FTDPlatformSettingsSyslogEventList struct {
-	Id                    types.String                                     `tfsdk:"id"`
-	Domain                types.String                                     `tfsdk:"domain"`
-	FtdPlatformSettingsId types.String                                     `tfsdk:"ftd_platform_settings_id"`
-	Type                  types.String                                     `tfsdk:"type"`
-	Name                  types.String                                     `tfsdk:"name"`
-	EventClasses          []FTDPlatformSettingsSyslogEventListEventClasses `tfsdk:"event_classes"`
-	MessageIds            types.Set                                        `tfsdk:"message_ids"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	FtdPlatformSettingsId types.String `tfsdk:"ftd_platform_settings_id"`
+	Type types.String `tfsdk:"type"`
+	Name types.String `tfsdk:"name"`
+	EventClasses []FTDPlatformSettingsSyslogEventListEventClasses `tfsdk:"event_classes"`
+	MessageIds types.Set `tfsdk:"message_ids"`
 }
 
+
+
+
+
 type FTDPlatformSettingsSyslogEventListEventClasses struct {
-	Class    types.String `tfsdk:"class"`
+	Class types.String `tfsdk:"class"`
 	Severity types.String `tfsdk:"severity"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -61,7 +83,7 @@ var minFMCVersionFTDPlatformSettingsSyslogEventList = version.Must(version.NewVe
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data FTDPlatformSettingsSyslogEventList) getPath() string {
-	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/syslog/eventlists", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
+		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/syslog/eventlists", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -73,17 +95,17 @@ func (data FTDPlatformSettingsSyslogEventList) toBody(ctx context.Context, state
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
 	if len(data.EventClasses) > 0 {
 		body, _ = sjson.Set(body, "eventClasses", []any{})
 		for _, item := range data.EventClasses {
 			itemBody := ""
-			if !item.Class.IsNull() {
+			if !item.Class.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "class", item.Class.ValueString())
 			}
-			if !item.Severity.IsNull() {
+			if !item.Severity.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "severity", item.Severity.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "eventClasses.-1", itemBody)
@@ -117,16 +139,16 @@ func (data *FTDPlatformSettingsSyslogEventList) fromBody(ctx context.Context, re
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := FTDPlatformSettingsSyslogEventListEventClasses{}
-			if value := res.Get("class"); value.Exists() {
-				data.Class = types.StringValue(value.String())
-			} else {
-				data.Class = types.StringNull()
-			}
-			if value := res.Get("severity"); value.Exists() {
-				data.Severity = types.StringValue(value.String())
-			} else {
-				data.Severity = types.StringNull()
-			}
+	if value := res.Get("class"); value.Exists() {
+		data.Class = types.StringValue(value.String())
+	} else {
+		data.Class = types.StringNull()
+	}
+	if value := res.Get("severity"); value.Exists() {
+		data.Severity = types.StringValue(value.String())
+	} else {
+		data.Severity = types.StringNull()
+	}
 			(*parent).EventClasses = append((*parent).EventClasses, data)
 			return true
 		})
@@ -141,6 +163,7 @@ func (data *FTDPlatformSettingsSyslogEventList) fromBody(ctx context.Context, re
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -158,8 +181,8 @@ func (data *FTDPlatformSettingsSyslogEventList) fromBodyPartial(ctx context.Cont
 		data.Name = types.StringNull()
 	}
 	for i := 0; i < len(data.EventClasses); i++ {
-		keys := [...]string{"class", "severity"}
-		keyValues := [...]string{data.EventClasses[i].Class.ValueString(), data.EventClasses[i].Severity.ValueString()}
+		keys := [...]string{ "class", "severity",  }
+		keyValues := [...]string{ data.EventClasses[i].Class.ValueString(), data.EventClasses[i].Severity.ValueString(),  }
 
 		parent := &data
 		data := (*parent).EventClasses[i]
@@ -193,16 +216,16 @@ func (data *FTDPlatformSettingsSyslogEventList) fromBodyPartial(ctx context.Cont
 
 			continue
 		}
-		if value := res.Get("class"); value.Exists() && !data.Class.IsNull() {
-			data.Class = types.StringValue(value.String())
-		} else {
-			data.Class = types.StringNull()
-		}
-		if value := res.Get("severity"); value.Exists() && !data.Severity.IsNull() {
-			data.Severity = types.StringValue(value.String())
-		} else {
-			data.Severity = types.StringNull()
-		}
+	if value := res.Get("class"); value.Exists() && !data.Class.IsNull() {
+		data.Class = types.StringValue(value.String())
+	} else {
+		data.Class = types.StringNull()
+	}
+	if value := res.Get("severity"); value.Exists() && !data.Severity.IsNull() {
+		data.Severity = types.StringValue(value.String())
+	} else {
+		data.Severity = types.StringNull()
+	}
 		(*parent).EventClasses[i] = data
 	}
 	if value := res.Get("messageIds"); value.Exists() && !data.MessageIds.IsNull() {

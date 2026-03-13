@@ -31,11 +31,23 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type FileCategory struct {
-	Id     types.String `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	Domain types.String `tfsdk:"domain"`
-	Name   types.String `tfsdk:"name"`
-	Type   types.String `tfsdk:"type"`
+	Name types.String `tfsdk:"name"`
+	Type types.String `tfsdk:"type"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -47,7 +59,7 @@ var minFMCVersionFileCategory = version.Must(version.NewVersion("7.4"))
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data FileCategory) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/filecategories"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/filecategories"
 }
 
 // End of section. //template:end getPath
@@ -75,6 +87,7 @@ func (data *FileCategory) fromBody(ctx context.Context, res gjson.Result) {
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
 
+
 // End of section. //template:end fromBodyPartial
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyUnknowns
@@ -83,8 +96,12 @@ func (data *FileCategory) fromBody(ctx context.Context, res gjson.Result) {
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk

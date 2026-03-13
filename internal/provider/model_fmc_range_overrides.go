@@ -34,19 +34,35 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type RangeOverrides struct {
-	Id         types.String              `tfsdk:"id"`
-	Domain     types.String              `tfsdk:"domain"`
-	ParentName types.String              `tfsdk:"parent_name"`
-	ParentId   types.String              `tfsdk:"parent_id"`
-	Overrides  []RangeOverridesOverrides `tfsdk:"overrides"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	ParentName types.String `tfsdk:"parent_name"`
+	ParentId types.String `tfsdk:"parent_id"`
+	Overrides []RangeOverridesOverrides `tfsdk:"overrides"`
 }
 
+
+
+
 type RangeOverridesOverrides struct {
-	TargetId    types.String `tfsdk:"target_id"`
-	TargetType  types.String `tfsdk:"target_type"`
+	TargetId types.String `tfsdk:"target_id"`
+	TargetType types.String `tfsdk:"target_type"`
 	Description types.String `tfsdk:"description"`
-	IpRange     types.String `tfsdk:"ip_range"`
+	IpRange types.String `tfsdk:"ip_range"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -57,7 +73,7 @@ type RangeOverridesOverrides struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data RangeOverrides) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/ranges"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/ranges"
 }
 
 // End of section. //template:end getPath
@@ -69,26 +85,26 @@ func (data RangeOverrides) toBody(ctx context.Context, state RangeOverrides) str
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.ParentName.IsNull() {
+	if !data.ParentName.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.ParentName.ValueString())
 	}
-	if !data.ParentId.IsNull() {
+	if !data.ParentId.IsNull()   {
 		body, _ = sjson.Set(body, "overrides.parent.id", data.ParentId.ValueString())
 	}
 	if len(data.Overrides) > 0 {
 		body, _ = sjson.Set(body, "dummy_overrides", []any{})
 		for _, item := range data.Overrides {
 			itemBody := ""
-			if !item.TargetId.IsNull() {
+			if !item.TargetId.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "overrides.target.id", item.TargetId.ValueString())
 			}
-			if !item.TargetType.IsNull() {
+			if !item.TargetType.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "overrides.target.type", item.TargetType.ValueString())
 			}
-			if !item.Description.IsNull() {
+			if !item.Description.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "description", item.Description.ValueString())
 			}
-			if !item.IpRange.IsNull() {
+			if !item.IpRange.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "value", item.IpRange.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "dummy_overrides.-1", itemBody)
@@ -117,26 +133,26 @@ func (data *RangeOverrides) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := RangeOverridesOverrides{}
-			if value := res.Get("overrides.target.id"); value.Exists() {
-				data.TargetId = types.StringValue(value.String())
-			} else {
-				data.TargetId = types.StringNull()
-			}
-			if value := res.Get("overrides.target.type"); value.Exists() {
-				data.TargetType = types.StringValue(value.String())
-			} else {
-				data.TargetType = types.StringNull()
-			}
-			if value := res.Get("description"); value.Exists() {
-				data.Description = types.StringValue(value.String())
-			} else {
-				data.Description = types.StringNull()
-			}
-			if value := res.Get("value"); value.Exists() {
-				data.IpRange = types.StringValue(value.String())
-			} else {
-				data.IpRange = types.StringNull()
-			}
+	if value := res.Get("overrides.target.id"); value.Exists() {
+		data.TargetId = types.StringValue(value.String())
+	} else {
+		data.TargetId = types.StringNull()
+	}
+	if value := res.Get("overrides.target.type"); value.Exists() {
+		data.TargetType = types.StringValue(value.String())
+	} else {
+		data.TargetType = types.StringNull()
+	}
+	if value := res.Get("description"); value.Exists() {
+		data.Description = types.StringValue(value.String())
+	} else {
+		data.Description = types.StringNull()
+	}
+	if value := res.Get("value"); value.Exists() {
+		data.IpRange = types.StringValue(value.String())
+	} else {
+		data.IpRange = types.StringNull()
+	}
 			(*parent).Overrides = append((*parent).Overrides, data)
 			return true
 		})
@@ -146,6 +162,7 @@ func (data *RangeOverrides) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -163,8 +180,8 @@ func (data *RangeOverrides) fromBodyPartial(ctx context.Context, res gjson.Resul
 		data.ParentId = types.StringNull()
 	}
 	for i := 0; i < len(data.Overrides); i++ {
-		keys := [...]string{"overrides.target.id"}
-		keyValues := [...]string{data.Overrides[i].TargetId.ValueString()}
+		keys := [...]string{ "overrides.target.id",  }
+		keyValues := [...]string{ data.Overrides[i].TargetId.ValueString(),  }
 
 		parent := &data
 		data := (*parent).Overrides[i]
@@ -198,26 +215,26 @@ func (data *RangeOverrides) fromBodyPartial(ctx context.Context, res gjson.Resul
 
 			continue
 		}
-		if value := res.Get("overrides.target.id"); value.Exists() && !data.TargetId.IsNull() {
-			data.TargetId = types.StringValue(value.String())
-		} else {
-			data.TargetId = types.StringNull()
-		}
-		if value := res.Get("overrides.target.type"); value.Exists() && !data.TargetType.IsNull() {
-			data.TargetType = types.StringValue(value.String())
-		} else {
-			data.TargetType = types.StringNull()
-		}
-		if value := res.Get("description"); value.Exists() && !data.Description.IsNull() {
-			data.Description = types.StringValue(value.String())
-		} else {
-			data.Description = types.StringNull()
-		}
-		if value := res.Get("value"); value.Exists() && !data.IpRange.IsNull() {
-			data.IpRange = types.StringValue(value.String())
-		} else {
-			data.IpRange = types.StringNull()
-		}
+	if value := res.Get("overrides.target.id"); value.Exists() && !data.TargetId.IsNull() {
+		data.TargetId = types.StringValue(value.String())
+	} else {
+		data.TargetId = types.StringNull()
+	}
+	if value := res.Get("overrides.target.type"); value.Exists() && !data.TargetType.IsNull() {
+		data.TargetType = types.StringValue(value.String())
+	} else {
+		data.TargetType = types.StringNull()
+	}
+	if value := res.Get("description"); value.Exists() && !data.Description.IsNull() {
+		data.Description = types.StringValue(value.String())
+	} else {
+		data.Description = types.StringNull()
+	}
+	if value := res.Get("value"); value.Exists() && !data.IpRange.IsNull() {
+		data.IpRange = types.StringValue(value.String())
+	} else {
+		data.IpRange = types.StringNull()
+	}
 		(*parent).Overrides[i] = data
 	}
 }
@@ -235,29 +252,43 @@ func (data *RangeOverrides) fromBodyUnknowns(ctx context.Context, res gjson.Resu
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
+
+
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
+
+
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
+
+
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
+
+
 
 // End of section. //template:end adjustBodyBulk
 
@@ -281,13 +312,12 @@ func (data RangeOverrides) toBodyOverrides(ctx context.Context, state RangeOverr
 
 	return gjson.Get(body, "dummy_overrides").String()
 }
-
 // End of section. //template:end toBodyOverrides
 
 // Section below is generated&owned by "gen/generator.go". //template:begin synthesizeOverrides
 
 // synthesizeOverrides transforms the API response
-// (which uses real field names and contains injected parent fields) back into the dummy_* structure
+// (which uses real field names and contains injected parent fields) back into the dummy_* structure 
 func (data RangeOverrides) synthesizeOverrides(ctx context.Context, res gjson.Result) gjson.Result {
 	body := ""
 
@@ -303,5 +333,4 @@ func (data RangeOverrides) synthesizeOverrides(ctx context.Context, res gjson.Re
 
 	return gjson.Parse(body)
 }
-
 // End of section. //template:end synthesizeOverrides

@@ -83,7 +83,7 @@ func (r *FilePolicyResource) Schema(ctx context.Context, req resource.SchemaRequ
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -97,6 +97,7 @@ func (r *FilePolicyResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"description": schema.StringAttribute{
@@ -116,10 +117,10 @@ func (r *FilePolicyResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Optional:            true,
 			},
 			"threat_score": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("If AMP Cloud disposition is Unknown, override disposition based upon threat score.").AddStringEnumDescription("DISABLED", "MEDIUM", "High", "VERY_HIGH").String,
+				MarkdownDescription: helpers.NewAttributeDescription("If AMP Cloud disposition is Unknown, override disposition based upon threat score.").AddStringEnumDescription("DISABLED", "MEDIUM", "High", "VERY_HIGH", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("DISABLED", "MEDIUM", "High", "VERY_HIGH"),
+					stringvalidator.OneOf("DISABLED", "MEDIUM", "High", "VERY_HIGH", ),
 				},
 			},
 			"inspect_archives": schema.BoolAttribute{
@@ -158,34 +159,34 @@ func (r *FilePolicyResource) Schema(ctx context.Context, req resource.SchemaRequ
 							},
 						},
 						"application_protocol": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Defines a protocol for file inspection.").AddStringEnumDescription("ANY", "HTTP", "SMTP", "IMAP", "POP3", "FTP", "SMB").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Defines a protocol for file inspection.").AddStringEnumDescription("ANY", "HTTP", "SMTP", "IMAP", "POP3", "FTP", "SMB", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("ANY", "HTTP", "SMTP", "IMAP", "POP3", "FTP", "SMB"),
+								stringvalidator.OneOf("ANY", "HTTP", "SMTP", "IMAP", "POP3", "FTP", "SMB", ),
 							},
 						},
 						"action": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Action to be performed on a file.").AddStringEnumDescription("DETECT", "BLOCK_WITH_RESET", "DETECT_MALWARE", "BLOCK_MALWARE", "BLOCK_MALWARE_WITH_RESET").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Action to be performed on a file.").AddStringEnumDescription("DETECT", "BLOCK_WITH_RESET", "DETECT_MALWARE", "BLOCK_MALWARE", "BLOCK_MALWARE_WITH_RESET", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("DETECT", "BLOCK_WITH_RESET", "DETECT_MALWARE", "BLOCK_MALWARE", "BLOCK_MALWARE_WITH_RESET"),
+								stringvalidator.OneOf("DETECT", "BLOCK_WITH_RESET", "DETECT_MALWARE", "BLOCK_MALWARE", "BLOCK_MALWARE_WITH_RESET", ),
 							},
 						},
 						"store_files": schema.SetAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("List of file dispositions that should be stored.").AddStringEnumDescription("MALWARE", "CUSTOM", "CLEAN", "UNKNOWN", "ALL").String,
+							MarkdownDescription: helpers.NewAttributeDescription("List of file dispositions that should be stored.").AddStringEnumDescription("MALWARE", "CUSTOM", "CLEAN", "UNKNOWN", "ALL", ).String,
 							ElementType:         types.StringType,
 							Optional:            true,
 							Validators: []validator.Set{
 								setvalidator.ValueStringsAre(
-									stringvalidator.OneOf("MALWARE", "CUSTOM", "CLEAN", "UNKNOWN", "ALL"),
+									stringvalidator.OneOf("MALWARE", "CUSTOM", "CLEAN", "UNKNOWN", "ALL", ),
 								),
 							},
 						},
 						"direction_of_transfer": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Direction of file transfer.").AddStringEnumDescription("ANY", "UPLOAD", "DOWNLOAD").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Direction of file transfer.").AddStringEnumDescription("ANY", "UPLOAD", "DOWNLOAD", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("ANY", "UPLOAD", "DOWNLOAD"),
+								stringvalidator.OneOf("ANY", "UPLOAD", "DOWNLOAD", ),
 							},
 						},
 						"file_categories": schema.SetNestedAttribute{
@@ -435,7 +436,7 @@ func (r *FilePolicyResource) Delete(ctx context.Context, req resource.DeleteRequ
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString()), reqMods...)
+	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()), reqMods...)
 	if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
@@ -450,24 +451,23 @@ func (r *FilePolicyResource) Delete(ctx context.Context, req resource.DeleteRequ
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *FilePolicyResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Parse import ID
-	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
-	match := inputPattern.FindStringSubmatch(req.ID)
-	if match == nil {
-		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		// Parse import ID
+		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
+		match := inputPattern.FindStringSubmatch(req.ID)
+		if match == nil {
+			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	// Set domain, if provided
-	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+		// Set domain, if provided
+		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import
 
 func (r *FilePolicyResource) updateSubresources(ctx context.Context, tfsdkPlan tfsdk.Plan, plan FilePolicy, planBody string, tfsdkState tfsdk.State, state FilePolicy) (FilePolicy, diag.Diagnostics) {

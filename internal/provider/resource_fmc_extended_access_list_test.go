@@ -50,23 +50,23 @@ func TestAccFmcExtendedAccessList(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccFmcExtendedAccessListPrerequisitesConfig + testAccFmcExtendedAccessListConfig_minimum(),
+			Config: testAccFmcExtendedAccessListPrerequisitesConfig+testAccFmcExtendedAccessListConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcExtendedAccessListPrerequisitesConfig + testAccFmcExtendedAccessListConfig_all(),
-		Check:  resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcExtendedAccessListPrerequisitesConfig+testAccFmcExtendedAccessListConfig_all(),
+		Check: resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName: "fmc_extended_access_list.test",
-		ImportState:  true,
+		ResourceName:  "fmc_extended_access_list.test",
+		ImportState:   true,
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps:                    steps,
+		Steps: steps,
 	})
 }
 
@@ -96,7 +96,6 @@ resource "fmc_sgt" "test" {
   tag = "11"
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -111,7 +110,6 @@ func testAccFmcExtendedAccessListConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
-
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

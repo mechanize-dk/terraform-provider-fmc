@@ -69,7 +69,7 @@ func (d *FTDPlatformSettingsDataSource) Schema(ctx context.Context, req datasour
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: "Name of FTD platform settings.",
@@ -88,12 +88,12 @@ func (d *FTDPlatformSettingsDataSource) Schema(ctx context.Context, req datasour
 	}
 }
 func (d *FTDPlatformSettingsDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
-	return []datasource.ConfigValidator{
-		datasourcevalidator.ExactlyOneOf(
-			path.MatchRoot("id"),
+    return []datasource.ConfigValidator{
+        datasourcevalidator.ExactlyOneOf(
+            path.MatchRoot("id"),
 			path.MatchRoot("name"),
-		),
-	}
+        ),
+    }
 }
 
 func (d *FTDPlatformSettingsDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {

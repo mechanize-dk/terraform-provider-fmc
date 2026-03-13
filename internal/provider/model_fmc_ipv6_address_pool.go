@@ -31,15 +31,42 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type IPv6AddressPool struct {
-	Id                types.String `tfsdk:"id"`
-	Domain            types.String `tfsdk:"domain"`
-	Name              types.String `tfsdk:"name"`
-	Type              types.String `tfsdk:"type"`
-	Description       types.String `tfsdk:"description"`
-	StartAddress      types.String `tfsdk:"start_address"`
-	NumberOfAddresses types.Int64  `tfsdk:"number_of_addresses"`
-	Overridable       types.Bool   `tfsdk:"overridable"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Name types.String `tfsdk:"name"`
+	Type types.String `tfsdk:"type"`
+	Description types.String `tfsdk:"description"`
+	StartAddress types.String `tfsdk:"start_address"`
+	NumberOfAddresses types.Int64 `tfsdk:"number_of_addresses"`
+	Overridable types.Bool `tfsdk:"overridable"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -50,7 +77,7 @@ type IPv6AddressPool struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data IPv6AddressPool) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/ipv6addresspools"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/ipv6addresspools"
 }
 
 // End of section. //template:end getPath
@@ -62,20 +89,20 @@ func (data IPv6AddressPool) toBody(ctx context.Context, state IPv6AddressPool) s
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "IPv6AddressPool")
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()   {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.StartAddress.IsNull() {
+	if !data.StartAddress.IsNull()   {
 		body, _ = sjson.Set(body, "ipv6StartAddress", data.StartAddress.ValueString())
 	}
-	if !data.NumberOfAddresses.IsNull() {
+	if !data.NumberOfAddresses.IsNull()   {
 		body, _ = sjson.Set(body, "numberOfAddresses", data.NumberOfAddresses.ValueInt64())
 	}
-	if !data.Overridable.IsNull() {
+	if !data.Overridable.IsNull()   {
 		body, _ = sjson.Set(body, "overridable", data.Overridable.ValueBool())
 	}
 	return body
@@ -121,6 +148,7 @@ func (data *IPv6AddressPool) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -183,8 +211,12 @@ func (data *IPv6AddressPool) fromBodyUnknowns(ctx context.Context, res gjson.Res
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk

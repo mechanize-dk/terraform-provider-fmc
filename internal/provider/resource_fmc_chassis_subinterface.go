@@ -77,7 +77,7 @@ func (r *ChassisSubinterfaceResource) Schema(ctx context.Context, req resource.S
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -87,6 +87,7 @@ func (r *ChassisSubinterfaceResource) Schema(ctx context.Context, req resource.S
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"type": schema.StringAttribute{
@@ -94,6 +95,7 @@ func (r *ChassisSubinterfaceResource) Schema(ctx context.Context, req resource.S
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"name": schema.StringAttribute{
@@ -101,6 +103,7 @@ func (r *ChassisSubinterfaceResource) Schema(ctx context.Context, req resource.S
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"interface_name": schema.StringAttribute{
@@ -108,6 +111,7 @@ func (r *ChassisSubinterfaceResource) Schema(ctx context.Context, req resource.S
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"interface_id": schema.StringAttribute{
@@ -115,6 +119,7 @@ func (r *ChassisSubinterfaceResource) Schema(ctx context.Context, req resource.S
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"sub_interface_id": schema.Int64Attribute{
@@ -125,6 +130,7 @@ func (r *ChassisSubinterfaceResource) Schema(ctx context.Context, req resource.S
 				},
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.RequiresReplace(),
+					
 				},
 			},
 			"vlan_id": schema.Int64Attribute{
@@ -135,10 +141,10 @@ func (r *ChassisSubinterfaceResource) Schema(ctx context.Context, req resource.S
 				},
 			},
 			"port_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Type of the port.").AddStringEnumDescription("DATA", "DATA_SHARING").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Type of the port.").AddStringEnumDescription("DATA", "DATA_SHARING", ).String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("DATA", "DATA_SHARING"),
+					stringvalidator.OneOf("DATA", "DATA_SHARING", ),
 				},
 			},
 		},
@@ -178,11 +184,48 @@ func (r *ChassisSubinterfaceResource) Create(ctx context.Context, req resource.C
 	body := plan.toBody(ctx, ChassisSubinterface{})
 	res, err := r.client.Post(plan.getPath(), body, reqMods...)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
-		return
+		if strings.Contains(err.Error(), "StatusCode 409") || (strings.Contains(err.Error(), "StatusCode 400") && strings.Contains(res.String(), "already exists")) {
+			// Object already exists in FMC - search for existing object and ingest it
+			tflog.Debug(ctx, fmt.Sprintf("%s: Object already exists (409/400), searching for existing object by name", plan.Id.ValueString()))
+			offset := 0
+			limit := 1000
+			for page := 1; ; page++ {
+				queryString := fmt.Sprintf("?limit=%d&offset=%d&expanded=true", limit, offset)
+				listRes, listErr := r.client.Get(plan.getPath()+queryString, reqMods...)
+				if listErr != nil {
+					resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists but failed to retrieve objects (GET), got error: %s, %s", listErr, listRes.String()))
+					return
+				}
+				for _, v := range listRes.Get("items").Array() {
+					if plan.Name.ValueString()== v.Get("name").String(){
+						plan.Id = types.StringValue(v.Get("id").String())
+						tflog.Debug(ctx, fmt.Sprintf("%s: Found existing object with name '%v'", plan.Id.ValueString(), plan.Name.ValueString()))
+						break
+					}
+				}
+				if plan.Id.ValueString() != "" || !listRes.Get("paging.next.0").Exists() {
+					break
+				}
+				offset += limit
+			}
+			if plan.Id.ValueString() == "" {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists (conflict) but failed to find existing object with name '%v': %s", plan.Name.ValueString(), err))
+				return
+			}
+			res, err = r.client.Get(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), reqMods...)
+			if err != nil {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists (conflict) but failed to retrieve existing object (GET), got error: %s, %s", err, res.String()))
+				return
+			}
+			plan.fromBodyUnknowns(ctx, res)
+		} else {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
+			return
+		}
+	} else {
+		plan.Id = types.StringValue(res.Get("id").String())
+		plan.fromBodyUnknowns(ctx, res)
 	}
-	plan.Id = types.StringValue(res.Get("id").String())
-	plan.fromBodyUnknowns(ctx, res)
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -213,13 +256,14 @@ func (r *ChassisSubinterfaceResource) Read(ctx context.Context, req resource.Rea
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
+	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-
+	
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else if err != nil {
+	} else  if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -272,7 +316,7 @@ func (r *ChassisSubinterfaceResource) Update(ctx context.Context, req resource.U
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -304,7 +348,7 @@ func (r *ChassisSubinterfaceResource) Delete(ctx context.Context, req resource.D
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString()), reqMods...)
+	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()), reqMods...)
 	if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
@@ -319,23 +363,22 @@ func (r *ChassisSubinterfaceResource) Delete(ctx context.Context, req resource.D
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *ChassisSubinterfaceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Parse import ID
-	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<chassis_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
-	match := inputPattern.FindStringSubmatch(req.ID)
-	if match == nil {
-		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<chassis_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		// Parse import ID
+		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<chassis_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
+		match := inputPattern.FindStringSubmatch(req.ID)
+		if match == nil {
+			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<chassis_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	// Set domain, if provided
-	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("chassis_id"), match[inputPattern.SubexpIndex("chassis_id")])...)
+		// Set domain, if provided
+		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("chassis_id"), match[inputPattern.SubexpIndex("chassis_id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import

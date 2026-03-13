@@ -80,7 +80,7 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -97,6 +97,7 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"name": schema.StringAttribute{
@@ -104,6 +105,7 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"type": schema.StringAttribute{
@@ -111,6 +113,7 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"as_number": schema.StringAttribute{
@@ -118,6 +121,7 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"ipv4_address_family_id": schema.StringAttribute{
@@ -125,6 +129,7 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"ipv4_address_family_type": schema.StringAttribute{
@@ -132,6 +137,7 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"ipv4_learned_route_map_id": schema.StringAttribute{
@@ -165,7 +171,7 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 				Validators: []validator.Int64{
 					int64validator.Between(1, 255),
 				},
-				Default: int64default.StaticInt64(20),
+				Default:             int64default.StaticInt64(20),
 			},
 			"ipv4_internal_distance": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Administrative route distance for internal routes").AddIntegerRangeDescription(1, 255).AddDefaultValueDescription("200").String,
@@ -174,7 +180,7 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 				Validators: []validator.Int64{
 					int64validator.Between(1, 255),
 				},
-				Default: int64default.StaticInt64(200),
+				Default:             int64default.StaticInt64(200),
 			},
 			"ipv4_local_distance": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Administrative route distance for local routes").AddIntegerRangeDescription(1, 255).AddDefaultValueDescription("200").String,
@@ -183,7 +189,7 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 				Validators: []validator.Int64{
 					int64validator.Between(1, 255),
 				},
-				Default: int64default.StaticInt64(200),
+				Default:             int64default.StaticInt64(200),
 			},
 			"ipv4_number_of_ibgp_paths": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Number of paths to use for IBGP").AddIntegerRangeDescription(1, 8).AddDefaultValueDescription("1").String,
@@ -192,7 +198,7 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 				Validators: []validator.Int64{
 					int64validator.Between(1, 8),
 				},
-				Default: int64default.StaticInt64(1),
+				Default:             int64default.StaticInt64(1),
 			},
 			"ipv4_number_of_ebgp_paths": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Number of paths to use for EBGP").AddIntegerRangeDescription(1, 8).AddDefaultValueDescription("1").String,
@@ -201,7 +207,7 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 				Validators: []validator.Int64{
 					int64validator.Between(1, 8),
 				},
-				Default: int64default.StaticInt64(1),
+				Default:             int64default.StaticInt64(1),
 			},
 			"ipv4_neighbors": schema.ListNestedAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("").String,
@@ -217,13 +223,13 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 							Required:            true,
 						},
 						"bfd_fallover": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("BFD Fallover").AddStringEnumDescription("SINGLE_HOP", "MULTI_HOP", "AUTO_DETECT_HOP", "NONE").AddDefaultValueDescription("NONE").String,
+							MarkdownDescription: helpers.NewAttributeDescription("BFD Fallover").AddStringEnumDescription("SINGLE_HOP", "MULTI_HOP", "AUTO_DETECT_HOP", "NONE", ).AddDefaultValueDescription("NONE").String,
 							Optional:            true,
 							Computed:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("SINGLE_HOP", "MULTI_HOP", "AUTO_DETECT_HOP", "NONE"),
+								stringvalidator.OneOf("SINGLE_HOP", "MULTI_HOP", "AUTO_DETECT_HOP", "NONE", ),
 							},
-							Default: stringdefault.StaticString("NONE"),
+							Default:             stringdefault.StaticString("NONE"),
 						},
 						"update_source_interface_id": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Interface ID for the update source").String,
@@ -263,10 +269,10 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 										Required:            true,
 									},
 									"update_direction": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Filter direction").AddStringEnumDescription("IN", "OUT").String,
+										MarkdownDescription: helpers.NewAttributeDescription("Filter direction").AddStringEnumDescription("IN", "OUT", ).String,
 										Required:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("IN", "OUT"),
+											stringvalidator.OneOf("IN", "OUT", ),
 										},
 									},
 								},
@@ -282,10 +288,10 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 										Required:            true,
 									},
 									"update_direction": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Filter direction").AddStringEnumDescription("IN", "OUT").String,
+										MarkdownDescription: helpers.NewAttributeDescription("Filter direction").AddStringEnumDescription("IN", "OUT", ).String,
 										Required:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("IN", "OUT"),
+											stringvalidator.OneOf("IN", "OUT", ),
 										},
 									},
 								},
@@ -301,10 +307,10 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 										Required:            true,
 									},
 									"update_direction": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Filter direction").AddStringEnumDescription("IN", "OUT").String,
+										MarkdownDescription: helpers.NewAttributeDescription("Filter direction").AddStringEnumDescription("IN", "OUT", ).String,
 										Required:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("IN", "OUT"),
+											stringvalidator.OneOf("IN", "OUT", ),
 										},
 									},
 								},
@@ -324,10 +330,10 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 										Required:            true,
 									},
 									"update_direction": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Filter direction").AddStringEnumDescription("IN", "OUT").String,
+										MarkdownDescription: helpers.NewAttributeDescription("Filter direction").AddStringEnumDescription("IN", "OUT", ).String,
 										Required:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("IN", "OUT"),
+											stringvalidator.OneOf("IN", "OUT", ),
 										},
 									},
 								},
@@ -365,7 +371,7 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 							Validators: []validator.Int64{
 								int64validator.Between(0, 600),
 							},
-							Default: int64default.StaticInt64(0),
+							Default:             int64default.StaticInt64(0),
 						},
 						"routes_remove_private_as": schema.BoolAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Remove private AS numbers from outgoing routing updates").AddDefaultValueDescription("false").String,
@@ -454,7 +460,7 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 							Validators: []validator.Int64{
 								int64validator.Between(1, 255),
 							},
-							Default: int64default.StaticInt64(1),
+							Default:             int64default.StaticInt64(1),
 						},
 						"tcp_transport_mode": schema.BoolAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("True set it to active, False to passive.").AddDefaultValueDescription("false").String,
@@ -469,16 +475,16 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 							Validators: []validator.Int64{
 								int64validator.Between(0, 65535),
 							},
-							Default: int64default.StaticInt64(0),
+							Default:             int64default.StaticInt64(0),
 						},
 						"version": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Set BGP version: 0 - default, 4 - IPv4").AddStringEnumDescription("0", "4").AddDefaultValueDescription("0").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Set BGP version: 0 - default, 4 - IPv4").AddStringEnumDescription("0", "4", ).AddDefaultValueDescription("0").String,
 							Optional:            true,
 							Computed:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("0", "4"),
+								stringvalidator.OneOf("0", "4", ),
 							},
-							Default: stringdefault.StaticString("0"),
+							Default:             stringdefault.StaticString("0"),
 						},
 						"customized_local_as_number": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Customize the AS number for the routes received from neighbor").String,
@@ -541,17 +547,17 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 							Required:            true,
 						},
 						"direction": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Determine if the filter should be applied to inbound updates or outbound updates.").AddStringEnumDescription("incomingroutefilter", "outgoingroutefilter").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Determine if the filter should be applied to inbound updates or outbound updates.").AddStringEnumDescription("incomingroutefilter", "outgoingroutefilter", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("incomingroutefilter", "outgoingroutefilter"),
+								stringvalidator.OneOf("incomingroutefilter", "outgoingroutefilter", ),
 							},
 						},
 						"protocol": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Routing process for which you want to filter").AddStringEnumDescription("CONNECTED", "BGP", "OSPF", "RIP", "STATIC").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Routing process for which you want to filter").AddStringEnumDescription("CONNECTED", "BGP", "OSPF", "RIP", "STATIC", ).String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("CONNECTED", "BGP", "OSPF", "RIP", "STATIC"),
+								stringvalidator.OneOf("CONNECTED", "BGP", "OSPF", "RIP", "STATIC", ),
 							},
 						},
 						"process_id": schema.StringAttribute{
@@ -583,10 +589,10 @@ func (r *DeviceBGPResource) Schema(ctx context.Context, req resource.SchemaReque
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"source_protocol": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Protocol to redistribute").AddStringEnumDescription("RedistributeConnected", "RedistributeStatic", "RedistributeOSPF", "RedistributeEIGRP").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Protocol to redistribute").AddStringEnumDescription("RedistributeConnected", "RedistributeStatic", "RedistributeOSPF", "RedistributeEIGRP", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("RedistributeConnected", "RedistributeStatic", "RedistributeOSPF", "RedistributeEIGRP"),
+								stringvalidator.OneOf("RedistributeConnected", "RedistributeStatic", "RedistributeOSPF", "RedistributeEIGRP", ),
 							},
 						},
 						"route_map_id": schema.StringAttribute{
@@ -712,11 +718,48 @@ func (r *DeviceBGPResource) Create(ctx context.Context, req resource.CreateReque
 	body := plan.toBody(ctx, DeviceBGP{})
 	res, err := r.client.Post(plan.getPath(), body, reqMods...)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
-		return
+		if strings.Contains(err.Error(), "StatusCode 409") || (strings.Contains(err.Error(), "StatusCode 400") && strings.Contains(res.String(), "already exists")) {
+			// Object already exists in FMC - search for existing object and ingest it
+			tflog.Debug(ctx, fmt.Sprintf("%s: Object already exists (409/400), searching for existing object by as_number", plan.Id.ValueString()))
+			offset := 0
+			limit := 1000
+			for page := 1; ; page++ {
+				queryString := fmt.Sprintf("?limit=%d&offset=%d&expanded=true", limit, offset)
+				listRes, listErr := r.client.Get(plan.getPath()+queryString, reqMods...)
+				if listErr != nil {
+					resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists but failed to retrieve objects (GET), got error: %s, %s", listErr, listRes.String()))
+					return
+				}
+				for _, v := range listRes.Get("items").Array() {
+					if plan.AsNumber.ValueString()== v.Get("asNumber").String(){
+						plan.Id = types.StringValue(v.Get("id").String())
+						tflog.Debug(ctx, fmt.Sprintf("%s: Found existing object with as_number '%v'", plan.Id.ValueString(), plan.AsNumber.ValueString()))
+						break
+					}
+				}
+				if plan.Id.ValueString() != "" || !listRes.Get("paging.next.0").Exists() {
+					break
+				}
+				offset += limit
+			}
+			if plan.Id.ValueString() == "" {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists (conflict) but failed to find existing object with as_number '%v': %s", plan.AsNumber.ValueString(), err))
+				return
+			}
+			res, err = r.client.Get(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), reqMods...)
+			if err != nil {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists (conflict) but failed to retrieve existing object (GET), got error: %s, %s", err, res.String()))
+				return
+			}
+			plan.fromBodyUnknowns(ctx, res)
+		} else {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
+			return
+		}
+	} else {
+		plan.Id = types.StringValue(res.Get("id").String())
+		plan.fromBodyUnknowns(ctx, res)
 	}
-	plan.Id = types.StringValue(res.Get("id").String())
-	plan.fromBodyUnknowns(ctx, res)
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -747,13 +790,14 @@ func (r *DeviceBGPResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
+	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-
+	
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else if err != nil {
+	} else  if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -806,7 +850,7 @@ func (r *DeviceBGPResource) Update(ctx context.Context, req resource.UpdateReque
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -838,7 +882,7 @@ func (r *DeviceBGPResource) Delete(ctx context.Context, req resource.DeleteReque
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString()), reqMods...)
+	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()), reqMods...)
 	if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
@@ -853,41 +897,40 @@ func (r *DeviceBGPResource) Delete(ctx context.Context, req resource.DeleteReque
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *DeviceBGPResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<device_id>,<vrf_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n<vrf_id> is optional.\n" + fmt.Sprintf("Got: %q", req.ID)
-	parts := strings.Split(req.ID, ",")
-	if len(parts) < 2 || len(parts) > 4 {
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<device_id>,<vrf_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n<vrf_id> is optional.\n" + fmt.Sprintf("Got: %q", req.ID)
+		parts := strings.Split(req.ID, ",")
+		if len(parts) < 2 || len(parts) > 4 {
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	if slices.Contains(parts, "") {
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		if slices.Contains(parts, "") {
+				resp.Diagnostics.AddError("Import error", errMsg)
+				return
+		}
 
-	if len(parts) == 2 {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), parts[0])...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), parts[1])...)
-	} else if len(parts) == 3 {
-		if err := uuid.Validate(parts[0]); err == nil {
-			// First part is UUID, so it's device_id
+		if len(parts) == 2 {
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), parts[0])...)
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vrf_id"), parts[1])...)
-		} else {
-			// First part is domain
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), parts[1])...)
+		} else if len(parts) == 3 {
+			if err := uuid.Validate(parts[0]); err == nil {
+				// First part is UUID, so it's device_id
+				resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), parts[0])...)
+				resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vrf_id"), parts[1])...)
+			} else {
+				// First part is domain
+				resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), parts[0])...)
+				resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), parts[1])...)
+			}
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), parts[2])...)
+
+		} else if len(parts) == 4 {
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), parts[0])...)
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), parts[1])...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vrf_id"), parts[2])...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), parts[3])...)
 		}
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), parts[2])...)
-
-	} else if len(parts) == 4 {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), parts[0])...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), parts[1])...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vrf_id"), parts[2])...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), parts[3])...)
-	}
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import

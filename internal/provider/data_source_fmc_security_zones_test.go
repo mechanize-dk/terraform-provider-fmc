@@ -40,7 +40,7 @@ func TestAccDataSourceFmcSecurityZones(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcSecurityZonesConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -71,5 +71,7 @@ func testAccDataSourceFmcSecurityZonesConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

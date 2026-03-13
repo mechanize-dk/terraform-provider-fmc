@@ -41,8 +41,8 @@ func TestAccDataSourceFmcFTDPlatformSettingsDNS(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcFTDPlatformSettingsDNSPrerequisitesConfig + testAccDataSourceFmcFTDPlatformSettingsDNSConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcFTDPlatformSettingsDNSPrerequisitesConfig+testAccDataSourceFmcFTDPlatformSettingsDNSConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -70,7 +70,6 @@ resource "fmc_dns_server_group" "test" {
   ]
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -99,5 +98,7 @@ func testAccDataSourceFmcFTDPlatformSettingsDNSConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

@@ -69,7 +69,7 @@ func (d *FQDNOverridesDataSource) Schema(ctx context.Context, req datasource.Sch
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 			},
 			"parent_name": schema.StringAttribute{
 				MarkdownDescription: "Name of the parent FQDN object.",
@@ -108,12 +108,12 @@ func (d *FQDNOverridesDataSource) Schema(ctx context.Context, req datasource.Sch
 	}
 }
 func (d *FQDNOverridesDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
-	return []datasource.ConfigValidator{
-		datasourcevalidator.ExactlyOneOf(
-			path.MatchRoot("id"),
+    return []datasource.ConfigValidator{
+        datasourcevalidator.ExactlyOneOf(
+            path.MatchRoot("id"),
 			path.MatchRoot("parent_name"),
-		),
-	}
+        ),
+    }
 }
 
 func (d *FQDNOverridesDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
@@ -150,14 +150,14 @@ func (d *FQDNOverridesDataSource) Read(ctx context.Context, req datasource.ReadR
 		limit := 1000
 		for page := 1; ; page++ {
 			queryString := fmt.Sprintf("?limit=%d&offset=%d&expanded=true", limit, offset)
-			res, err := d.client.Get(config.getPath()+queryString, reqMods...)
+			res, err := d.client.Get(config.getPath() + queryString, reqMods...)
 			if err != nil {
 				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve objects, got error: %s", err))
 				return
 			}
 			if value := res.Get("items"); len(value.Array()) > 0 {
 				value.ForEach(func(k, v gjson.Result) bool {
-					if config.ParentName.ValueString() == v.Get("name").String() {
+					if config.ParentName.ValueString()== v.Get("name").String(){
 						config.Id = types.StringValue(v.Get("id").String())
 						tflog.Debug(ctx, fmt.Sprintf("%s: Found object with parent_name '%v', id: %v", config.Id.ValueString(), config.ParentName.ValueString(), config.Id.ValueString()))
 						return false

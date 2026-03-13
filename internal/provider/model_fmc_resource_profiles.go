@@ -35,17 +35,27 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type ResourceProfiles struct {
-	Id     types.String                     `tfsdk:"id"`
-	Domain types.String                     `tfsdk:"domain"`
-	Items  map[string]ResourceProfilesItems `tfsdk:"items"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Items map[string]ResourceProfilesItems `tfsdk:"items"`
 }
 
+
 type ResourceProfilesItems struct {
-	Id           types.String `tfsdk:"id"`
-	Type         types.String `tfsdk:"type"`
-	Description  types.String `tfsdk:"description"`
-	NumberOfCpus types.Int64  `tfsdk:"number_of_cpus"`
+	Id types.String `tfsdk:"id"`
+	Type types.String `tfsdk:"type"`
+	Description types.String `tfsdk:"description"`
+	NumberOfCpus types.Int64 `tfsdk:"number_of_cpus"`
 }
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -59,7 +69,7 @@ var minFMCVersionBulkDeleteResourceProfiles = version.Must(version.NewVersion("9
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data ResourceProfiles) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/resourceprofiles"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/resourceprofiles"
 }
 
 // End of section. //template:end getPath
@@ -75,14 +85,14 @@ func (data ResourceProfiles) toBody(ctx context.Context, state ResourceProfiles)
 		body, _ = sjson.Set(body, "items", []any{})
 		for key, item := range data.Items {
 			itemBody, _ := sjson.Set("{}", "name", key)
-			if !item.Id.IsNull() && !item.Id.IsUnknown() {
+			if !item.Id.IsNull() && !item.Id.IsUnknown()  {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			itemBody, _ = sjson.Set(itemBody, "type", "ResourceProfile")
-			if !item.Description.IsNull() {
+			if !item.Description.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "description", item.Description.ValueString())
 			}
-			if !item.NumberOfCpus.IsNull() {
+			if !item.NumberOfCpus.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "numOfCPUs", item.NumberOfCpus.ValueInt64())
 			}
 			body, _ = sjson.SetRaw(body, "items.-1", itemBody)
@@ -108,31 +118,30 @@ func (data *ResourceProfiles) fromBody(ctx context.Context, res gjson.Result) {
 		parent := &data
 		data := (*parent).Items[k]
 		res, found := itemsByName[k]
-		if !found {
-			tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
+		if !found {tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
 			delete((*parent).Items, k)
 			continue
 		}
-		if value := res.Get("id"); value.Exists() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("type"); value.Exists() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
-		if value := res.Get("description"); value.Exists() {
-			data.Description = types.StringValue(value.String())
-		} else {
-			data.Description = types.StringNull()
-		}
-		if value := res.Get("numOfCPUs"); value.Exists() {
-			data.NumberOfCpus = types.Int64Value(value.Int())
-		} else {
-			data.NumberOfCpus = types.Int64Null()
-		}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
+	if value := res.Get("description"); value.Exists() {
+		data.Description = types.StringValue(value.String())
+	} else {
+		data.Description = types.StringNull()
+	}
+	if value := res.Get("numOfCPUs"); value.Exists() {
+		data.NumberOfCpus = types.Int64Value(value.Int())
+	} else {
+		data.NumberOfCpus = types.Int64Null()
+	}
 		(*parent).Items[k] = data
 	}
 }
@@ -140,6 +149,7 @@ func (data *ResourceProfiles) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -161,26 +171,26 @@ func (data *ResourceProfiles) fromBodyPartial(ctx context.Context, res gjson.Res
 			continue
 		}
 		res, _ := itemsById[data.Id.ValueString()]
-		if value := res.Get("id"); value.Exists() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
-		if value := res.Get("description"); value.Exists() && !data.Description.IsNull() {
-			data.Description = types.StringValue(value.String())
-		} else {
-			data.Description = types.StringNull()
-		}
-		if value := res.Get("numOfCPUs"); value.Exists() && !data.NumberOfCpus.IsNull() {
-			data.NumberOfCpus = types.Int64Value(value.Int())
-		} else {
-			data.NumberOfCpus = types.Int64Null()
-		}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
+	if value := res.Get("description"); value.Exists() && !data.Description.IsNull() {
+		data.Description = types.StringValue(value.String())
+	} else {
+		data.Description = types.StringNull()
+	}
+	if value := res.Get("numOfCPUs"); value.Exists() && !data.NumberOfCpus.IsNull() {
+		data.NumberOfCpus = types.Int64Value(value.Int())
+	} else {
+		data.NumberOfCpus = types.Int64Null()
+	}
 		(*parent).Items[i] = data
 	}
 }
@@ -234,6 +244,7 @@ func (data *ResourceProfiles) fromBodyUnknowns(ctx context.Context, res gjson.Re
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
 func (data *ResourceProfiles) Clone() ResourceProfiles {
 	ret := *data
 	ret.Items = maps.Clone(data.Items)
@@ -244,6 +255,7 @@ func (data *ResourceProfiles) Clone() ResourceProfiles {
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
 
 // Updates done one-by-one require different API body
 func (data ResourceProfiles) toBodyNonBulk(ctx context.Context, state ResourceProfiles) string {
@@ -263,8 +275,12 @@ func (data ResourceProfiles) toBodyNonBulk(ctx context.Context, state ResourcePr
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
+
+
 
 // End of section. //template:end clearItemIds

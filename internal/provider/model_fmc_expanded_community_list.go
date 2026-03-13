@@ -33,17 +33,33 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type ExpandedCommunityList struct {
-	Id      types.String                   `tfsdk:"id"`
-	Domain  types.String                   `tfsdk:"domain"`
-	Name    types.String                   `tfsdk:"name"`
-	Type    types.String                   `tfsdk:"type"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Name types.String `tfsdk:"name"`
+	Type types.String `tfsdk:"type"`
 	Entries []ExpandedCommunityListEntries `tfsdk:"entries"`
 }
 
+
+
+
 type ExpandedCommunityListEntries struct {
-	Action            types.String `tfsdk:"action"`
+	Action types.String `tfsdk:"action"`
 	RegularExpression types.String `tfsdk:"regular_expression"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -54,7 +70,7 @@ type ExpandedCommunityListEntries struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data ExpandedCommunityList) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/expandedcommunitylists"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/expandedcommunitylists"
 }
 
 // End of section. //template:end getPath
@@ -66,7 +82,7 @@ func (data ExpandedCommunityList) toBody(ctx context.Context, state ExpandedComm
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
 	if len(data.Entries) > 0 {
@@ -74,10 +90,10 @@ func (data ExpandedCommunityList) toBody(ctx context.Context, state ExpandedComm
 		for _, item := range data.Entries {
 			itemBody := ""
 			itemBody, _ = sjson.Set(itemBody, "type", "Expanded")
-			if !item.Action.IsNull() {
+			if !item.Action.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "action", item.Action.ValueString())
 			}
-			if !item.RegularExpression.IsNull() {
+			if !item.RegularExpression.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "regularExpression", item.RegularExpression.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "entries.-1", itemBody)
@@ -106,16 +122,16 @@ func (data *ExpandedCommunityList) fromBody(ctx context.Context, res gjson.Resul
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := ExpandedCommunityListEntries{}
-			if value := res.Get("action"); value.Exists() {
-				data.Action = types.StringValue(value.String())
-			} else {
-				data.Action = types.StringNull()
-			}
-			if value := res.Get("regularExpression"); value.Exists() {
-				data.RegularExpression = types.StringValue(value.String())
-			} else {
-				data.RegularExpression = types.StringNull()
-			}
+	if value := res.Get("action"); value.Exists() {
+		data.Action = types.StringValue(value.String())
+	} else {
+		data.Action = types.StringNull()
+	}
+	if value := res.Get("regularExpression"); value.Exists() {
+		data.RegularExpression = types.StringValue(value.String())
+	} else {
+		data.RegularExpression = types.StringNull()
+	}
 			(*parent).Entries = append((*parent).Entries, data)
 			return true
 		})
@@ -125,6 +141,7 @@ func (data *ExpandedCommunityList) fromBody(ctx context.Context, res gjson.Resul
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -156,16 +173,16 @@ func (data *ExpandedCommunityList) fromBodyPartial(ctx context.Context, res gjso
 		data := (*parent).Entries[i]
 		parentRes := &res
 		res := parentRes.Get(fmt.Sprintf("entries.%d", i))
-		if value := res.Get("action"); value.Exists() && !data.Action.IsNull() {
-			data.Action = types.StringValue(value.String())
-		} else {
-			data.Action = types.StringNull()
-		}
-		if value := res.Get("regularExpression"); value.Exists() && !data.RegularExpression.IsNull() {
-			data.RegularExpression = types.StringValue(value.String())
-		} else {
-			data.RegularExpression = types.StringNull()
-		}
+	if value := res.Get("action"); value.Exists() && !data.Action.IsNull() {
+		data.Action = types.StringValue(value.String())
+	} else {
+		data.Action = types.StringNull()
+	}
+	if value := res.Get("regularExpression"); value.Exists() && !data.RegularExpression.IsNull() {
+		data.RegularExpression = types.StringValue(value.String())
+	} else {
+		data.RegularExpression = types.StringNull()
+	}
 		(*parent).Entries[i] = data
 	}
 }
@@ -190,21 +207,31 @@ func (data *ExpandedCommunityList) fromBodyUnknowns(ctx context.Context, res gjs
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
 
+
+
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
+
+
 
 // End of section. //template:end toBodyPutDelete
 
@@ -217,5 +244,7 @@ func (data ExpandedCommunityList) adjustBody(ctx context.Context, req string) st
 }
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
+
+
 
 // End of section. //template:end adjustBodyBulk

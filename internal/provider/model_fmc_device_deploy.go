@@ -30,13 +30,34 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type DeviceDeploy struct {
-	Id             types.String `tfsdk:"id"`
-	Domain         types.String `tfsdk:"domain"`
-	Version        types.String `tfsdk:"version"`
-	IgnoreWarning  types.Bool   `tfsdk:"ignore_warning"`
-	DeviceIdList   types.List   `tfsdk:"device_id_list"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Version types.String `tfsdk:"version"`
+	IgnoreWarning types.Bool `tfsdk:"ignore_warning"`
+	DeviceIdList types.List `tfsdk:"device_id_list"`
 	DeploymentNote types.String `tfsdk:"deployment_note"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -47,7 +68,7 @@ type DeviceDeploy struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data DeviceDeploy) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/deployment/deploymentrequests"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/deployment/deploymentrequests"
 }
 
 // End of section. //template:end getPath
@@ -60,10 +81,10 @@ func (data DeviceDeploy) toBody(ctx context.Context, state DeviceDeploy) string 
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "DeploymentRequest")
-	if !data.Version.IsNull() {
+	if !data.Version.IsNull()   {
 		body, _ = sjson.Set(body, "version", data.Version.ValueString())
 	}
-	if !data.IgnoreWarning.IsNull() {
+	if !data.IgnoreWarning.IsNull()   {
 		body, _ = sjson.Set(body, "ignoreWarning", data.IgnoreWarning.ValueBool())
 	}
 	if !data.DeviceIdList.IsNull() {
@@ -71,7 +92,7 @@ func (data DeviceDeploy) toBody(ctx context.Context, state DeviceDeploy) string 
 		data.DeviceIdList.ElementsAs(ctx, &values, false)
 		body, _ = sjson.Set(body, "deviceList", values)
 	}
-	if !data.DeploymentNote.IsNull() {
+	if !data.DeploymentNote.IsNull()   {
 		body, _ = sjson.Set(body, "deploymentNote", data.DeploymentNote.ValueString())
 	}
 	return body
@@ -81,8 +102,12 @@ func (data DeviceDeploy) toBody(ctx context.Context, state DeviceDeploy) string 
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk

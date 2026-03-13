@@ -35,12 +35,27 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type FTDPlatformSettingsBanner struct {
-	Id                    types.String `tfsdk:"id"`
-	Domain                types.String `tfsdk:"domain"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
 	FtdPlatformSettingsId types.String `tfsdk:"ftd_platform_settings_id"`
-	Type                  types.String `tfsdk:"type"`
-	TextLines             types.List   `tfsdk:"text_lines"`
+	Type types.String `tfsdk:"type"`
+	TextLines types.List `tfsdk:"text_lines"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -52,7 +67,7 @@ var minFMCVersionFTDPlatformSettingsBanner = version.Must(version.NewVersion("7.
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data FTDPlatformSettingsBanner) getPath() string {
-	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/bannersettings", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
+		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/bannersettings", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -92,6 +107,7 @@ func (data *FTDPlatformSettingsBanner) fromBody(ctx context.Context, res gjson.R
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might

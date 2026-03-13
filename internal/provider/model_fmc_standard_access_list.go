@@ -35,27 +35,47 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type StandardAccessList struct {
-	Id          types.String                `tfsdk:"id"`
-	Domain      types.String                `tfsdk:"domain"`
-	Name        types.String                `tfsdk:"name"`
-	Description types.String                `tfsdk:"description"`
-	Type        types.String                `tfsdk:"type"`
-	Entries     []StandardAccessListEntries `tfsdk:"entries"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Name types.String `tfsdk:"name"`
+	Description types.String `tfsdk:"description"`
+	Type types.String `tfsdk:"type"`
+	Entries []StandardAccessListEntries `tfsdk:"entries"`
 }
 
+
+
+
+
 type StandardAccessListEntries struct {
-	Action   types.String                        `tfsdk:"action"`
-	Objects  []StandardAccessListEntriesObjects  `tfsdk:"objects"`
+	Action types.String `tfsdk:"action"`
+	Objects []StandardAccessListEntriesObjects `tfsdk:"objects"`
 	Literals []StandardAccessListEntriesLiterals `tfsdk:"literals"`
 }
 
+
+
+
+
+
+
 type StandardAccessListEntriesObjects struct {
-	Id   types.String `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	Type types.String `tfsdk:"type"`
 }
 type StandardAccessListEntriesLiterals struct {
 	Value types.String `tfsdk:"value"`
 }
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -67,7 +87,7 @@ var minFMCVersionCreateStandardAccessList = version.Must(version.NewVersion("7.2
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data StandardAccessList) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/standardaccesslists"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/standardaccesslists"
 }
 
 // End of section. //template:end getPath
@@ -79,27 +99,27 @@ func (data StandardAccessList) toBody(ctx context.Context, state StandardAccessL
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()   {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
 	if len(data.Entries) > 0 {
 		body, _ = sjson.Set(body, "entries", []any{})
 		for _, item := range data.Entries {
 			itemBody := ""
-			if !item.Action.IsNull() {
+			if !item.Action.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "action", item.Action.ValueString())
 			}
 			if len(item.Objects) > 0 {
 				itemBody, _ = sjson.Set(itemBody, "networks.objects", []any{})
 				for _, childItem := range item.Objects {
 					itemChildBody := ""
-					if !childItem.Id.IsNull() {
+					if !childItem.Id.IsNull()  {
 						itemChildBody, _ = sjson.Set(itemChildBody, "id", childItem.Id.ValueString())
 					}
-					if !childItem.Type.IsNull() {
+					if !childItem.Type.IsNull()  {
 						itemChildBody, _ = sjson.Set(itemChildBody, "type", childItem.Type.ValueString())
 					}
 					itemBody, _ = sjson.SetRaw(itemBody, "networks.objects.-1", itemChildBody)
@@ -109,7 +129,7 @@ func (data StandardAccessList) toBody(ctx context.Context, state StandardAccessL
 				itemBody, _ = sjson.Set(itemBody, "networks.literals", []any{})
 				for _, childItem := range item.Literals {
 					itemChildBody := ""
-					if !childItem.Value.IsNull() {
+					if !childItem.Value.IsNull()  {
 						itemChildBody, _ = sjson.Set(itemChildBody, "value", childItem.Value.ValueString())
 					}
 					itemChildBody, _ = sjson.Set(itemChildBody, "type", "AnyNonEmptyString")
@@ -147,44 +167,44 @@ func (data *StandardAccessList) fromBody(ctx context.Context, res gjson.Result) 
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := StandardAccessListEntries{}
-			if value := res.Get("action"); value.Exists() {
-				data.Action = types.StringValue(value.String())
-			} else {
-				data.Action = types.StringNull()
-			}
-			if value := res.Get("networks.objects"); value.Exists() {
-				data.Objects = make([]StandardAccessListEntriesObjects, 0)
-				value.ForEach(func(k, res gjson.Result) bool {
-					parent := &data
-					data := StandardAccessListEntriesObjects{}
-					if value := res.Get("id"); value.Exists() {
-						data.Id = types.StringValue(value.String())
-					} else {
-						data.Id = types.StringNull()
-					}
-					if value := res.Get("type"); value.Exists() {
-						data.Type = types.StringValue(value.String())
-					} else {
-						data.Type = types.StringNull()
-					}
-					(*parent).Objects = append((*parent).Objects, data)
-					return true
-				})
-			}
-			if value := res.Get("networks.literals"); value.Exists() {
-				data.Literals = make([]StandardAccessListEntriesLiterals, 0)
-				value.ForEach(func(k, res gjson.Result) bool {
-					parent := &data
-					data := StandardAccessListEntriesLiterals{}
-					if value := res.Get("value"); value.Exists() {
-						data.Value = types.StringValue(value.String())
-					} else {
-						data.Value = types.StringNull()
-					}
-					(*parent).Literals = append((*parent).Literals, data)
-					return true
-				})
-			}
+	if value := res.Get("action"); value.Exists() {
+		data.Action = types.StringValue(value.String())
+	} else {
+		data.Action = types.StringNull()
+	}
+	if value := res.Get("networks.objects"); value.Exists() {
+		data.Objects = make([]StandardAccessListEntriesObjects, 0)
+		value.ForEach(func(k, res gjson.Result) bool {
+			parent := &data
+			data := StandardAccessListEntriesObjects{}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
+			(*parent).Objects = append((*parent).Objects, data)
+			return true
+		})
+	}
+	if value := res.Get("networks.literals"); value.Exists() {
+		data.Literals = make([]StandardAccessListEntriesLiterals, 0)
+		value.ForEach(func(k, res gjson.Result) bool {
+			parent := &data
+			data := StandardAccessListEntriesLiterals{}
+	if value := res.Get("value"); value.Exists() {
+		data.Value = types.StringValue(value.String())
+	} else {
+		data.Value = types.StringNull()
+	}
+			(*parent).Literals = append((*parent).Literals, data)
+			return true
+		})
+	}
 			(*parent).Entries = append((*parent).Entries, data)
 			return true
 		})
@@ -194,6 +214,7 @@ func (data *StandardAccessList) fromBody(ctx context.Context, res gjson.Result) 
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -234,102 +255,102 @@ func (data *StandardAccessList) fromBodyPartial(ctx context.Context, res gjson.R
 		data := (*parent).Entries[i]
 		parentRes := &res
 		res := parentRes.Get(fmt.Sprintf("entries.%d", i))
-		if value := res.Get("action"); value.Exists() && !data.Action.IsNull() {
-			data.Action = types.StringValue(value.String())
-		} else {
-			data.Action = types.StringNull()
+	if value := res.Get("action"); value.Exists() && !data.Action.IsNull() {
+		data.Action = types.StringValue(value.String())
+	} else {
+		data.Action = types.StringNull()
+	}
+	for i := 0; i < len(data.Objects); i++ {
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.Objects[i].Id.ValueString(),  }
+
+		parent := &data
+		data := (*parent).Objects[i]
+		parentRes := &res
+		var res gjson.Result
+
+		parentRes.Get("networks.objects").ForEach(
+			func(_, v gjson.Result) bool {
+				found := false
+				for ik := range keys {
+					if v.Get(keys[ik]).String() != keyValues[ik] {
+						found = false
+						break
+					}
+					found = true
+				}
+				if found {
+					res = v
+					return false
+				}
+				return true
+			},
+		)
+		if !res.Exists() {
+			tflog.Debug(ctx, fmt.Sprintf("removing Objects[%d] = %+v",
+				i,
+				(*parent).Objects[i],
+			))
+			(*parent).Objects = slices.Delete((*parent).Objects, i, i+1)
+			i--
+
+			continue
 		}
-		for i := 0; i < len(data.Objects); i++ {
-			keys := [...]string{"id"}
-			keyValues := [...]string{data.Objects[i].Id.ValueString()}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
+		(*parent).Objects[i] = data
+	}
+	for i := 0; i < len(data.Literals); i++ {
+		keys := [...]string{ "value",  }
+		keyValues := [...]string{ data.Literals[i].Value.ValueString(),  }
 
-			parent := &data
-			data := (*parent).Objects[i]
-			parentRes := &res
-			var res gjson.Result
+		parent := &data
+		data := (*parent).Literals[i]
+		parentRes := &res
+		var res gjson.Result
 
-			parentRes.Get("networks.objects").ForEach(
-				func(_, v gjson.Result) bool {
-					found := false
-					for ik := range keys {
-						if v.Get(keys[ik]).String() != keyValues[ik] {
-							found = false
-							break
-						}
-						found = true
+		parentRes.Get("networks.literals").ForEach(
+			func(_, v gjson.Result) bool {
+				found := false
+				for ik := range keys {
+					if v.Get(keys[ik]).String() != keyValues[ik] {
+						found = false
+						break
 					}
-					if found {
-						res = v
-						return false
-					}
-					return true
-				},
-			)
-			if !res.Exists() {
-				tflog.Debug(ctx, fmt.Sprintf("removing Objects[%d] = %+v",
-					i,
-					(*parent).Objects[i],
-				))
-				(*parent).Objects = slices.Delete((*parent).Objects, i, i+1)
-				i--
+					found = true
+				}
+				if found {
+					res = v
+					return false
+				}
+				return true
+			},
+		)
+		if !res.Exists() {
+			tflog.Debug(ctx, fmt.Sprintf("removing Literals[%d] = %+v",
+				i,
+				(*parent).Literals[i],
+			))
+			(*parent).Literals = slices.Delete((*parent).Literals, i, i+1)
+			i--
 
-				continue
-			}
-			if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
-			if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-				data.Type = types.StringValue(value.String())
-			} else {
-				data.Type = types.StringNull()
-			}
-			(*parent).Objects[i] = data
+			continue
 		}
-		for i := 0; i < len(data.Literals); i++ {
-			keys := [...]string{"value"}
-			keyValues := [...]string{data.Literals[i].Value.ValueString()}
-
-			parent := &data
-			data := (*parent).Literals[i]
-			parentRes := &res
-			var res gjson.Result
-
-			parentRes.Get("networks.literals").ForEach(
-				func(_, v gjson.Result) bool {
-					found := false
-					for ik := range keys {
-						if v.Get(keys[ik]).String() != keyValues[ik] {
-							found = false
-							break
-						}
-						found = true
-					}
-					if found {
-						res = v
-						return false
-					}
-					return true
-				},
-			)
-			if !res.Exists() {
-				tflog.Debug(ctx, fmt.Sprintf("removing Literals[%d] = %+v",
-					i,
-					(*parent).Literals[i],
-				))
-				(*parent).Literals = slices.Delete((*parent).Literals, i, i+1)
-				i--
-
-				continue
-			}
-			if value := res.Get("value"); value.Exists() && !data.Value.IsNull() {
-				data.Value = types.StringValue(value.String())
-			} else {
-				data.Value = types.StringNull()
-			}
-			(*parent).Literals[i] = data
-		}
+	if value := res.Get("value"); value.Exists() && !data.Value.IsNull() {
+		data.Value = types.StringValue(value.String())
+	} else {
+		data.Value = types.StringNull()
+	}
+		(*parent).Literals[i] = data
+	}
 		(*parent).Entries[i] = data
 	}
 }
@@ -354,28 +375,42 @@ func (data *StandardAccessList) fromBodyUnknowns(ctx context.Context, res gjson.
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
+
+
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
+
+
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
+
+
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
+
+
 
 // End of section. //template:end adjustBodyBulk

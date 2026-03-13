@@ -1,13 +1,13 @@
 resource "fmc_network_group" "example" {
-  name        = "my_network_group"
+  name = "my_network_group"
   description = "My Network Group 1"
-  objects = [
+  objects =[
     {
-      id   = "12345678-1234-1234-1234-123456789012"
+      id = "12345678-1234-1234-1234-123456789012"
       name = "fmc_network_object_1"
     }
   ]
-  literals = [
+  literals =[
     {
       value = "10.1.1.0/24"
     }

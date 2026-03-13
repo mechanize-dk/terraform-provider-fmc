@@ -1,11 +1,11 @@
 resource "fmc_geolocation" "example" {
   name = "my_geolocation"
-  continents = [
+  continents =[
     {
       id = 6
     }
   ]
-  countries = [
+  countries =[
     {
       id = 616
     }

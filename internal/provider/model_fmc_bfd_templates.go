@@ -35,25 +35,35 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type BFDTemplates struct {
-	Id     types.String                 `tfsdk:"id"`
-	Domain types.String                 `tfsdk:"domain"`
-	Items  map[string]BFDTemplatesItems `tfsdk:"items"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Items map[string]BFDTemplatesItems `tfsdk:"items"`
 }
 
+
 type BFDTemplatesItems struct {
-	Id                               types.String `tfsdk:"id"`
-	Type                             types.String `tfsdk:"type"`
-	HopType                          types.String `tfsdk:"hop_type"`
-	Echo                             types.String `tfsdk:"echo"`
-	IntervalType                     types.String `tfsdk:"interval_type"`
-	Multiplier                       types.Int64  `tfsdk:"multiplier"`
-	MinimumTransmit                  types.Int64  `tfsdk:"minimum_transmit"`
-	MinimumReceive                   types.Int64  `tfsdk:"minimum_receive"`
-	AuthenticationType               types.String `tfsdk:"authentication_type"`
-	AuthenticationPassword           types.String `tfsdk:"authentication_password"`
+	Id types.String `tfsdk:"id"`
+	Type types.String `tfsdk:"type"`
+	HopType types.String `tfsdk:"hop_type"`
+	Echo types.String `tfsdk:"echo"`
+	IntervalType types.String `tfsdk:"interval_type"`
+	Multiplier types.Int64 `tfsdk:"multiplier"`
+	MinimumTransmit types.Int64 `tfsdk:"minimum_transmit"`
+	MinimumReceive types.Int64 `tfsdk:"minimum_receive"`
+	AuthenticationType types.String `tfsdk:"authentication_type"`
+	AuthenticationPassword types.String `tfsdk:"authentication_password"`
 	AuthenticationPasswordEncryption types.String `tfsdk:"authentication_password_encryption"`
-	AuthenticationKeyId              types.Int64  `tfsdk:"authentication_key_id"`
+	AuthenticationKeyId types.Int64 `tfsdk:"authentication_key_id"`
 }
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -67,7 +77,7 @@ var minFMCVersionBulkDeleteBFDTemplates = version.Must(version.NewVersion("999")
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data BFDTemplates) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/bfdtemplates"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/bfdtemplates"
 }
 
 // End of section. //template:end getPath
@@ -83,38 +93,38 @@ func (data BFDTemplates) toBody(ctx context.Context, state BFDTemplates) string 
 		body, _ = sjson.Set(body, "items", []any{})
 		for key, item := range data.Items {
 			itemBody, _ := sjson.Set("{}", "name", key)
-			if !item.Id.IsNull() && !item.Id.IsUnknown() {
+			if !item.Id.IsNull() && !item.Id.IsUnknown()  {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			itemBody, _ = sjson.Set(itemBody, "type", "BFDTemplate")
-			if !item.HopType.IsNull() {
+			if !item.HopType.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "hopType", item.HopType.ValueString())
 			}
-			if !item.Echo.IsNull() {
+			if !item.Echo.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "echo", item.Echo.ValueString())
 			}
-			if !item.IntervalType.IsNull() {
+			if !item.IntervalType.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "txRxInterval", item.IntervalType.ValueString())
 			}
-			if !item.Multiplier.IsNull() {
+			if !item.Multiplier.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "txRxMultiplier", item.Multiplier.ValueInt64())
 			}
-			if !item.MinimumTransmit.IsNull() {
+			if !item.MinimumTransmit.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "minTransmit", item.MinimumTransmit.ValueInt64())
 			}
-			if !item.MinimumReceive.IsNull() {
+			if !item.MinimumReceive.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "minReceive", item.MinimumReceive.ValueInt64())
 			}
-			if !item.AuthenticationType.IsNull() {
+			if !item.AuthenticationType.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "authentication.authType", item.AuthenticationType.ValueString())
 			}
-			if !item.AuthenticationPassword.IsNull() {
+			if !item.AuthenticationPassword.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "authentication.authKey", item.AuthenticationPassword.ValueString())
 			}
-			if !item.AuthenticationPasswordEncryption.IsNull() {
+			if !item.AuthenticationPasswordEncryption.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "authentication.pwdEncryption", item.AuthenticationPasswordEncryption.ValueString())
 			}
-			if !item.AuthenticationKeyId.IsNull() {
+			if !item.AuthenticationKeyId.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "authentication.authKeyId", item.AuthenticationKeyId.ValueInt64())
 			}
 			body, _ = sjson.SetRaw(body, "items.-1", itemBody)
@@ -140,66 +150,65 @@ func (data *BFDTemplates) fromBody(ctx context.Context, res gjson.Result) {
 		parent := &data
 		data := (*parent).Items[k]
 		res, found := itemsByName[k]
-		if !found {
-			tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
+		if !found {tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
 			delete((*parent).Items, k)
 			continue
 		}
-		if value := res.Get("id"); value.Exists() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("type"); value.Exists() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
-		if value := res.Get("hopType"); value.Exists() {
-			data.HopType = types.StringValue(value.String())
-		} else {
-			data.HopType = types.StringNull()
-		}
-		if value := res.Get("echo"); value.Exists() {
-			data.Echo = types.StringValue(value.String())
-		} else {
-			data.Echo = types.StringNull()
-		}
-		if value := res.Get("txRxInterval"); value.Exists() {
-			data.IntervalType = types.StringValue(value.String())
-		} else {
-			data.IntervalType = types.StringNull()
-		}
-		if value := res.Get("txRxMultiplier"); value.Exists() {
-			data.Multiplier = types.Int64Value(value.Int())
-		} else {
-			data.Multiplier = types.Int64Null()
-		}
-		if value := res.Get("minTransmit"); value.Exists() {
-			data.MinimumTransmit = types.Int64Value(value.Int())
-		} else {
-			data.MinimumTransmit = types.Int64Null()
-		}
-		if value := res.Get("minReceive"); value.Exists() {
-			data.MinimumReceive = types.Int64Value(value.Int())
-		} else {
-			data.MinimumReceive = types.Int64Null()
-		}
-		if value := res.Get("authentication.authType"); value.Exists() {
-			data.AuthenticationType = types.StringValue(value.String())
-		} else {
-			data.AuthenticationType = types.StringNull()
-		}
-		if value := res.Get("authentication.pwdEncryption"); value.Exists() {
-			data.AuthenticationPasswordEncryption = types.StringValue(value.String())
-		} else {
-			data.AuthenticationPasswordEncryption = types.StringNull()
-		}
-		if value := res.Get("authentication.authKeyId"); value.Exists() {
-			data.AuthenticationKeyId = types.Int64Value(value.Int())
-		} else {
-			data.AuthenticationKeyId = types.Int64Null()
-		}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
+	if value := res.Get("hopType"); value.Exists() {
+		data.HopType = types.StringValue(value.String())
+	} else {
+		data.HopType = types.StringNull()
+	}
+	if value := res.Get("echo"); value.Exists() {
+		data.Echo = types.StringValue(value.String())
+	} else {
+		data.Echo = types.StringNull()
+	}
+	if value := res.Get("txRxInterval"); value.Exists() {
+		data.IntervalType = types.StringValue(value.String())
+	} else {
+		data.IntervalType = types.StringNull()
+	}
+	if value := res.Get("txRxMultiplier"); value.Exists() {
+		data.Multiplier = types.Int64Value(value.Int())
+	} else {
+		data.Multiplier = types.Int64Null()
+	}
+	if value := res.Get("minTransmit"); value.Exists() {
+		data.MinimumTransmit = types.Int64Value(value.Int())
+	} else {
+		data.MinimumTransmit = types.Int64Null()
+	}
+	if value := res.Get("minReceive"); value.Exists() {
+		data.MinimumReceive = types.Int64Value(value.Int())
+	} else {
+		data.MinimumReceive = types.Int64Null()
+	}
+	if value := res.Get("authentication.authType"); value.Exists() {
+		data.AuthenticationType = types.StringValue(value.String())
+	} else {
+		data.AuthenticationType = types.StringNull()
+	}
+	if value := res.Get("authentication.pwdEncryption"); value.Exists() {
+		data.AuthenticationPasswordEncryption = types.StringValue(value.String())
+	} else {
+		data.AuthenticationPasswordEncryption = types.StringNull()
+	}
+	if value := res.Get("authentication.authKeyId"); value.Exists() {
+		data.AuthenticationKeyId = types.Int64Value(value.Int())
+	} else {
+		data.AuthenticationKeyId = types.Int64Null()
+	}
 		(*parent).Items[k] = data
 	}
 }
@@ -207,6 +216,7 @@ func (data *BFDTemplates) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -228,61 +238,61 @@ func (data *BFDTemplates) fromBodyPartial(ctx context.Context, res gjson.Result)
 			continue
 		}
 		res, _ := itemsById[data.Id.ValueString()]
-		if value := res.Get("id"); value.Exists() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
-		if value := res.Get("hopType"); value.Exists() && !data.HopType.IsNull() {
-			data.HopType = types.StringValue(value.String())
-		} else {
-			data.HopType = types.StringNull()
-		}
-		if value := res.Get("echo"); value.Exists() && !data.Echo.IsNull() {
-			data.Echo = types.StringValue(value.String())
-		} else {
-			data.Echo = types.StringNull()
-		}
-		if value := res.Get("txRxInterval"); value.Exists() && !data.IntervalType.IsNull() {
-			data.IntervalType = types.StringValue(value.String())
-		} else {
-			data.IntervalType = types.StringNull()
-		}
-		if value := res.Get("txRxMultiplier"); value.Exists() && !data.Multiplier.IsNull() {
-			data.Multiplier = types.Int64Value(value.Int())
-		} else {
-			data.Multiplier = types.Int64Null()
-		}
-		if value := res.Get("minTransmit"); value.Exists() && !data.MinimumTransmit.IsNull() {
-			data.MinimumTransmit = types.Int64Value(value.Int())
-		} else {
-			data.MinimumTransmit = types.Int64Null()
-		}
-		if value := res.Get("minReceive"); value.Exists() && !data.MinimumReceive.IsNull() {
-			data.MinimumReceive = types.Int64Value(value.Int())
-		} else {
-			data.MinimumReceive = types.Int64Null()
-		}
-		if value := res.Get("authentication.authType"); value.Exists() && !data.AuthenticationType.IsNull() {
-			data.AuthenticationType = types.StringValue(value.String())
-		} else {
-			data.AuthenticationType = types.StringNull()
-		}
-		if value := res.Get("authentication.pwdEncryption"); value.Exists() && !data.AuthenticationPasswordEncryption.IsNull() {
-			data.AuthenticationPasswordEncryption = types.StringValue(value.String())
-		} else {
-			data.AuthenticationPasswordEncryption = types.StringNull()
-		}
-		if value := res.Get("authentication.authKeyId"); value.Exists() && !data.AuthenticationKeyId.IsNull() {
-			data.AuthenticationKeyId = types.Int64Value(value.Int())
-		} else {
-			data.AuthenticationKeyId = types.Int64Null()
-		}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
+	if value := res.Get("hopType"); value.Exists() && !data.HopType.IsNull() {
+		data.HopType = types.StringValue(value.String())
+	} else {
+		data.HopType = types.StringNull()
+	}
+	if value := res.Get("echo"); value.Exists() && !data.Echo.IsNull() {
+		data.Echo = types.StringValue(value.String())
+	} else {
+		data.Echo = types.StringNull()
+	}
+	if value := res.Get("txRxInterval"); value.Exists() && !data.IntervalType.IsNull() {
+		data.IntervalType = types.StringValue(value.String())
+	} else {
+		data.IntervalType = types.StringNull()
+	}
+	if value := res.Get("txRxMultiplier"); value.Exists() && !data.Multiplier.IsNull() {
+		data.Multiplier = types.Int64Value(value.Int())
+	} else {
+		data.Multiplier = types.Int64Null()
+	}
+	if value := res.Get("minTransmit"); value.Exists() && !data.MinimumTransmit.IsNull() {
+		data.MinimumTransmit = types.Int64Value(value.Int())
+	} else {
+		data.MinimumTransmit = types.Int64Null()
+	}
+	if value := res.Get("minReceive"); value.Exists() && !data.MinimumReceive.IsNull() {
+		data.MinimumReceive = types.Int64Value(value.Int())
+	} else {
+		data.MinimumReceive = types.Int64Null()
+	}
+	if value := res.Get("authentication.authType"); value.Exists() && !data.AuthenticationType.IsNull() {
+		data.AuthenticationType = types.StringValue(value.String())
+	} else {
+		data.AuthenticationType = types.StringNull()
+	}
+	if value := res.Get("authentication.pwdEncryption"); value.Exists() && !data.AuthenticationPasswordEncryption.IsNull() {
+		data.AuthenticationPasswordEncryption = types.StringValue(value.String())
+	} else {
+		data.AuthenticationPasswordEncryption = types.StringNull()
+	}
+	if value := res.Get("authentication.authKeyId"); value.Exists() && !data.AuthenticationKeyId.IsNull() {
+		data.AuthenticationKeyId = types.Int64Value(value.Int())
+	} else {
+		data.AuthenticationKeyId = types.Int64Null()
+	}
 		(*parent).Items[i] = data
 	}
 }
@@ -336,6 +346,7 @@ func (data *BFDTemplates) fromBodyUnknowns(ctx context.Context, res gjson.Result
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
 func (data *BFDTemplates) Clone() BFDTemplates {
 	ret := *data
 	ret.Items = maps.Clone(data.Items)
@@ -346,6 +357,7 @@ func (data *BFDTemplates) Clone() BFDTemplates {
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
 
 // Updates done one-by-one require different API body
 func (data BFDTemplates) toBodyNonBulk(ctx context.Context, state BFDTemplates) string {
@@ -365,6 +377,7 @@ func (data BFDTemplates) toBodyNonBulk(ctx context.Context, state BFDTemplates) 
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
 // Check if single object within bulk requires replace due to `requires_replace`
 // Since here we assume object has changed, it must be present in both state and plan (data)
 func (data BFDTemplates) findObjectsToBeReplaced(ctx context.Context, state BFDTemplates) BFDTemplates {
@@ -381,10 +394,10 @@ func (data BFDTemplates) findObjectsToBeReplaced(ctx context.Context, state BFDT
 		}
 
 		// Check if any field marked as `requires_replace` has changed
-		if item.HopType != state.Items[key].HopType {
-			toBeReplaced.Items[key] = item
-			continue
-		}
+					if item.HopType != state.Items[key].HopType {
+						toBeReplaced.Items[key] = item
+						continue
+					}
 	}
 
 	return toBeReplaced
@@ -393,6 +406,7 @@ func (data BFDTemplates) findObjectsToBeReplaced(ctx context.Context, state BFDT
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
+
 
 func (data *BFDTemplates) clearItemsIds(ctx context.Context) {
 	for key, value := range data.Items {
@@ -406,12 +420,18 @@ func (data *BFDTemplates) clearItemsIds(ctx context.Context) {
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
+
+
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
+
+
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
+
+
 
 // End of section. //template:end adjustBodyBulk

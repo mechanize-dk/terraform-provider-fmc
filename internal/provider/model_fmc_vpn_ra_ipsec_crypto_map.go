@@ -35,30 +35,91 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type VPNRAIPSecCryptoMap struct {
-	Id                                types.String                             `tfsdk:"id"`
-	Domain                            types.String                             `tfsdk:"domain"`
-	VpnRaId                           types.String                             `tfsdk:"vpn_ra_id"`
-	Type                              types.String                             `tfsdk:"type"`
-	InterfaceId                       types.String                             `tfsdk:"interface_id"`
-	Ikev2IpsecProposals               []VPNRAIPSecCryptoMapIkev2IpsecProposals `tfsdk:"ikev2_ipsec_proposals"`
-	ReverseRouteInjection             types.Bool                               `tfsdk:"reverse_route_injection"`
-	ClientServices                    types.Bool                               `tfsdk:"client_services"`
-	ClientServicesPort                types.Int64                              `tfsdk:"client_services_port"`
-	PerfectForwardSecrecy             types.Bool                               `tfsdk:"perfect_forward_secrecy"`
-	PerfectForwardSecrecyModulusGroup types.String                             `tfsdk:"perfect_forward_secrecy_modulus_group"`
-	LifetimeDuration                  types.Int64                              `tfsdk:"lifetime_duration"`
-	LifetimeSize                      types.Int64                              `tfsdk:"lifetime_size"`
-	ValidateIncomingIcmpErrorMessages types.Bool                               `tfsdk:"validate_incoming_icmp_error_messages"`
-	DoNotFragmentPolicy               types.String                             `tfsdk:"do_not_fragment_policy"`
-	Tfc                               types.Bool                               `tfsdk:"tfc"`
-	TfcBurstBytes                     types.Int64                              `tfsdk:"tfc_burst_bytes"`
-	TfcPayloadBytes                   types.Int64                              `tfsdk:"tfc_payload_bytes"`
-	TfcTimeout                        types.Int64                              `tfsdk:"tfc_timeout"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	VpnRaId types.String `tfsdk:"vpn_ra_id"`
+	Type types.String `tfsdk:"type"`
+	InterfaceId types.String `tfsdk:"interface_id"`
+	Ikev2IpsecProposals []VPNRAIPSecCryptoMapIkev2IpsecProposals `tfsdk:"ikev2_ipsec_proposals"`
+	ReverseRouteInjection types.Bool `tfsdk:"reverse_route_injection"`
+	ClientServices types.Bool `tfsdk:"client_services"`
+	ClientServicesPort types.Int64 `tfsdk:"client_services_port"`
+	PerfectForwardSecrecy types.Bool `tfsdk:"perfect_forward_secrecy"`
+	PerfectForwardSecrecyModulusGroup types.String `tfsdk:"perfect_forward_secrecy_modulus_group"`
+	LifetimeDuration types.Int64 `tfsdk:"lifetime_duration"`
+	LifetimeSize types.Int64 `tfsdk:"lifetime_size"`
+	ValidateIncomingIcmpErrorMessages types.Bool `tfsdk:"validate_incoming_icmp_error_messages"`
+	DoNotFragmentPolicy types.String `tfsdk:"do_not_fragment_policy"`
+	Tfc types.Bool `tfsdk:"tfc"`
+	TfcBurstBytes types.Int64 `tfsdk:"tfc_burst_bytes"`
+	TfcPayloadBytes types.Int64 `tfsdk:"tfc_payload_bytes"`
+	TfcTimeout types.Int64 `tfsdk:"tfc_timeout"`
 }
+
+
+
+
+
 
 type VPNRAIPSecCryptoMapIkev2IpsecProposals struct {
 	Id types.String `tfsdk:"id"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -69,7 +130,7 @@ type VPNRAIPSecCryptoMapIkev2IpsecProposals struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data VPNRAIPSecCryptoMap) getPath() string {
-	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ravpns/%v/ipseccryptomaps", url.QueryEscape(data.VpnRaId.ValueString()))
+		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ravpns/%v/ipseccryptomaps", url.QueryEscape(data.VpnRaId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -82,56 +143,56 @@ func (data VPNRAIPSecCryptoMap) toBody(ctx context.Context, state VPNRAIPSecCryp
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "RaVpnIPsecCryptoMap")
-	if !data.InterfaceId.IsNull() {
+	if !data.InterfaceId.IsNull()   {
 		body, _ = sjson.Set(body, "interfaceObject.id", data.InterfaceId.ValueString())
 	}
 	if len(data.Ikev2IpsecProposals) > 0 {
 		body, _ = sjson.Set(body, "ikev2IpsecProposals", []any{})
 		for _, item := range data.Ikev2IpsecProposals {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "ikev2IpsecProposals.-1", itemBody)
 		}
 	}
-	if !data.ReverseRouteInjection.IsNull() {
+	if !data.ReverseRouteInjection.IsNull()   {
 		body, _ = sjson.Set(body, "enableRRI", data.ReverseRouteInjection.ValueBool())
 	}
-	if !data.ClientServices.IsNull() {
+	if !data.ClientServices.IsNull()   {
 		body, _ = sjson.Set(body, "enableClientServices", data.ClientServices.ValueBool())
 	}
-	if !data.ClientServicesPort.IsNull() {
+	if !data.ClientServicesPort.IsNull()   {
 		body, _ = sjson.Set(body, "clientServicesPort", data.ClientServicesPort.ValueInt64())
 	}
-	if !data.PerfectForwardSecrecy.IsNull() {
+	if !data.PerfectForwardSecrecy.IsNull()   {
 		body, _ = sjson.Set(body, "perfectForwardSecracy.enabled", data.PerfectForwardSecrecy.ValueBool())
 	}
-	if !data.PerfectForwardSecrecyModulusGroup.IsNull() {
+	if !data.PerfectForwardSecrecyModulusGroup.IsNull()   {
 		body, _ = sjson.Set(body, "perfectForwardSecracy.modulusGroup", data.PerfectForwardSecrecyModulusGroup.ValueString())
 	}
-	if !data.LifetimeDuration.IsNull() {
+	if !data.LifetimeDuration.IsNull()   {
 		body, _ = sjson.Set(body, "lifeTimeSeconds", data.LifetimeDuration.ValueInt64())
 	}
-	if !data.LifetimeSize.IsNull() {
+	if !data.LifetimeSize.IsNull()   {
 		body, _ = sjson.Set(body, "lifeTimeKilobytes", data.LifetimeSize.ValueInt64())
 	}
-	if !data.ValidateIncomingIcmpErrorMessages.IsNull() {
+	if !data.ValidateIncomingIcmpErrorMessages.IsNull()   {
 		body, _ = sjson.Set(body, "validateIncomingIcmpErrorMessage", data.ValidateIncomingIcmpErrorMessages.ValueBool())
 	}
-	if !data.DoNotFragmentPolicy.IsNull() {
+	if !data.DoNotFragmentPolicy.IsNull()   {
 		body, _ = sjson.Set(body, "doNotFragmentPolicy", data.DoNotFragmentPolicy.ValueString())
 	}
-	if !data.Tfc.IsNull() {
+	if !data.Tfc.IsNull()   {
 		body, _ = sjson.Set(body, "tfcPackets.enabled", data.Tfc.ValueBool())
 	}
-	if !data.TfcBurstBytes.IsNull() {
+	if !data.TfcBurstBytes.IsNull()   {
 		body, _ = sjson.Set(body, "tfcPackets.burstBytes", data.TfcBurstBytes.ValueInt64())
 	}
-	if !data.TfcPayloadBytes.IsNull() {
+	if !data.TfcPayloadBytes.IsNull()   {
 		body, _ = sjson.Set(body, "tfcPackets.payloadBytes", data.TfcPayloadBytes.ValueInt64())
 	}
-	if !data.TfcTimeout.IsNull() {
+	if !data.TfcTimeout.IsNull()   {
 		body, _ = sjson.Set(body, "tfcPackets.timeoutSeconds", data.TfcTimeout.ValueInt64())
 	}
 	return body
@@ -157,11 +218,11 @@ func (data *VPNRAIPSecCryptoMap) fromBody(ctx context.Context, res gjson.Result)
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VPNRAIPSecCryptoMapIkev2IpsecProposals{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).Ikev2IpsecProposals = append((*parent).Ikev2IpsecProposals, data)
 			return true
 		})
@@ -237,6 +298,7 @@ func (data *VPNRAIPSecCryptoMap) fromBody(ctx context.Context, res gjson.Result)
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
 
+
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
 // easily change across versions of the backend API.) For List/Set/Map attributes, the func only updates the
@@ -253,8 +315,8 @@ func (data *VPNRAIPSecCryptoMap) fromBodyPartial(ctx context.Context, res gjson.
 		data.InterfaceId = types.StringNull()
 	}
 	for i := 0; i < len(data.Ikev2IpsecProposals); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.Ikev2IpsecProposals[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.Ikev2IpsecProposals[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).Ikev2IpsecProposals[i]
@@ -288,11 +350,11 @@ func (data *VPNRAIPSecCryptoMap) fromBodyPartial(ctx context.Context, res gjson.
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).Ikev2IpsecProposals[i] = data
 	}
 	if value := res.Get("enableRRI"); value.Exists() && !data.ReverseRouteInjection.IsNull() {

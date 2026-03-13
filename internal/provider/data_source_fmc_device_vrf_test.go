@@ -31,7 +31,7 @@ import (
 
 func TestAccDataSourceFmcDeviceVRF(t *testing.T) {
 	if os.Getenv("TF_VAR_device_id") == "" || os.Getenv("TF_VAR_interface_name") == "" {
-		t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_interface_name")
+        t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_interface_name")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.fmc_device_vrf.test", "name", "VRF_A"))
@@ -43,12 +43,12 @@ func TestAccDataSourceFmcDeviceVRF(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcDeviceVRFPrerequisitesConfig + testAccDataSourceFmcDeviceVRFConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcDeviceVRFPrerequisitesConfig+testAccDataSourceFmcDeviceVRFConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcDeviceVRFPrerequisitesConfig + testAccNamedDataSourceFmcDeviceVRFConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcDeviceVRFPrerequisitesConfig+testAccNamedDataSourceFmcDeviceVRFConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -70,7 +70,6 @@ resource "fmc_device_physical_interface" "test" {
   mode         = "NONE"
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

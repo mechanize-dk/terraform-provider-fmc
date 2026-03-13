@@ -66,7 +66,7 @@ func (d *VPNRALoadBalancingDataSource) Schema(ctx context.Context, req datasourc
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 			},
 			"vpn_ra_id": schema.StringAttribute{
 				MarkdownDescription: "Id of the parent VPN RA Topology.",

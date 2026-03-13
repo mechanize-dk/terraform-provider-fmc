@@ -70,7 +70,7 @@ func (d *FilePolicyDataSource) Schema(ctx context.Context, req datasource.Schema
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: "Name of file File Policy.",
@@ -194,12 +194,12 @@ func (d *FilePolicyDataSource) Schema(ctx context.Context, req datasource.Schema
 	}
 }
 func (d *FilePolicyDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
-	return []datasource.ConfigValidator{
-		datasourcevalidator.ExactlyOneOf(
-			path.MatchRoot("id"),
+    return []datasource.ConfigValidator{
+        datasourcevalidator.ExactlyOneOf(
+            path.MatchRoot("id"),
 			path.MatchRoot("name"),
-		),
-	}
+        ),
+    }
 }
 
 func (d *FilePolicyDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {

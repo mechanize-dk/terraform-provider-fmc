@@ -35,19 +35,29 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type FQDNs struct {
-	Id     types.String          `tfsdk:"id"`
-	Domain types.String          `tfsdk:"domain"`
-	Items  map[string]FQDNsItems `tfsdk:"items"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Items map[string]FQDNsItems `tfsdk:"items"`
 }
 
+
 type FQDNsItems struct {
-	Id            types.String `tfsdk:"id"`
-	Description   types.String `tfsdk:"description"`
-	Overridable   types.Bool   `tfsdk:"overridable"`
-	Fqdn          types.String `tfsdk:"fqdn"`
+	Id types.String `tfsdk:"id"`
+	Description types.String `tfsdk:"description"`
+	Overridable types.Bool `tfsdk:"overridable"`
+	Fqdn types.String `tfsdk:"fqdn"`
 	DnsResolution types.String `tfsdk:"dns_resolution"`
-	Type          types.String `tfsdk:"type"`
+	Type types.String `tfsdk:"type"`
 }
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -59,7 +69,7 @@ var minFMCVersionBulkDeleteFQDNs = version.Must(version.NewVersion("7.4"))
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data FQDNs) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/fqdns"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/fqdns"
 }
 
 // End of section. //template:end getPath
@@ -75,19 +85,19 @@ func (data FQDNs) toBody(ctx context.Context, state FQDNs) string {
 		body, _ = sjson.Set(body, "items", []any{})
 		for key, item := range data.Items {
 			itemBody, _ := sjson.Set("{}", "name", key)
-			if !item.Id.IsNull() && !item.Id.IsUnknown() {
+			if !item.Id.IsNull() && !item.Id.IsUnknown()  {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Description.IsNull() {
+			if !item.Description.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "description", item.Description.ValueString())
 			}
-			if !item.Overridable.IsNull() {
+			if !item.Overridable.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "overridable", item.Overridable.ValueBool())
 			}
-			if !item.Fqdn.IsNull() {
+			if !item.Fqdn.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "value", item.Fqdn.ValueString())
 			}
-			if !item.DnsResolution.IsNull() {
+			if !item.DnsResolution.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "dnsResolution", item.DnsResolution.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "items.-1", itemBody)
@@ -113,41 +123,40 @@ func (data *FQDNs) fromBody(ctx context.Context, res gjson.Result) {
 		parent := &data
 		data := (*parent).Items[k]
 		res, found := itemsByName[k]
-		if !found {
-			tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
+		if !found {tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
 			delete((*parent).Items, k)
 			continue
 		}
-		if value := res.Get("id"); value.Exists() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("description"); value.Exists() {
-			data.Description = types.StringValue(value.String())
-		} else {
-			data.Description = types.StringNull()
-		}
-		if value := res.Get("overridable"); value.Exists() {
-			data.Overridable = types.BoolValue(value.Bool())
-		} else {
-			data.Overridable = types.BoolNull()
-		}
-		if value := res.Get("value"); value.Exists() {
-			data.Fqdn = types.StringValue(value.String())
-		} else {
-			data.Fqdn = types.StringNull()
-		}
-		if value := res.Get("dnsResolution"); value.Exists() {
-			data.DnsResolution = types.StringValue(value.String())
-		} else {
-			data.DnsResolution = types.StringValue("IPV4_AND_IPV6")
-		}
-		if value := res.Get("type"); value.Exists() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("description"); value.Exists() {
+		data.Description = types.StringValue(value.String())
+	} else {
+		data.Description = types.StringNull()
+	}
+	if value := res.Get("overridable"); value.Exists() {
+		data.Overridable = types.BoolValue(value.Bool())
+	} else {
+		data.Overridable = types.BoolNull()
+	}
+	if value := res.Get("value"); value.Exists() {
+		data.Fqdn = types.StringValue(value.String())
+	} else {
+		data.Fqdn = types.StringNull()
+	}
+	if value := res.Get("dnsResolution"); value.Exists() {
+		data.DnsResolution = types.StringValue(value.String())
+	} else {
+		data.DnsResolution = types.StringValue("IPV4_AND_IPV6")
+	}
+	if value := res.Get("type"); value.Exists() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
 		(*parent).Items[k] = data
 	}
 }
@@ -155,6 +164,7 @@ func (data *FQDNs) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -176,40 +186,40 @@ func (data *FQDNs) fromBodyPartial(ctx context.Context, res gjson.Result) {
 			continue
 		}
 		res, _ := itemsById[data.Id.ValueString()]
-		if value := res.Get("id"); value.Exists() {
-			data.Id = types.StringValue(value.String())
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("description"); value.Exists() && !data.Description.IsNull() {
+		data.Description = types.StringValue(value.String())
+	} else {
+		if !data.Description.IsNull() && data.Description.ValueString() == "" {
+			data.Description = types.StringValue("")
 		} else {
-			data.Id = types.StringNull()
+			data.Description = types.StringNull()
 		}
-		if value := res.Get("description"); value.Exists() && !data.Description.IsNull() {
-			data.Description = types.StringValue(value.String())
-		} else {
-			if !data.Description.IsNull() && data.Description.ValueString() == "" {
-				data.Description = types.StringValue("")
-			} else {
-				data.Description = types.StringNull()
-			}
-		}
-		if value := res.Get("overridable"); value.Exists() && !data.Overridable.IsNull() {
-			data.Overridable = types.BoolValue(value.Bool())
-		} else {
-			data.Overridable = types.BoolNull()
-		}
-		if value := res.Get("value"); value.Exists() && !data.Fqdn.IsNull() {
-			data.Fqdn = types.StringValue(value.String())
-		} else {
-			data.Fqdn = types.StringNull()
-		}
-		if value := res.Get("dnsResolution"); value.Exists() && !data.DnsResolution.IsNull() {
-			data.DnsResolution = types.StringValue(value.String())
-		} else if data.DnsResolution.ValueString() != "IPV4_AND_IPV6" {
-			data.DnsResolution = types.StringNull()
-		}
-		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
+	}
+	if value := res.Get("overridable"); value.Exists() && !data.Overridable.IsNull() {
+		data.Overridable = types.BoolValue(value.Bool())
+	} else {
+		data.Overridable = types.BoolNull()
+	}
+	if value := res.Get("value"); value.Exists() && !data.Fqdn.IsNull() {
+		data.Fqdn = types.StringValue(value.String())
+	} else {
+		data.Fqdn = types.StringNull()
+	}
+	if value := res.Get("dnsResolution"); value.Exists() && !data.DnsResolution.IsNull() {
+		data.DnsResolution = types.StringValue(value.String())
+	} else if data.DnsResolution.ValueString() != "IPV4_AND_IPV6" {
+		data.DnsResolution = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
 		(*parent).Items[i] = data
 	}
 }
@@ -263,6 +273,7 @@ func (data *FQDNs) fromBodyUnknowns(ctx context.Context, res gjson.Result) {
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
 func (data *FQDNs) Clone() FQDNs {
 	ret := *data
 	ret.Items = maps.Clone(data.Items)
@@ -273,6 +284,7 @@ func (data *FQDNs) Clone() FQDNs {
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
 
 // Updates done one-by-one require different API body
 func (data FQDNs) toBodyNonBulk(ctx context.Context, state FQDNs) string {
@@ -292,20 +304,30 @@ func (data FQDNs) toBodyNonBulk(ctx context.Context, state FQDNs) string {
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
+
+
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
+
+
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
+
+
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
+
+
 
 // End of section. //template:end adjustBodyBulk

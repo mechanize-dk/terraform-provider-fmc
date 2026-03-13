@@ -35,19 +35,44 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type VPNRACertificateMap struct {
-	Id                                        types.String                                                `tfsdk:"id"`
-	Domain                                    types.String                                                `tfsdk:"domain"`
-	VpnRaId                                   types.String                                                `tfsdk:"vpn_ra_id"`
-	Type                                      types.String                                                `tfsdk:"type"`
-	UseAliasUrl                               types.Bool                                                  `tfsdk:"use_alias_url"`
-	UseCertificateToConnectionProfileMappings types.Bool                                                  `tfsdk:"use_certificate_to_connection_profile_mappings"`
-	CertificateToConnectionProfileMappings    []VPNRACertificateMapCertificateToConnectionProfileMappings `tfsdk:"certificate_to_connection_profile_mappings"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	VpnRaId types.String `tfsdk:"vpn_ra_id"`
+	Type types.String `tfsdk:"type"`
+	UseAliasUrl types.Bool `tfsdk:"use_alias_url"`
+	UseCertificateToConnectionProfileMappings types.Bool `tfsdk:"use_certificate_to_connection_profile_mappings"`
+	CertificateToConnectionProfileMappings []VPNRACertificateMapCertificateToConnectionProfileMappings `tfsdk:"certificate_to_connection_profile_mappings"`
 }
 
+
+
+
+
+
+
 type VPNRACertificateMapCertificateToConnectionProfileMappings struct {
-	CertificateMapId    types.String `tfsdk:"certificate_map_id"`
+	CertificateMapId types.String `tfsdk:"certificate_map_id"`
 	ConnectionProfileId types.String `tfsdk:"connection_profile_id"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -58,7 +83,7 @@ type VPNRACertificateMapCertificateToConnectionProfileMappings struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data VPNRACertificateMap) getPath() string {
-	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ravpns/%v/certificatemapsettings", url.QueryEscape(data.VpnRaId.ValueString()))
+		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ravpns/%v/certificatemapsettings", url.QueryEscape(data.VpnRaId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -71,20 +96,20 @@ func (data VPNRACertificateMap) toBody(ctx context.Context, state VPNRACertifica
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "RaVpnCertificateMapSetting")
-	if !data.UseAliasUrl.IsNull() {
+	if !data.UseAliasUrl.IsNull()   {
 		body, _ = sjson.Set(body, "useGroupURL", data.UseAliasUrl.ValueBool())
 	}
-	if !data.UseCertificateToConnectionProfileMappings.IsNull() {
+	if !data.UseCertificateToConnectionProfileMappings.IsNull()   {
 		body, _ = sjson.Set(body, "enableCertificateToConnectionProfileMapping", data.UseCertificateToConnectionProfileMappings.ValueBool())
 	}
 	if len(data.CertificateToConnectionProfileMappings) > 0 {
 		body, _ = sjson.Set(body, "certificateToConnectionProfileMap", []any{})
 		for _, item := range data.CertificateToConnectionProfileMappings {
 			itemBody := ""
-			if !item.CertificateMapId.IsNull() {
+			if !item.CertificateMapId.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "certificateMap.id", item.CertificateMapId.ValueString())
 			}
-			if !item.ConnectionProfileId.IsNull() {
+			if !item.ConnectionProfileId.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "connectionProfile.id", item.ConnectionProfileId.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "certificateToConnectionProfileMap.-1", itemBody)
@@ -118,16 +143,16 @@ func (data *VPNRACertificateMap) fromBody(ctx context.Context, res gjson.Result)
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VPNRACertificateMapCertificateToConnectionProfileMappings{}
-			if value := res.Get("certificateMap.id"); value.Exists() {
-				data.CertificateMapId = types.StringValue(value.String())
-			} else {
-				data.CertificateMapId = types.StringNull()
-			}
-			if value := res.Get("connectionProfile.id"); value.Exists() {
-				data.ConnectionProfileId = types.StringValue(value.String())
-			} else {
-				data.ConnectionProfileId = types.StringNull()
-			}
+	if value := res.Get("certificateMap.id"); value.Exists() {
+		data.CertificateMapId = types.StringValue(value.String())
+	} else {
+		data.CertificateMapId = types.StringNull()
+	}
+	if value := res.Get("connectionProfile.id"); value.Exists() {
+		data.ConnectionProfileId = types.StringValue(value.String())
+	} else {
+		data.ConnectionProfileId = types.StringNull()
+	}
 			(*parent).CertificateToConnectionProfileMappings = append((*parent).CertificateToConnectionProfileMappings, data)
 			return true
 		})
@@ -137,6 +162,7 @@ func (data *VPNRACertificateMap) fromBody(ctx context.Context, res gjson.Result)
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -159,8 +185,8 @@ func (data *VPNRACertificateMap) fromBodyPartial(ctx context.Context, res gjson.
 		data.UseCertificateToConnectionProfileMappings = types.BoolNull()
 	}
 	for i := 0; i < len(data.CertificateToConnectionProfileMappings); i++ {
-		keys := [...]string{"certificateMap.id"}
-		keyValues := [...]string{data.CertificateToConnectionProfileMappings[i].CertificateMapId.ValueString()}
+		keys := [...]string{ "certificateMap.id",  }
+		keyValues := [...]string{ data.CertificateToConnectionProfileMappings[i].CertificateMapId.ValueString(),  }
 
 		parent := &data
 		data := (*parent).CertificateToConnectionProfileMappings[i]
@@ -194,16 +220,16 @@ func (data *VPNRACertificateMap) fromBodyPartial(ctx context.Context, res gjson.
 
 			continue
 		}
-		if value := res.Get("certificateMap.id"); value.Exists() && !data.CertificateMapId.IsNull() {
-			data.CertificateMapId = types.StringValue(value.String())
-		} else {
-			data.CertificateMapId = types.StringNull()
-		}
-		if value := res.Get("connectionProfile.id"); value.Exists() && !data.ConnectionProfileId.IsNull() {
-			data.ConnectionProfileId = types.StringValue(value.String())
-		} else {
-			data.ConnectionProfileId = types.StringNull()
-		}
+	if value := res.Get("certificateMap.id"); value.Exists() && !data.CertificateMapId.IsNull() {
+		data.CertificateMapId = types.StringValue(value.String())
+	} else {
+		data.CertificateMapId = types.StringNull()
+	}
+	if value := res.Get("connectionProfile.id"); value.Exists() && !data.ConnectionProfileId.IsNull() {
+		data.ConnectionProfileId = types.StringValue(value.String())
+	} else {
+		data.ConnectionProfileId = types.StringNull()
+	}
 		(*parent).CertificateToConnectionProfileMappings[i] = data
 	}
 }

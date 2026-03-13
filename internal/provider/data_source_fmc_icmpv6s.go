@@ -63,7 +63,7 @@ func (d *ICMPv6sDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 			},
 			"items": schema.MapNestedAttribute{
 				MarkdownDescription: "Map of icmpv6s. The key of the map is the name of the individual ICMPv6 Object.",
@@ -131,7 +131,7 @@ func (d *ICMPv6sDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
-
+	
 	// Get all objects from FMC
 	urlPath := config.getPath() + "?expanded=true"
 	res, err := d.client.Get(urlPath, reqMods...)

@@ -31,7 +31,7 @@ import (
 
 func TestAccFmcChassisSubinterface(t *testing.T) {
 	if os.Getenv("TF_VAR_chassis_id") == "" || os.Getenv("TF_VAR_chassis_interface_name") == "" {
-		t.Skip("skipping test, set environment variable TF_VAR_chassis_id and TF_VAR_chassis_interface_name")
+        t.Skip("skipping test, set environment variable TF_VAR_chassis_id and TF_VAR_chassis_interface_name")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("fmc_chassis_subinterface.test", "type"))
@@ -43,19 +43,19 @@ func TestAccFmcChassisSubinterface(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccFmcChassisSubinterfacePrerequisitesConfig + testAccFmcChassisSubinterfaceConfig_minimum(),
+			Config: testAccFmcChassisSubinterfacePrerequisitesConfig+testAccFmcChassisSubinterfaceConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcChassisSubinterfacePrerequisitesConfig + testAccFmcChassisSubinterfaceConfig_all(),
-		Check:  resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcChassisSubinterfacePrerequisitesConfig+testAccFmcChassisSubinterfaceConfig_all(),
+		Check: resource.ComposeTestCheckFunc(checks...),
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps:                    steps,
+		Steps: steps,
 	})
 }
 
@@ -66,7 +66,6 @@ func TestAccFmcChassisSubinterface(t *testing.T) {
 const testAccFmcChassisSubinterfacePrerequisitesConfig = `
 variable "chassis_id" { default = null } // tests will set $TF_VAR_chassis_id
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -82,7 +81,6 @@ func testAccFmcChassisSubinterfaceConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
-
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

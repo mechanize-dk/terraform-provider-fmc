@@ -31,7 +31,7 @@ import (
 
 func TestAccDataSourceFmcDeviceOSPFInterface(t *testing.T) {
 	if os.Getenv("TF_VAR_device_id") == "" {
-		t.Skip("skipping test, set environment variable TF_VAR_device_id")
+        t.Skip("skipping test, set environment variable TF_VAR_device_id")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("data.fmc_device_ospf_interface.test", "type"))
@@ -51,8 +51,8 @@ func TestAccDataSourceFmcDeviceOSPFInterface(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcDeviceOSPFInterfacePrerequisitesConfig + testAccDataSourceFmcDeviceOSPFInterfaceConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcDeviceOSPFInterfacePrerequisitesConfig+testAccDataSourceFmcDeviceOSPFInterfaceConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -73,7 +73,6 @@ resource "fmc_device_physical_interface" "test" {
   logical_name = "OSPF_Interface"
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -102,5 +101,7 @@ func testAccDataSourceFmcDeviceOSPFInterfaceConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

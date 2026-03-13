@@ -34,15 +34,39 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type FTDPlatformSettingsSyslogRateLimit struct {
-	Id                    types.String `tfsdk:"id"`
-	Domain                types.String `tfsdk:"domain"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
 	FtdPlatformSettingsId types.String `tfsdk:"ftd_platform_settings_id"`
-	Type                  types.String `tfsdk:"type"`
-	RateLimitType         types.String `tfsdk:"rate_limit_type"`
-	RateLimitValue        types.String `tfsdk:"rate_limit_value"`
-	NumberOfMessages      types.Int64  `tfsdk:"number_of_messages"`
-	Interval              types.Int64  `tfsdk:"interval"`
+	Type types.String `tfsdk:"type"`
+	RateLimitType types.String `tfsdk:"rate_limit_type"`
+	RateLimitValue types.String `tfsdk:"rate_limit_value"`
+	NumberOfMessages types.Int64 `tfsdk:"number_of_messages"`
+	Interval types.Int64 `tfsdk:"interval"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -54,7 +78,7 @@ var minFMCVersionFTDPlatformSettingsSyslogRateLimit = version.Must(version.NewVe
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data FTDPlatformSettingsSyslogRateLimit) getPath() string {
-	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/syslog/ratelimits", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
+		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/syslog/ratelimits", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -66,16 +90,16 @@ func (data FTDPlatformSettingsSyslogRateLimit) toBody(ctx context.Context, state
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.RateLimitType.IsNull() {
+	if !data.RateLimitType.IsNull()   {
 		body, _ = sjson.Set(body, "rateLimitType", data.RateLimitType.ValueString())
 	}
-	if !data.RateLimitValue.IsNull() {
+	if !data.RateLimitValue.IsNull()   {
 		body, _ = sjson.Set(body, "value", data.RateLimitValue.ValueString())
 	}
-	if !data.NumberOfMessages.IsNull() {
+	if !data.NumberOfMessages.IsNull()   {
 		body, _ = sjson.Set(body, "numberOfMessages", data.NumberOfMessages.ValueInt64())
 	}
-	if !data.Interval.IsNull() {
+	if !data.Interval.IsNull()   {
 		body, _ = sjson.Set(body, "intervalInSeconds", data.Interval.ValueInt64())
 	}
 	return body
@@ -116,6 +140,7 @@ func (data *FTDPlatformSettingsSyslogRateLimit) fromBody(ctx context.Context, re
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might

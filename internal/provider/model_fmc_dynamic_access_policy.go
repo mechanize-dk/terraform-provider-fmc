@@ -31,13 +31,31 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type DynamicAccessPolicy struct {
-	Id                           types.String `tfsdk:"id"`
-	Domain                       types.String `tfsdk:"domain"`
-	Name                         types.String `tfsdk:"name"`
-	Type                         types.String `tfsdk:"type"`
-	Description                  types.String `tfsdk:"description"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Name types.String `tfsdk:"name"`
+	Type types.String `tfsdk:"type"`
+	Description types.String `tfsdk:"description"`
 	SecureClientPosturePackageId types.String `tfsdk:"secure_client_posture_package_id"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -48,7 +66,7 @@ type DynamicAccessPolicy struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data DynamicAccessPolicy) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/dynamicaccesspolicies"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/dynamicaccesspolicies"
 }
 
 // End of section. //template:end getPath
@@ -60,13 +78,13 @@ func (data DynamicAccessPolicy) toBody(ctx context.Context, state DynamicAccessP
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()   {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.SecureClientPosturePackageId.IsNull() {
+	if !data.SecureClientPosturePackageId.IsNull()   {
 		body, _ = sjson.Set(body, "hostscanPackage.id", data.SecureClientPosturePackageId.ValueString())
 	}
 	return body
@@ -102,6 +120,7 @@ func (data *DynamicAccessPolicy) fromBody(ctx context.Context, res gjson.Result)
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -150,28 +169,42 @@ func (data *DynamicAccessPolicy) fromBodyUnknowns(ctx context.Context, res gjson
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
+
+
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
+
+
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
+
+
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
+
+
 
 // End of section. //template:end adjustBodyBulk

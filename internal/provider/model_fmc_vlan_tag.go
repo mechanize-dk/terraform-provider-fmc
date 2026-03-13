@@ -31,15 +31,42 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type VLANTag struct {
-	Id          types.String `tfsdk:"id"`
-	Domain      types.String `tfsdk:"domain"`
-	Name        types.String `tfsdk:"name"`
-	Type        types.String `tfsdk:"type"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Name types.String `tfsdk:"name"`
+	Type types.String `tfsdk:"type"`
 	Description types.String `tfsdk:"description"`
-	Overridable types.Bool   `tfsdk:"overridable"`
-	StartTag    types.String `tfsdk:"start_tag"`
-	EndTag      types.String `tfsdk:"end_tag"`
+	Overridable types.Bool `tfsdk:"overridable"`
+	StartTag types.String `tfsdk:"start_tag"`
+	EndTag types.String `tfsdk:"end_tag"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -50,7 +77,7 @@ type VLANTag struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data VLANTag) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/vlantags"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/vlantags"
 }
 
 // End of section. //template:end getPath
@@ -62,20 +89,20 @@ func (data VLANTag) toBody(ctx context.Context, state VLANTag) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "VlanTag")
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()   {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.Overridable.IsNull() {
+	if !data.Overridable.IsNull()   {
 		body, _ = sjson.Set(body, "overridable", data.Overridable.ValueBool())
 	}
-	if !data.StartTag.IsNull() {
+	if !data.StartTag.IsNull()   {
 		body, _ = sjson.Set(body, "data.startTag", data.StartTag.ValueString())
 	}
-	if !data.EndTag.IsNull() {
+	if !data.EndTag.IsNull()   {
 		body, _ = sjson.Set(body, "data.endTag", data.EndTag.ValueString())
 	}
 	return body
@@ -121,6 +148,7 @@ func (data *VLANTag) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might

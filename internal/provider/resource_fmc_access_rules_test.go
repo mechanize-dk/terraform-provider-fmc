@@ -54,19 +54,19 @@ func TestAccFmcAccessRules(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccFmcAccessRulesPrerequisitesConfig + testAccFmcAccessRulesConfig_minimum(),
+			Config: testAccFmcAccessRulesPrerequisitesConfig+testAccFmcAccessRulesConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcAccessRulesPrerequisitesConfig + testAccFmcAccessRulesConfig_all(),
-		Check:  resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcAccessRulesPrerequisitesConfig+testAccFmcAccessRulesConfig_all(),
+		Check: resource.ComposeTestCheckFunc(checks...),
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps:                    steps,
+		Steps: steps,
 	})
 }
 
@@ -104,7 +104,6 @@ resource "fmc_vlan_tag" "test" {
   end_tag   = "11"
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -115,7 +114,6 @@ func testAccFmcAccessRulesConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
-
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

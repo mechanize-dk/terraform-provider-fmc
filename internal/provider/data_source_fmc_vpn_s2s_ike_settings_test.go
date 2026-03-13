@@ -40,8 +40,8 @@ func TestAccDataSourceFmcVPNS2SIKESettings(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcVPNS2SIKESettingsPrerequisitesConfig + testAccDataSourceFmcVPNS2SIKESettingsConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcVPNS2SIKESettingsPrerequisitesConfig+testAccDataSourceFmcVPNS2SIKESettingsConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -74,7 +74,6 @@ resource "fmc_ikev2_policies" "test" {
   }
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -101,5 +100,7 @@ func testAccDataSourceFmcVPNS2SIKESettingsConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

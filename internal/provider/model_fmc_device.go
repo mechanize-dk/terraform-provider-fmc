@@ -34,30 +34,102 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type Device struct {
-	Id                     types.String `tfsdk:"id"`
-	Domain                 types.String `tfsdk:"domain"`
-	Name                   types.String `tfsdk:"name"`
-	Type                   types.String `tfsdk:"type"`
-	Host                   types.String `tfsdk:"host"`
-	NatId                  types.String `tfsdk:"nat_id"`
-	Licenses               types.Set    `tfsdk:"licenses"`
-	RegistrationKey        types.String `tfsdk:"registration_key"`
-	DeviceGroupId          types.String `tfsdk:"device_group_id"`
-	ProhibitPacketTransfer types.Bool   `tfsdk:"prohibit_packet_transfer"`
-	PerformanceTier        types.String `tfsdk:"performance_tier"`
-	SnortEngine            types.String `tfsdk:"snort_engine"`
-	ObjectGroupSearch      types.Bool   `tfsdk:"object_group_search"`
-	AccessControlPolicyId  types.String `tfsdk:"access_control_policy_id"`
-	NatPolicyId            types.String `tfsdk:"nat_policy_id"`
-	HealthPolicyId         types.String `tfsdk:"health_policy_id"`
-	ContainerId            types.String `tfsdk:"container_id"`
-	ContainerType          types.String `tfsdk:"container_type"`
-	ContainerName          types.String `tfsdk:"container_name"`
-	ContainerRole          types.String `tfsdk:"container_role"`
-	ContainerStatus        types.String `tfsdk:"container_status"`
-	IsPartOfContainer      types.Bool   `tfsdk:"is_part_of_container"`
-	IsMultiInstance        types.Bool   `tfsdk:"is_multi_instance"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Name types.String `tfsdk:"name"`
+	Type types.String `tfsdk:"type"`
+	Host types.String `tfsdk:"host"`
+	NatId types.String `tfsdk:"nat_id"`
+	Licenses types.Set `tfsdk:"licenses"`
+	RegistrationKey types.String `tfsdk:"registration_key"`
+	DeviceGroupId types.String `tfsdk:"device_group_id"`
+	ProhibitPacketTransfer types.Bool `tfsdk:"prohibit_packet_transfer"`
+	PerformanceTier types.String `tfsdk:"performance_tier"`
+	SnortEngine types.String `tfsdk:"snort_engine"`
+	ObjectGroupSearch types.Bool `tfsdk:"object_group_search"`
+	AccessControlPolicyId types.String `tfsdk:"access_control_policy_id"`
+	NatPolicyId types.String `tfsdk:"nat_policy_id"`
+	HealthPolicyId types.String `tfsdk:"health_policy_id"`
+	ContainerId types.String `tfsdk:"container_id"`
+	ContainerType types.String `tfsdk:"container_type"`
+	ContainerName types.String `tfsdk:"container_name"`
+	ContainerRole types.String `tfsdk:"container_role"`
+	ContainerStatus types.String `tfsdk:"container_status"`
+	IsPartOfContainer types.Bool `tfsdk:"is_part_of_container"`
+	IsMultiInstance types.Bool `tfsdk:"is_multi_instance"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -68,7 +140,7 @@ type Device struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data Device) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/devices/devicerecords"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/devices/devicerecords"
 }
 
 // End of section. //template:end getPath
@@ -80,14 +152,14 @@ func (data Device) toBody(ctx context.Context, state Device) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "Device")
-	if !data.Host.IsNull() {
+	if !data.Host.IsNull()   {
 		body, _ = sjson.Set(body, "hostName", data.Host.ValueString())
 	}
-	if !data.NatId.IsNull() {
+	if !data.NatId.IsNull()   {
 		body, _ = sjson.Set(body, "natID", data.NatId.ValueString())
 	}
 	if !data.Licenses.IsNull() {
@@ -95,31 +167,31 @@ func (data Device) toBody(ctx context.Context, state Device) string {
 		data.Licenses.ElementsAs(ctx, &values, false)
 		body, _ = sjson.Set(body, "license_caps", values)
 	}
-	if !data.RegistrationKey.IsNull() {
+	if !data.RegistrationKey.IsNull()   {
 		body, _ = sjson.Set(body, "regKey", data.RegistrationKey.ValueString())
 	}
-	if !data.DeviceGroupId.IsNull() {
+	if !data.DeviceGroupId.IsNull()   {
 		body, _ = sjson.Set(body, "deviceGroup.id", data.DeviceGroupId.ValueString())
 	}
-	if !data.ProhibitPacketTransfer.IsNull() {
+	if !data.ProhibitPacketTransfer.IsNull()   {
 		body, _ = sjson.Set(body, "prohibitPacketTransfer", data.ProhibitPacketTransfer.ValueBool())
 	}
-	if !data.PerformanceTier.IsNull() {
+	if !data.PerformanceTier.IsNull()   {
 		body, _ = sjson.Set(body, "performanceTier", data.PerformanceTier.ValueString())
 	}
-	if !data.SnortEngine.IsNull() {
+	if !data.SnortEngine.IsNull()   {
 		body, _ = sjson.Set(body, "snortEngine", data.SnortEngine.ValueString())
 	}
-	if !data.ObjectGroupSearch.IsNull() {
+	if !data.ObjectGroupSearch.IsNull()   {
 		body, _ = sjson.Set(body, "advanced.enableOGS", data.ObjectGroupSearch.ValueBool())
 	}
-	if !data.AccessControlPolicyId.IsNull() {
+	if !data.AccessControlPolicyId.IsNull()   {
 		body, _ = sjson.Set(body, "accessPolicy.id", data.AccessControlPolicyId.ValueString())
 	}
-	if !data.NatPolicyId.IsNull() {
+	if !data.NatPolicyId.IsNull()   {
 		body, _ = sjson.Set(body, "dummy_nat_policy_id", data.NatPolicyId.ValueString())
 	}
-	if !data.HealthPolicyId.IsNull() {
+	if !data.HealthPolicyId.IsNull()   {
 		body, _ = sjson.Set(body, "healthPolicy.id", data.HealthPolicyId.ValueString())
 	}
 	return body
@@ -225,6 +297,7 @@ func (data *Device) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -337,41 +410,41 @@ func (data *Device) fromBodyUnknowns(ctx context.Context, res gjson.Result) {
 			data.Type = types.StringNull()
 		}
 	}
-	if value := res.Get("metadata.containerDetails.id"); value.Exists() {
-		data.ContainerId = types.StringValue(value.String())
-	} else {
-		data.ContainerId = types.StringNull()
-	}
-	if value := res.Get("metadata.containerDetails.type"); value.Exists() {
-		data.ContainerType = types.StringValue(value.String())
-	} else {
-		data.ContainerType = types.StringNull()
-	}
-	if value := res.Get("metadata.containerDetails.name"); value.Exists() {
-		data.ContainerName = types.StringValue(value.String())
-	} else {
-		data.ContainerName = types.StringNull()
-	}
-	if value := res.Get("metadata.containerDetails.role"); value.Exists() {
-		data.ContainerRole = types.StringValue(value.String())
-	} else {
-		data.ContainerRole = types.StringNull()
-	}
-	if value := res.Get("metadata.containerDetails.status"); value.Exists() {
-		data.ContainerStatus = types.StringValue(value.String())
-	} else {
-		data.ContainerStatus = types.StringNull()
-	}
-	if value := res.Get("metadata.isPartOfContainer"); value.Exists() {
-		data.IsPartOfContainer = types.BoolValue(value.Bool())
-	} else {
-		data.IsPartOfContainer = types.BoolNull()
-	}
-	if value := res.Get("metadata.isMultiInstance"); value.Exists() {
-		data.IsMultiInstance = types.BoolValue(value.Bool())
-	} else {
-		data.IsMultiInstance = types.BoolNull()
-	}
+		if value := res.Get("metadata.containerDetails.id"); value.Exists() {
+			data.ContainerId = types.StringValue(value.String())
+		} else {
+			data.ContainerId = types.StringNull()
+		}
+		if value := res.Get("metadata.containerDetails.type"); value.Exists() {
+			data.ContainerType = types.StringValue(value.String())
+		} else {
+			data.ContainerType = types.StringNull()
+		}
+		if value := res.Get("metadata.containerDetails.name"); value.Exists() {
+			data.ContainerName = types.StringValue(value.String())
+		} else {
+			data.ContainerName = types.StringNull()
+		}
+		if value := res.Get("metadata.containerDetails.role"); value.Exists() {
+			data.ContainerRole = types.StringValue(value.String())
+		} else {
+			data.ContainerRole = types.StringNull()
+		}
+		if value := res.Get("metadata.containerDetails.status"); value.Exists() {
+			data.ContainerStatus = types.StringValue(value.String())
+		} else {
+			data.ContainerStatus = types.StringNull()
+		}
+		if value := res.Get("metadata.isPartOfContainer"); value.Exists() {
+			data.IsPartOfContainer = types.BoolValue(value.Bool())
+		} else {
+			data.IsPartOfContainer = types.BoolNull()
+		}
+		if value := res.Get("metadata.isMultiInstance"); value.Exists() {
+			data.IsMultiInstance = types.BoolValue(value.Bool())
+		} else {
+			data.IsMultiInstance = types.BoolNull()
+		}
 }
 
 // End of section. //template:end fromBodyUnknowns

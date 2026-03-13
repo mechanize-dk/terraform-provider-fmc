@@ -79,7 +79,7 @@ func (r *DevicePhysicalInterfaceResource) Schema(ctx context.Context, req resour
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -89,6 +89,7 @@ func (r *DevicePhysicalInterfaceResource) Schema(ctx context.Context, req resour
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"type": schema.StringAttribute{
@@ -96,6 +97,7 @@ func (r *DevicePhysicalInterfaceResource) Schema(ctx context.Context, req resour
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"logical_name": schema.StringAttribute{
@@ -117,10 +119,10 @@ func (r *DevicePhysicalInterfaceResource) Schema(ctx context.Context, req resour
 				Optional:            true,
 			},
 			"mode": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Mode of the interface. Use INLINE if, and only if, the interface is part of fmc_inline_set with tap_mode=false or tap_mode unset. Use TAP if, and only if, the interface is part of fmc_inline_set with tap_mode = true. Use ERSPAN only when both erspan_source_ip and erspan_flow_id are set.").AddStringEnumDescription("INLINE", "PASSIVE", "TAP", "ERSPAN", "NONE", "SWITCHPORT").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Mode of the interface. Use INLINE if, and only if, the interface is part of fmc_inline_set with tap_mode=false or tap_mode unset. Use TAP if, and only if, the interface is part of fmc_inline_set with tap_mode = true. Use ERSPAN only when both erspan_source_ip and erspan_flow_id are set.").AddStringEnumDescription("INLINE", "PASSIVE", "TAP", "ERSPAN", "NONE", "SWITCHPORT", ).String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("INLINE", "PASSIVE", "TAP", "ERSPAN", "NONE", "SWITCHPORT"),
+					stringvalidator.OneOf("INLINE", "PASSIVE", "TAP", "ERSPAN", "NONE", "SWITCHPORT", ),
 				},
 			},
 			"security_zone_id": schema.StringAttribute{
@@ -189,10 +191,10 @@ func (r *DevicePhysicalInterfaceResource) Schema(ctx context.Context, req resour
 				Optional:            true,
 			},
 			"ipv4_pppoe_authentication": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("PPPoE Configuration - PPPoE Authentication, can be one of PAP, CHAP, MSCHAP.").AddStringEnumDescription("PAP", "CHAP", "MSCHAP").String,
+				MarkdownDescription: helpers.NewAttributeDescription("PPPoE Configuration - PPPoE Authentication, can be one of PAP, CHAP, MSCHAP.").AddStringEnumDescription("PAP", "CHAP", "MSCHAP", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("PAP", "CHAP", "MSCHAP"),
+					stringvalidator.OneOf("PAP", "CHAP", "MSCHAP", ),
 				},
 			},
 			"ipv4_pppoe_route_metric": schema.Int64Attribute{
@@ -346,10 +348,10 @@ func (r *DevicePhysicalInterfaceResource) Schema(ctx context.Context, req resour
 				Optional:            true,
 			},
 			"ip_based_monitoring_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("PPPoE Configuration - PPPoE route metric, [ AUTO, PEER_IPV4, PEER_IPV6, AUTO4, AUTO6 ]").AddStringEnumDescription("AUTO", "PEER_IPV4", "PEER_IPV6", "AUTO4", "AUTO6").String,
+				MarkdownDescription: helpers.NewAttributeDescription("PPPoE Configuration - PPPoE route metric, [ AUTO, PEER_IPV4, PEER_IPV6, AUTO4, AUTO6 ]").AddStringEnumDescription("AUTO", "PEER_IPV4", "PEER_IPV6", "AUTO4", "AUTO6", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("AUTO", "PEER_IPV4", "PEER_IPV6", "AUTO4", "AUTO6"),
+					stringvalidator.OneOf("AUTO", "PEER_IPV4", "PEER_IPV6", "AUTO4", "AUTO6", ),
 				},
 			},
 			"ip_based_monitoring_next_hop": schema.StringAttribute{
@@ -361,17 +363,17 @@ func (r *DevicePhysicalInterfaceResource) Schema(ctx context.Context, req resour
 				Optional:            true,
 			},
 			"duplex": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Duplex configuraion.").AddStringEnumDescription("AUTO", "FULL", "HALF").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Duplex configuraion.").AddStringEnumDescription("AUTO", "FULL", "HALF", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("AUTO", "FULL", "HALF"),
+					stringvalidator.OneOf("AUTO", "FULL", "HALF", ),
 				},
 			},
 			"speed": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Speed configuraion, can be one of AUTO, TEN, HUNDRED, THOUSAND, TEN_THOUSAND, TWENTY_FIVE_THOUSAND, FORTY_THOUSAND, HUNDRED_THOUSAND, TWO_HUNDRED_THOUSAND, DETECT_SFP").AddStringEnumDescription("AUTO", "TEN", "HUNDRED", "THOUSAND", "TEN_THOUSAND", "TWENTY_FIVE_THOUSAND", "FORTY_THOUSAND", "HUNDRED_THOUSAND", "TWO_HUNDRED_THOUSAND", "DETECT_SFP").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Speed configuraion, can be one of AUTO, TEN, HUNDRED, THOUSAND, TEN_THOUSAND, TWENTY_FIVE_THOUSAND, FORTY_THOUSAND, HUNDRED_THOUSAND, TWO_HUNDRED_THOUSAND, DETECT_SFP").AddStringEnumDescription("AUTO", "TEN", "HUNDRED", "THOUSAND", "TEN_THOUSAND", "TWENTY_FIVE_THOUSAND", "FORTY_THOUSAND", "HUNDRED_THOUSAND", "TWO_HUNDRED_THOUSAND", "DETECT_SFP", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("AUTO", "TEN", "HUNDRED", "THOUSAND", "TEN_THOUSAND", "TWENTY_FIVE_THOUSAND", "FORTY_THOUSAND", "HUNDRED_THOUSAND", "TWO_HUNDRED_THOUSAND", "DETECT_SFP"),
+					stringvalidator.OneOf("AUTO", "TEN", "HUNDRED", "THOUSAND", "TEN_THOUSAND", "TWENTY_FIVE_THOUSAND", "FORTY_THOUSAND", "HUNDRED_THOUSAND", "TWO_HUNDRED_THOUSAND", "DETECT_SFP", ),
 				},
 			},
 			"lldp_receive": schema.BoolAttribute{
@@ -383,17 +385,17 @@ func (r *DevicePhysicalInterfaceResource) Schema(ctx context.Context, req resour
 				Optional:            true,
 			},
 			"flow_control_send": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Flow Control Send configuraion, can be one of ON, OFF.").AddStringEnumDescription("ON", "OFF").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Flow Control Send configuraion, can be one of ON, OFF.").AddStringEnumDescription("ON", "OFF", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("ON", "OFF"),
+					stringvalidator.OneOf("ON", "OFF", ),
 				},
 			},
 			"fec_mode": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Path Monitoring - Monitoring Type, can be one of AUTO, CL108RS, CL74FC, CL91RS, DISABLE.").AddStringEnumDescription("AUTO", "CL108RS", "CL74FC", "CL91RS", "DISABLE").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Path Monitoring - Monitoring Type, can be one of AUTO, CL108RS, CL74FC, CL91RS, DISABLE.").AddStringEnumDescription("AUTO", "CL108RS", "CL74FC", "CL91RS", "DISABLE", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("AUTO", "CL108RS", "CL74FC", "CL91RS", "DISABLE"),
+					stringvalidator.OneOf("AUTO", "CL108RS", "CL74FC", "CL91RS", "DISABLE", ),
 				},
 			},
 			"management_access": schema.BoolAttribute{
@@ -505,7 +507,7 @@ func (r *DevicePhysicalInterfaceResource) Create(ctx context.Context, req resour
 	if !plan.Domain.IsNull() && plan.Domain.ValueString() != "" {
 		reqMods = append(reqMods, fmc.DomainName(plan.Domain.ValueString()))
 	}
-
+	
 	tflog.Debug(ctx, fmt.Sprintf("%s: considering object name %s", plan.Id, plan.Name))
 	if plan.Id.ValueString() == "" && plan.Name.ValueString() != "" {
 		offset := 0
@@ -519,7 +521,7 @@ func (r *DevicePhysicalInterfaceResource) Create(ctx context.Context, req resour
 			}
 			if value := res.Get("items"); len(value.Array()) > 0 {
 				value.ForEach(func(k, v gjson.Result) bool {
-					if plan.Name.ValueString() == v.Get("name").String() {
+					if plan.Name.ValueString()== v.Get("name").String(){
 						plan.Id = types.StringValue(v.Get("id").String())
 						tflog.Debug(ctx, fmt.Sprintf("%s: Found object with name '%v', id: %s", plan.Id.ValueString(), plan.Name.ValueString(), plan.Id.ValueString()))
 						return false
@@ -580,13 +582,14 @@ func (r *DevicePhysicalInterfaceResource) Read(ctx context.Context, req resource
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
+	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-
+	
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else if err != nil {
+	} else  if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -639,7 +642,7 @@ func (r *DevicePhysicalInterfaceResource) Update(ctx context.Context, req resour
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -701,23 +704,22 @@ func (r *DevicePhysicalInterfaceResource) Delete(ctx context.Context, req resour
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *DevicePhysicalInterfaceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Parse import ID
-	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<device_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
-	match := inputPattern.FindStringSubmatch(req.ID)
-	if match == nil {
-		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<device_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		// Parse import ID
+		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<device_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
+		match := inputPattern.FindStringSubmatch(req.ID)
+		if match == nil {
+			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<device_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	// Set domain, if provided
-	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), match[inputPattern.SubexpIndex("device_id")])...)
+		// Set domain, if provided
+		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), match[inputPattern.SubexpIndex("device_id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import

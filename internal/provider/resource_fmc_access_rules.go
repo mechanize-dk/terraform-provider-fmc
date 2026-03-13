@@ -51,7 +51,7 @@ import (
 
 // Ensure provider defined types fully satisfy framework interfaces
 var (
-	_ resource.Resource = &AccessRulesResource{}
+	_ resource.Resource                = &AccessRulesResource{}
 )
 
 func NewAccessRulesResource() resource.Resource {
@@ -81,7 +81,7 @@ func (r *AccessRulesResource) Schema(ctx context.Context, req resource.SchemaReq
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -91,6 +91,7 @@ func (r *AccessRulesResource) Schema(ctx context.Context, req resource.SchemaReq
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"category_name": schema.StringAttribute{
@@ -98,16 +99,18 @@ func (r *AccessRulesResource) Schema(ctx context.Context, req resource.SchemaReq
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"section": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The section of the policy to which the rule belongs. Either 'section' or 'category_name' can be set.").AddStringEnumDescription("default", "mandatory").String,
+				MarkdownDescription: helpers.NewAttributeDescription("The section of the policy to which the rule belongs. Either 'section' or 'category_name' can be set.").AddStringEnumDescription("default", "mandatory", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("default", "mandatory"),
+					stringvalidator.OneOf("default", "mandatory", ),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"items": schema.ListNestedAttribute{
@@ -120,10 +123,10 @@ func (r *AccessRulesResource) Schema(ctx context.Context, req resource.SchemaReq
 							Computed:            true,
 						},
 						"action": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Rule action.").AddStringEnumDescription("ALLOW", "TRUST", "BLOCK", "MONITOR", "BLOCK_RESET", "BLOCK_INTERACTIVE", "BLOCK_RESET_INTERACTIVE").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Rule action.").AddStringEnumDescription("ALLOW", "TRUST", "BLOCK", "MONITOR", "BLOCK_RESET", "BLOCK_INTERACTIVE", "BLOCK_RESET_INTERACTIVE", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("ALLOW", "TRUST", "BLOCK", "MONITOR", "BLOCK_RESET", "BLOCK_INTERACTIVE", "BLOCK_RESET_INTERACTIVE"),
+								stringvalidator.OneOf("ALLOW", "TRUST", "BLOCK", "MONITOR", "BLOCK_RESET", "BLOCK_INTERACTIVE", "BLOCK_RESET_INTERACTIVE", ),
 							},
 						},
 						"name": schema.StringAttribute{
@@ -250,10 +253,10 @@ func (r *AccessRulesResource) Schema(ctx context.Context, req resource.SchemaReq
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"protocol": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("IANA protocol number.").AddStringEnumDescription("6", "17").String,
+										MarkdownDescription: helpers.NewAttributeDescription("IANA protocol number.").AddStringEnumDescription("6", "17", ).String,
 										Required:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("6", "17"),
+											stringvalidator.OneOf("6", "17", ),
 										},
 									},
 									"port": schema.StringAttribute{
@@ -281,10 +284,10 @@ func (r *AccessRulesResource) Schema(ctx context.Context, req resource.SchemaReq
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"type": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Type of the object.").AddStringEnumDescription("PortLiteral", "ICMPv4PortLiteral").String,
+										MarkdownDescription: helpers.NewAttributeDescription("Type of the object.").AddStringEnumDescription("PortLiteral", "ICMPv4PortLiteral", ).String,
 										Required:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("PortLiteral", "ICMPv4PortLiteral"),
+											stringvalidator.OneOf("PortLiteral", "ICMPv4PortLiteral", ),
 										},
 									},
 									"port": schema.StringAttribute{
@@ -436,10 +439,10 @@ func (r *AccessRulesResource) Schema(ctx context.Context, req resource.SchemaReq
 										Optional:            true,
 									},
 									"reputation": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Reputation applicable to the URL Category.").AddStringEnumDescription("ANY_EXCEPT_UNKNOWN", "TRUSTED", "FAVORABLE", "NEUTRAL", "QUESTIONABLE", "UNTRUSTED", "ANY_AND_UNKNOWN", "TRUSTED_AND_UNKNOWN", "FAVORABLE_AND_UNKNOWN", "NEUTRAL_AND_UNKNOWN", "QUESTIONABLE_AND_UNKNOWN", "UNTRUSTED_AND_UNKNOWN").String,
+										MarkdownDescription: helpers.NewAttributeDescription("Reputation applicable to the URL Category.").AddStringEnumDescription("ANY_EXCEPT_UNKNOWN", "TRUSTED", "FAVORABLE", "NEUTRAL", "QUESTIONABLE", "UNTRUSTED", "ANY_AND_UNKNOWN", "TRUSTED_AND_UNKNOWN", "FAVORABLE_AND_UNKNOWN", "NEUTRAL_AND_UNKNOWN", "QUESTIONABLE_AND_UNKNOWN", "UNTRUSTED_AND_UNKNOWN", ).String,
 										Optional:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("ANY_EXCEPT_UNKNOWN", "TRUSTED", "FAVORABLE", "NEUTRAL", "QUESTIONABLE", "UNTRUSTED", "ANY_AND_UNKNOWN", "TRUSTED_AND_UNKNOWN", "FAVORABLE_AND_UNKNOWN", "NEUTRAL_AND_UNKNOWN", "QUESTIONABLE_AND_UNKNOWN", "UNTRUSTED_AND_UNKNOWN"),
+											stringvalidator.OneOf("ANY_EXCEPT_UNKNOWN", "TRUSTED", "FAVORABLE", "NEUTRAL", "QUESTIONABLE", "UNTRUSTED", "ANY_AND_UNKNOWN", "TRUSTED_AND_UNKNOWN", "FAVORABLE_AND_UNKNOWN", "NEUTRAL_AND_UNKNOWN", "QUESTIONABLE_AND_UNKNOWN", "UNTRUSTED_AND_UNKNOWN", ),
 										},
 									},
 								},
@@ -480,10 +483,10 @@ func (r *AccessRulesResource) Schema(ctx context.Context, req resource.SchemaReq
 							Optional:            true,
 						},
 						"syslog_severity": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Override the Severity of syslog alerts.").AddStringEnumDescription("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Override the Severity of syslog alerts.").AddStringEnumDescription("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING", ).String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING"),
+								stringvalidator.OneOf("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING", ),
 							},
 						},
 						"snmp_alert_id": schema.StringAttribute{

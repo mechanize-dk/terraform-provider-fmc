@@ -31,7 +31,7 @@ import (
 
 func TestAccDataSourceFmcChassisSubinterface(t *testing.T) {
 	if os.Getenv("TF_VAR_chassis_id") == "" || os.Getenv("TF_VAR_chassis_interface_name") == "" {
-		t.Skip("skipping test, set environment variable TF_VAR_chassis_id and TF_VAR_chassis_interface_name")
+        t.Skip("skipping test, set environment variable TF_VAR_chassis_id and TF_VAR_chassis_interface_name")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("data.fmc_chassis_subinterface.test", "type"))
@@ -45,12 +45,12 @@ func TestAccDataSourceFmcChassisSubinterface(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcChassisSubinterfacePrerequisitesConfig + testAccDataSourceFmcChassisSubinterfaceConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcChassisSubinterfacePrerequisitesConfig+testAccDataSourceFmcChassisSubinterfaceConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcChassisSubinterfacePrerequisitesConfig + testAccNamedDataSourceFmcChassisSubinterfaceConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcChassisSubinterfacePrerequisitesConfig+testAccNamedDataSourceFmcChassisSubinterfaceConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -63,7 +63,6 @@ func TestAccDataSourceFmcChassisSubinterface(t *testing.T) {
 const testAccDataSourceFmcChassisSubinterfacePrerequisitesConfig = `
 variable "chassis_id" { default = null } // tests will set $TF_VAR_chassis_id
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

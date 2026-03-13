@@ -85,7 +85,7 @@ func (r *DeviceResource) Schema(ctx context.Context, req resource.SchemaRequest,
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -99,6 +99,7 @@ func (r *DeviceResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"host": schema.StringAttribute{
@@ -106,6 +107,7 @@ func (r *DeviceResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"nat_id": schema.StringAttribute{
@@ -113,12 +115,12 @@ func (r *DeviceResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				Optional:            true,
 			},
 			"licenses": schema.SetAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Array of strings representing the license capabilities on the managed device.").AddStringEnumDescription("ESSENTIALS", "IPS", "URL", "MALWARE_DEFENSE", "CARRIER", "SECURE_CLIENT_PREMIER", "SECURE_CLIENT_PREMIER_ADVANTAGE", "SECURE_CLIENT_VPNOnly", "BASE", "THREAT", "PROTECT", "CONTROL", "URLFilter", "MALWARE", "VPN", "SSL").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Array of strings representing the license capabilities on the managed device.").AddStringEnumDescription("ESSENTIALS", "IPS", "URL", "MALWARE_DEFENSE", "CARRIER", "SECURE_CLIENT_PREMIER", "SECURE_CLIENT_PREMIER_ADVANTAGE", "SECURE_CLIENT_VPNOnly", "BASE", "THREAT", "PROTECT", "CONTROL", "URLFilter", "MALWARE", "VPN", "SSL", ).String,
 				ElementType:         types.StringType,
 				Required:            true,
 				Validators: []validator.Set{
 					setvalidator.ValueStringsAre(
-						stringvalidator.OneOf("ESSENTIALS", "IPS", "URL", "MALWARE_DEFENSE", "CARRIER", "SECURE_CLIENT_PREMIER", "SECURE_CLIENT_PREMIER_ADVANTAGE", "SECURE_CLIENT_VPNOnly", "BASE", "THREAT", "PROTECT", "CONTROL", "URLFilter", "MALWARE", "VPN", "SSL"),
+						stringvalidator.OneOf("ESSENTIALS", "IPS", "URL", "MALWARE_DEFENSE", "CARRIER", "SECURE_CLIENT_PREMIER", "SECURE_CLIENT_PREMIER_ADVANTAGE", "SECURE_CLIENT_VPNOnly", "BASE", "THREAT", "PROTECT", "CONTROL", "URLFilter", "MALWARE", "VPN", "SSL", ),
 					),
 				},
 			},
@@ -135,17 +137,17 @@ func (r *DeviceResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				Optional:            true,
 			},
 			"performance_tier": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Performance tier for the managed device.").AddStringEnumDescription("FTDv", "FTDv5", "FTDv10", "FTDv20", "FTDv30", "FTDv50", "FTDv100", "Legacy").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Performance tier for the managed device.").AddStringEnumDescription("FTDv", "FTDv5", "FTDv10", "FTDv20", "FTDv30", "FTDv50", "FTDv100", "Legacy", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("FTDv", "FTDv5", "FTDv10", "FTDv20", "FTDv30", "FTDv50", "FTDv100", "Legacy"),
+					stringvalidator.OneOf("FTDv", "FTDv5", "FTDv10", "FTDv20", "FTDv30", "FTDv50", "FTDv100", "Legacy", ),
 				},
 			},
 			"snort_engine": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("SNORT engine version to be enabled.").AddStringEnumDescription("SNORT2", "SNORT3").String,
+				MarkdownDescription: helpers.NewAttributeDescription("SNORT engine version to be enabled.").AddStringEnumDescription("SNORT2", "SNORT3", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("SNORT2", "SNORT3"),
+					stringvalidator.OneOf("SNORT2", "SNORT3", ),
 				},
 			},
 			"object_group_search": schema.BoolAttribute{
@@ -634,22 +636,21 @@ func (r *DeviceResource) Delete(ctx context.Context, req resource.DeleteRequest,
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *DeviceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Parse import ID
-	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
-	match := inputPattern.FindStringSubmatch(req.ID)
-	if match == nil {
-		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		// Parse import ID
+		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
+		match := inputPattern.FindStringSubmatch(req.ID)
+		if match == nil {
+			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	// Set domain, if provided
-	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+		// Set domain, if provided
+		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import

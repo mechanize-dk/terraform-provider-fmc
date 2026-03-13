@@ -76,7 +76,7 @@ func (r *SLAMonitorResource) Schema(ctx context.Context, req resource.SchemaRequ
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -90,6 +90,7 @@ func (r *SLAMonitorResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"description": schema.StringAttribute{
@@ -110,7 +111,7 @@ func (r *SLAMonitorResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Validators: []validator.Int64{
 					int64validator.Between(0, 604800000),
 				},
-				Default: int64default.StaticInt64(5000),
+				Default:             int64default.StaticInt64(5000),
 			},
 			"frequency": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Frequency (in seconds) of ICMP echo request transmissions.").AddIntegerRangeDescription(1, 604800).AddDefaultValueDescription("60").String,
@@ -119,7 +120,7 @@ func (r *SLAMonitorResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Validators: []validator.Int64{
 					int64validator.Between(1, 604800),
 				},
-				Default: int64default.StaticInt64(60),
+				Default:             int64default.StaticInt64(60),
 			},
 			"threshold": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Amount of time (in milliseconds) that must pass after an ICMP echo request before a rising threshold is declared.").AddIntegerRangeDescription(0, 2147483647).AddDefaultValueDescription("5000").String,
@@ -128,7 +129,7 @@ func (r *SLAMonitorResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Validators: []validator.Int64{
 					int64validator.Between(0, 2147483647),
 				},
-				Default: int64default.StaticInt64(5000),
+				Default:             int64default.StaticInt64(5000),
 			},
 			"data_size": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Size (in bytes) of the ICMP request packet payload.").AddIntegerRangeDescription(0, 16384).AddDefaultValueDescription("28").String,
@@ -137,7 +138,7 @@ func (r *SLAMonitorResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Validators: []validator.Int64{
 					int64validator.Between(0, 16384),
 				},
-				Default: int64default.StaticInt64(28),
+				Default:             int64default.StaticInt64(28),
 			},
 			"tos": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Type of Service (ToS) defined in the IP header of the ICMP request packet.").AddIntegerRangeDescription(0, 255).AddDefaultValueDescription("0").String,
@@ -146,7 +147,7 @@ func (r *SLAMonitorResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Validators: []validator.Int64{
 					int64validator.Between(0, 255),
 				},
-				Default: int64default.StaticInt64(0),
+				Default:             int64default.StaticInt64(0),
 			},
 			"number_of_packets": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Number of packets that are sent.").AddIntegerRangeDescription(1, 100).AddDefaultValueDescription("1").String,
@@ -155,7 +156,7 @@ func (r *SLAMonitorResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Validators: []validator.Int64{
 					int64validator.Between(1, 100),
 				},
-				Default: int64default.StaticInt64(1),
+				Default:             int64default.StaticInt64(1),
 			},
 			"monitor_address": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("IP address to monitor.").String,
@@ -210,11 +211,48 @@ func (r *SLAMonitorResource) Create(ctx context.Context, req resource.CreateRequ
 	body := plan.toBody(ctx, SLAMonitor{})
 	res, err := r.client.Post(plan.getPath(), body, reqMods...)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
-		return
+		if strings.Contains(err.Error(), "StatusCode 409") || (strings.Contains(err.Error(), "StatusCode 400") && strings.Contains(res.String(), "already exists")) {
+			// Object already exists in FMC - search for existing object and ingest it
+			tflog.Debug(ctx, fmt.Sprintf("%s: Object already exists (409/400), searching for existing object by name", plan.Id.ValueString()))
+			offset := 0
+			limit := 1000
+			for page := 1; ; page++ {
+				queryString := fmt.Sprintf("?limit=%d&offset=%d&expanded=true", limit, offset)
+				listRes, listErr := r.client.Get(plan.getPath()+queryString, reqMods...)
+				if listErr != nil {
+					resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists but failed to retrieve objects (GET), got error: %s, %s", listErr, listRes.String()))
+					return
+				}
+				for _, v := range listRes.Get("items").Array() {
+					if plan.Name.ValueString()== v.Get("name").String(){
+						plan.Id = types.StringValue(v.Get("id").String())
+						tflog.Debug(ctx, fmt.Sprintf("%s: Found existing object with name '%v'", plan.Id.ValueString(), plan.Name.ValueString()))
+						break
+					}
+				}
+				if plan.Id.ValueString() != "" || !listRes.Get("paging.next.0").Exists() {
+					break
+				}
+				offset += limit
+			}
+			if plan.Id.ValueString() == "" {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists (conflict) but failed to find existing object with name '%v': %s", plan.Name.ValueString(), err))
+				return
+			}
+			res, err = r.client.Get(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), reqMods...)
+			if err != nil {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists (conflict) but failed to retrieve existing object (GET), got error: %s, %s", err, res.String()))
+				return
+			}
+			plan.fromBodyUnknowns(ctx, res)
+		} else {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
+			return
+		}
+	} else {
+		plan.Id = types.StringValue(res.Get("id").String())
+		plan.fromBodyUnknowns(ctx, res)
 	}
-	plan.Id = types.StringValue(res.Get("id").String())
-	plan.fromBodyUnknowns(ctx, res)
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -245,13 +283,14 @@ func (r *SLAMonitorResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
+	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-
+	
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else if err != nil {
+	} else  if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -304,7 +343,7 @@ func (r *SLAMonitorResource) Update(ctx context.Context, req resource.UpdateRequ
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -336,7 +375,7 @@ func (r *SLAMonitorResource) Delete(ctx context.Context, req resource.DeleteRequ
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString()), reqMods...)
+	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()), reqMods...)
 	if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
@@ -351,22 +390,21 @@ func (r *SLAMonitorResource) Delete(ctx context.Context, req resource.DeleteRequ
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *SLAMonitorResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Parse import ID
-	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
-	match := inputPattern.FindStringSubmatch(req.ID)
-	if match == nil {
-		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		// Parse import ID
+		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
+		match := inputPattern.FindStringSubmatch(req.ID)
+		if match == nil {
+			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	// Set domain, if provided
-	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+		// Set domain, if provided
+		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import

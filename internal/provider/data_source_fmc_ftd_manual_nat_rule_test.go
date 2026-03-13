@@ -42,8 +42,8 @@ func TestAccDataSourceFmcFTDManualNATRule(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcFTDManualNATRulePrerequisitesConfig + testAccDataSourceFmcFTDManualNATRuleConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcFTDManualNATRulePrerequisitesConfig+testAccDataSourceFmcFTDManualNATRuleConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -76,7 +76,6 @@ resource "fmc_hosts" "test" {
   }
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -101,5 +100,7 @@ func testAccDataSourceFmcFTDManualNATRuleConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

@@ -33,26 +33,83 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type FTDAutoNATRule struct {
-	Id                                      types.String `tfsdk:"id"`
-	Domain                                  types.String `tfsdk:"domain"`
-	FtdNatPolicyId                          types.String `tfsdk:"ftd_nat_policy_id"`
-	Type                                    types.String `tfsdk:"type"`
-	NatType                                 types.String `tfsdk:"nat_type"`
-	DestinationInterfaceId                  types.String `tfsdk:"destination_interface_id"`
-	FallThrough                             types.Bool   `tfsdk:"fall_through"`
-	Ipv6                                    types.Bool   `tfsdk:"ipv6"`
-	NetToNet                                types.Bool   `tfsdk:"net_to_net"`
-	NoProxyArp                              types.Bool   `tfsdk:"no_proxy_arp"`
-	OriginalNetworkId                       types.String `tfsdk:"original_network_id"`
-	OriginalPort                            types.Int64  `tfsdk:"original_port"`
-	Protocol                                types.String `tfsdk:"protocol"`
-	PerformRouteLookup                      types.Bool   `tfsdk:"perform_route_lookup"`
-	SourceInterfaceId                       types.String `tfsdk:"source_interface_id"`
-	TranslateDns                            types.Bool   `tfsdk:"translate_dns"`
-	TranslatedNetworkId                     types.String `tfsdk:"translated_network_id"`
-	TranslatedNetworkIsDestinationInterface types.Bool   `tfsdk:"translated_network_is_destination_interface"`
-	TranslatedPort                          types.Int64  `tfsdk:"translated_port"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	FtdNatPolicyId types.String `tfsdk:"ftd_nat_policy_id"`
+	Type types.String `tfsdk:"type"`
+	NatType types.String `tfsdk:"nat_type"`
+	DestinationInterfaceId types.String `tfsdk:"destination_interface_id"`
+	FallThrough types.Bool `tfsdk:"fall_through"`
+	Ipv6 types.Bool `tfsdk:"ipv6"`
+	NetToNet types.Bool `tfsdk:"net_to_net"`
+	NoProxyArp types.Bool `tfsdk:"no_proxy_arp"`
+	OriginalNetworkId types.String `tfsdk:"original_network_id"`
+	OriginalPort types.Int64 `tfsdk:"original_port"`
+	Protocol types.String `tfsdk:"protocol"`
+	PerformRouteLookup types.Bool `tfsdk:"perform_route_lookup"`
+	SourceInterfaceId types.String `tfsdk:"source_interface_id"`
+	TranslateDns types.Bool `tfsdk:"translate_dns"`
+	TranslatedNetworkId types.String `tfsdk:"translated_network_id"`
+	TranslatedNetworkIsDestinationInterface types.Bool `tfsdk:"translated_network_is_destination_interface"`
+	TranslatedPort types.Int64 `tfsdk:"translated_port"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -63,7 +120,7 @@ type FTDAutoNATRule struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data FTDAutoNATRule) getPath() string {
-	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdnatpolicies/%v/autonatrules", url.QueryEscape(data.FtdNatPolicyId.ValueString()))
+		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdnatpolicies/%v/autonatrules", url.QueryEscape(data.FtdNatPolicyId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -75,49 +132,49 @@ func (data FTDAutoNATRule) toBody(ctx context.Context, state FTDAutoNATRule) str
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.NatType.IsNull() {
+	if !data.NatType.IsNull()   {
 		body, _ = sjson.Set(body, "natType", data.NatType.ValueString())
 	}
-	if !data.DestinationInterfaceId.IsNull() {
+	if !data.DestinationInterfaceId.IsNull()   {
 		body, _ = sjson.Set(body, "destinationInterface.id", data.DestinationInterfaceId.ValueString())
 	}
-	if !data.FallThrough.IsNull() {
+	if !data.FallThrough.IsNull()   {
 		body, _ = sjson.Set(body, "fallThrough", data.FallThrough.ValueBool())
 	}
-	if !data.Ipv6.IsNull() {
+	if !data.Ipv6.IsNull()   {
 		body, _ = sjson.Set(body, "interfaceIpv6", data.Ipv6.ValueBool())
 	}
-	if !data.NetToNet.IsNull() {
+	if !data.NetToNet.IsNull()   {
 		body, _ = sjson.Set(body, "netToNet", data.NetToNet.ValueBool())
 	}
-	if !data.NoProxyArp.IsNull() {
+	if !data.NoProxyArp.IsNull()   {
 		body, _ = sjson.Set(body, "noProxyArp", data.NoProxyArp.ValueBool())
 	}
-	if !data.OriginalNetworkId.IsNull() {
+	if !data.OriginalNetworkId.IsNull()   {
 		body, _ = sjson.Set(body, "originalNetwork.id", data.OriginalNetworkId.ValueString())
 	}
-	if !data.OriginalPort.IsNull() {
+	if !data.OriginalPort.IsNull()   {
 		body, _ = sjson.Set(body, "originalPort", data.OriginalPort.ValueInt64())
 	}
-	if !data.Protocol.IsNull() {
+	if !data.Protocol.IsNull()   {
 		body, _ = sjson.Set(body, "serviceProtocol", data.Protocol.ValueString())
 	}
-	if !data.PerformRouteLookup.IsNull() {
+	if !data.PerformRouteLookup.IsNull()   {
 		body, _ = sjson.Set(body, "routeLookup", data.PerformRouteLookup.ValueBool())
 	}
-	if !data.SourceInterfaceId.IsNull() {
+	if !data.SourceInterfaceId.IsNull()   {
 		body, _ = sjson.Set(body, "sourceInterface.id", data.SourceInterfaceId.ValueString())
 	}
-	if !data.TranslateDns.IsNull() {
+	if !data.TranslateDns.IsNull()   {
 		body, _ = sjson.Set(body, "dns", data.TranslateDns.ValueBool())
 	}
-	if !data.TranslatedNetworkId.IsNull() {
+	if !data.TranslatedNetworkId.IsNull()   {
 		body, _ = sjson.Set(body, "translatedNetwork.id", data.TranslatedNetworkId.ValueString())
 	}
-	if !data.TranslatedNetworkIsDestinationInterface.IsNull() {
+	if !data.TranslatedNetworkIsDestinationInterface.IsNull()   {
 		body, _ = sjson.Set(body, "interfaceInTranslatedNetwork", data.TranslatedNetworkIsDestinationInterface.ValueBool())
 	}
-	if !data.TranslatedPort.IsNull() {
+	if !data.TranslatedPort.IsNull()   {
 		body, _ = sjson.Set(body, "translatedPort", data.TranslatedPort.ValueInt64())
 	}
 	return body
@@ -213,6 +270,7 @@ func (data *FTDAutoNATRule) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -321,28 +379,42 @@ func (data *FTDAutoNATRule) fromBodyUnknowns(ctx context.Context, res gjson.Resu
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
+
+
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
+
+
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
+
+
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
+
+
 
 // End of section. //template:end adjustBodyBulk

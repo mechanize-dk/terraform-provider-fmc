@@ -31,7 +31,7 @@ import (
 
 func TestAccFmcDeviceClusterHealthMonitor(t *testing.T) {
 	if os.Getenv("TF_VAR_cluster_id") == "" || os.Getenv("TF_VAR_interface_name") == "" {
-		t.Skip("skipping test, set environment variable TF_VAR_cluster_id and TF_VAR_interface_name")
+        t.Skip("skipping test, set environment variable TF_VAR_cluster_id and TF_VAR_interface_name")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("fmc_device_cluster_health_monitor.test", "type"))
@@ -52,19 +52,19 @@ func TestAccFmcDeviceClusterHealthMonitor(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccFmcDeviceClusterHealthMonitorPrerequisitesConfig + testAccFmcDeviceClusterHealthMonitorConfig_minimum(),
+			Config: testAccFmcDeviceClusterHealthMonitorPrerequisitesConfig+testAccFmcDeviceClusterHealthMonitorConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcDeviceClusterHealthMonitorPrerequisitesConfig + testAccFmcDeviceClusterHealthMonitorConfig_all(),
-		Check:  resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcDeviceClusterHealthMonitorPrerequisitesConfig+testAccFmcDeviceClusterHealthMonitorConfig_all(),
+		Check: resource.ComposeTestCheckFunc(checks...),
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps:                    steps,
+		Steps: steps,
 	})
 }
 
@@ -76,7 +76,6 @@ const testAccFmcDeviceClusterHealthMonitorPrerequisitesConfig = `
 variable "cluster_id" { default = null } // tests will set $TF_VAR_cluster_id
 variable "interface_name" {default = null} // tests will set $TF_VAR_interface_name
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -87,7 +86,6 @@ func testAccFmcDeviceClusterHealthMonitorConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
-
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

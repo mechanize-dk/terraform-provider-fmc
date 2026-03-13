@@ -33,20 +33,62 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type VPNRALoadBalancing struct {
-	Id                               types.String `tfsdk:"id"`
-	Domain                           types.String `tfsdk:"domain"`
-	VpnRaId                          types.String `tfsdk:"vpn_ra_id"`
-	Type                             types.String `tfsdk:"type"`
-	Enabled                          types.Bool   `tfsdk:"enabled"`
-	Ipv4GroupAddress                 types.String `tfsdk:"ipv4_group_address"`
-	Ipv6GroupAddress                 types.String `tfsdk:"ipv6_group_address"`
-	InterfaceId                      types.String `tfsdk:"interface_id"`
-	Port                             types.Int64  `tfsdk:"port"`
-	Ipsec                            types.Bool   `tfsdk:"ipsec"`
-	IpsecEncryptionKey               types.String `tfsdk:"ipsec_encryption_key"`
-	SendFqdnToPeerDevicesInsteadOfIp types.Bool   `tfsdk:"send_fqdn_to_peer_devices_instead_of_ip"`
-	Ikev2RedirectPhase               types.String `tfsdk:"ikev2_redirect_phase"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	VpnRaId types.String `tfsdk:"vpn_ra_id"`
+	Type types.String `tfsdk:"type"`
+	Enabled types.Bool `tfsdk:"enabled"`
+	Ipv4GroupAddress types.String `tfsdk:"ipv4_group_address"`
+	Ipv6GroupAddress types.String `tfsdk:"ipv6_group_address"`
+	InterfaceId types.String `tfsdk:"interface_id"`
+	Port types.Int64 `tfsdk:"port"`
+	Ipsec types.Bool `tfsdk:"ipsec"`
+	IpsecEncryptionKey types.String `tfsdk:"ipsec_encryption_key"`
+	SendFqdnToPeerDevicesInsteadOfIp types.Bool `tfsdk:"send_fqdn_to_peer_devices_instead_of_ip"`
+	Ikev2RedirectPhase types.String `tfsdk:"ikev2_redirect_phase"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -57,7 +99,7 @@ type VPNRALoadBalancing struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data VPNRALoadBalancing) getPath() string {
-	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ravpns/%v/loadbalancesettings", url.QueryEscape(data.VpnRaId.ValueString()))
+		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ravpns/%v/loadbalancesettings", url.QueryEscape(data.VpnRaId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -70,31 +112,31 @@ func (data VPNRALoadBalancing) toBody(ctx context.Context, state VPNRALoadBalanc
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "LoadBalanacing")
-	if !data.Enabled.IsNull() {
+	if !data.Enabled.IsNull()   {
 		body, _ = sjson.Set(body, "enableVpnLoadBalancing", data.Enabled.ValueBool())
 	}
-	if !data.Ipv4GroupAddress.IsNull() {
+	if !data.Ipv4GroupAddress.IsNull()   {
 		body, _ = sjson.Set(body, "groupSettings.groupIPv4Address", data.Ipv4GroupAddress.ValueString())
 	}
-	if !data.Ipv6GroupAddress.IsNull() {
+	if !data.Ipv6GroupAddress.IsNull()   {
 		body, _ = sjson.Set(body, "groupSettings.groupIPv6Address", data.Ipv6GroupAddress.ValueString())
 	}
-	if !data.InterfaceId.IsNull() {
+	if !data.InterfaceId.IsNull()   {
 		body, _ = sjson.Set(body, "groupSettings.communicationInterface.id", data.InterfaceId.ValueString())
 	}
-	if !data.Port.IsNull() {
+	if !data.Port.IsNull()   {
 		body, _ = sjson.Set(body, "groupSettings.communicationUdpPort", data.Port.ValueInt64())
 	}
-	if !data.Ipsec.IsNull() {
+	if !data.Ipsec.IsNull()   {
 		body, _ = sjson.Set(body, "groupSettings.ipsecEncryption.enable", data.Ipsec.ValueBool())
 	}
-	if !data.IpsecEncryptionKey.IsNull() {
+	if !data.IpsecEncryptionKey.IsNull()   {
 		body, _ = sjson.Set(body, "groupSettings.ipsecEncryption.encryptionKey", data.IpsecEncryptionKey.ValueString())
 	}
-	if !data.SendFqdnToPeerDevicesInsteadOfIp.IsNull() {
+	if !data.SendFqdnToPeerDevicesInsteadOfIp.IsNull()   {
 		body, _ = sjson.Set(body, "redirectSettings.redirectUsingFqdn", data.SendFqdnToPeerDevicesInsteadOfIp.ValueBool())
 	}
-	if !data.Ikev2RedirectPhase.IsNull() {
+	if !data.Ikev2RedirectPhase.IsNull()   {
 		body, _ = sjson.Set(body, "redirectSettings.ikev2RedirectPhase", data.Ikev2RedirectPhase.ValueString())
 	}
 	return body
@@ -155,6 +197,7 @@ func (data *VPNRALoadBalancing) fromBody(ctx context.Context, res gjson.Result) 
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -227,6 +270,7 @@ func (data *VPNRALoadBalancing) fromBodyUnknowns(ctx context.Context, res gjson.
 // End of section. //template:end fromBodyUnknowns
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
+
 
 // toBodyPutDelete is used to create the body for PUT requests to clear the resource state
 func (data VPNRALoadBalancing) toBodyPutDelete(ctx context.Context) string {

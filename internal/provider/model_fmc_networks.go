@@ -35,18 +35,28 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type Networks struct {
-	Id     types.String             `tfsdk:"id"`
-	Domain types.String             `tfsdk:"domain"`
-	Items  map[string]NetworksItems `tfsdk:"items"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Items map[string]NetworksItems `tfsdk:"items"`
 }
 
+
 type NetworksItems struct {
-	Id          types.String `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	Description types.String `tfsdk:"description"`
-	Overridable types.Bool   `tfsdk:"overridable"`
-	Prefix      types.String `tfsdk:"prefix"`
-	Type        types.String `tfsdk:"type"`
+	Overridable types.Bool `tfsdk:"overridable"`
+	Prefix types.String `tfsdk:"prefix"`
+	Type types.String `tfsdk:"type"`
 }
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -58,7 +68,7 @@ var minFMCVersionBulkDeleteNetworks = version.Must(version.NewVersion("7.4"))
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data Networks) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/networks"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/networks"
 }
 
 // End of section. //template:end getPath
@@ -74,16 +84,16 @@ func (data Networks) toBody(ctx context.Context, state Networks) string {
 		body, _ = sjson.Set(body, "items", []any{})
 		for key, item := range data.Items {
 			itemBody, _ := sjson.Set("{}", "name", key)
-			if !item.Id.IsNull() && !item.Id.IsUnknown() {
+			if !item.Id.IsNull() && !item.Id.IsUnknown()  {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Description.IsNull() {
+			if !item.Description.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "description", item.Description.ValueString())
 			}
-			if !item.Overridable.IsNull() {
+			if !item.Overridable.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "overridable", item.Overridable.ValueBool())
 			}
-			if !item.Prefix.IsNull() {
+			if !item.Prefix.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "value", item.Prefix.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "items.-1", itemBody)
@@ -109,36 +119,35 @@ func (data *Networks) fromBody(ctx context.Context, res gjson.Result) {
 		parent := &data
 		data := (*parent).Items[k]
 		res, found := itemsByName[k]
-		if !found {
-			tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
+		if !found {tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
 			delete((*parent).Items, k)
 			continue
 		}
-		if value := res.Get("id"); value.Exists() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("description"); value.Exists() {
-			data.Description = types.StringValue(value.String())
-		} else {
-			data.Description = types.StringNull()
-		}
-		if value := res.Get("overridable"); value.Exists() {
-			data.Overridable = types.BoolValue(value.Bool())
-		} else {
-			data.Overridable = types.BoolNull()
-		}
-		if value := res.Get("value"); value.Exists() {
-			data.Prefix = types.StringValue(value.String())
-		} else {
-			data.Prefix = types.StringNull()
-		}
-		if value := res.Get("type"); value.Exists() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("description"); value.Exists() {
+		data.Description = types.StringValue(value.String())
+	} else {
+		data.Description = types.StringNull()
+	}
+	if value := res.Get("overridable"); value.Exists() {
+		data.Overridable = types.BoolValue(value.Bool())
+	} else {
+		data.Overridable = types.BoolNull()
+	}
+	if value := res.Get("value"); value.Exists() {
+		data.Prefix = types.StringValue(value.String())
+	} else {
+		data.Prefix = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
 		(*parent).Items[k] = data
 	}
 }
@@ -146,6 +155,7 @@ func (data *Networks) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -167,35 +177,35 @@ func (data *Networks) fromBodyPartial(ctx context.Context, res gjson.Result) {
 			continue
 		}
 		res, _ := itemsById[data.Id.ValueString()]
-		if value := res.Get("id"); value.Exists() {
-			data.Id = types.StringValue(value.String())
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("description"); value.Exists() && !data.Description.IsNull() {
+		data.Description = types.StringValue(value.String())
+	} else {
+		if !data.Description.IsNull() && data.Description.ValueString() == "" {
+			data.Description = types.StringValue("")
 		} else {
-			data.Id = types.StringNull()
+			data.Description = types.StringNull()
 		}
-		if value := res.Get("description"); value.Exists() && !data.Description.IsNull() {
-			data.Description = types.StringValue(value.String())
-		} else {
-			if !data.Description.IsNull() && data.Description.ValueString() == "" {
-				data.Description = types.StringValue("")
-			} else {
-				data.Description = types.StringNull()
-			}
-		}
-		if value := res.Get("overridable"); value.Exists() && !data.Overridable.IsNull() {
-			data.Overridable = types.BoolValue(value.Bool())
-		} else {
-			data.Overridable = types.BoolNull()
-		}
-		if value := res.Get("value"); value.Exists() && !data.Prefix.IsNull() {
-			data.Prefix = types.StringValue(value.String())
-		} else {
-			data.Prefix = types.StringNull()
-		}
-		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
+	}
+	if value := res.Get("overridable"); value.Exists() && !data.Overridable.IsNull() {
+		data.Overridable = types.BoolValue(value.Bool())
+	} else {
+		data.Overridable = types.BoolNull()
+	}
+	if value := res.Get("value"); value.Exists() && !data.Prefix.IsNull() {
+		data.Prefix = types.StringValue(value.String())
+	} else {
+		data.Prefix = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
 		(*parent).Items[i] = data
 	}
 }
@@ -249,6 +259,7 @@ func (data *Networks) fromBodyUnknowns(ctx context.Context, res gjson.Result) {
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
 func (data *Networks) Clone() Networks {
 	ret := *data
 	ret.Items = maps.Clone(data.Items)
@@ -259,6 +270,7 @@ func (data *Networks) Clone() Networks {
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
 
 // Updates done one-by-one require different API body
 func (data Networks) toBodyNonBulk(ctx context.Context, state Networks) string {

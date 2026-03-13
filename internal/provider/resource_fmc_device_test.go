@@ -83,7 +83,6 @@ resource "fmc_access_control_policy" "test" {
   default_action = "BLOCK"
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -98,7 +97,6 @@ func testAccFmcDeviceConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
-
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

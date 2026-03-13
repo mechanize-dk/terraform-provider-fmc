@@ -84,7 +84,7 @@ func (r *PrefilterPolicyResource) Schema(ctx context.Context, req resource.Schem
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -102,13 +102,14 @@ func (r *PrefilterPolicyResource) Schema(ctx context.Context, req resource.Schem
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"default_action": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Specifies the default action to take when none of the rules meet the conditions.").AddStringEnumDescription("BLOCK_TUNNELS", "ANALYZE_TUNNELS").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Specifies the default action to take when none of the rules meet the conditions.").AddStringEnumDescription("BLOCK_TUNNELS", "ANALYZE_TUNNELS", ).String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("BLOCK_TUNNELS", "ANALYZE_TUNNELS"),
+					stringvalidator.OneOf("BLOCK_TUNNELS", "ANALYZE_TUNNELS", ),
 				},
 			},
 			"default_action_id": schema.StringAttribute{
@@ -116,6 +117,7 @@ func (r *PrefilterPolicyResource) Schema(ctx context.Context, req resource.Schem
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"default_action_log_connection_begin": schema.BoolAttribute{
@@ -152,10 +154,10 @@ func (r *PrefilterPolicyResource) Schema(ctx context.Context, req resource.Schem
 							Required:            true,
 						},
 						"rule_type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Type of the rule. At least one Encapsulation Port Object (`encapsulation_ports`) is mandatory to be specified for TUNNEL Rules.").AddStringEnumDescription("PREFILTER", "TUNNEL").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Type of the rule. At least one Encapsulation Port Object (`encapsulation_ports`) is mandatory to be specified for TUNNEL Rules.").AddStringEnumDescription("PREFILTER", "TUNNEL", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("PREFILTER", "TUNNEL"),
+								stringvalidator.OneOf("PREFILTER", "TUNNEL", ),
 							},
 						},
 						"enabled": schema.BoolAttribute{
@@ -165,10 +167,10 @@ func (r *PrefilterPolicyResource) Schema(ctx context.Context, req resource.Schem
 							Default:             booldefault.StaticBool(true),
 						},
 						"action": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("What to do when the conditions defined by the rule are met.").AddStringEnumDescription("FASTPATH", "ANALYZE", "BLOCK").String,
+							MarkdownDescription: helpers.NewAttributeDescription("What to do when the conditions defined by the rule are met.").AddStringEnumDescription("FASTPATH", "ANALYZE", "BLOCK", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("FASTPATH", "ANALYZE", "BLOCK"),
+								stringvalidator.OneOf("FASTPATH", "ANALYZE", "BLOCK", ),
 							},
 						},
 						"bidirectional": schema.BoolAttribute{
@@ -305,10 +307,10 @@ func (r *PrefilterPolicyResource) Schema(ctx context.Context, req resource.Schem
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"protocol": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("IANA protocol number.").AddStringEnumDescription("6", "17").String,
+										MarkdownDescription: helpers.NewAttributeDescription("IANA protocol number.").AddStringEnumDescription("6", "17", ).String,
 										Required:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("6", "17"),
+											stringvalidator.OneOf("6", "17", ),
 										},
 									},
 									"port": schema.StringAttribute{
@@ -336,13 +338,13 @@ func (r *PrefilterPolicyResource) Schema(ctx context.Context, req resource.Schem
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"type": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Type of the object.").AddStringEnumDescription("PortLiteral", "ICMPv4PortLiteral").AddDefaultValueDescription("PortLiteral").String,
+										MarkdownDescription: helpers.NewAttributeDescription("Type of the object.").AddStringEnumDescription("PortLiteral", "ICMPv4PortLiteral", ).AddDefaultValueDescription("PortLiteral").String,
 										Optional:            true,
 										Computed:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("PortLiteral", "ICMPv4PortLiteral"),
+											stringvalidator.OneOf("PortLiteral", "ICMPv4PortLiteral", ),
 										},
-										Default: stringdefault.StaticString("PortLiteral"),
+										Default:             stringdefault.StaticString("PortLiteral"),
 									},
 									"port": schema.StringAttribute{
 										MarkdownDescription: helpers.NewAttributeDescription("Port number.").String,
@@ -376,12 +378,12 @@ func (r *PrefilterPolicyResource) Schema(ctx context.Context, req resource.Schem
 							},
 						},
 						"encapsulation_ports": schema.SetAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("List of encapsulation ports to be used. Mandatory for TUNNEL rules.").AddStringEnumDescription("GRE", "IP_IN_IP", "IPV6_IN_IP", "TEREDO").String,
+							MarkdownDescription: helpers.NewAttributeDescription("List of encapsulation ports to be used. Mandatory for TUNNEL rules.").AddStringEnumDescription("GRE", "IP_IN_IP", "IPV6_IN_IP", "TEREDO", ).String,
 							ElementType:         types.StringType,
 							Optional:            true,
 							Validators: []validator.Set{
 								setvalidator.ValueStringsAre(
-									stringvalidator.OneOf("GRE", "IP_IN_IP", "IPV6_IN_IP", "TEREDO"),
+									stringvalidator.OneOf("GRE", "IP_IN_IP", "IPV6_IN_IP", "TEREDO", ),
 								),
 							},
 						},
@@ -406,10 +408,10 @@ func (r *PrefilterPolicyResource) Schema(ctx context.Context, req resource.Schem
 							Optional:            true,
 						},
 						"syslog_severity": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Override the Severity of syslog alerts.").AddStringEnumDescription("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Override the Severity of syslog alerts.").AddStringEnumDescription("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING", ).String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING"),
+								stringvalidator.OneOf("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING", ),
 							},
 						},
 						"snmp_alert_id": schema.StringAttribute{
@@ -629,7 +631,7 @@ func (r *PrefilterPolicyResource) Delete(ctx context.Context, req resource.Delet
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString()), reqMods...)
+	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()), reqMods...)
 	if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
@@ -644,24 +646,23 @@ func (r *PrefilterPolicyResource) Delete(ctx context.Context, req resource.Delet
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *PrefilterPolicyResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Parse import ID
-	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
-	match := inputPattern.FindStringSubmatch(req.ID)
-	if match == nil {
-		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		// Parse import ID
+		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
+		match := inputPattern.FindStringSubmatch(req.ID)
+		if match == nil {
+			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	// Set domain, if provided
-	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+		// Set domain, if provided
+		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import
 
 func (r *PrefilterPolicyResource) updateSubresources(ctx context.Context, tfsdkPlan tfsdk.Plan, plan PrefilterPolicy, planBody string, tfsdkState tfsdk.State, state PrefilterPolicy) (PrefilterPolicy, diag.Diagnostics) {

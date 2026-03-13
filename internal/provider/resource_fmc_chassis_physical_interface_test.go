@@ -31,7 +31,7 @@ import (
 
 func TestAccFmcChassisPhysicalInterface(t *testing.T) {
 	if os.Getenv("TF_VAR_chassis_id") == "" {
-		t.Skip("skipping test, set environment variable TF_VAR_chassis_id")
+        t.Skip("skipping test, set environment variable TF_VAR_chassis_id")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("fmc_chassis_physical_interface.test", "type"))
@@ -42,19 +42,19 @@ func TestAccFmcChassisPhysicalInterface(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccFmcChassisPhysicalInterfacePrerequisitesConfig + testAccFmcChassisPhysicalInterfaceConfig_minimum(),
+			Config: testAccFmcChassisPhysicalInterfacePrerequisitesConfig+testAccFmcChassisPhysicalInterfaceConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcChassisPhysicalInterfacePrerequisitesConfig + testAccFmcChassisPhysicalInterfaceConfig_all(),
-		Check:  resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcChassisPhysicalInterfacePrerequisitesConfig+testAccFmcChassisPhysicalInterfaceConfig_all(),
+		Check: resource.ComposeTestCheckFunc(checks...),
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps:                    steps,
+		Steps: steps,
 	})
 }
 
@@ -65,7 +65,6 @@ func TestAccFmcChassisPhysicalInterface(t *testing.T) {
 const testAccFmcChassisPhysicalInterfacePrerequisitesConfig = `
 variable "chassis_id" { default = null } // tests will set $TF_VAR_chassis_id
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -79,7 +78,6 @@ func testAccFmcChassisPhysicalInterfaceConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
-
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

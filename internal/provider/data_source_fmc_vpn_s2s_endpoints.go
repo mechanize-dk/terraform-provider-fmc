@@ -63,7 +63,7 @@ func (d *VPNS2SEndpointsDataSource) Schema(ctx context.Context, req datasource.S
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 			},
 			"vpn_s2s_id": schema.StringAttribute{
 				MarkdownDescription: "Id of the parent VPN S2S Topology.",
@@ -223,7 +223,7 @@ func (d *VPNS2SEndpointsDataSource) Read(ctx context.Context, req datasource.Rea
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
-
+	
 	// Get all objects from FMC
 	urlPath := config.getPath() + "?expanded=true"
 	res, err := d.client.Get(urlPath, reqMods...)

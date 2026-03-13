@@ -1,8 +1,8 @@
 resource "fmc_networks" "example" {
-  items = {
+  items ={
     my_networks = {
       description = "My Network 1"
-      prefix      = "10.1.1.0/24"
+      prefix = "10.1.1.0/24"
     }
   }
 }

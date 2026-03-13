@@ -35,23 +35,57 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type DeviceIPv6StaticRoute struct {
-	Id                   types.String                               `tfsdk:"id"`
-	Domain               types.String                               `tfsdk:"domain"`
-	VrfId                types.String                               `tfsdk:"vrf_id"`
-	DeviceId             types.String                               `tfsdk:"device_id"`
-	InterfaceLogicalName types.String                               `tfsdk:"interface_logical_name"`
-	Type                 types.String                               `tfsdk:"type"`
-	InterfaceId          types.String                               `tfsdk:"interface_id"`
-	DestinationNetworks  []DeviceIPv6StaticRouteDestinationNetworks `tfsdk:"destination_networks"`
-	Metric               types.Int64                                `tfsdk:"metric"`
-	GatewayHostObjectId  types.String                               `tfsdk:"gateway_host_object_id"`
-	GatewayHostLiteral   types.String                               `tfsdk:"gateway_host_literal"`
-	IsTunneled           types.Bool                                 `tfsdk:"is_tunneled"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+VrfId                types.String                               `tfsdk:"vrf_id"`
+	DeviceId types.String `tfsdk:"device_id"`
+	InterfaceLogicalName types.String `tfsdk:"interface_logical_name"`
+	Type types.String `tfsdk:"type"`
+	InterfaceId types.String `tfsdk:"interface_id"`
+	DestinationNetworks []DeviceIPv6StaticRouteDestinationNetworks `tfsdk:"destination_networks"`
+	Metric types.Int64 `tfsdk:"metric"`
+	GatewayHostObjectId types.String `tfsdk:"gateway_host_object_id"`
+	GatewayHostLiteral types.String `tfsdk:"gateway_host_literal"`
+	IsTunneled types.Bool `tfsdk:"is_tunneled"`
 }
+
+
+
+
+
 
 type DeviceIPv6StaticRouteDestinationNetworks struct {
 	Id types.String `tfsdk:"id"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -78,32 +112,32 @@ func (data DeviceIPv6StaticRoute) toBody(ctx context.Context, state DeviceIPv6St
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.InterfaceLogicalName.IsNull() {
+	if !data.InterfaceLogicalName.IsNull()   {
 		body, _ = sjson.Set(body, "interfaceName", data.InterfaceLogicalName.ValueString())
 	}
-	if !data.InterfaceId.IsNull() {
+	if !data.InterfaceId.IsNull()   {
 		body, _ = sjson.Set(body, "links.parent", data.InterfaceId.ValueString())
 	}
 	if len(data.DestinationNetworks) > 0 {
 		body, _ = sjson.Set(body, "selectedNetworks", []any{})
 		for _, item := range data.DestinationNetworks {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "selectedNetworks.-1", itemBody)
 		}
 	}
-	if !data.Metric.IsNull() {
+	if !data.Metric.IsNull()   {
 		body, _ = sjson.Set(body, "metricValue", data.Metric.ValueInt64())
 	}
-	if !data.GatewayHostObjectId.IsNull() {
+	if !data.GatewayHostObjectId.IsNull()   {
 		body, _ = sjson.Set(body, "gateway.object.id", data.GatewayHostObjectId.ValueString())
 	}
-	if !data.GatewayHostLiteral.IsNull() {
+	if !data.GatewayHostLiteral.IsNull()   {
 		body, _ = sjson.Set(body, "gateway.literal.value", data.GatewayHostLiteral.ValueString())
 	}
-	if !data.IsTunneled.IsNull() {
+	if !data.IsTunneled.IsNull()   {
 		body, _ = sjson.Set(body, "isTunneled", data.IsTunneled.ValueBool())
 	}
 	return body
@@ -129,11 +163,11 @@ func (data *DeviceIPv6StaticRoute) fromBody(ctx context.Context, res gjson.Resul
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := DeviceIPv6StaticRouteDestinationNetworks{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).DestinationNetworks = append((*parent).DestinationNetworks, data)
 			return true
 		})
@@ -164,6 +198,7 @@ func (data *DeviceIPv6StaticRoute) fromBody(ctx context.Context, res gjson.Resul
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
 
+
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
 // easily change across versions of the backend API.) For List/Set/Map attributes, the func only updates the
@@ -180,8 +215,8 @@ func (data *DeviceIPv6StaticRoute) fromBodyPartial(ctx context.Context, res gjso
 		data.Type = types.StringNull()
 	}
 	for i := 0; i < len(data.DestinationNetworks); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.DestinationNetworks[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.DestinationNetworks[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).DestinationNetworks[i]
@@ -215,11 +250,11 @@ func (data *DeviceIPv6StaticRoute) fromBodyPartial(ctx context.Context, res gjso
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).DestinationNetworks[i] = data
 	}
 	if value := res.Get("metricValue"); value.Exists() && !data.Metric.IsNull() {

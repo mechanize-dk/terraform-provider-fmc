@@ -40,12 +40,12 @@ func TestAccDataSourceFmcNetworkAnalysisPolicy(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcNetworkAnalysisPolicyPrerequisitesConfig + testAccDataSourceFmcNetworkAnalysisPolicyConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcNetworkAnalysisPolicyPrerequisitesConfig+testAccDataSourceFmcNetworkAnalysisPolicyConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcNetworkAnalysisPolicyPrerequisitesConfig + testAccNamedDataSourceFmcNetworkAnalysisPolicyConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcNetworkAnalysisPolicyPrerequisitesConfig+testAccNamedDataSourceFmcNetworkAnalysisPolicyConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -60,7 +60,6 @@ data "fmc_network_analysis_policy" "builtin" {
   name = "Security Over Connectivity"
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

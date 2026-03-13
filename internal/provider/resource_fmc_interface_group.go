@@ -75,7 +75,7 @@ func (r *InterfaceGroupResource) Schema(ctx context.Context, req resource.Schema
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -85,13 +85,14 @@ func (r *InterfaceGroupResource) Schema(ctx context.Context, req resource.Schema
 				Required:            true,
 			},
 			"interface_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("All interfaces' types must match the interface mode.").AddStringEnumDescription("PASSIVE", "INLINE", "SWITCHED", "ROUTED", "MANAGEMENT", "LOOPBACK").String,
+				MarkdownDescription: helpers.NewAttributeDescription("All interfaces' types must match the interface mode.").AddStringEnumDescription("PASSIVE", "INLINE", "SWITCHED", "ROUTED", "MANAGEMENT", "LOOPBACK", ).String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("PASSIVE", "INLINE", "SWITCHED", "ROUTED", "MANAGEMENT", "LOOPBACK"),
+					stringvalidator.OneOf("PASSIVE", "INLINE", "SWITCHED", "ROUTED", "MANAGEMENT", "LOOPBACK", ),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"type": schema.StringAttribute{
@@ -99,6 +100,7 @@ func (r *InterfaceGroupResource) Schema(ctx context.Context, req resource.Schema
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"interfaces": schema.SetNestedAttribute{
@@ -150,11 +152,48 @@ func (r *InterfaceGroupResource) Create(ctx context.Context, req resource.Create
 	body := plan.toBody(ctx, InterfaceGroup{})
 	res, err := r.client.Post(plan.getPath(), body, reqMods...)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
-		return
+		if strings.Contains(err.Error(), "StatusCode 409") || (strings.Contains(err.Error(), "StatusCode 400") && strings.Contains(res.String(), "already exists")) {
+			// Object already exists in FMC - search for existing object and ingest it
+			tflog.Debug(ctx, fmt.Sprintf("%s: Object already exists (409/400), searching for existing object by name", plan.Id.ValueString()))
+			offset := 0
+			limit := 1000
+			for page := 1; ; page++ {
+				queryString := fmt.Sprintf("?limit=%d&offset=%d&expanded=true", limit, offset)
+				listRes, listErr := r.client.Get(plan.getPath()+queryString, reqMods...)
+				if listErr != nil {
+					resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists but failed to retrieve objects (GET), got error: %s, %s", listErr, listRes.String()))
+					return
+				}
+				for _, v := range listRes.Get("items").Array() {
+					if plan.Name.ValueString()== v.Get("name").String(){
+						plan.Id = types.StringValue(v.Get("id").String())
+						tflog.Debug(ctx, fmt.Sprintf("%s: Found existing object with name '%v'", plan.Id.ValueString(), plan.Name.ValueString()))
+						break
+					}
+				}
+				if plan.Id.ValueString() != "" || !listRes.Get("paging.next.0").Exists() {
+					break
+				}
+				offset += limit
+			}
+			if plan.Id.ValueString() == "" {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists (conflict) but failed to find existing object with name '%v': %s", plan.Name.ValueString(), err))
+				return
+			}
+			res, err = r.client.Get(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), reqMods...)
+			if err != nil {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists (conflict) but failed to retrieve existing object (GET), got error: %s, %s", err, res.String()))
+				return
+			}
+			plan.fromBodyUnknowns(ctx, res)
+		} else {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
+			return
+		}
+	} else {
+		plan.Id = types.StringValue(res.Get("id").String())
+		plan.fromBodyUnknowns(ctx, res)
 	}
-	plan.Id = types.StringValue(res.Get("id").String())
-	plan.fromBodyUnknowns(ctx, res)
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -185,13 +224,14 @@ func (r *InterfaceGroupResource) Read(ctx context.Context, req resource.ReadRequ
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
+	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-
+	
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else if err != nil {
+	} else  if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -244,7 +284,7 @@ func (r *InterfaceGroupResource) Update(ctx context.Context, req resource.Update
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -291,24 +331,23 @@ func (r *InterfaceGroupResource) Delete(ctx context.Context, req resource.Delete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *InterfaceGroupResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Parse import ID
-	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
-	match := inputPattern.FindStringSubmatch(req.ID)
-	if match == nil {
-		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		// Parse import ID
+		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
+		match := inputPattern.FindStringSubmatch(req.ID)
+		if match == nil {
+			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	// Set domain, if provided
-	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+		// Set domain, if provided
+		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import
 
 func (r *InterfaceGroupResource) removeInterfaces(ctx context.Context, state InterfaceGroup, resp *resource.DeleteResponse, reqMods ...func(*fmc.Req)) error {

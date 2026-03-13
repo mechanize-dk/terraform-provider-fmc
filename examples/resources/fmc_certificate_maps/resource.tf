@@ -1,14 +1,14 @@
 resource "fmc_certificate_maps" "example" {
-  items = {
+  items ={
     my_certificate_maps = {
-      rules = [
-        {
-          field     = "SUBJECT"
+        rules = [
+          {
+          field = "SUBJECT"
           component = "COMMON_NAME"
-          operator  = "EQUALS"
-          value     = "cisco.com"
-        }
-      ]
+          operator = "EQUALS"
+          value = "cisco.com"
+          }
+        ]
     }
   }
 }

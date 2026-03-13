@@ -33,19 +33,38 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type ExtendedCommunityList struct {
-	Id      types.String                   `tfsdk:"id"`
-	Domain  types.String                   `tfsdk:"domain"`
-	Name    types.String                   `tfsdk:"name"`
-	Type    types.String                   `tfsdk:"type"`
-	SubType types.String                   `tfsdk:"sub_type"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Name types.String `tfsdk:"name"`
+	Type types.String `tfsdk:"type"`
+	SubType types.String `tfsdk:"sub_type"`
 	Entries []ExtendedCommunityListEntries `tfsdk:"entries"`
 }
 
+
+
+
+
 type ExtendedCommunityListEntries struct {
-	Action            types.String `tfsdk:"action"`
-	RouteTarget       types.String `tfsdk:"route_target"`
+	Action types.String `tfsdk:"action"`
+	RouteTarget types.String `tfsdk:"route_target"`
 	RegularExpression types.String `tfsdk:"regular_expression"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -56,7 +75,7 @@ type ExtendedCommunityListEntries struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data ExtendedCommunityList) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/extendedcommunitylists"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/extendedcommunitylists"
 }
 
 // End of section. //template:end getPath
@@ -68,23 +87,23 @@ func (data ExtendedCommunityList) toBody(ctx context.Context, state ExtendedComm
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.SubType.IsNull() {
+	if !data.SubType.IsNull()   {
 		body, _ = sjson.Set(body, "subType", data.SubType.ValueString())
 	}
 	if len(data.Entries) > 0 {
 		body, _ = sjson.Set(body, "entries", []any{})
 		for _, item := range data.Entries {
 			itemBody := ""
-			if !item.Action.IsNull() {
+			if !item.Action.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "action", item.Action.ValueString())
 			}
-			if !item.RouteTarget.IsNull() {
+			if !item.RouteTarget.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "routeTarget", item.RouteTarget.ValueString())
 			}
-			if !item.RegularExpression.IsNull() {
+			if !item.RegularExpression.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "regularExpression", item.RegularExpression.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "entries.-1", itemBody)
@@ -118,21 +137,21 @@ func (data *ExtendedCommunityList) fromBody(ctx context.Context, res gjson.Resul
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := ExtendedCommunityListEntries{}
-			if value := res.Get("action"); value.Exists() {
-				data.Action = types.StringValue(value.String())
-			} else {
-				data.Action = types.StringNull()
-			}
-			if value := res.Get("routeTarget"); value.Exists() {
-				data.RouteTarget = types.StringValue(value.String())
-			} else {
-				data.RouteTarget = types.StringNull()
-			}
-			if value := res.Get("regularExpression"); value.Exists() {
-				data.RegularExpression = types.StringValue(value.String())
-			} else {
-				data.RegularExpression = types.StringNull()
-			}
+	if value := res.Get("action"); value.Exists() {
+		data.Action = types.StringValue(value.String())
+	} else {
+		data.Action = types.StringNull()
+	}
+	if value := res.Get("routeTarget"); value.Exists() {
+		data.RouteTarget = types.StringValue(value.String())
+	} else {
+		data.RouteTarget = types.StringNull()
+	}
+	if value := res.Get("regularExpression"); value.Exists() {
+		data.RegularExpression = types.StringValue(value.String())
+	} else {
+		data.RegularExpression = types.StringNull()
+	}
 			(*parent).Entries = append((*parent).Entries, data)
 			return true
 		})
@@ -142,6 +161,7 @@ func (data *ExtendedCommunityList) fromBody(ctx context.Context, res gjson.Resul
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -178,21 +198,21 @@ func (data *ExtendedCommunityList) fromBodyPartial(ctx context.Context, res gjso
 		data := (*parent).Entries[i]
 		parentRes := &res
 		res := parentRes.Get(fmt.Sprintf("entries.%d", i))
-		if value := res.Get("action"); value.Exists() && !data.Action.IsNull() {
-			data.Action = types.StringValue(value.String())
-		} else {
-			data.Action = types.StringNull()
-		}
-		if value := res.Get("routeTarget"); value.Exists() && !data.RouteTarget.IsNull() {
-			data.RouteTarget = types.StringValue(value.String())
-		} else {
-			data.RouteTarget = types.StringNull()
-		}
-		if value := res.Get("regularExpression"); value.Exists() && !data.RegularExpression.IsNull() {
-			data.RegularExpression = types.StringValue(value.String())
-		} else {
-			data.RegularExpression = types.StringNull()
-		}
+	if value := res.Get("action"); value.Exists() && !data.Action.IsNull() {
+		data.Action = types.StringValue(value.String())
+	} else {
+		data.Action = types.StringNull()
+	}
+	if value := res.Get("routeTarget"); value.Exists() && !data.RouteTarget.IsNull() {
+		data.RouteTarget = types.StringValue(value.String())
+	} else {
+		data.RouteTarget = types.StringNull()
+	}
+	if value := res.Get("regularExpression"); value.Exists() && !data.RegularExpression.IsNull() {
+		data.RegularExpression = types.StringValue(value.String())
+	} else {
+		data.RegularExpression = types.StringNull()
+	}
 		(*parent).Entries[i] = data
 	}
 }
@@ -217,21 +237,31 @@ func (data *ExtendedCommunityList) fromBodyUnknowns(ctx context.Context, res gjs
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
 
+
+
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
+
+
 
 // End of section. //template:end toBodyPutDelete
 
@@ -244,5 +274,7 @@ func (data ExtendedCommunityList) adjustBody(ctx context.Context, req string) st
 }
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
+
+
 
 // End of section. //template:end adjustBodyBulk

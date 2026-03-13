@@ -676,12 +676,63 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	{{- else}}
 	res, err := r.client.Post(plan.getPath(), body, reqMods...)
 	{{- end}}
+	{{- if and (not .PutCreate) (hasDataSourceQuery .Attributes)}}
+	{{- $dataSourceAttribute := getDataSourceQueryAttribute .}}
+	if err != nil {
+		if strings.Contains(err.Error(), "StatusCode 409") || (strings.Contains(err.Error(), "StatusCode 400") && strings.Contains(res.String(), "already exists")) {
+			// Object already exists in FMC - search for existing object and ingest it
+			tflog.Debug(ctx, fmt.Sprintf("%s: Object already exists (409/400), searching for existing object by {{$dataSourceAttribute.TfName}}", plan.Id.ValueString()))
+			offset := 0
+			limit := 1000
+			for page := 1; ; page++ {
+				queryString := fmt.Sprintf("?limit=%d&offset=%d&expanded=true", limit, offset)
+				listRes, listErr := r.client.Get(plan.getPath()+queryString, reqMods...)
+				if listErr != nil {
+					resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists but failed to retrieve objects (GET), got error: %s, %s", listErr, listRes.String()))
+					return
+				}
+				for _, v := range listRes.Get("items").Array() {
+					if plan.{{toGoName $dataSourceAttribute.TfName}}.
+						{{- if eq $dataSourceAttribute.Type "Int64" -}}ValueInt64()
+						{{- else -}}ValueString(){{- end -}} == v.Get("{{range $dataSourceAttribute.DataPath}}{{.}}.{{end}}{{$dataSourceAttribute.ModelName}}").
+						{{- if eq $dataSourceAttribute.Type "Int64" -}}Int()
+						{{- else -}}String(){{- end -}} {
+						plan.Id = types.StringValue(v.Get("id").String())
+						tflog.Debug(ctx, fmt.Sprintf("%s: Found existing object with {{$dataSourceAttribute.TfName}} '%v'", plan.Id.ValueString(), plan.{{toGoName $dataSourceAttribute.TfName}}.{{if eq $dataSourceAttribute.Type "Int64"}}ValueInt64(){{else}}ValueString(){{end}}))
+						break
+					}
+				}
+				if plan.Id.ValueString() != "" || !listRes.Get("paging.next.0").Exists() {
+					break
+				}
+				offset += limit
+			}
+			if plan.Id.ValueString() == "" {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists (conflict) but failed to find existing object with {{$dataSourceAttribute.TfName}} '%v': %s", plan.{{toGoName $dataSourceAttribute.TfName}}.{{if eq $dataSourceAttribute.Type "Int64"}}ValueInt64(){{else}}ValueString(){{end}}, err))
+				return
+			}
+			res, err = r.client.Get(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), reqMods...)
+			if err != nil {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists (conflict) but failed to retrieve existing object (GET), got error: %s, %s", err, res.String()))
+				return
+			}
+			plan.fromBodyUnknowns(ctx, res)
+		} else {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
+			return
+		}
+	} else {
+		plan.Id = types.StringValue(res.Get("id").String())
+		plan.fromBodyUnknowns(ctx, res)
+	}
+	{{- else}}
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
 		return
 	}
 	plan.Id = types.StringValue(res.Get("id").String())
 	plan.fromBodyUnknowns(ctx, res)
+	{{- end}}
 
 	{{- if hasResourceId .Attributes}}
 	res, err = r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), reqMods...)

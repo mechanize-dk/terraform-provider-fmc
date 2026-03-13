@@ -76,7 +76,7 @@ func (r *CertificateEnrollmentResource) Schema(ctx context.Context, req resource
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -90,6 +90,7 @@ func (r *CertificateEnrollmentResource) Schema(ctx context.Context, req resource
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"description": schema.StringAttribute{
@@ -97,10 +98,10 @@ func (r *CertificateEnrollmentResource) Schema(ctx context.Context, req resource
 				Optional:            true,
 			},
 			"enrollment_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Certificate enrollment type.").AddStringEnumDescription("SCEP", "ACME", "EST", "MANUAL", "SELF_SIGNED_CERTFICATE", "PKCS12").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Certificate enrollment type.").AddStringEnumDescription("SCEP", "ACME", "EST", "MANUAL", "SELF_SIGNED_CERTFICATE", "PKCS12", ).String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("SCEP", "ACME", "EST", "MANUAL", "SELF_SIGNED_CERTFICATE", "PKCS12"),
+					stringvalidator.OneOf("SCEP", "ACME", "EST", "MANUAL", "SELF_SIGNED_CERTFICATE", "PKCS12", ),
 				},
 			},
 			"validation_usage_ipsec_client": schema.BoolAttribute{
@@ -197,10 +198,10 @@ func (r *CertificateEnrollmentResource) Schema(ctx context.Context, req resource
 				Optional:            true,
 			},
 			"acme_authentication_protocol": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("ACME authentication protocol.").AddStringEnumDescription("HTTP01").String,
+				MarkdownDescription: helpers.NewAttributeDescription("ACME authentication protocol.").AddStringEnumDescription("HTTP01", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("HTTP01"),
+					stringvalidator.OneOf("HTTP01", ),
 				},
 			},
 			"acme_authentication_interface_id": schema.StringAttribute{
@@ -239,10 +240,10 @@ func (r *CertificateEnrollmentResource) Schema(ctx context.Context, req resource
 				Optional:            true,
 			},
 			"certificate_include_fqdn": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Include the device's fully qualified domain name (FQDN) in the certificate request").AddStringEnumDescription("DEVICE_HOSTNAME", "NONE", "CUSTOM", "DEFAULT").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Include the device's fully qualified domain name (FQDN) in the certificate request").AddStringEnumDescription("DEVICE_HOSTNAME", "NONE", "CUSTOM", "DEFAULT", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("DEVICE_HOSTNAME", "NONE", "CUSTOM", "DEFAULT"),
+					stringvalidator.OneOf("DEVICE_HOSTNAME", "NONE", "CUSTOM", "DEFAULT", ),
 				},
 			},
 			"certificate_custom_fqdn": schema.StringAttribute{
@@ -290,10 +291,10 @@ func (r *CertificateEnrollmentResource) Schema(ctx context.Context, req resource
 				Optional:            true,
 			},
 			"key_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Type of key pair.").AddStringEnumDescription("RSA", "ECDSA", "EdDSA").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Type of key pair.").AddStringEnumDescription("RSA", "ECDSA", "EdDSA", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("RSA", "ECDSA", "EdDSA"),
+					stringvalidator.OneOf("RSA", "ECDSA", "EdDSA", ),
 				},
 			},
 			"key_name": schema.StringAttribute{
@@ -301,10 +302,10 @@ func (r *CertificateEnrollmentResource) Schema(ctx context.Context, req resource
 				Optional:            true,
 			},
 			"key_size": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Desired key size (modulus), in bits.").AddStringEnumDescription("CertKey_512", "CertKey_768", "CertKey_1024", "CertKey_2048", "CertKey_3072", "CertKey_4096", "CertKey_256", "CertKey_384", "CertKey_521").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Desired key size (modulus), in bits.").AddStringEnumDescription("CertKey_512", "CertKey_768", "CertKey_1024", "CertKey_2048", "CertKey_3072", "CertKey_4096", "CertKey_256", "CertKey_384", "CertKey_521", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("CertKey_512", "CertKey_768", "CertKey_1024", "CertKey_2048", "CertKey_3072", "CertKey_4096", "CertKey_256", "CertKey_384", "CertKey_521"),
+					stringvalidator.OneOf("CertKey_512", "CertKey_768", "CertKey_1024", "CertKey_2048", "CertKey_3072", "CertKey_4096", "CertKey_256", "CertKey_384", "CertKey_521", ),
 				},
 			},
 			"ignore_ipsec_key_usage": schema.BoolAttribute{
@@ -325,10 +326,10 @@ func (r *CertificateEnrollmentResource) Schema(ctx context.Context, req resource
 				Optional:            true,
 			},
 			"revocation_evaluation_priority": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Priority for certificate revocation evaluation. Needs to be set if both CRL and OCSP are enabled.").AddStringEnumDescription("CRL", "OCSP", "NONE").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Priority for certificate revocation evaluation. Needs to be set if both CRL and OCSP are enabled.").AddStringEnumDescription("CRL", "OCSP", "NONE", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("CRL", "OCSP", "NONE"),
+					stringvalidator.OneOf("CRL", "OCSP", "NONE", ),
 				},
 			},
 			"consider_certificate_valid_if_revocation_information_not_reachable": schema.BoolAttribute{
@@ -373,11 +374,48 @@ func (r *CertificateEnrollmentResource) Create(ctx context.Context, req resource
 	body = plan.adjustBody(ctx, body)
 	res, err := r.client.Post(plan.getPath(), body, reqMods...)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
-		return
+		if strings.Contains(err.Error(), "StatusCode 409") || (strings.Contains(err.Error(), "StatusCode 400") && strings.Contains(res.String(), "already exists")) {
+			// Object already exists in FMC - search for existing object and ingest it
+			tflog.Debug(ctx, fmt.Sprintf("%s: Object already exists (409/400), searching for existing object by name", plan.Id.ValueString()))
+			offset := 0
+			limit := 1000
+			for page := 1; ; page++ {
+				queryString := fmt.Sprintf("?limit=%d&offset=%d&expanded=true", limit, offset)
+				listRes, listErr := r.client.Get(plan.getPath()+queryString, reqMods...)
+				if listErr != nil {
+					resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists but failed to retrieve objects (GET), got error: %s, %s", listErr, listRes.String()))
+					return
+				}
+				for _, v := range listRes.Get("items").Array() {
+					if plan.Name.ValueString()== v.Get("name").String(){
+						plan.Id = types.StringValue(v.Get("id").String())
+						tflog.Debug(ctx, fmt.Sprintf("%s: Found existing object with name '%v'", plan.Id.ValueString(), plan.Name.ValueString()))
+						break
+					}
+				}
+				if plan.Id.ValueString() != "" || !listRes.Get("paging.next.0").Exists() {
+					break
+				}
+				offset += limit
+			}
+			if plan.Id.ValueString() == "" {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists (conflict) but failed to find existing object with name '%v': %s", plan.Name.ValueString(), err))
+				return
+			}
+			res, err = r.client.Get(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), reqMods...)
+			if err != nil {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists (conflict) but failed to retrieve existing object (GET), got error: %s, %s", err, res.String()))
+				return
+			}
+			plan.fromBodyUnknowns(ctx, res)
+		} else {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
+			return
+		}
+	} else {
+		plan.Id = types.StringValue(res.Get("id").String())
+		plan.fromBodyUnknowns(ctx, res)
 	}
-	plan.Id = types.StringValue(res.Get("id").String())
-	plan.fromBodyUnknowns(ctx, res)
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -470,7 +508,7 @@ func (r *CertificateEnrollmentResource) Update(ctx context.Context, req resource
 
 	body := plan.toBody(ctx, state)
 	body = plan.adjustBody(ctx, body)
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -502,7 +540,7 @@ func (r *CertificateEnrollmentResource) Delete(ctx context.Context, req resource
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString()), reqMods...)
+	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()), reqMods...)
 	if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
@@ -517,22 +555,21 @@ func (r *CertificateEnrollmentResource) Delete(ctx context.Context, req resource
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *CertificateEnrollmentResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Parse import ID
-	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
-	match := inputPattern.FindStringSubmatch(req.ID)
-	if match == nil {
-		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		// Parse import ID
+		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
+		match := inputPattern.FindStringSubmatch(req.ID)
+		if match == nil {
+			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	// Set domain, if provided
-	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+		// Set domain, if provided
+		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import

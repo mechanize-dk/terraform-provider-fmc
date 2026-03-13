@@ -51,14 +51,14 @@ func TestAccFmcBFDTemplates(t *testing.T) {
 	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccFmcBFDTemplatesConfig_all(),
-		Check:  resource.ComposeTestCheckFunc(checks...),
+		Check: resource.ComposeTestCheckFunc(checks...),
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps:                    steps,
+		Steps: steps,
 	})
 }
 
@@ -77,7 +77,6 @@ func testAccFmcBFDTemplatesConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
-
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

@@ -36,20 +36,45 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type FTDPlatformSettingsSyslogLoggingDestination struct {
-	Id                             types.String                                                   `tfsdk:"id"`
-	Domain                         types.String                                                   `tfsdk:"domain"`
-	FtdPlatformSettingsId          types.String                                                   `tfsdk:"ftd_platform_settings_id"`
-	Type                           types.String                                                   `tfsdk:"type"`
-	LoggingDestination             types.String                                                   `tfsdk:"logging_destination"`
-	GlobalEventClassFilterCriteria types.String                                                   `tfsdk:"global_event_class_filter_criteria"`
-	GlobalEventClassFilterValue    types.String                                                   `tfsdk:"global_event_class_filter_value"`
-	EventClassFilters              []FTDPlatformSettingsSyslogLoggingDestinationEventClassFilters `tfsdk:"event_class_filters"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	FtdPlatformSettingsId types.String `tfsdk:"ftd_platform_settings_id"`
+	Type types.String `tfsdk:"type"`
+	LoggingDestination types.String `tfsdk:"logging_destination"`
+	GlobalEventClassFilterCriteria types.String `tfsdk:"global_event_class_filter_criteria"`
+	GlobalEventClassFilterValue types.String `tfsdk:"global_event_class_filter_value"`
+	EventClassFilters []FTDPlatformSettingsSyslogLoggingDestinationEventClassFilters `tfsdk:"event_class_filters"`
 }
 
+
+
+
+
+
+
 type FTDPlatformSettingsSyslogLoggingDestinationEventClassFilters struct {
-	Class    types.String `tfsdk:"class"`
+	Class types.String `tfsdk:"class"`
 	Severity types.String `tfsdk:"severity"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -61,7 +86,7 @@ var minFMCVersionFTDPlatformSettingsSyslogLoggingDestination = version.Must(vers
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data FTDPlatformSettingsSyslogLoggingDestination) getPath() string {
-	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/syslog/loggingdestinations", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
+		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/syslog/loggingdestinations", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -73,23 +98,23 @@ func (data FTDPlatformSettingsSyslogLoggingDestination) toBody(ctx context.Conte
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.LoggingDestination.IsNull() {
+	if !data.LoggingDestination.IsNull()   {
 		body, _ = sjson.Set(body, "loggingDestination", data.LoggingDestination.ValueString())
 	}
-	if !data.GlobalEventClassFilterCriteria.IsNull() {
+	if !data.GlobalEventClassFilterCriteria.IsNull()   {
 		body, _ = sjson.Set(body, "allEventConfig.filterCriteria", data.GlobalEventClassFilterCriteria.ValueString())
 	}
-	if !data.GlobalEventClassFilterValue.IsNull() {
+	if !data.GlobalEventClassFilterValue.IsNull()   {
 		body, _ = sjson.Set(body, "allEventConfig.value", data.GlobalEventClassFilterValue.ValueString())
 	}
 	if len(data.EventClassFilters) > 0 {
 		body, _ = sjson.Set(body, "specificEventConfig", []any{})
 		for _, item := range data.EventClassFilters {
 			itemBody := ""
-			if !item.Class.IsNull() {
+			if !item.Class.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "class", item.Class.ValueString())
 			}
-			if !item.Severity.IsNull() {
+			if !item.Severity.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "severity", item.Severity.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "specificEventConfig.-1", itemBody)
@@ -128,16 +153,16 @@ func (data *FTDPlatformSettingsSyslogLoggingDestination) fromBody(ctx context.Co
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := FTDPlatformSettingsSyslogLoggingDestinationEventClassFilters{}
-			if value := res.Get("class"); value.Exists() {
-				data.Class = types.StringValue(value.String())
-			} else {
-				data.Class = types.StringNull()
-			}
-			if value := res.Get("severity"); value.Exists() {
-				data.Severity = types.StringValue(value.String())
-			} else {
-				data.Severity = types.StringNull()
-			}
+	if value := res.Get("class"); value.Exists() {
+		data.Class = types.StringValue(value.String())
+	} else {
+		data.Class = types.StringNull()
+	}
+	if value := res.Get("severity"); value.Exists() {
+		data.Severity = types.StringValue(value.String())
+	} else {
+		data.Severity = types.StringNull()
+	}
 			(*parent).EventClassFilters = append((*parent).EventClassFilters, data)
 			return true
 		})
@@ -147,6 +172,7 @@ func (data *FTDPlatformSettingsSyslogLoggingDestination) fromBody(ctx context.Co
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -174,8 +200,8 @@ func (data *FTDPlatformSettingsSyslogLoggingDestination) fromBodyPartial(ctx con
 		data.GlobalEventClassFilterValue = types.StringNull()
 	}
 	for i := 0; i < len(data.EventClassFilters); i++ {
-		keys := [...]string{"class", "severity"}
-		keyValues := [...]string{data.EventClassFilters[i].Class.ValueString(), data.EventClassFilters[i].Severity.ValueString()}
+		keys := [...]string{ "class", "severity",  }
+		keyValues := [...]string{ data.EventClassFilters[i].Class.ValueString(), data.EventClassFilters[i].Severity.ValueString(),  }
 
 		parent := &data
 		data := (*parent).EventClassFilters[i]
@@ -209,16 +235,16 @@ func (data *FTDPlatformSettingsSyslogLoggingDestination) fromBodyPartial(ctx con
 
 			continue
 		}
-		if value := res.Get("class"); value.Exists() && !data.Class.IsNull() {
-			data.Class = types.StringValue(value.String())
-		} else {
-			data.Class = types.StringNull()
-		}
-		if value := res.Get("severity"); value.Exists() && !data.Severity.IsNull() {
-			data.Severity = types.StringValue(value.String())
-		} else {
-			data.Severity = types.StringNull()
-		}
+	if value := res.Get("class"); value.Exists() && !data.Class.IsNull() {
+		data.Class = types.StringValue(value.String())
+	} else {
+		data.Class = types.StringNull()
+	}
+	if value := res.Get("severity"); value.Exists() && !data.Severity.IsNull() {
+		data.Severity = types.StringValue(value.String())
+	} else {
+		data.Severity = types.StringNull()
+	}
 		(*parent).EventClassFilters[i] = data
 	}
 }

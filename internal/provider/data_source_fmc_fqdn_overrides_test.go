@@ -31,7 +31,7 @@ import (
 
 func TestAccDataSourceFmcFQDNOverrides(t *testing.T) {
 	if os.Getenv("TF_VAR_device_id") == "" {
-		t.Skip("skipping test, set environment variable TF_VAR_device_id")
+        t.Skip("skipping test, set environment variable TF_VAR_device_id")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.fmc_fqdn_overrides.test", "overrides.0.target_type", "Device"))
@@ -43,12 +43,12 @@ func TestAccDataSourceFmcFQDNOverrides(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcFQDNOverridesPrerequisitesConfig + testAccDataSourceFmcFQDNOverridesConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcFQDNOverridesPrerequisitesConfig+testAccDataSourceFmcFQDNOverridesConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcFQDNOverridesPrerequisitesConfig + testAccNamedDataSourceFmcFQDNOverridesConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcFQDNOverridesPrerequisitesConfig+testAccNamedDataSourceFmcFQDNOverridesConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -67,7 +67,6 @@ resource "fmc_fqdn" "test" {
   overridable = true
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

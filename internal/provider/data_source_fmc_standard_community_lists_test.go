@@ -44,7 +44,7 @@ func TestAccDataSourceFmcStandardCommunityLists(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcStandardCommunityListsConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -81,5 +81,7 @@ func testAccDataSourceFmcStandardCommunityListsConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

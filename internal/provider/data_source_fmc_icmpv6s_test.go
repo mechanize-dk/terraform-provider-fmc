@@ -42,7 +42,7 @@ func TestAccDataSourceFmcICMPv6s(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcICMPv6sConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -76,5 +76,7 @@ func testAccDataSourceFmcICMPv6sConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

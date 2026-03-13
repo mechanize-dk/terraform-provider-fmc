@@ -34,25 +34,71 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type SLAMonitor struct {
-	Id                 types.String                   `tfsdk:"id"`
-	Domain             types.String                   `tfsdk:"domain"`
-	Name               types.String                   `tfsdk:"name"`
-	Type               types.String                   `tfsdk:"type"`
-	Description        types.String                   `tfsdk:"description"`
-	SlaMonitorId       types.Int64                    `tfsdk:"sla_monitor_id"`
-	Timeout            types.Int64                    `tfsdk:"timeout"`
-	Frequency          types.Int64                    `tfsdk:"frequency"`
-	Threshold          types.Int64                    `tfsdk:"threshold"`
-	DataSize           types.Int64                    `tfsdk:"data_size"`
-	Tos                types.Int64                    `tfsdk:"tos"`
-	NumberOfPackets    types.Int64                    `tfsdk:"number_of_packets"`
-	MonitorAddress     types.String                   `tfsdk:"monitor_address"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Name types.String `tfsdk:"name"`
+	Type types.String `tfsdk:"type"`
+	Description types.String `tfsdk:"description"`
+	SlaMonitorId types.Int64 `tfsdk:"sla_monitor_id"`
+	Timeout types.Int64 `tfsdk:"timeout"`
+	Frequency types.Int64 `tfsdk:"frequency"`
+	Threshold types.Int64 `tfsdk:"threshold"`
+	DataSize types.Int64 `tfsdk:"data_size"`
+	Tos types.Int64 `tfsdk:"tos"`
+	NumberOfPackets types.Int64 `tfsdk:"number_of_packets"`
+	MonitorAddress types.String `tfsdk:"monitor_address"`
 	SelectedInterfaces []SLAMonitorSelectedInterfaces `tfsdk:"selected_interfaces"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 type SLAMonitorSelectedInterfaces struct {
 	Id types.String `tfsdk:"id"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -63,7 +109,7 @@ type SLAMonitorSelectedInterfaces struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data SLAMonitor) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/slamonitors"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/slamonitors"
 }
 
 // End of section. //template:end getPath
@@ -75,42 +121,42 @@ func (data SLAMonitor) toBody(ctx context.Context, state SLAMonitor) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "SLAMonitor")
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()   {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.SlaMonitorId.IsNull() {
+	if !data.SlaMonitorId.IsNull()   {
 		body, _ = sjson.Set(body, "slaId", data.SlaMonitorId.ValueInt64())
 	}
-	if !data.Timeout.IsNull() {
+	if !data.Timeout.IsNull()   {
 		body, _ = sjson.Set(body, "timeout", data.Timeout.ValueInt64())
 	}
-	if !data.Frequency.IsNull() {
+	if !data.Frequency.IsNull()   {
 		body, _ = sjson.Set(body, "frequency", data.Frequency.ValueInt64())
 	}
-	if !data.Threshold.IsNull() {
+	if !data.Threshold.IsNull()   {
 		body, _ = sjson.Set(body, "threshold", data.Threshold.ValueInt64())
 	}
-	if !data.DataSize.IsNull() {
+	if !data.DataSize.IsNull()   {
 		body, _ = sjson.Set(body, "dataSize", data.DataSize.ValueInt64())
 	}
-	if !data.Tos.IsNull() {
+	if !data.Tos.IsNull()   {
 		body, _ = sjson.Set(body, "tos", data.Tos.ValueInt64())
 	}
-	if !data.NumberOfPackets.IsNull() {
+	if !data.NumberOfPackets.IsNull()   {
 		body, _ = sjson.Set(body, "noOfPackets", data.NumberOfPackets.ValueInt64())
 	}
-	if !data.MonitorAddress.IsNull() {
+	if !data.MonitorAddress.IsNull()   {
 		body, _ = sjson.Set(body, "monitorAddress", data.MonitorAddress.ValueString())
 	}
 	if len(data.SelectedInterfaces) > 0 {
 		body, _ = sjson.Set(body, "interfaceObjects", []any{})
 		for _, item := range data.SelectedInterfaces {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "interfaceObjects.-1", itemBody)
@@ -184,11 +230,11 @@ func (data *SLAMonitor) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := SLAMonitorSelectedInterfaces{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).SelectedInterfaces = append((*parent).SelectedInterfaces, data)
 			return true
 		})
@@ -198,6 +244,7 @@ func (data *SLAMonitor) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -260,8 +307,8 @@ func (data *SLAMonitor) fromBodyPartial(ctx context.Context, res gjson.Result) {
 		data.MonitorAddress = types.StringNull()
 	}
 	for i := 0; i < len(data.SelectedInterfaces); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.SelectedInterfaces[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.SelectedInterfaces[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).SelectedInterfaces[i]
@@ -295,11 +342,11 @@ func (data *SLAMonitor) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).SelectedInterfaces[i] = data
 	}
 }
@@ -324,28 +371,42 @@ func (data *SLAMonitor) fromBodyUnknowns(ctx context.Context, res gjson.Result) 
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
+
+
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
+
+
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
+
+
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
+
+
 
 // End of section. //template:end adjustBodyBulk

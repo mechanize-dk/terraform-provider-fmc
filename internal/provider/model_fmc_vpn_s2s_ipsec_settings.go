@@ -35,37 +35,99 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type VPNS2SIPSECSettings struct {
-	Id                                     types.String                             `tfsdk:"id"`
-	Domain                                 types.String                             `tfsdk:"domain"`
-	VpnS2sId                               types.String                             `tfsdk:"vpn_s2s_id"`
-	Type                                   types.String                             `tfsdk:"type"`
-	CryptoMapType                          types.String                             `tfsdk:"crypto_map_type"`
-	Ikev2Mode                              types.String                             `tfsdk:"ikev2_mode"`
-	Ikev1IpsecProposals                    []VPNS2SIPSECSettingsIkev1IpsecProposals `tfsdk:"ikev1_ipsec_proposals"`
-	Ikev2IpsecProposals                    []VPNS2SIPSECSettingsIkev2IpsecProposals `tfsdk:"ikev2_ipsec_proposals"`
-	SecurityAssociationStrengthEnforcement types.Bool                               `tfsdk:"security_association_strength_enforcement"`
-	ReverseRouteInjection                  types.Bool                               `tfsdk:"reverse_route_injection"`
-	PerfectForwardSecrecy                  types.Bool                               `tfsdk:"perfect_forward_secrecy"`
-	PerfectForwardSecrecyModulusGroup      types.String                             `tfsdk:"perfect_forward_secrecy_modulus_group"`
-	LifetimeDuration                       types.Int64                              `tfsdk:"lifetime_duration"`
-	LifetimeSize                           types.Int64                              `tfsdk:"lifetime_size"`
-	ValidateIncomingIcmpErrorMessages      types.Bool                               `tfsdk:"validate_incoming_icmp_error_messages"`
-	DoNotFragmentPolicy                    types.String                             `tfsdk:"do_not_fragment_policy"`
-	Tfc                                    types.Bool                               `tfsdk:"tfc"`
-	TfcBurstBytes                          types.Int64                              `tfsdk:"tfc_burst_bytes"`
-	TfcPayloadBytes                        types.Int64                              `tfsdk:"tfc_payload_bytes"`
-	TfcTimeout                             types.Int64                              `tfsdk:"tfc_timeout"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	VpnS2sId types.String `tfsdk:"vpn_s2s_id"`
+	Type types.String `tfsdk:"type"`
+	CryptoMapType types.String `tfsdk:"crypto_map_type"`
+	Ikev2Mode types.String `tfsdk:"ikev2_mode"`
+	Ikev1IpsecProposals []VPNS2SIPSECSettingsIkev1IpsecProposals `tfsdk:"ikev1_ipsec_proposals"`
+	Ikev2IpsecProposals []VPNS2SIPSECSettingsIkev2IpsecProposals `tfsdk:"ikev2_ipsec_proposals"`
+	SecurityAssociationStrengthEnforcement types.Bool `tfsdk:"security_association_strength_enforcement"`
+	ReverseRouteInjection types.Bool `tfsdk:"reverse_route_injection"`
+	PerfectForwardSecrecy types.Bool `tfsdk:"perfect_forward_secrecy"`
+	PerfectForwardSecrecyModulusGroup types.String `tfsdk:"perfect_forward_secrecy_modulus_group"`
+	LifetimeDuration types.Int64 `tfsdk:"lifetime_duration"`
+	LifetimeSize types.Int64 `tfsdk:"lifetime_size"`
+	ValidateIncomingIcmpErrorMessages types.Bool `tfsdk:"validate_incoming_icmp_error_messages"`
+	DoNotFragmentPolicy types.String `tfsdk:"do_not_fragment_policy"`
+	Tfc types.Bool `tfsdk:"tfc"`
+	TfcBurstBytes types.Int64 `tfsdk:"tfc_burst_bytes"`
+	TfcPayloadBytes types.Int64 `tfsdk:"tfc_payload_bytes"`
+	TfcTimeout types.Int64 `tfsdk:"tfc_timeout"`
 }
 
+
+
+
+
+
 type VPNS2SIPSECSettingsIkev1IpsecProposals struct {
-	Id   types.String `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	Name types.String `tfsdk:"name"`
 }
 
 type VPNS2SIPSECSettingsIkev2IpsecProposals struct {
-	Id   types.String `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	Name types.String `tfsdk:"name"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -76,7 +138,7 @@ type VPNS2SIPSECSettingsIkev2IpsecProposals struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data VPNS2SIPSECSettings) getPath() string {
-	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftds2svpns/%v/ipsecsettings", url.QueryEscape(data.VpnS2sId.ValueString()))
+		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftds2svpns/%v/ipsecsettings", url.QueryEscape(data.VpnS2sId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -88,20 +150,20 @@ func (data VPNS2SIPSECSettings) toBody(ctx context.Context, state VPNS2SIPSECSet
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.CryptoMapType.IsNull() {
+	if !data.CryptoMapType.IsNull()   {
 		body, _ = sjson.Set(body, "cryptoMapType", data.CryptoMapType.ValueString())
 	}
-	if !data.Ikev2Mode.IsNull() {
+	if !data.Ikev2Mode.IsNull()   {
 		body, _ = sjson.Set(body, "ikeV2Mode", data.Ikev2Mode.ValueString())
 	}
 	if len(data.Ikev1IpsecProposals) > 0 {
 		body, _ = sjson.Set(body, "ikeV1IpsecProposal", []any{})
 		for _, item := range data.Ikev1IpsecProposals {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Name.IsNull() {
+			if !item.Name.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "name", item.Name.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "ikeV1IpsecProposal.-1", itemBody)
@@ -111,49 +173,49 @@ func (data VPNS2SIPSECSettings) toBody(ctx context.Context, state VPNS2SIPSECSet
 		body, _ = sjson.Set(body, "ikeV2IpsecProposal", []any{})
 		for _, item := range data.Ikev2IpsecProposals {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Name.IsNull() {
+			if !item.Name.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "name", item.Name.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "ikeV2IpsecProposal.-1", itemBody)
 		}
 	}
-	if !data.SecurityAssociationStrengthEnforcement.IsNull() {
+	if !data.SecurityAssociationStrengthEnforcement.IsNull()   {
 		body, _ = sjson.Set(body, "enableSaStrengthEnforcement", data.SecurityAssociationStrengthEnforcement.ValueBool())
 	}
-	if !data.ReverseRouteInjection.IsNull() {
+	if !data.ReverseRouteInjection.IsNull()   {
 		body, _ = sjson.Set(body, "enableRRI", data.ReverseRouteInjection.ValueBool())
 	}
-	if !data.PerfectForwardSecrecy.IsNull() {
+	if !data.PerfectForwardSecrecy.IsNull()   {
 		body, _ = sjson.Set(body, "perfectForwardSecrecy.enabled", data.PerfectForwardSecrecy.ValueBool())
 	}
-	if !data.PerfectForwardSecrecyModulusGroup.IsNull() {
+	if !data.PerfectForwardSecrecyModulusGroup.IsNull()   {
 		body, _ = sjson.Set(body, "perfectForwardSecrecy.modulusGroup", data.PerfectForwardSecrecyModulusGroup.ValueString())
 	}
-	if !data.LifetimeDuration.IsNull() {
+	if !data.LifetimeDuration.IsNull()   {
 		body, _ = sjson.Set(body, "lifetimeSeconds", data.LifetimeDuration.ValueInt64())
 	}
-	if !data.LifetimeSize.IsNull() {
+	if !data.LifetimeSize.IsNull()   {
 		body, _ = sjson.Set(body, "lifetimeKilobytes", data.LifetimeSize.ValueInt64())
 	}
-	if !data.ValidateIncomingIcmpErrorMessages.IsNull() {
+	if !data.ValidateIncomingIcmpErrorMessages.IsNull()   {
 		body, _ = sjson.Set(body, "validateIncomingIcmpErrorMessage", data.ValidateIncomingIcmpErrorMessages.ValueBool())
 	}
-	if !data.DoNotFragmentPolicy.IsNull() {
+	if !data.DoNotFragmentPolicy.IsNull()   {
 		body, _ = sjson.Set(body, "doNotFragmentPolicy", data.DoNotFragmentPolicy.ValueString())
 	}
-	if !data.Tfc.IsNull() {
+	if !data.Tfc.IsNull()   {
 		body, _ = sjson.Set(body, "tfcPackets.enabled", data.Tfc.ValueBool())
 	}
-	if !data.TfcBurstBytes.IsNull() {
+	if !data.TfcBurstBytes.IsNull()   {
 		body, _ = sjson.Set(body, "tfcPackets.burstBytes", data.TfcBurstBytes.ValueInt64())
 	}
-	if !data.TfcPayloadBytes.IsNull() {
+	if !data.TfcPayloadBytes.IsNull()   {
 		body, _ = sjson.Set(body, "tfcPackets.payloadBytes", data.TfcPayloadBytes.ValueInt64())
 	}
-	if !data.TfcTimeout.IsNull() {
+	if !data.TfcTimeout.IsNull()   {
 		body, _ = sjson.Set(body, "tfcPackets.timeoutSeconds", data.TfcTimeout.ValueInt64())
 	}
 	return body
@@ -184,16 +246,16 @@ func (data *VPNS2SIPSECSettings) fromBody(ctx context.Context, res gjson.Result)
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VPNS2SIPSECSettingsIkev1IpsecProposals{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
-			if value := res.Get("name"); value.Exists() {
-				data.Name = types.StringValue(value.String())
-			} else {
-				data.Name = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("name"); value.Exists() {
+		data.Name = types.StringValue(value.String())
+	} else {
+		data.Name = types.StringNull()
+	}
 			(*parent).Ikev1IpsecProposals = append((*parent).Ikev1IpsecProposals, data)
 			return true
 		})
@@ -203,16 +265,16 @@ func (data *VPNS2SIPSECSettings) fromBody(ctx context.Context, res gjson.Result)
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VPNS2SIPSECSettingsIkev2IpsecProposals{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
-			if value := res.Get("name"); value.Exists() {
-				data.Name = types.StringValue(value.String())
-			} else {
-				data.Name = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("name"); value.Exists() {
+		data.Name = types.StringValue(value.String())
+	} else {
+		data.Name = types.StringNull()
+	}
 			(*parent).Ikev2IpsecProposals = append((*parent).Ikev2IpsecProposals, data)
 			return true
 		})
@@ -283,6 +345,7 @@ func (data *VPNS2SIPSECSettings) fromBody(ctx context.Context, res gjson.Result)
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
 
+
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
 // easily change across versions of the backend API.) For List/Set/Map attributes, the func only updates the
@@ -304,8 +367,8 @@ func (data *VPNS2SIPSECSettings) fromBodyPartial(ctx context.Context, res gjson.
 		data.Ikev2Mode = types.StringNull()
 	}
 	for i := 0; i < len(data.Ikev1IpsecProposals); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.Ikev1IpsecProposals[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.Ikev1IpsecProposals[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).Ikev1IpsecProposals[i]
@@ -339,21 +402,21 @@ func (data *VPNS2SIPSECSettings) fromBodyPartial(ctx context.Context, res gjson.
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
-			data.Name = types.StringValue(value.String())
-		} else {
-			data.Name = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
+		data.Name = types.StringValue(value.String())
+	} else {
+		data.Name = types.StringNull()
+	}
 		(*parent).Ikev1IpsecProposals[i] = data
 	}
 	for i := 0; i < len(data.Ikev2IpsecProposals); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.Ikev2IpsecProposals[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.Ikev2IpsecProposals[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).Ikev2IpsecProposals[i]
@@ -387,16 +450,16 @@ func (data *VPNS2SIPSECSettings) fromBodyPartial(ctx context.Context, res gjson.
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
-			data.Name = types.StringValue(value.String())
-		} else {
-			data.Name = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
+		data.Name = types.StringValue(value.String())
+	} else {
+		data.Name = types.StringNull()
+	}
 		(*parent).Ikev2IpsecProposals[i] = data
 	}
 	if value := res.Get("enableSaStrengthEnforcement"); value.Exists() && !data.SecurityAssociationStrengthEnforcement.IsNull() {
@@ -481,21 +544,30 @@ func (data *VPNS2SIPSECSettings) fromBodyUnknowns(ctx context.Context, res gjson
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
 
+
+
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
+
 
 // toBodyPutDelete is used to create the body for PUT requests to clear the resource state
 func (data VPNS2SIPSECSettings) toBodyPutDelete(ctx context.Context) string {

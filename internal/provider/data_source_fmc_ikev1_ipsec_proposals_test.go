@@ -42,7 +42,7 @@ func TestAccDataSourceFmcIKEv1IPsecProposals(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcIKEv1IPsecProposalsConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -75,5 +75,7 @@ func testAccDataSourceFmcIKEv1IPsecProposalsConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

@@ -35,30 +35,35 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type PolicyList struct {
-	Id                             types.String                               `tfsdk:"id"`
-	Domain                         types.String                               `tfsdk:"domain"`
-	Name                           types.String                               `tfsdk:"name"`
-	Type                           types.String                               `tfsdk:"type"`
-	Action                         types.String                               `tfsdk:"action"`
-	Interfaces                     []PolicyListInterfaces                     `tfsdk:"interfaces"`
-	InterfaceNames                 types.Set                                  `tfsdk:"interface_names"`
-	AddressStandardAccessLists     []PolicyListAddressStandardAccessLists     `tfsdk:"address_standard_access_lists"`
-	AddressIpv4PrefixLists         []PolicyListAddressIpv4PrefixLists         `tfsdk:"address_ipv4_prefix_lists"`
-	NextHopStandardAccessLists     []PolicyListNextHopStandardAccessLists     `tfsdk:"next_hop_standard_access_lists"`
-	NextHopIpv4PrefixLists         []PolicyListNextHopIpv4PrefixLists         `tfsdk:"next_hop_ipv4_prefix_lists"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Name types.String `tfsdk:"name"`
+	Type types.String `tfsdk:"type"`
+	Action types.String `tfsdk:"action"`
+	Interfaces []PolicyListInterfaces `tfsdk:"interfaces"`
+	InterfaceNames types.Set `tfsdk:"interface_names"`
+	AddressStandardAccessLists []PolicyListAddressStandardAccessLists `tfsdk:"address_standard_access_lists"`
+	AddressIpv4PrefixLists []PolicyListAddressIpv4PrefixLists `tfsdk:"address_ipv4_prefix_lists"`
+	NextHopStandardAccessLists []PolicyListNextHopStandardAccessLists `tfsdk:"next_hop_standard_access_lists"`
+	NextHopIpv4PrefixLists []PolicyListNextHopIpv4PrefixLists `tfsdk:"next_hop_ipv4_prefix_lists"`
 	RouteSourceStandardAccessLists []PolicyListRouteSourceStandardAccessLists `tfsdk:"route_source_standard_access_lists"`
-	RouteSourceIpv4PrefixLists     []PolicyListRouteSourceIpv4PrefixLists     `tfsdk:"route_source_ipv4_prefix_lists"`
-	AsPaths                        []PolicyListAsPaths                        `tfsdk:"as_paths"`
-	CommunityLists                 []PolicyListCommunityLists                 `tfsdk:"community_lists"`
-	ExtendedCommunityLists         []PolicyListExtendedCommunityLists         `tfsdk:"extended_community_lists"`
-	MatchCommunityExactly          types.Bool                                 `tfsdk:"match_community_exactly"`
-	Metric                         types.Int64                                `tfsdk:"metric"`
-	Tag                            types.Int64                                `tfsdk:"tag"`
+	RouteSourceIpv4PrefixLists []PolicyListRouteSourceIpv4PrefixLists `tfsdk:"route_source_ipv4_prefix_lists"`
+	AsPaths []PolicyListAsPaths `tfsdk:"as_paths"`
+	CommunityLists []PolicyListCommunityLists `tfsdk:"community_lists"`
+	ExtendedCommunityLists []PolicyListExtendedCommunityLists `tfsdk:"extended_community_lists"`
+	MatchCommunityExactly types.Bool `tfsdk:"match_community_exactly"`
+	Metric types.Int64 `tfsdk:"metric"`
+	Tag types.Int64 `tfsdk:"tag"`
 }
+
+
+
+
 
 type PolicyListInterfaces struct {
 	Id types.String `tfsdk:"id"`
 }
+
 
 type PolicyListAddressStandardAccessLists struct {
 	Id types.String `tfsdk:"id"`
@@ -96,6 +101,68 @@ type PolicyListExtendedCommunityLists struct {
 	Id types.String `tfsdk:"id"`
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // End of section. //template:end types
 
 // Section below is generated&owned by "gen/generator.go". //template:begin minimumVersions
@@ -105,7 +172,7 @@ type PolicyListExtendedCommunityLists struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data PolicyList) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/policylists"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/policylists"
 }
 
 // End of section. //template:end getPath
@@ -117,17 +184,17 @@ func (data PolicyList) toBody(ctx context.Context, state PolicyList) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Action.IsNull() {
+	if !data.Action.IsNull()   {
 		body, _ = sjson.Set(body, "action", data.Action.ValueString())
 	}
 	if len(data.Interfaces) > 0 {
 		body, _ = sjson.Set(body, "interfaces", []any{})
 		for _, item := range data.Interfaces {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "interfaces.-1", itemBody)
@@ -142,7 +209,7 @@ func (data PolicyList) toBody(ctx context.Context, state PolicyList) string {
 		body, _ = sjson.Set(body, "standardAccessListAddresses", []any{})
 		for _, item := range data.AddressStandardAccessLists {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "standardAccessListAddresses.-1", itemBody)
@@ -152,7 +219,7 @@ func (data PolicyList) toBody(ctx context.Context, state PolicyList) string {
 		body, _ = sjson.Set(body, "ipv4PrefixListAddresses", []any{})
 		for _, item := range data.AddressIpv4PrefixLists {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "ipv4PrefixListAddresses.-1", itemBody)
@@ -162,7 +229,7 @@ func (data PolicyList) toBody(ctx context.Context, state PolicyList) string {
 		body, _ = sjson.Set(body, "standardAccessListNextHops", []any{})
 		for _, item := range data.NextHopStandardAccessLists {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "standardAccessListNextHops.-1", itemBody)
@@ -172,7 +239,7 @@ func (data PolicyList) toBody(ctx context.Context, state PolicyList) string {
 		body, _ = sjson.Set(body, "ipv4PrefixListNexthops", []any{})
 		for _, item := range data.NextHopIpv4PrefixLists {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "ipv4PrefixListNexthops.-1", itemBody)
@@ -182,7 +249,7 @@ func (data PolicyList) toBody(ctx context.Context, state PolicyList) string {
 		body, _ = sjson.Set(body, "standardAccessListRouteSources", []any{})
 		for _, item := range data.RouteSourceStandardAccessLists {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "standardAccessListRouteSources.-1", itemBody)
@@ -192,7 +259,7 @@ func (data PolicyList) toBody(ctx context.Context, state PolicyList) string {
 		body, _ = sjson.Set(body, "ipv4PrefixListRouteSources", []any{})
 		for _, item := range data.RouteSourceIpv4PrefixLists {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "ipv4PrefixListRouteSources.-1", itemBody)
@@ -202,7 +269,7 @@ func (data PolicyList) toBody(ctx context.Context, state PolicyList) string {
 		body, _ = sjson.Set(body, "asPathLists", []any{})
 		for _, item := range data.AsPaths {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "asPathLists.-1", itemBody)
@@ -212,7 +279,7 @@ func (data PolicyList) toBody(ctx context.Context, state PolicyList) string {
 		body, _ = sjson.Set(body, "communityLists", []any{})
 		for _, item := range data.CommunityLists {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "communityLists.-1", itemBody)
@@ -222,19 +289,19 @@ func (data PolicyList) toBody(ctx context.Context, state PolicyList) string {
 		body, _ = sjson.Set(body, "extendedCommunityLists", []any{})
 		for _, item := range data.ExtendedCommunityLists {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "extendedCommunityLists.-1", itemBody)
 		}
 	}
-	if !data.MatchCommunityExactly.IsNull() {
+	if !data.MatchCommunityExactly.IsNull()   {
 		body, _ = sjson.Set(body, "matchCommunityExactly", data.MatchCommunityExactly.ValueBool())
 	}
-	if !data.Metric.IsNull() {
+	if !data.Metric.IsNull()   {
 		body, _ = sjson.Set(body, "metric", data.Metric.ValueInt64())
 	}
-	if !data.Tag.IsNull() {
+	if !data.Tag.IsNull()   {
 		body, _ = sjson.Set(body, "tag", data.Tag.ValueInt64())
 	}
 	return body
@@ -265,11 +332,11 @@ func (data *PolicyList) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := PolicyListInterfaces{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).Interfaces = append((*parent).Interfaces, data)
 			return true
 		})
@@ -284,11 +351,11 @@ func (data *PolicyList) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := PolicyListAddressStandardAccessLists{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).AddressStandardAccessLists = append((*parent).AddressStandardAccessLists, data)
 			return true
 		})
@@ -298,11 +365,11 @@ func (data *PolicyList) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := PolicyListAddressIpv4PrefixLists{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).AddressIpv4PrefixLists = append((*parent).AddressIpv4PrefixLists, data)
 			return true
 		})
@@ -312,11 +379,11 @@ func (data *PolicyList) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := PolicyListNextHopStandardAccessLists{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).NextHopStandardAccessLists = append((*parent).NextHopStandardAccessLists, data)
 			return true
 		})
@@ -326,11 +393,11 @@ func (data *PolicyList) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := PolicyListNextHopIpv4PrefixLists{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).NextHopIpv4PrefixLists = append((*parent).NextHopIpv4PrefixLists, data)
 			return true
 		})
@@ -340,11 +407,11 @@ func (data *PolicyList) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := PolicyListRouteSourceStandardAccessLists{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).RouteSourceStandardAccessLists = append((*parent).RouteSourceStandardAccessLists, data)
 			return true
 		})
@@ -354,11 +421,11 @@ func (data *PolicyList) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := PolicyListRouteSourceIpv4PrefixLists{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).RouteSourceIpv4PrefixLists = append((*parent).RouteSourceIpv4PrefixLists, data)
 			return true
 		})
@@ -368,11 +435,11 @@ func (data *PolicyList) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := PolicyListAsPaths{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).AsPaths = append((*parent).AsPaths, data)
 			return true
 		})
@@ -382,11 +449,11 @@ func (data *PolicyList) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := PolicyListCommunityLists{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).CommunityLists = append((*parent).CommunityLists, data)
 			return true
 		})
@@ -396,11 +463,11 @@ func (data *PolicyList) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := PolicyListExtendedCommunityLists{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).ExtendedCommunityLists = append((*parent).ExtendedCommunityLists, data)
 			return true
 		})
@@ -426,6 +493,7 @@ func (data *PolicyList) fromBody(ctx context.Context, res gjson.Result) {
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
 
+
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
 // easily change across versions of the backend API.) For List/Set/Map attributes, the func only updates the
@@ -447,8 +515,8 @@ func (data *PolicyList) fromBodyPartial(ctx context.Context, res gjson.Result) {
 		data.Action = types.StringNull()
 	}
 	for i := 0; i < len(data.Interfaces); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.Interfaces[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.Interfaces[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).Interfaces[i]
@@ -482,11 +550,11 @@ func (data *PolicyList) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).Interfaces[i] = data
 	}
 	if value := res.Get("interfaceNames"); value.Exists() && !data.InterfaceNames.IsNull() {
@@ -495,8 +563,8 @@ func (data *PolicyList) fromBodyPartial(ctx context.Context, res gjson.Result) {
 		data.InterfaceNames = types.SetNull(types.StringType)
 	}
 	for i := 0; i < len(data.AddressStandardAccessLists); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.AddressStandardAccessLists[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.AddressStandardAccessLists[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).AddressStandardAccessLists[i]
@@ -530,16 +598,16 @@ func (data *PolicyList) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).AddressStandardAccessLists[i] = data
 	}
 	for i := 0; i < len(data.AddressIpv4PrefixLists); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.AddressIpv4PrefixLists[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.AddressIpv4PrefixLists[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).AddressIpv4PrefixLists[i]
@@ -573,16 +641,16 @@ func (data *PolicyList) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).AddressIpv4PrefixLists[i] = data
 	}
 	for i := 0; i < len(data.NextHopStandardAccessLists); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.NextHopStandardAccessLists[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.NextHopStandardAccessLists[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).NextHopStandardAccessLists[i]
@@ -616,16 +684,16 @@ func (data *PolicyList) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).NextHopStandardAccessLists[i] = data
 	}
 	for i := 0; i < len(data.NextHopIpv4PrefixLists); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.NextHopIpv4PrefixLists[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.NextHopIpv4PrefixLists[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).NextHopIpv4PrefixLists[i]
@@ -659,16 +727,16 @@ func (data *PolicyList) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).NextHopIpv4PrefixLists[i] = data
 	}
 	for i := 0; i < len(data.RouteSourceStandardAccessLists); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.RouteSourceStandardAccessLists[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.RouteSourceStandardAccessLists[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).RouteSourceStandardAccessLists[i]
@@ -702,16 +770,16 @@ func (data *PolicyList) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).RouteSourceStandardAccessLists[i] = data
 	}
 	for i := 0; i < len(data.RouteSourceIpv4PrefixLists); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.RouteSourceIpv4PrefixLists[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.RouteSourceIpv4PrefixLists[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).RouteSourceIpv4PrefixLists[i]
@@ -745,16 +813,16 @@ func (data *PolicyList) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).RouteSourceIpv4PrefixLists[i] = data
 	}
 	for i := 0; i < len(data.AsPaths); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.AsPaths[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.AsPaths[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).AsPaths[i]
@@ -788,16 +856,16 @@ func (data *PolicyList) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).AsPaths[i] = data
 	}
 	for i := 0; i < len(data.CommunityLists); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.CommunityLists[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.CommunityLists[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).CommunityLists[i]
@@ -831,16 +899,16 @@ func (data *PolicyList) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).CommunityLists[i] = data
 	}
 	for i := 0; i < len(data.ExtendedCommunityLists); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.ExtendedCommunityLists[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.ExtendedCommunityLists[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).ExtendedCommunityLists[i]
@@ -874,11 +942,11 @@ func (data *PolicyList) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).ExtendedCommunityLists[i] = data
 	}
 	if value := res.Get("matchCommunityExactly"); value.Exists() && !data.MatchCommunityExactly.IsNull() {
@@ -918,28 +986,42 @@ func (data *PolicyList) fromBodyUnknowns(ctx context.Context, res gjson.Result) 
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
+
+
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
+
+
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
+
+
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
+
+
 
 // End of section. //template:end adjustBodyBulk

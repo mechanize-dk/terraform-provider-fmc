@@ -63,7 +63,7 @@ func (d *SecurityIntelligenceDNSListsDataSource) Schema(ctx context.Context, req
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 			},
 			"items": schema.MapNestedAttribute{
 				MarkdownDescription: "Map of Security Intelligence DNS Lists. The key of the map is the name of the individual Security Intelligence DNS List.",
@@ -115,7 +115,7 @@ func (d *SecurityIntelligenceDNSListsDataSource) Read(ctx context.Context, req d
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
-
+	
 	// Get all objects from FMC
 	urlPath := config.getPath() + "?expanded=true"
 	res, err := d.client.Get(urlPath, reqMods...)

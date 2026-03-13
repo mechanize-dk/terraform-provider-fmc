@@ -31,15 +31,42 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type Chassis struct {
-	Id              types.String `tfsdk:"id"`
-	Domain          types.String `tfsdk:"domain"`
-	Name            types.String `tfsdk:"name"`
-	Type            types.String `tfsdk:"type"`
-	Host            types.String `tfsdk:"host"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Name types.String `tfsdk:"name"`
+	Type types.String `tfsdk:"type"`
+	Host types.String `tfsdk:"host"`
 	RegistrationKey types.String `tfsdk:"registration_key"`
-	DeviceGroupId   types.String `tfsdk:"device_group_id"`
-	NatId           types.String `tfsdk:"nat_id"`
+	DeviceGroupId types.String `tfsdk:"device_group_id"`
+	NatId types.String `tfsdk:"nat_id"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -50,7 +77,7 @@ type Chassis struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data Chassis) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/chassis/fmcmanagedchassis"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/chassis/fmcmanagedchassis"
 }
 
 // End of section. //template:end getPath
@@ -62,20 +89,20 @@ func (data Chassis) toBody(ctx context.Context, state Chassis) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "chassisName", data.Name.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "Device")
-	if !data.Host.IsNull() {
+	if !data.Host.IsNull()   {
 		body, _ = sjson.Set(body, "chassisHostName", data.Host.ValueString())
 	}
-	if !data.RegistrationKey.IsNull() {
+	if !data.RegistrationKey.IsNull()   {
 		body, _ = sjson.Set(body, "regKey", data.RegistrationKey.ValueString())
 	}
-	if !data.DeviceGroupId.IsNull() {
+	if !data.DeviceGroupId.IsNull()   {
 		body, _ = sjson.Set(body, "deviceGroup.id", data.DeviceGroupId.ValueString())
 	}
-	if !data.NatId.IsNull() {
+	if !data.NatId.IsNull()   {
 		body, _ = sjson.Set(body, "natID", data.NatId.ValueString())
 	}
 	return body
@@ -111,6 +138,7 @@ func (data *Chassis) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might

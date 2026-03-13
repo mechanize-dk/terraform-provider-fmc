@@ -35,44 +35,129 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type RealmADLDAP struct {
-	Id                                 types.String                  `tfsdk:"id"`
-	Domain                             types.String                  `tfsdk:"domain"`
-	Name                               types.String                  `tfsdk:"name"`
-	Enabled                            types.Bool                    `tfsdk:"enabled"`
-	Type                               types.String                  `tfsdk:"type"`
-	Version                            types.String                  `tfsdk:"version"`
-	Description                        types.String                  `tfsdk:"description"`
-	RealmType                          types.String                  `tfsdk:"realm_type"`
-	AdPrimaryDomain                    types.String                  `tfsdk:"ad_primary_domain"`
-	AdJoinUsername                     types.String                  `tfsdk:"ad_join_username"`
-	AdJoinPassword                     types.String                  `tfsdk:"ad_join_password"`
-	DirectoryUsername                  types.String                  `tfsdk:"directory_username"`
-	DirectoryPassword                  types.String                  `tfsdk:"directory_password"`
-	BaseDn                             types.String                  `tfsdk:"base_dn"`
-	GroupDn                            types.String                  `tfsdk:"group_dn"`
-	IncludedUsers                      types.List                    `tfsdk:"included_users"`
-	IncludedGroups                     types.List                    `tfsdk:"included_groups"`
-	ExcludedUsers                      types.List                    `tfsdk:"excluded_users"`
-	ExcludedGroups                     types.List                    `tfsdk:"excluded_groups"`
-	UpdateHour                         types.Int64                   `tfsdk:"update_hour"`
-	UpdateInterval                     types.String                  `tfsdk:"update_interval"`
-	GroupAttribute                     types.String                  `tfsdk:"group_attribute"`
-	TimeoutIseAndPassiveIndentityUsers types.Int64                   `tfsdk:"timeout_ise_and_passive_indentity_users"`
-	TimeoutTerminalServerAgentUsers    types.Int64                   `tfsdk:"timeout_terminal_server_agent_users"`
-	TimeoutCaptivePortalUsers          types.Int64                   `tfsdk:"timeout_captive_portal_users"`
-	TimeoutFailedCaptivePortalUsers    types.Int64                   `tfsdk:"timeout_failed_captive_portal_users"`
-	TimeoutGuestCaptivePortalUsers     types.Int64                   `tfsdk:"timeout_guest_captive_portal_users"`
-	DirectoryServers                   []RealmADLDAPDirectoryServers `tfsdk:"directory_servers"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Name types.String `tfsdk:"name"`
+	Enabled types.Bool `tfsdk:"enabled"`
+	Type types.String `tfsdk:"type"`
+	Version types.String `tfsdk:"version"`
+	Description types.String `tfsdk:"description"`
+	RealmType types.String `tfsdk:"realm_type"`
+	AdPrimaryDomain types.String `tfsdk:"ad_primary_domain"`
+	AdJoinUsername types.String `tfsdk:"ad_join_username"`
+	AdJoinPassword types.String `tfsdk:"ad_join_password"`
+	DirectoryUsername types.String `tfsdk:"directory_username"`
+	DirectoryPassword types.String `tfsdk:"directory_password"`
+	BaseDn types.String `tfsdk:"base_dn"`
+	GroupDn types.String `tfsdk:"group_dn"`
+	IncludedUsers types.List `tfsdk:"included_users"`
+	IncludedGroups types.List `tfsdk:"included_groups"`
+	ExcludedUsers types.List `tfsdk:"excluded_users"`
+	ExcludedGroups types.List `tfsdk:"excluded_groups"`
+	UpdateHour types.Int64 `tfsdk:"update_hour"`
+	UpdateInterval types.String `tfsdk:"update_interval"`
+	GroupAttribute types.String `tfsdk:"group_attribute"`
+	TimeoutIseAndPassiveIndentityUsers types.Int64 `tfsdk:"timeout_ise_and_passive_indentity_users"`
+	TimeoutTerminalServerAgentUsers types.Int64 `tfsdk:"timeout_terminal_server_agent_users"`
+	TimeoutCaptivePortalUsers types.Int64 `tfsdk:"timeout_captive_portal_users"`
+	TimeoutFailedCaptivePortalUsers types.Int64 `tfsdk:"timeout_failed_captive_portal_users"`
+	TimeoutGuestCaptivePortalUsers types.Int64 `tfsdk:"timeout_guest_captive_portal_users"`
+	DirectoryServers []RealmADLDAPDirectoryServers `tfsdk:"directory_servers"`
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 type RealmADLDAPDirectoryServers struct {
-	Hostname                    types.String `tfsdk:"hostname"`
-	Port                        types.Int64  `tfsdk:"port"`
-	EncryptionProtocol          types.String `tfsdk:"encryption_protocol"`
-	CaCertificateId             types.String `tfsdk:"ca_certificate_id"`
-	UseRoutingToSelectInterface types.Bool   `tfsdk:"use_routing_to_select_interface"`
-	InterfaceGroupId            types.String `tfsdk:"interface_group_id"`
+	Hostname types.String `tfsdk:"hostname"`
+	Port types.Int64 `tfsdk:"port"`
+	EncryptionProtocol types.String `tfsdk:"encryption_protocol"`
+	CaCertificateId types.String `tfsdk:"ca_certificate_id"`
+	UseRoutingToSelectInterface types.Bool `tfsdk:"use_routing_to_select_interface"`
+	InterfaceGroupId types.String `tfsdk:"interface_group_id"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -83,7 +168,7 @@ type RealmADLDAPDirectoryServers struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data RealmADLDAP) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/realms"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/realms"
 }
 
 // End of section. //template:end getPath
@@ -95,40 +180,40 @@ func (data RealmADLDAP) toBody(ctx context.Context, state RealmADLDAP) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Enabled.IsNull() {
+	if !data.Enabled.IsNull()   {
 		body, _ = sjson.Set(body, "enabled", data.Enabled.ValueBool())
 	}
-	if !data.Version.IsNull() && !data.Version.IsUnknown() {
+	if !data.Version.IsNull()   && !data.Version.IsUnknown() {
 		body, _ = sjson.Set(body, "version", data.Version.ValueString())
 	}
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()   {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.RealmType.IsNull() {
+	if !data.RealmType.IsNull()   {
 		body, _ = sjson.Set(body, "realmType", data.RealmType.ValueString())
 	}
-	if !data.AdPrimaryDomain.IsNull() {
+	if !data.AdPrimaryDomain.IsNull()   {
 		body, _ = sjson.Set(body, "adPrimaryDomain", data.AdPrimaryDomain.ValueString())
 	}
-	if !data.AdJoinUsername.IsNull() {
+	if !data.AdJoinUsername.IsNull()   {
 		body, _ = sjson.Set(body, "adJoinUsername", data.AdJoinUsername.ValueString())
 	}
-	if !data.AdJoinPassword.IsNull() {
+	if !data.AdJoinPassword.IsNull()   {
 		body, _ = sjson.Set(body, "adJoinPassword", data.AdJoinPassword.ValueString())
 	}
-	if !data.DirectoryUsername.IsNull() {
+	if !data.DirectoryUsername.IsNull()   {
 		body, _ = sjson.Set(body, "dirUsername", data.DirectoryUsername.ValueString())
 	}
-	if !data.DirectoryPassword.IsNull() {
+	if !data.DirectoryPassword.IsNull()   {
 		body, _ = sjson.Set(body, "dirPassword", data.DirectoryPassword.ValueString())
 	}
-	if !data.BaseDn.IsNull() {
+	if !data.BaseDn.IsNull()   {
 		body, _ = sjson.Set(body, "baseDn", data.BaseDn.ValueString())
 	}
-	if !data.GroupDn.IsNull() {
+	if !data.GroupDn.IsNull()   {
 		body, _ = sjson.Set(body, "groupDn", data.GroupDn.ValueString())
 	}
 	if !data.IncludedUsers.IsNull() {
@@ -151,50 +236,50 @@ func (data RealmADLDAP) toBody(ctx context.Context, state RealmADLDAP) string {
 		data.ExcludedGroups.ElementsAs(ctx, &values, false)
 		body, _ = sjson.Set(body, "excludedGroups", values)
 	}
-	if !data.UpdateHour.IsNull() {
+	if !data.UpdateHour.IsNull()   {
 		body, _ = sjson.Set(body, "updateHour", data.UpdateHour.ValueInt64())
 	}
-	if !data.UpdateInterval.IsNull() {
+	if !data.UpdateInterval.IsNull()   {
 		body, _ = sjson.Set(body, "updateInterval", data.UpdateInterval.ValueString())
 	}
-	if !data.GroupAttribute.IsNull() {
+	if !data.GroupAttribute.IsNull()   {
 		body, _ = sjson.Set(body, "groupAttribute", data.GroupAttribute.ValueString())
 	}
-	if !data.TimeoutIseAndPassiveIndentityUsers.IsNull() {
+	if !data.TimeoutIseAndPassiveIndentityUsers.IsNull()   {
 		body, _ = sjson.Set(body, "authSessionTimeout", data.TimeoutIseAndPassiveIndentityUsers.ValueInt64())
 	}
-	if !data.TimeoutTerminalServerAgentUsers.IsNull() {
+	if !data.TimeoutTerminalServerAgentUsers.IsNull()   {
 		body, _ = sjson.Set(body, "tsAgentSessionTimeout", data.TimeoutTerminalServerAgentUsers.ValueInt64())
 	}
-	if !data.TimeoutCaptivePortalUsers.IsNull() {
+	if !data.TimeoutCaptivePortalUsers.IsNull()   {
 		body, _ = sjson.Set(body, "activeAuthSessionTimeout", data.TimeoutCaptivePortalUsers.ValueInt64())
 	}
-	if !data.TimeoutFailedCaptivePortalUsers.IsNull() {
+	if !data.TimeoutFailedCaptivePortalUsers.IsNull()   {
 		body, _ = sjson.Set(body, "failedAuthSessionTimeout", data.TimeoutFailedCaptivePortalUsers.ValueInt64())
 	}
-	if !data.TimeoutGuestCaptivePortalUsers.IsNull() {
+	if !data.TimeoutGuestCaptivePortalUsers.IsNull()   {
 		body, _ = sjson.Set(body, "guestSessionTimeout", data.TimeoutGuestCaptivePortalUsers.ValueInt64())
 	}
 	if len(data.DirectoryServers) > 0 {
 		body, _ = sjson.Set(body, "directoryConfigurations", []any{})
 		for _, item := range data.DirectoryServers {
 			itemBody := ""
-			if !item.Hostname.IsNull() {
+			if !item.Hostname.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "hostname", item.Hostname.ValueString())
 			}
-			if !item.Port.IsNull() {
+			if !item.Port.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "port", item.Port.ValueInt64())
 			}
-			if !item.EncryptionProtocol.IsNull() {
+			if !item.EncryptionProtocol.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "encryptionProtocol", item.EncryptionProtocol.ValueString())
 			}
-			if !item.CaCertificateId.IsNull() {
+			if !item.CaCertificateId.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "encryptionCert.id", item.CaCertificateId.ValueString())
 			}
-			if !item.UseRoutingToSelectInterface.IsNull() {
+			if !item.UseRoutingToSelectInterface.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "useRoutingToSelectInterface", item.UseRoutingToSelectInterface.ValueBool())
 			}
-			if !item.InterfaceGroupId.IsNull() {
+			if !item.InterfaceGroupId.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "interface.id", item.InterfaceGroupId.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "directoryConfigurations.-1", itemBody)
@@ -328,36 +413,36 @@ func (data *RealmADLDAP) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := RealmADLDAPDirectoryServers{}
-			if value := res.Get("hostname"); value.Exists() {
-				data.Hostname = types.StringValue(value.String())
-			} else {
-				data.Hostname = types.StringNull()
-			}
-			if value := res.Get("port"); value.Exists() {
-				data.Port = types.Int64Value(value.Int())
-			} else {
-				data.Port = types.Int64Null()
-			}
-			if value := res.Get("encryptionProtocol"); value.Exists() {
-				data.EncryptionProtocol = types.StringValue(value.String())
-			} else {
-				data.EncryptionProtocol = types.StringNull()
-			}
-			if value := res.Get("encryptionCert.id"); value.Exists() {
-				data.CaCertificateId = types.StringValue(value.String())
-			} else {
-				data.CaCertificateId = types.StringNull()
-			}
-			if value := res.Get("useRoutingToSelectInterface"); value.Exists() {
-				data.UseRoutingToSelectInterface = types.BoolValue(value.Bool())
-			} else {
-				data.UseRoutingToSelectInterface = types.BoolValue(false)
-			}
-			if value := res.Get("interface.id"); value.Exists() {
-				data.InterfaceGroupId = types.StringValue(value.String())
-			} else {
-				data.InterfaceGroupId = types.StringNull()
-			}
+	if value := res.Get("hostname"); value.Exists() {
+		data.Hostname = types.StringValue(value.String())
+	} else {
+		data.Hostname = types.StringNull()
+	}
+	if value := res.Get("port"); value.Exists() {
+		data.Port = types.Int64Value(value.Int())
+	} else {
+		data.Port = types.Int64Null()
+	}
+	if value := res.Get("encryptionProtocol"); value.Exists() {
+		data.EncryptionProtocol = types.StringValue(value.String())
+	} else {
+		data.EncryptionProtocol = types.StringNull()
+	}
+	if value := res.Get("encryptionCert.id"); value.Exists() {
+		data.CaCertificateId = types.StringValue(value.String())
+	} else {
+		data.CaCertificateId = types.StringNull()
+	}
+	if value := res.Get("useRoutingToSelectInterface"); value.Exists() {
+		data.UseRoutingToSelectInterface = types.BoolValue(value.Bool())
+	} else {
+		data.UseRoutingToSelectInterface = types.BoolValue(false)
+	}
+	if value := res.Get("interface.id"); value.Exists() {
+		data.InterfaceGroupId = types.StringValue(value.String())
+	} else {
+		data.InterfaceGroupId = types.StringNull()
+	}
 			(*parent).DirectoryServers = append((*parent).DirectoryServers, data)
 			return true
 		})
@@ -367,6 +452,7 @@ func (data *RealmADLDAP) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -489,8 +575,8 @@ func (data *RealmADLDAP) fromBodyPartial(ctx context.Context, res gjson.Result) 
 		data.TimeoutGuestCaptivePortalUsers = types.Int64Null()
 	}
 	for i := 0; i < len(data.DirectoryServers); i++ {
-		keys := [...]string{"hostname"}
-		keyValues := [...]string{data.DirectoryServers[i].Hostname.ValueString()}
+		keys := [...]string{ "hostname",  }
+		keyValues := [...]string{ data.DirectoryServers[i].Hostname.ValueString(),  }
 
 		parent := &data
 		data := (*parent).DirectoryServers[i]
@@ -524,36 +610,36 @@ func (data *RealmADLDAP) fromBodyPartial(ctx context.Context, res gjson.Result) 
 
 			continue
 		}
-		if value := res.Get("hostname"); value.Exists() && !data.Hostname.IsNull() {
-			data.Hostname = types.StringValue(value.String())
-		} else {
-			data.Hostname = types.StringNull()
-		}
-		if value := res.Get("port"); value.Exists() && !data.Port.IsNull() {
-			data.Port = types.Int64Value(value.Int())
-		} else {
-			data.Port = types.Int64Null()
-		}
-		if value := res.Get("encryptionProtocol"); value.Exists() && !data.EncryptionProtocol.IsNull() {
-			data.EncryptionProtocol = types.StringValue(value.String())
-		} else {
-			data.EncryptionProtocol = types.StringNull()
-		}
-		if value := res.Get("encryptionCert.id"); value.Exists() && !data.CaCertificateId.IsNull() {
-			data.CaCertificateId = types.StringValue(value.String())
-		} else {
-			data.CaCertificateId = types.StringNull()
-		}
-		if value := res.Get("useRoutingToSelectInterface"); value.Exists() && !data.UseRoutingToSelectInterface.IsNull() {
-			data.UseRoutingToSelectInterface = types.BoolValue(value.Bool())
-		} else if data.UseRoutingToSelectInterface.ValueBool() != false {
-			data.UseRoutingToSelectInterface = types.BoolNull()
-		}
-		if value := res.Get("interface.id"); value.Exists() && !data.InterfaceGroupId.IsNull() {
-			data.InterfaceGroupId = types.StringValue(value.String())
-		} else {
-			data.InterfaceGroupId = types.StringNull()
-		}
+	if value := res.Get("hostname"); value.Exists() && !data.Hostname.IsNull() {
+		data.Hostname = types.StringValue(value.String())
+	} else {
+		data.Hostname = types.StringNull()
+	}
+	if value := res.Get("port"); value.Exists() && !data.Port.IsNull() {
+		data.Port = types.Int64Value(value.Int())
+	} else {
+		data.Port = types.Int64Null()
+	}
+	if value := res.Get("encryptionProtocol"); value.Exists() && !data.EncryptionProtocol.IsNull() {
+		data.EncryptionProtocol = types.StringValue(value.String())
+	} else {
+		data.EncryptionProtocol = types.StringNull()
+	}
+	if value := res.Get("encryptionCert.id"); value.Exists() && !data.CaCertificateId.IsNull() {
+		data.CaCertificateId = types.StringValue(value.String())
+	} else {
+		data.CaCertificateId = types.StringNull()
+	}
+	if value := res.Get("useRoutingToSelectInterface"); value.Exists() && !data.UseRoutingToSelectInterface.IsNull() {
+		data.UseRoutingToSelectInterface = types.BoolValue(value.Bool())
+	} else if data.UseRoutingToSelectInterface.ValueBool() != false {
+		data.UseRoutingToSelectInterface = types.BoolNull()
+	}
+	if value := res.Get("interface.id"); value.Exists() && !data.InterfaceGroupId.IsNull() {
+		data.InterfaceGroupId = types.StringValue(value.String())
+	} else {
+		data.InterfaceGroupId = types.StringNull()
+	}
 		(*parent).DirectoryServers[i] = data
 	}
 }

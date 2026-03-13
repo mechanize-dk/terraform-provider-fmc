@@ -34,19 +34,41 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type PortGroup struct {
-	Id          types.String       `tfsdk:"id"`
-	Domain      types.String       `tfsdk:"domain"`
-	Name        types.String       `tfsdk:"name"`
-	Type        types.String       `tfsdk:"type"`
-	Description types.String       `tfsdk:"description"`
-	Overridable types.Bool         `tfsdk:"overridable"`
-	Objects     []PortGroupObjects `tfsdk:"objects"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Name types.String `tfsdk:"name"`
+	Type types.String `tfsdk:"type"`
+	Description types.String `tfsdk:"description"`
+	Overridable types.Bool `tfsdk:"overridable"`
+	Objects []PortGroupObjects `tfsdk:"objects"`
 }
 
+
+
+
+
+
 type PortGroupObjects struct {
-	Id   types.String `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	Type types.String `tfsdk:"type"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -57,7 +79,7 @@ type PortGroupObjects struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data PortGroup) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/portobjectgroups"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/portobjectgroups"
 }
 
 // End of section. //template:end getPath
@@ -69,23 +91,23 @@ func (data PortGroup) toBody(ctx context.Context, state PortGroup) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()   {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.Overridable.IsNull() {
+	if !data.Overridable.IsNull()   {
 		body, _ = sjson.Set(body, "overridable", data.Overridable.ValueBool())
 	}
 	if len(data.Objects) > 0 {
 		body, _ = sjson.Set(body, "objects", []any{})
 		for _, item := range data.Objects {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Type.IsNull() {
+			if !item.Type.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "type", item.Type.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "objects.-1", itemBody)
@@ -124,16 +146,16 @@ func (data *PortGroup) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := PortGroupObjects{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
-			if value := res.Get("type"); value.Exists() {
-				data.Type = types.StringValue(value.String())
-			} else {
-				data.Type = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
 			(*parent).Objects = append((*parent).Objects, data)
 			return true
 		})
@@ -143,6 +165,7 @@ func (data *PortGroup) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -174,8 +197,8 @@ func (data *PortGroup) fromBodyPartial(ctx context.Context, res gjson.Result) {
 		data.Overridable = types.BoolNull()
 	}
 	for i := 0; i < len(data.Objects); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.Objects[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.Objects[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).Objects[i]
@@ -209,16 +232,16 @@ func (data *PortGroup) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
 		(*parent).Objects[i] = data
 	}
 }

@@ -1,6 +1,6 @@
 data "fmc_urls" "example" {
   items = {
-    "my_urls" = {
-    }
+  "my_urls" = {
+  }
   }
 }

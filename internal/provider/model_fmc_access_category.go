@@ -33,12 +33,27 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type AccessCategory struct {
-	Id                    types.String `tfsdk:"id"`
-	Domain                types.String `tfsdk:"domain"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
 	AccessControlPolicyId types.String `tfsdk:"access_control_policy_id"`
-	Name                  types.String `tfsdk:"name"`
-	Type                  types.String `tfsdk:"type"`
+	Name types.String `tfsdk:"name"`
+	Type types.String `tfsdk:"type"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -49,7 +64,7 @@ type AccessCategory struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data AccessCategory) getPath() string {
-	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/accesspolicies/%v/categories", url.QueryEscape(data.AccessControlPolicyId.ValueString()))
+		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/accesspolicies/%v/categories", url.QueryEscape(data.AccessControlPolicyId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -61,7 +76,7 @@ func (data AccessCategory) toBody(ctx context.Context, state AccessCategory) str
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
 	return body
@@ -87,6 +102,7 @@ func (data *AccessCategory) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -125,25 +141,36 @@ func (data *AccessCategory) fromBodyUnknowns(ctx context.Context, res gjson.Resu
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
+
+
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
+
+
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
+
 
 func (data AccessCategory) adjustBody(ctx context.Context, req string) string {
 	return req
@@ -152,5 +179,7 @@ func (data AccessCategory) adjustBody(ctx context.Context, req string) string {
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
+
+
 
 // End of section. //template:end adjustBodyBulk

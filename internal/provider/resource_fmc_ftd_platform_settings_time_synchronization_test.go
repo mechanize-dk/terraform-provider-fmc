@@ -35,15 +35,15 @@ func TestAccFmcFTDPlatformSettingsTimeSynchronization(t *testing.T) {
 
 	var steps []resource.TestStep
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcFTDPlatformSettingsTimeSynchronizationPrerequisitesConfig + testAccFmcFTDPlatformSettingsTimeSynchronizationConfig_all(),
-		Check:  resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcFTDPlatformSettingsTimeSynchronizationPrerequisitesConfig+testAccFmcFTDPlatformSettingsTimeSynchronizationConfig_all(),
+		Check: resource.ComposeTestCheckFunc(checks...),
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps:                    steps,
+		Steps: steps,
 	})
 }
 
@@ -56,7 +56,6 @@ resource "fmc_ftd_platform_settings" "test" {
   name        = "ftd_platform_settings_time_synchronization"
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal

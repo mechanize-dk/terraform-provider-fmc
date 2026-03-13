@@ -83,7 +83,7 @@ func (r *AccessControlPolicyResource) Schema(ctx context.Context, req resource.S
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -97,6 +97,7 @@ func (r *AccessControlPolicyResource) Schema(ctx context.Context, req resource.S
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"description": schema.StringAttribute{
@@ -104,10 +105,10 @@ func (r *AccessControlPolicyResource) Schema(ctx context.Context, req resource.S
 				Optional:            true,
 			},
 			"default_action": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Action to be taken, when traffic does not match any Access Rule.").AddStringEnumDescription("BLOCK", "TRUST", "PERMIT", "NETWORK_DISCOVERY", "INHERIT_FROM_PARENT").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Action to be taken, when traffic does not match any Access Rule.").AddStringEnumDescription("BLOCK", "TRUST", "PERMIT", "NETWORK_DISCOVERY", "INHERIT_FROM_PARENT", ).String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("BLOCK", "TRUST", "PERMIT", "NETWORK_DISCOVERY", "INHERIT_FROM_PARENT"),
+					stringvalidator.OneOf("BLOCK", "TRUST", "PERMIT", "NETWORK_DISCOVERY", "INHERIT_FROM_PARENT", ),
 				},
 			},
 			"default_action_id": schema.StringAttribute{
@@ -141,10 +142,10 @@ func (r *AccessControlPolicyResource) Schema(ctx context.Context, req resource.S
 				Optional:            true,
 			},
 			"default_action_syslog_severity": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Override the Severity of syslog alerts.").AddStringEnumDescription("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Override the Severity of syslog alerts.").AddStringEnumDescription("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING"),
+					stringvalidator.OneOf("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING", ),
 				},
 			},
 			"default_action_snmp_alert_id": schema.StringAttribute{
@@ -183,13 +184,13 @@ func (r *AccessControlPolicyResource) Schema(ctx context.Context, req resource.S
 							Required:            true,
 						},
 						"section": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("The section of the policy to which the category belongs. Categories must be ordered so that entire section 'mandatory' comes above the section 'default'. If you use inheritance, the mandatory section applies before child policy's own rules, while the default section applies after child policy's own rules.").AddStringEnumDescription("default", "mandatory").AddDefaultValueDescription("default").String,
+							MarkdownDescription: helpers.NewAttributeDescription("The section of the policy to which the category belongs. Categories must be ordered so that entire section 'mandatory' comes above the section 'default'. If you use inheritance, the mandatory section applies before child policy's own rules, while the default section applies after child policy's own rules.").AddStringEnumDescription("default", "mandatory", ).AddDefaultValueDescription("default").String,
 							Optional:            true,
 							Computed:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("default", "mandatory"),
+								stringvalidator.OneOf("default", "mandatory", ),
 							},
-							Default: stringdefault.StaticString("default"),
+							Default:             stringdefault.StaticString("default"),
 						},
 					},
 				},
@@ -210,10 +211,10 @@ func (r *AccessControlPolicyResource) Schema(ctx context.Context, req resource.S
 							Computed:            true,
 						},
 						"action": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Rule action.").AddStringEnumDescription("ALLOW", "TRUST", "BLOCK", "MONITOR", "BLOCK_RESET", "BLOCK_INTERACTIVE", "BLOCK_RESET_INTERACTIVE").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Rule action.").AddStringEnumDescription("ALLOW", "TRUST", "BLOCK", "MONITOR", "BLOCK_RESET", "BLOCK_INTERACTIVE", "BLOCK_RESET_INTERACTIVE", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("ALLOW", "TRUST", "BLOCK", "MONITOR", "BLOCK_RESET", "BLOCK_INTERACTIVE", "BLOCK_RESET_INTERACTIVE"),
+								stringvalidator.OneOf("ALLOW", "TRUST", "BLOCK", "MONITOR", "BLOCK_RESET", "BLOCK_INTERACTIVE", "BLOCK_RESET_INTERACTIVE", ),
 							},
 						},
 						"name": schema.StringAttribute{
@@ -225,10 +226,10 @@ func (r *AccessControlPolicyResource) Schema(ctx context.Context, req resource.S
 							Optional:            true,
 						},
 						"section": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("The section of the policy to which the rule belongs. Can only be used when the `category_name` is null. Rules must be ordered so that entire section 'mandatory' comes above the section 'default'. Null value means 'default'. If you use inheritance, the mandatory section applies before child policy's own rules, while the default section applies after child policy's own rules.").AddStringEnumDescription("default", "mandatory").String,
+							MarkdownDescription: helpers.NewAttributeDescription("The section of the policy to which the rule belongs. Can only be used when the `category_name` is null. Rules must be ordered so that entire section 'mandatory' comes above the section 'default'. Null value means 'default'. If you use inheritance, the mandatory section applies before child policy's own rules, while the default section applies after child policy's own rules.").AddStringEnumDescription("default", "mandatory", ).String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("default", "mandatory"),
+								stringvalidator.OneOf("default", "mandatory", ),
 							},
 						},
 						"enabled": schema.BoolAttribute{
@@ -351,10 +352,10 @@ func (r *AccessControlPolicyResource) Schema(ctx context.Context, req resource.S
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"protocol": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("IANA protocol number.").AddStringEnumDescription("6", "17").String,
+										MarkdownDescription: helpers.NewAttributeDescription("IANA protocol number.").AddStringEnumDescription("6", "17", ).String,
 										Required:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("6", "17"),
+											stringvalidator.OneOf("6", "17", ),
 										},
 									},
 									"port": schema.StringAttribute{
@@ -382,10 +383,10 @@ func (r *AccessControlPolicyResource) Schema(ctx context.Context, req resource.S
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"type": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Type of the object.").AddStringEnumDescription("PortLiteral", "ICMPv4PortLiteral").String,
+										MarkdownDescription: helpers.NewAttributeDescription("Type of the object.").AddStringEnumDescription("PortLiteral", "ICMPv4PortLiteral", ).String,
 										Required:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("PortLiteral", "ICMPv4PortLiteral"),
+											stringvalidator.OneOf("PortLiteral", "ICMPv4PortLiteral", ),
 										},
 									},
 									"port": schema.StringAttribute{
@@ -537,10 +538,10 @@ func (r *AccessControlPolicyResource) Schema(ctx context.Context, req resource.S
 										Optional:            true,
 									},
 									"reputation": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Reputation applicable to the URL Category.").AddStringEnumDescription("ANY_EXCEPT_UNKNOWN", "TRUSTED", "FAVORABLE", "NEUTRAL", "QUESTIONABLE", "UNTRUSTED", "ANY_AND_UNKNOWN", "TRUSTED_AND_UNKNOWN", "FAVORABLE_AND_UNKNOWN", "NEUTRAL_AND_UNKNOWN", "QUESTIONABLE_AND_UNKNOWN", "UNTRUSTED_AND_UNKNOWN").String,
+										MarkdownDescription: helpers.NewAttributeDescription("Reputation applicable to the URL Category.").AddStringEnumDescription("ANY_EXCEPT_UNKNOWN", "TRUSTED", "FAVORABLE", "NEUTRAL", "QUESTIONABLE", "UNTRUSTED", "ANY_AND_UNKNOWN", "TRUSTED_AND_UNKNOWN", "FAVORABLE_AND_UNKNOWN", "NEUTRAL_AND_UNKNOWN", "QUESTIONABLE_AND_UNKNOWN", "UNTRUSTED_AND_UNKNOWN", ).String,
 										Optional:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("ANY_EXCEPT_UNKNOWN", "TRUSTED", "FAVORABLE", "NEUTRAL", "QUESTIONABLE", "UNTRUSTED", "ANY_AND_UNKNOWN", "TRUSTED_AND_UNKNOWN", "FAVORABLE_AND_UNKNOWN", "NEUTRAL_AND_UNKNOWN", "QUESTIONABLE_AND_UNKNOWN", "UNTRUSTED_AND_UNKNOWN"),
+											stringvalidator.OneOf("ANY_EXCEPT_UNKNOWN", "TRUSTED", "FAVORABLE", "NEUTRAL", "QUESTIONABLE", "UNTRUSTED", "ANY_AND_UNKNOWN", "TRUSTED_AND_UNKNOWN", "FAVORABLE_AND_UNKNOWN", "NEUTRAL_AND_UNKNOWN", "QUESTIONABLE_AND_UNKNOWN", "UNTRUSTED_AND_UNKNOWN", ),
 										},
 									},
 								},
@@ -581,10 +582,10 @@ func (r *AccessControlPolicyResource) Schema(ctx context.Context, req resource.S
 							Optional:            true,
 						},
 						"syslog_severity": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Override the Severity of syslog alerts.").AddStringEnumDescription("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Override the Severity of syslog alerts.").AddStringEnumDescription("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING", ).String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING"),
+								stringvalidator.OneOf("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING", ),
 							},
 						},
 						"snmp_alert_id": schema.StringAttribute{
@@ -1201,7 +1202,7 @@ func (r *AccessControlPolicyResource) Delete(ctx context.Context, req resource.D
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString()), reqMods...)
+	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()), reqMods...)
 	if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return

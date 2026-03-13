@@ -64,7 +64,7 @@ func (d *DeviceOSPFDataSource) Schema(ctx context.Context, req datasource.Schema
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 			},
 			"vrf_id": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Id of the parent VRF.").String,
@@ -493,7 +493,7 @@ func (d *DeviceOSPFDataSource) Read(ctx context.Context, req datasource.ReadRequ
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
-	urlPath := config.getPath() + "/" + url.QueryEscape(config.Id.ValueString())
+	urlPath := config.getPath()+"/"+url.QueryEscape(config.Id.ValueString())
 	res, err := d.client.Get(urlPath, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object, got error: %s", err))

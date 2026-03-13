@@ -31,7 +31,7 @@ import (
 
 func TestAccDataSourceFmcDeviceHAPairMonitoring(t *testing.T) {
 	if os.Getenv("TF_VAR_device_ha_id") == "" {
-		t.Skip("skipping test, set environment variable TF_VAR_device_ha_id")
+        t.Skip("skipping test, set environment variable TF_VAR_device_ha_id")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("data.fmc_device_ha_pair_monitoring.test", "type"))
@@ -48,12 +48,12 @@ func TestAccDataSourceFmcDeviceHAPairMonitoring(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcDeviceHAPairMonitoringPrerequisitesConfig + testAccDataSourceFmcDeviceHAPairMonitoringConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcDeviceHAPairMonitoringPrerequisitesConfig+testAccDataSourceFmcDeviceHAPairMonitoringConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcDeviceHAPairMonitoringPrerequisitesConfig + testAccNamedDataSourceFmcDeviceHAPairMonitoringConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcDeviceHAPairMonitoringPrerequisitesConfig+testAccNamedDataSourceFmcDeviceHAPairMonitoringConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -66,7 +66,6 @@ func TestAccDataSourceFmcDeviceHAPairMonitoring(t *testing.T) {
 const testAccDataSourceFmcDeviceHAPairMonitoringPrerequisitesConfig = `
 variable "device_ha_id" { default = null } // tests will set $TF_VAR_device_ha_id
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

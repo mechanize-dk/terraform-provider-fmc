@@ -35,22 +35,53 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type DeviceHAPairMonitoring struct {
-	Id                 types.String                          `tfsdk:"id"`
-	Domain             types.String                          `tfsdk:"domain"`
-	HaPairId           types.String                          `tfsdk:"ha_pair_id"`
-	Type               types.String                          `tfsdk:"type"`
-	LogicalName        types.String                          `tfsdk:"logical_name"`
-	MonitorInterface   types.Bool                            `tfsdk:"monitor_interface"`
-	Ipv4ActiveAddress  types.String                          `tfsdk:"ipv4_active_address"`
-	Ipv4StandbyAddress types.String                          `tfsdk:"ipv4_standby_address"`
-	Ipv4Netmask        types.String                          `tfsdk:"ipv4_netmask"`
-	Ipv6Addresses      []DeviceHAPairMonitoringIpv6Addresses `tfsdk:"ipv6_addresses"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	HaPairId types.String `tfsdk:"ha_pair_id"`
+	Type types.String `tfsdk:"type"`
+	LogicalName types.String `tfsdk:"logical_name"`
+	MonitorInterface types.Bool `tfsdk:"monitor_interface"`
+	Ipv4ActiveAddress types.String `tfsdk:"ipv4_active_address"`
+	Ipv4StandbyAddress types.String `tfsdk:"ipv4_standby_address"`
+	Ipv4Netmask types.String `tfsdk:"ipv4_netmask"`
+	Ipv6Addresses []DeviceHAPairMonitoringIpv6Addresses `tfsdk:"ipv6_addresses"`
 }
 
+
+
+
+
+
+
+
+
 type DeviceHAPairMonitoringIpv6Addresses struct {
-	ActiveAddress  types.String `tfsdk:"active_address"`
+	ActiveAddress types.String `tfsdk:"active_address"`
 	StandbyAddress types.String `tfsdk:"standby_address"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -61,7 +92,7 @@ type DeviceHAPairMonitoringIpv6Addresses struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data DeviceHAPairMonitoring) getPath() string {
-	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/devicehapairs/ftddevicehapairs/%v/monitoredinterfaces", url.QueryEscape(data.HaPairId.ValueString()))
+		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/devicehapairs/ftddevicehapairs/%v/monitoredinterfaces", url.QueryEscape(data.HaPairId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -73,23 +104,23 @@ func (data DeviceHAPairMonitoring) toBody(ctx context.Context, state DeviceHAPai
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.LogicalName.IsNull() {
+	if !data.LogicalName.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.LogicalName.ValueString())
 	}
-	if !data.MonitorInterface.IsNull() {
+	if !data.MonitorInterface.IsNull()   {
 		body, _ = sjson.Set(body, "monitorForFailures", data.MonitorInterface.ValueBool())
 	}
-	if !data.Ipv4StandbyAddress.IsNull() {
+	if !data.Ipv4StandbyAddress.IsNull()   {
 		body, _ = sjson.Set(body, "ipv4Configuration.standbyIPv4Address", data.Ipv4StandbyAddress.ValueString())
 	}
 	if len(data.Ipv6Addresses) > 0 {
 		body, _ = sjson.Set(body, "ipv6Configuration.ipv6ActiveStandbyPair", []any{})
 		for _, item := range data.Ipv6Addresses {
 			itemBody := ""
-			if !item.ActiveAddress.IsNull() {
+			if !item.ActiveAddress.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "activeIPv6", item.ActiveAddress.ValueString())
 			}
-			if !item.StandbyAddress.IsNull() {
+			if !item.StandbyAddress.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "standbyIPv6", item.StandbyAddress.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "ipv6Configuration.ipv6ActiveStandbyPair.-1", itemBody)
@@ -138,16 +169,16 @@ func (data *DeviceHAPairMonitoring) fromBody(ctx context.Context, res gjson.Resu
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := DeviceHAPairMonitoringIpv6Addresses{}
-			if value := res.Get("activeIPv6"); value.Exists() {
-				data.ActiveAddress = types.StringValue(value.String())
-			} else {
-				data.ActiveAddress = types.StringNull()
-			}
-			if value := res.Get("standbyIPv6"); value.Exists() {
-				data.StandbyAddress = types.StringValue(value.String())
-			} else {
-				data.StandbyAddress = types.StringNull()
-			}
+	if value := res.Get("activeIPv6"); value.Exists() {
+		data.ActiveAddress = types.StringValue(value.String())
+	} else {
+		data.ActiveAddress = types.StringNull()
+	}
+	if value := res.Get("standbyIPv6"); value.Exists() {
+		data.StandbyAddress = types.StringValue(value.String())
+	} else {
+		data.StandbyAddress = types.StringNull()
+	}
 			(*parent).Ipv6Addresses = append((*parent).Ipv6Addresses, data)
 			return true
 		})
@@ -157,6 +188,7 @@ func (data *DeviceHAPairMonitoring) fromBody(ctx context.Context, res gjson.Resu
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -194,8 +226,8 @@ func (data *DeviceHAPairMonitoring) fromBodyPartial(ctx context.Context, res gjs
 		data.Ipv4Netmask = types.StringNull()
 	}
 	for i := 0; i < len(data.Ipv6Addresses); i++ {
-		keys := [...]string{"activeIPv6", "standbyIPv6"}
-		keyValues := [...]string{data.Ipv6Addresses[i].ActiveAddress.ValueString(), data.Ipv6Addresses[i].StandbyAddress.ValueString()}
+		keys := [...]string{ "activeIPv6", "standbyIPv6",  }
+		keyValues := [...]string{ data.Ipv6Addresses[i].ActiveAddress.ValueString(), data.Ipv6Addresses[i].StandbyAddress.ValueString(),  }
 
 		parent := &data
 		data := (*parent).Ipv6Addresses[i]
@@ -229,16 +261,16 @@ func (data *DeviceHAPairMonitoring) fromBodyPartial(ctx context.Context, res gjs
 
 			continue
 		}
-		if value := res.Get("activeIPv6"); value.Exists() && !data.ActiveAddress.IsNull() {
-			data.ActiveAddress = types.StringValue(value.String())
-		} else {
-			data.ActiveAddress = types.StringNull()
-		}
-		if value := res.Get("standbyIPv6"); value.Exists() && !data.StandbyAddress.IsNull() {
-			data.StandbyAddress = types.StringValue(value.String())
-		} else {
-			data.StandbyAddress = types.StringNull()
-		}
+	if value := res.Get("activeIPv6"); value.Exists() && !data.ActiveAddress.IsNull() {
+		data.ActiveAddress = types.StringValue(value.String())
+	} else {
+		data.ActiveAddress = types.StringNull()
+	}
+	if value := res.Get("standbyIPv6"); value.Exists() && !data.StandbyAddress.IsNull() {
+		data.StandbyAddress = types.StringValue(value.String())
+	} else {
+		data.StandbyAddress = types.StringNull()
+	}
 		(*parent).Ipv6Addresses[i] = data
 	}
 }
@@ -277,9 +309,13 @@ func (data *DeviceHAPairMonitoring) fromBodyUnknowns(ctx context.Context, res gj
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk
 

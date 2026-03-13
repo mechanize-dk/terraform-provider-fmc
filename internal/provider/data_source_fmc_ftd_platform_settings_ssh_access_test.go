@@ -37,8 +37,8 @@ func TestAccDataSourceFmcFTDPlatformSettingsSSHAccess(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcFTDPlatformSettingsSSHAccessPrerequisitesConfig + testAccDataSourceFmcFTDPlatformSettingsSSHAccessConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcFTDPlatformSettingsSSHAccessPrerequisitesConfig+testAccDataSourceFmcFTDPlatformSettingsSSHAccessConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -63,7 +63,6 @@ resource "fmc_security_zone" "test" {
   interface_type = "ROUTED"
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -87,5 +86,7 @@ func testAccDataSourceFmcFTDPlatformSettingsSSHAccessConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

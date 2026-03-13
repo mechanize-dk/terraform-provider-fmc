@@ -35,26 +35,72 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type ChassisEtherChannelInterface struct {
-	Id                 types.String                                     `tfsdk:"id"`
-	Domain             types.String                                     `tfsdk:"domain"`
-	ChassisId          types.String                                     `tfsdk:"chassis_id"`
-	Type               types.String                                     `tfsdk:"type"`
-	Name               types.String                                     `tfsdk:"name"`
-	EtherChannelId     types.Int64                                      `tfsdk:"ether_channel_id"`
-	PortType           types.String                                     `tfsdk:"port_type"`
-	AdminState         types.String                                     `tfsdk:"admin_state"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	ChassisId types.String `tfsdk:"chassis_id"`
+	Type types.String `tfsdk:"type"`
+	Name types.String `tfsdk:"name"`
+	EtherChannelId types.Int64 `tfsdk:"ether_channel_id"`
+	PortType types.String `tfsdk:"port_type"`
+	AdminState types.String `tfsdk:"admin_state"`
 	SelectedInterfaces []ChassisEtherChannelInterfaceSelectedInterfaces `tfsdk:"selected_interfaces"`
-	AutoNegotiation    types.Bool                                       `tfsdk:"auto_negotiation"`
-	Duplex             types.String                                     `tfsdk:"duplex"`
-	Speed              types.String                                     `tfsdk:"speed"`
-	LacpMode           types.String                                     `tfsdk:"lacp_mode"`
-	LacpRate           types.String                                     `tfsdk:"lacp_rate"`
+	AutoNegotiation types.Bool `tfsdk:"auto_negotiation"`
+	Duplex types.String `tfsdk:"duplex"`
+	Speed types.String `tfsdk:"speed"`
+	LacpMode types.String `tfsdk:"lacp_mode"`
+	LacpRate types.String `tfsdk:"lacp_rate"`
 }
 
+
+
+
+
+
+
+
+
 type ChassisEtherChannelInterfaceSelectedInterfaces struct {
-	Id   types.String `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	Name types.String `tfsdk:"name"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -65,7 +111,7 @@ type ChassisEtherChannelInterfaceSelectedInterfaces struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data ChassisEtherChannelInterface) getPath() string {
-	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/chassis/fmcmanagedchassis/%v/etherchannelinterfaces", url.QueryEscape(data.ChassisId.ValueString()))
+		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/chassis/fmcmanagedchassis/%v/etherchannelinterfaces", url.QueryEscape(data.ChassisId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -78,41 +124,41 @@ func (data ChassisEtherChannelInterface) toBody(ctx context.Context, state Chass
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "EtherChannelInterface")
-	if !data.EtherChannelId.IsNull() {
+	if !data.EtherChannelId.IsNull()   {
 		body, _ = sjson.Set(body, "etherChannelId", data.EtherChannelId.ValueInt64())
 	}
-	if !data.PortType.IsNull() {
+	if !data.PortType.IsNull()   {
 		body, _ = sjson.Set(body, "portType", data.PortType.ValueString())
 	}
-	if !data.AdminState.IsNull() {
+	if !data.AdminState.IsNull()   {
 		body, _ = sjson.Set(body, "adminState", data.AdminState.ValueString())
 	}
 	if len(data.SelectedInterfaces) > 0 {
 		body, _ = sjson.Set(body, "selectedInterfaces", []any{})
 		for _, item := range data.SelectedInterfaces {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Name.IsNull() {
+			if !item.Name.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "name", item.Name.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "selectedInterfaces.-1", itemBody)
 		}
 	}
-	if !data.AutoNegotiation.IsNull() {
+	if !data.AutoNegotiation.IsNull()   {
 		body, _ = sjson.Set(body, "hardware.autoNegState", data.AutoNegotiation.ValueBool())
 	}
-	if !data.Duplex.IsNull() {
+	if !data.Duplex.IsNull()   {
 		body, _ = sjson.Set(body, "hardware.duplex", data.Duplex.ValueString())
 	}
-	if !data.Speed.IsNull() {
+	if !data.Speed.IsNull()   {
 		body, _ = sjson.Set(body, "hardware.speed", data.Speed.ValueString())
 	}
-	if !data.LacpMode.IsNull() {
+	if !data.LacpMode.IsNull()   {
 		body, _ = sjson.Set(body, "lacpMode", data.LacpMode.ValueString())
 	}
-	if !data.LacpRate.IsNull() {
+	if !data.LacpRate.IsNull()   {
 		body, _ = sjson.Set(body, "lacpRate", data.LacpRate.ValueString())
 	}
 	return body
@@ -153,16 +199,16 @@ func (data *ChassisEtherChannelInterface) fromBody(ctx context.Context, res gjso
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := ChassisEtherChannelInterfaceSelectedInterfaces{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
-			if value := res.Get("name"); value.Exists() {
-				data.Name = types.StringValue(value.String())
-			} else {
-				data.Name = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("name"); value.Exists() {
+		data.Name = types.StringValue(value.String())
+	} else {
+		data.Name = types.StringNull()
+	}
 			(*parent).SelectedInterfaces = append((*parent).SelectedInterfaces, data)
 			return true
 		})
@@ -198,6 +244,7 @@ func (data *ChassisEtherChannelInterface) fromBody(ctx context.Context, res gjso
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
 
+
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
 // easily change across versions of the backend API.) For List/Set/Map attributes, the func only updates the
@@ -229,8 +276,8 @@ func (data *ChassisEtherChannelInterface) fromBodyPartial(ctx context.Context, r
 		data.AdminState = types.StringNull()
 	}
 	for i := 0; i < len(data.SelectedInterfaces); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.SelectedInterfaces[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.SelectedInterfaces[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).SelectedInterfaces[i]
@@ -264,16 +311,16 @@ func (data *ChassisEtherChannelInterface) fromBodyPartial(ctx context.Context, r
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
-			data.Name = types.StringValue(value.String())
-		} else {
-			data.Name = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
+		data.Name = types.StringValue(value.String())
+	} else {
+		data.Name = types.StringNull()
+	}
 		(*parent).SelectedInterfaces[i] = data
 	}
 	if value := res.Get("hardware.autoNegState"); value.Exists() && !data.AutoNegotiation.IsNull() {
@@ -330,16 +377,24 @@ func (data *ChassisEtherChannelInterface) fromBodyUnknowns(ctx context.Context, 
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
+
+
 
 // End of section. //template:end clearItemIds

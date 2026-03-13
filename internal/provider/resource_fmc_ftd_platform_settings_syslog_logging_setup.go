@@ -78,7 +78,7 @@ func (r *FTDPlatformSettingsSyslogLoggingSetupResource) Schema(ctx context.Conte
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -88,6 +88,7 @@ func (r *FTDPlatformSettingsSyslogLoggingSetupResource) Schema(ctx context.Conte
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"type": schema.StringAttribute{
@@ -95,6 +96,7 @@ func (r *FTDPlatformSettingsSyslogLoggingSetupResource) Schema(ctx context.Conte
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"logging_enabled": schema.BoolAttribute{
@@ -120,22 +122,22 @@ func (r *FTDPlatformSettingsSyslogLoggingSetupResource) Schema(ctx context.Conte
 				Validators: []validator.Int64{
 					int64validator.Between(4096, 52428800),
 				},
-				Default: int64default.StaticInt64(4096),
+				Default:             int64default.StaticInt64(4096),
 			},
 			"fmc_logging_mode": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("FMC logging mode.").AddStringEnumDescription("OFF", "ALL", "VPN").AddDefaultValueDescription("OFF").String,
+				MarkdownDescription: helpers.NewAttributeDescription("FMC logging mode.").AddStringEnumDescription("OFF", "ALL", "VPN", ).AddDefaultValueDescription("OFF").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("OFF", "ALL", "VPN"),
+					stringvalidator.OneOf("OFF", "ALL", "VPN", ),
 				},
-				Default: stringdefault.StaticString("OFF"),
+				Default:             stringdefault.StaticString("OFF"),
 			},
 			"fmc_logging_level": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("FMC logging level. Required if `fmc_logging_type` is not `OFF``.").AddStringEnumDescription("EMERG", "ALERT", "CRIT", "ERR", "WARNING", "NOTICE", "INFO", "DEBUG").String,
+				MarkdownDescription: helpers.NewAttributeDescription("FMC logging level. Required if `fmc_logging_type` is not `OFF``.").AddStringEnumDescription("EMERG", "ALERT", "CRIT", "ERR", "WARNING", "NOTICE", "INFO", "DEBUG", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("EMERG", "ALERT", "CRIT", "ERR", "WARNING", "NOTICE", "INFO", "DEBUG"),
+					stringvalidator.OneOf("EMERG", "ALERT", "CRIT", "ERR", "WARNING", "NOTICE", "INFO", "DEBUG", ),
 				},
 			},
 			"ftp_server_host_id": schema.StringAttribute{
@@ -178,7 +180,7 @@ func (r *FTDPlatformSettingsSyslogLoggingSetupResource) Schema(ctx context.Conte
 				Validators: []validator.Int64{
 					int64validator.Between(4, 8044176),
 				},
-				Default: int64default.StaticInt64(3076),
+				Default:             int64default.StaticInt64(3076),
 			},
 			"flash_minimum_free_space": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Minimum free space to be preserved in flash memory (in kilobytes).").AddIntegerRangeDescription(0, 8044176).AddDefaultValueDescription("1024").String,
@@ -187,7 +189,7 @@ func (r *FTDPlatformSettingsSyslogLoggingSetupResource) Schema(ctx context.Conte
 				Validators: []validator.Int64{
 					int64validator.Between(0, 8044176),
 				},
-				Default: int64default.StaticInt64(1024),
+				Default:             int64default.StaticInt64(1024),
 			},
 		},
 	}
@@ -294,13 +296,14 @@ func (r *FTDPlatformSettingsSyslogLoggingSetupResource) Read(ctx context.Context
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
+	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-
+	
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else if err != nil {
+	} else  if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -353,7 +356,7 @@ func (r *FTDPlatformSettingsSyslogLoggingSetupResource) Update(ctx context.Conte
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -401,23 +404,22 @@ func (r *FTDPlatformSettingsSyslogLoggingSetupResource) Delete(ctx context.Conte
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *FTDPlatformSettingsSyslogLoggingSetupResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Parse import ID
-	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<ftd_platform_settings_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
-	match := inputPattern.FindStringSubmatch(req.ID)
-	if match == nil {
-		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<ftd_platform_settings_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		// Parse import ID
+		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<ftd_platform_settings_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
+		match := inputPattern.FindStringSubmatch(req.ID)
+		if match == nil {
+			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<ftd_platform_settings_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	// Set domain, if provided
-	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("ftd_platform_settings_id"), match[inputPattern.SubexpIndex("ftd_platform_settings_id")])...)
+		// Set domain, if provided
+		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("ftd_platform_settings_id"), match[inputPattern.SubexpIndex("ftd_platform_settings_id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import

@@ -48,7 +48,7 @@ import (
 
 // Ensure provider defined types fully satisfy framework interfaces
 var (
-	_ resource.Resource = &SmartLicenseResource{}
+	_ resource.Resource                = &SmartLicenseResource{}
 )
 
 func NewSmartLicenseResource() resource.Resource {
@@ -77,10 +77,10 @@ func (r *SmartLicenseResource) Schema(ctx context.Context, req resource.SchemaRe
 				},
 			},
 			"registration_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Smart license mode").AddStringEnumDescription("REGISTER", "EVALUATION").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Smart license mode").AddStringEnumDescription("REGISTER", "EVALUATION", ).String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("REGISTER", "EVALUATION"),
+					stringvalidator.OneOf("REGISTER", "EVALUATION", ),
 				},
 			},
 			"token": schema.StringAttribute{

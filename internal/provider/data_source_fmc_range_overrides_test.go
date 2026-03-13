@@ -31,7 +31,7 @@ import (
 
 func TestAccDataSourceFmcRangeOverrides(t *testing.T) {
 	if os.Getenv("TF_VAR_device_id") == "" {
-		t.Skip("skipping test, set environment variable TF_VAR_device_id")
+        t.Skip("skipping test, set environment variable TF_VAR_device_id")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.fmc_range_overrides.test", "overrides.0.target_type", "Device"))
@@ -43,12 +43,12 @@ func TestAccDataSourceFmcRangeOverrides(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcRangeOverridesPrerequisitesConfig + testAccDataSourceFmcRangeOverridesConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcRangeOverridesPrerequisitesConfig+testAccDataSourceFmcRangeOverridesConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcRangeOverridesPrerequisitesConfig + testAccNamedDataSourceFmcRangeOverridesConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcRangeOverridesPrerequisitesConfig+testAccNamedDataSourceFmcRangeOverridesConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -67,7 +67,6 @@ resource "fmc_range" "test" {
   overridable = true
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

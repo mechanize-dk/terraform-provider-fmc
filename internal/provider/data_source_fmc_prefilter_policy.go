@@ -70,7 +70,7 @@ func (d *PrefilterPolicyDataSource) Schema(ctx context.Context, req datasource.S
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: "Name of the Prefilter policy.",
@@ -374,12 +374,12 @@ func (d *PrefilterPolicyDataSource) Schema(ctx context.Context, req datasource.S
 	}
 }
 func (d *PrefilterPolicyDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
-	return []datasource.ConfigValidator{
-		datasourcevalidator.ExactlyOneOf(
-			path.MatchRoot("id"),
+    return []datasource.ConfigValidator{
+        datasourcevalidator.ExactlyOneOf(
+            path.MatchRoot("id"),
 			path.MatchRoot("name"),
-		),
-	}
+        ),
+    }
 }
 
 func (d *PrefilterPolicyDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {

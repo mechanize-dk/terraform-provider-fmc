@@ -38,12 +38,12 @@ func TestAccDataSourceFmcApplicationFilter(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcApplicationFilterPrerequisitesConfig + testAccDataSourceFmcApplicationFilterConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcApplicationFilterPrerequisitesConfig+testAccDataSourceFmcApplicationFilterConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcApplicationFilterPrerequisitesConfig + testAccNamedDataSourceFmcApplicationFilterConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcApplicationFilterPrerequisitesConfig+testAccNamedDataSourceFmcApplicationFilterConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -78,7 +78,6 @@ data "fmc_application_tag" "test" {
   name = "SSL protocol"
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

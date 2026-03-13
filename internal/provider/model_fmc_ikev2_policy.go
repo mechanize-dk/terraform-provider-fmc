@@ -32,18 +32,54 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type IKEv2Policy struct {
-	Id                   types.String `tfsdk:"id"`
-	Domain               types.String `tfsdk:"domain"`
-	Name                 types.String `tfsdk:"name"`
-	Description          types.String `tfsdk:"description"`
-	Type                 types.String `tfsdk:"type"`
-	Priority             types.Int64  `tfsdk:"priority"`
-	Lifetime             types.Int64  `tfsdk:"lifetime"`
-	IntegrityAlgorithms  types.Set    `tfsdk:"integrity_algorithms"`
-	EncryptionAlgorithms types.Set    `tfsdk:"encryption_algorithms"`
-	PrfAlgorithms        types.Set    `tfsdk:"prf_algorithms"`
-	DhGroups             types.Set    `tfsdk:"dh_groups"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Name types.String `tfsdk:"name"`
+	Description types.String `tfsdk:"description"`
+	Type types.String `tfsdk:"type"`
+	Priority types.Int64 `tfsdk:"priority"`
+	Lifetime types.Int64 `tfsdk:"lifetime"`
+	IntegrityAlgorithms types.Set `tfsdk:"integrity_algorithms"`
+	EncryptionAlgorithms types.Set `tfsdk:"encryption_algorithms"`
+	PrfAlgorithms types.Set `tfsdk:"prf_algorithms"`
+	DhGroups types.Set `tfsdk:"dh_groups"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -54,7 +90,7 @@ type IKEv2Policy struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data IKEv2Policy) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/ikev2policies"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/ikev2policies"
 }
 
 // End of section. //template:end getPath
@@ -66,17 +102,17 @@ func (data IKEv2Policy) toBody(ctx context.Context, state IKEv2Policy) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()   {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "IKEv2Policy")
-	if !data.Priority.IsNull() {
+	if !data.Priority.IsNull()   {
 		body, _ = sjson.Set(body, "priority", data.Priority.ValueInt64())
 	}
-	if !data.Lifetime.IsNull() {
+	if !data.Lifetime.IsNull()   {
 		body, _ = sjson.Set(body, "lifetimeInSeconds", data.Lifetime.ValueInt64())
 	}
 	if !data.IntegrityAlgorithms.IsNull() {
@@ -158,6 +194,7 @@ func (data *IKEv2Policy) fromBody(ctx context.Context, res gjson.Result) {
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
 
+
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
 // easily change across versions of the backend API.) For List/Set/Map attributes, the func only updates the
@@ -230,28 +267,42 @@ func (data *IKEv2Policy) fromBodyUnknowns(ctx context.Context, res gjson.Result)
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
+
+
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
+
+
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
+
+
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
+
+
 
 // End of section. //template:end adjustBodyBulk

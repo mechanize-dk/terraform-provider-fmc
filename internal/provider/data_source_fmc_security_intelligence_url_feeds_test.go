@@ -42,7 +42,7 @@ func TestAccDataSourceFmcSecurityIntelligenceURLFeeds(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcSecurityIntelligenceURLFeedsConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -75,5 +75,7 @@ func testAccDataSourceFmcSecurityIntelligenceURLFeedsConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

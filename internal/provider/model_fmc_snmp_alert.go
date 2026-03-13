@@ -30,11 +30,23 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type SNMPAlert struct {
-	Id     types.String `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	Domain types.String `tfsdk:"domain"`
-	Name   types.String `tfsdk:"name"`
-	Type   types.String `tfsdk:"type"`
+	Name types.String `tfsdk:"name"`
+	Type types.String `tfsdk:"type"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -45,7 +57,7 @@ type SNMPAlert struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data SNMPAlert) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/snmpalerts"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/snmpalerts"
 }
 
 // End of section. //template:end getPath
@@ -73,6 +85,7 @@ func (data *SNMPAlert) fromBody(ctx context.Context, res gjson.Result) {
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
 
+
 // End of section. //template:end fromBodyPartial
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyUnknowns
@@ -81,8 +94,12 @@ func (data *SNMPAlert) fromBody(ctx context.Context, res gjson.Result) {
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk

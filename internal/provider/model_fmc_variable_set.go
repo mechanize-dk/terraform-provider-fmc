@@ -30,12 +30,27 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type VariableSet struct {
-	Id          types.String `tfsdk:"id"`
-	Domain      types.String `tfsdk:"domain"`
-	Name        types.String `tfsdk:"name"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Name types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
-	Type        types.String `tfsdk:"type"`
+	Type types.String `tfsdk:"type"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -46,7 +61,7 @@ type VariableSet struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data VariableSet) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/variablesets"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/variablesets"
 }
 
 // End of section. //template:end getPath
@@ -79,6 +94,7 @@ func (data *VariableSet) fromBody(ctx context.Context, res gjson.Result) {
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
 
+
 // End of section. //template:end fromBodyPartial
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyUnknowns
@@ -87,8 +103,12 @@ func (data *VariableSet) fromBody(ctx context.Context, res gjson.Result) {
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk

@@ -31,7 +31,7 @@ import (
 
 func TestAccDataSourceFmcDeviceVNIInterface(t *testing.T) {
 	if os.Getenv("TF_VAR_device_id") == "" || os.Getenv("TF_VAR_interface_name") == "" {
-		t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_interface_name")
+        t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_interface_name")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("data.fmc_device_vni_interface.test", "type"))
@@ -50,8 +50,8 @@ func TestAccDataSourceFmcDeviceVNIInterface(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcDeviceVNIInterfacePrerequisitesConfig + testAccDataSourceFmcDeviceVNIInterfaceConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcDeviceVNIInterfacePrerequisitesConfig+testAccDataSourceFmcDeviceVNIInterfaceConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -87,7 +87,6 @@ resource "fmc_security_zone" "test" {
   interface_type = "ROUTED"
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -123,5 +122,7 @@ func testAccDataSourceFmcDeviceVNIInterfaceConfig() string {
 	`
 	return config
 }
+
+
 
 // End of section. //template:end testAccDataSourceConfig

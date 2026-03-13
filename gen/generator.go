@@ -621,15 +621,29 @@ func renderTemplate(templatePath, outputPath string, config any) {
 				matches := beginRegex.FindStringSubmatch(line)
 				if len(matches) > 1 && matches[1] != "" {
 					currentSectionName = matches[1]
+					if currentSectionName == "imports" {
+						// Preserve existing imports section as-is to avoid
+						// overwriting file-specific imports with template defaults
+						newContent += line + "\n"
+					}
 				} else {
 					newContent += line + "\n"
 				}
 			} else {
-				matches := endRegex.FindStringSubmatch(line)
-				if len(matches) > 1 && matches[1] == currentSectionName {
-					currentSectionName = ""
-					newSection := getTemplateSection(string(output.Bytes()), matches[1])
-					newContent += newSection
+				if currentSectionName == "imports" {
+					// Copy existing imports content verbatim
+					newContent += line + "\n"
+					matches := endRegex.FindStringSubmatch(line)
+					if len(matches) > 1 && matches[1] == "imports" {
+						currentSectionName = ""
+					}
+				} else {
+					matches := endRegex.FindStringSubmatch(line)
+					if len(matches) > 1 && matches[1] == currentSectionName {
+						currentSectionName = ""
+						newSection := getTemplateSection(string(output.Bytes()), matches[1])
+						newContent += newSection
+					}
 				}
 			}
 		}

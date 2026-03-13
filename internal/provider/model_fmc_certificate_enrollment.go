@@ -32,64 +32,238 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type CertificateEnrollment struct {
-	Id                                                          types.String `tfsdk:"id"`
-	Domain                                                      types.String `tfsdk:"domain"`
-	Name                                                        types.String `tfsdk:"name"`
-	Type                                                        types.String `tfsdk:"type"`
-	Description                                                 types.String `tfsdk:"description"`
-	EnrollmentType                                              types.String `tfsdk:"enrollment_type"`
-	ValidationUsageIpsecClient                                  types.Bool   `tfsdk:"validation_usage_ipsec_client"`
-	ValidationUsageSslServer                                    types.Bool   `tfsdk:"validation_usage_ssl_server"`
-	ValidationUsageSslClient                                    types.Bool   `tfsdk:"validation_usage_ssl_client"`
-	SkipCaFlagCheck                                             types.Bool   `tfsdk:"skip_ca_flag_check"`
-	EstEnrollmentUrl                                            types.String `tfsdk:"est_enrollment_url"`
-	EstUsername                                                 types.String `tfsdk:"est_username"`
-	EstPassword                                                 types.String `tfsdk:"est_password"`
-	EstFingerprint                                              types.String `tfsdk:"est_fingerprint"`
-	EstSourceInterfaceId                                        types.String `tfsdk:"est_source_interface_id"`
-	EstSourceInterfaceName                                      types.String `tfsdk:"est_source_interface_name"`
-	EstIgnoreServerCertificateValidation                        types.Bool   `tfsdk:"est_ignore_server_certificate_validation"`
-	ScepEnrollmentUrl                                           types.String `tfsdk:"scep_enrollment_url"`
-	ScepChallengePassword                                       types.String `tfsdk:"scep_challenge_password"`
-	ScepRetryPeriod                                             types.Int64  `tfsdk:"scep_retry_period"`
-	ScepRetryCount                                              types.Int64  `tfsdk:"scep_retry_count"`
-	ScepFingerprint                                             types.String `tfsdk:"scep_fingerprint"`
-	ManualCaOnly                                                types.Bool   `tfsdk:"manual_ca_only"`
-	ManualCaCertificate                                         types.String `tfsdk:"manual_ca_certificate"`
-	Pkcs12Certificate                                           types.String `tfsdk:"pkcs12_certificate"`
-	Pkcs12CertificatePassphrase                                 types.String `tfsdk:"pkcs12_certificate_passphrase"`
-	AcmeEnrollmentUrl                                           types.String `tfsdk:"acme_enrollment_url"`
-	AcmeAuthenticationProtocol                                  types.String `tfsdk:"acme_authentication_protocol"`
-	AcmeAuthenticationInterfaceId                               types.String `tfsdk:"acme_authentication_interface_id"`
-	AcmeAuthenticationInterfaceName                             types.String `tfsdk:"acme_authentication_interface_name"`
-	AcmeSourceInterfaceId                                       types.String `tfsdk:"acme_source_interface_id"`
-	AcmeSourceInterfaceName                                     types.String `tfsdk:"acme_source_interface_name"`
-	AcmeCaOnlyCertificateId                                     types.String `tfsdk:"acme_ca_only_certificate_id"`
-	AcmeAutoEnrollment                                          types.Bool   `tfsdk:"acme_auto_enrollment"`
-	AcmeAutoEnrollmentLifetime                                  types.Int64  `tfsdk:"acme_auto_enrollment_lifetime"`
-	AcmeAutoEnrollmentKeyRegeneration                           types.Bool   `tfsdk:"acme_auto_enrollment_key_regeneration"`
-	CertificateIncludeFqdn                                      types.String `tfsdk:"certificate_include_fqdn"`
-	CertificateCustomFqdn                                       types.String `tfsdk:"certificate_custom_fqdn"`
-	CertificateAlternateFqdn                                    types.String `tfsdk:"certificate_alternate_fqdn"`
-	CertificateIncludeDeviceIp                                  types.String `tfsdk:"certificate_include_device_ip"`
-	CertificateCommonName                                       types.String `tfsdk:"certificate_common_name"`
-	CertificateOrganizationalUnit                               types.String `tfsdk:"certificate_organizational_unit"`
-	CertificateOrganization                                     types.String `tfsdk:"certificate_organization"`
-	CertificateLocality                                         types.String `tfsdk:"certificate_locality"`
-	CertificateState                                            types.String `tfsdk:"certificate_state"`
-	CertificateCountryCode                                      types.String `tfsdk:"certificate_country_code"`
-	CertificateEmail                                            types.String `tfsdk:"certificate_email"`
-	CertificateIncludeDeviceSerialNumber                        types.Bool   `tfsdk:"certificate_include_device_serial_number"`
-	KeyType                                                     types.String `tfsdk:"key_type"`
-	KeyName                                                     types.String `tfsdk:"key_name"`
-	KeySize                                                     types.String `tfsdk:"key_size"`
-	IgnoreIpsecKeyUsage                                         types.Bool   `tfsdk:"ignore_ipsec_key_usage"`
-	CrlUseDistributionPointFromTheCertificate                   types.Bool   `tfsdk:"crl_use_distribution_point_from_the_certificate"`
-	CrlStaticUrls                                               types.List   `tfsdk:"crl_static_urls"`
-	OcspUrl                                                     types.String `tfsdk:"ocsp_url"`
-	RevocationEvaluationPriority                                types.String `tfsdk:"revocation_evaluation_priority"`
-	ConsiderCertificateValidIfRevocationInformationNotReachable types.Bool   `tfsdk:"consider_certificate_valid_if_revocation_information_not_reachable"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Name types.String `tfsdk:"name"`
+	Type types.String `tfsdk:"type"`
+	Description types.String `tfsdk:"description"`
+	EnrollmentType types.String `tfsdk:"enrollment_type"`
+	ValidationUsageIpsecClient types.Bool `tfsdk:"validation_usage_ipsec_client"`
+	ValidationUsageSslServer types.Bool `tfsdk:"validation_usage_ssl_server"`
+	ValidationUsageSslClient types.Bool `tfsdk:"validation_usage_ssl_client"`
+	SkipCaFlagCheck types.Bool `tfsdk:"skip_ca_flag_check"`
+	EstEnrollmentUrl types.String `tfsdk:"est_enrollment_url"`
+	EstUsername types.String `tfsdk:"est_username"`
+	EstPassword types.String `tfsdk:"est_password"`
+	EstFingerprint types.String `tfsdk:"est_fingerprint"`
+	EstSourceInterfaceId types.String `tfsdk:"est_source_interface_id"`
+	EstSourceInterfaceName types.String `tfsdk:"est_source_interface_name"`
+	EstIgnoreServerCertificateValidation types.Bool `tfsdk:"est_ignore_server_certificate_validation"`
+	ScepEnrollmentUrl types.String `tfsdk:"scep_enrollment_url"`
+	ScepChallengePassword types.String `tfsdk:"scep_challenge_password"`
+	ScepRetryPeriod types.Int64 `tfsdk:"scep_retry_period"`
+	ScepRetryCount types.Int64 `tfsdk:"scep_retry_count"`
+	ScepFingerprint types.String `tfsdk:"scep_fingerprint"`
+	ManualCaOnly types.Bool `tfsdk:"manual_ca_only"`
+	ManualCaCertificate types.String `tfsdk:"manual_ca_certificate"`
+	Pkcs12Certificate types.String `tfsdk:"pkcs12_certificate"`
+	Pkcs12CertificatePassphrase types.String `tfsdk:"pkcs12_certificate_passphrase"`
+	AcmeEnrollmentUrl types.String `tfsdk:"acme_enrollment_url"`
+	AcmeAuthenticationProtocol types.String `tfsdk:"acme_authentication_protocol"`
+	AcmeAuthenticationInterfaceId types.String `tfsdk:"acme_authentication_interface_id"`
+	AcmeAuthenticationInterfaceName types.String `tfsdk:"acme_authentication_interface_name"`
+	AcmeSourceInterfaceId types.String `tfsdk:"acme_source_interface_id"`
+	AcmeSourceInterfaceName types.String `tfsdk:"acme_source_interface_name"`
+	AcmeCaOnlyCertificateId types.String `tfsdk:"acme_ca_only_certificate_id"`
+	AcmeAutoEnrollment types.Bool `tfsdk:"acme_auto_enrollment"`
+	AcmeAutoEnrollmentLifetime types.Int64 `tfsdk:"acme_auto_enrollment_lifetime"`
+	AcmeAutoEnrollmentKeyRegeneration types.Bool `tfsdk:"acme_auto_enrollment_key_regeneration"`
+	CertificateIncludeFqdn types.String `tfsdk:"certificate_include_fqdn"`
+	CertificateCustomFqdn types.String `tfsdk:"certificate_custom_fqdn"`
+	CertificateAlternateFqdn types.String `tfsdk:"certificate_alternate_fqdn"`
+	CertificateIncludeDeviceIp types.String `tfsdk:"certificate_include_device_ip"`
+	CertificateCommonName types.String `tfsdk:"certificate_common_name"`
+	CertificateOrganizationalUnit types.String `tfsdk:"certificate_organizational_unit"`
+	CertificateOrganization types.String `tfsdk:"certificate_organization"`
+	CertificateLocality types.String `tfsdk:"certificate_locality"`
+	CertificateState types.String `tfsdk:"certificate_state"`
+	CertificateCountryCode types.String `tfsdk:"certificate_country_code"`
+	CertificateEmail types.String `tfsdk:"certificate_email"`
+	CertificateIncludeDeviceSerialNumber types.Bool `tfsdk:"certificate_include_device_serial_number"`
+	KeyType types.String `tfsdk:"key_type"`
+	KeyName types.String `tfsdk:"key_name"`
+	KeySize types.String `tfsdk:"key_size"`
+	IgnoreIpsecKeyUsage types.Bool `tfsdk:"ignore_ipsec_key_usage"`
+	CrlUseDistributionPointFromTheCertificate types.Bool `tfsdk:"crl_use_distribution_point_from_the_certificate"`
+	CrlStaticUrls types.List `tfsdk:"crl_static_urls"`
+	OcspUrl types.String `tfsdk:"ocsp_url"`
+	RevocationEvaluationPriority types.String `tfsdk:"revocation_evaluation_priority"`
+	ConsiderCertificateValidIfRevocationInformationNotReachable types.Bool `tfsdk:"consider_certificate_valid_if_revocation_information_not_reachable"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -100,7 +274,7 @@ type CertificateEnrollment struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data CertificateEnrollment) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/certenrollments"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/certenrollments"
 }
 
 // End of section. //template:end getPath
@@ -112,155 +286,155 @@ func (data CertificateEnrollment) toBody(ctx context.Context, state CertificateE
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "CertEnrollment")
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()   {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.EnrollmentType.IsNull() {
+	if !data.EnrollmentType.IsNull()   {
 		body, _ = sjson.Set(body, "enrollmentType", data.EnrollmentType.ValueString())
 	}
-	if !data.ValidationUsageIpsecClient.IsNull() {
+	if !data.ValidationUsageIpsecClient.IsNull()   {
 		body, _ = sjson.Set(body, "validationUsage.ipsecClient", data.ValidationUsageIpsecClient.ValueBool())
 	}
-	if !data.ValidationUsageSslServer.IsNull() {
+	if !data.ValidationUsageSslServer.IsNull()   {
 		body, _ = sjson.Set(body, "validationUsage.sslServer", data.ValidationUsageSslServer.ValueBool())
 	}
-	if !data.ValidationUsageSslClient.IsNull() {
+	if !data.ValidationUsageSslClient.IsNull()   {
 		body, _ = sjson.Set(body, "validationUsage.sslClient", data.ValidationUsageSslClient.ValueBool())
 	}
-	if !data.SkipCaFlagCheck.IsNull() {
+	if !data.SkipCaFlagCheck.IsNull()   {
 		body, _ = sjson.Set(body, "skipCaFlagCheck", data.SkipCaFlagCheck.ValueBool())
 	}
-	if !data.EstEnrollmentUrl.IsNull() {
+	if !data.EstEnrollmentUrl.IsNull()   {
 		body, _ = sjson.Set(body, "estContent.enrollmentUrl", data.EstEnrollmentUrl.ValueString())
 	}
-	if !data.EstUsername.IsNull() {
+	if !data.EstUsername.IsNull()   {
 		body, _ = sjson.Set(body, "estContent.username", data.EstUsername.ValueString())
 	}
-	if !data.EstPassword.IsNull() {
+	if !data.EstPassword.IsNull()   {
 		body, _ = sjson.Set(body, "estContent.password", data.EstPassword.ValueString())
 	}
-	if !data.EstFingerprint.IsNull() {
+	if !data.EstFingerprint.IsNull()   {
 		body, _ = sjson.Set(body, "estContent.fingerprint", data.EstFingerprint.ValueString())
 	}
-	if !data.EstSourceInterfaceId.IsNull() {
+	if !data.EstSourceInterfaceId.IsNull()   {
 		body, _ = sjson.Set(body, "estContent.sourceInterface.id", data.EstSourceInterfaceId.ValueString())
 	}
-	if !data.EstSourceInterfaceName.IsNull() {
+	if !data.EstSourceInterfaceName.IsNull()   {
 		body, _ = sjson.Set(body, "estContent.sourceInterface.name", data.EstSourceInterfaceName.ValueString())
 	}
-	if !data.EstIgnoreServerCertificateValidation.IsNull() {
+	if !data.EstIgnoreServerCertificateValidation.IsNull()   {
 		body, _ = sjson.Set(body, "estContent.ignoreServerCertificateValidations", data.EstIgnoreServerCertificateValidation.ValueBool())
 	}
-	if !data.ScepEnrollmentUrl.IsNull() {
+	if !data.ScepEnrollmentUrl.IsNull()   {
 		body, _ = sjson.Set(body, "scepContent.enrollmentUrl", data.ScepEnrollmentUrl.ValueString())
 	}
-	if !data.ScepChallengePassword.IsNull() {
+	if !data.ScepChallengePassword.IsNull()   {
 		body, _ = sjson.Set(body, "scepContent.challengePassword", data.ScepChallengePassword.ValueString())
 	}
-	if !data.ScepRetryPeriod.IsNull() {
+	if !data.ScepRetryPeriod.IsNull()   {
 		body, _ = sjson.Set(body, "scepContent.retryPeriodInMins", data.ScepRetryPeriod.ValueInt64())
 	}
-	if !data.ScepRetryCount.IsNull() {
+	if !data.ScepRetryCount.IsNull()   {
 		body, _ = sjson.Set(body, "scepContent.retryCount", data.ScepRetryCount.ValueInt64())
 	}
-	if !data.ScepFingerprint.IsNull() {
+	if !data.ScepFingerprint.IsNull()   {
 		body, _ = sjson.Set(body, "scepContent.fingerprint", data.ScepFingerprint.ValueString())
 	}
-	if !data.ManualCaOnly.IsNull() {
+	if !data.ManualCaOnly.IsNull()   {
 		body, _ = sjson.Set(body, "caCertificate.caOnly", data.ManualCaOnly.ValueBool())
 	}
-	if !data.ManualCaCertificate.IsNull() {
+	if !data.ManualCaCertificate.IsNull()   {
 		body, _ = sjson.Set(body, "caCertificate.base64Content", data.ManualCaCertificate.ValueString())
 	}
-	if !data.Pkcs12Certificate.IsNull() {
+	if !data.Pkcs12Certificate.IsNull()   {
 		body, _ = sjson.Set(body, "pkcs12Content.base64Certificate", data.Pkcs12Certificate.ValueString())
 	}
-	if !data.Pkcs12CertificatePassphrase.IsNull() {
+	if !data.Pkcs12CertificatePassphrase.IsNull()   {
 		body, _ = sjson.Set(body, "pkcs12Content.passPhrase", data.Pkcs12CertificatePassphrase.ValueString())
 	}
-	if !data.AcmeEnrollmentUrl.IsNull() {
+	if !data.AcmeEnrollmentUrl.IsNull()   {
 		body, _ = sjson.Set(body, "acmeContent.enrollmentUrl", data.AcmeEnrollmentUrl.ValueString())
 	}
-	if !data.AcmeAuthenticationProtocol.IsNull() {
+	if !data.AcmeAuthenticationProtocol.IsNull()   {
 		body, _ = sjson.Set(body, "acmeContent.authProtocol", data.AcmeAuthenticationProtocol.ValueString())
 	}
-	if !data.AcmeAuthenticationInterfaceId.IsNull() {
+	if !data.AcmeAuthenticationInterfaceId.IsNull()   {
 		body, _ = sjson.Set(body, "acmeContent.authInterface.id", data.AcmeAuthenticationInterfaceId.ValueString())
 	}
-	if !data.AcmeAuthenticationInterfaceName.IsNull() {
+	if !data.AcmeAuthenticationInterfaceName.IsNull()   {
 		body, _ = sjson.Set(body, "acmeContent.authInterface.name", data.AcmeAuthenticationInterfaceName.ValueString())
 	}
-	if !data.AcmeSourceInterfaceId.IsNull() {
+	if !data.AcmeSourceInterfaceId.IsNull()   {
 		body, _ = sjson.Set(body, "acmeContent.sourceInterface.id", data.AcmeSourceInterfaceId.ValueString())
 	}
-	if !data.AcmeSourceInterfaceName.IsNull() {
+	if !data.AcmeSourceInterfaceName.IsNull()   {
 		body, _ = sjson.Set(body, "acmeContent.sourceInterface.name", data.AcmeSourceInterfaceName.ValueString())
 	}
-	if !data.AcmeCaOnlyCertificateId.IsNull() {
+	if !data.AcmeCaOnlyCertificateId.IsNull()   {
 		body, _ = sjson.Set(body, "acmeContent.authCertificateRef.id", data.AcmeCaOnlyCertificateId.ValueString())
 	}
-	if !data.AcmeAutoEnrollment.IsNull() {
+	if !data.AcmeAutoEnrollment.IsNull()   {
 		body, _ = sjson.Set(body, "acmeContent.autoEnrollEnabled", data.AcmeAutoEnrollment.ValueBool())
 	}
-	if !data.AcmeAutoEnrollmentLifetime.IsNull() {
+	if !data.AcmeAutoEnrollmentLifetime.IsNull()   {
 		body, _ = sjson.Set(body, "acmeContent.autoEnrollLifePct", data.AcmeAutoEnrollmentLifetime.ValueInt64())
 	}
-	if !data.AcmeAutoEnrollmentKeyRegeneration.IsNull() {
+	if !data.AcmeAutoEnrollmentKeyRegeneration.IsNull()   {
 		body, _ = sjson.Set(body, "acmeContent.keyRegenEnabled", data.AcmeAutoEnrollmentKeyRegeneration.ValueBool())
 	}
-	if !data.CertificateIncludeFqdn.IsNull() {
+	if !data.CertificateIncludeFqdn.IsNull()   {
 		body, _ = sjson.Set(body, "certificateParameters.includeFQDN", data.CertificateIncludeFqdn.ValueString())
 	}
-	if !data.CertificateCustomFqdn.IsNull() {
+	if !data.CertificateCustomFqdn.IsNull()   {
 		body, _ = sjson.Set(body, "certificateParameters.customFqdn", data.CertificateCustomFqdn.ValueString())
 	}
-	if !data.CertificateAlternateFqdn.IsNull() {
+	if !data.CertificateAlternateFqdn.IsNull()   {
 		body, _ = sjson.Set(body, "certificateParameters.altFQDN", data.CertificateAlternateFqdn.ValueString())
 	}
-	if !data.CertificateIncludeDeviceIp.IsNull() {
+	if !data.CertificateIncludeDeviceIp.IsNull()   {
 		body, _ = sjson.Set(body, "certificateParameters.includeDeviceIp", data.CertificateIncludeDeviceIp.ValueString())
 	}
-	if !data.CertificateCommonName.IsNull() {
+	if !data.CertificateCommonName.IsNull()   {
 		body, _ = sjson.Set(body, "certificateParameters.commonName", data.CertificateCommonName.ValueString())
 	}
-	if !data.CertificateOrganizationalUnit.IsNull() {
+	if !data.CertificateOrganizationalUnit.IsNull()   {
 		body, _ = sjson.Set(body, "certificateParameters.organizationalUnit", data.CertificateOrganizationalUnit.ValueString())
 	}
-	if !data.CertificateOrganization.IsNull() {
+	if !data.CertificateOrganization.IsNull()   {
 		body, _ = sjson.Set(body, "certificateParameters.organization", data.CertificateOrganization.ValueString())
 	}
-	if !data.CertificateLocality.IsNull() {
+	if !data.CertificateLocality.IsNull()   {
 		body, _ = sjson.Set(body, "certificateParameters.locality", data.CertificateLocality.ValueString())
 	}
-	if !data.CertificateState.IsNull() {
+	if !data.CertificateState.IsNull()   {
 		body, _ = sjson.Set(body, "certificateParameters.state", data.CertificateState.ValueString())
 	}
-	if !data.CertificateCountryCode.IsNull() {
+	if !data.CertificateCountryCode.IsNull()   {
 		body, _ = sjson.Set(body, "certificateParameters.countryCode", data.CertificateCountryCode.ValueString())
 	}
-	if !data.CertificateEmail.IsNull() {
+	if !data.CertificateEmail.IsNull()   {
 		body, _ = sjson.Set(body, "certificateParameters.email", data.CertificateEmail.ValueString())
 	}
-	if !data.CertificateIncludeDeviceSerialNumber.IsNull() {
+	if !data.CertificateIncludeDeviceSerialNumber.IsNull()   {
 		body, _ = sjson.Set(body, "certificateParameters.includeDeviceSerial", data.CertificateIncludeDeviceSerialNumber.ValueBool())
 	}
-	if !data.KeyType.IsNull() {
+	if !data.KeyType.IsNull()   {
 		body, _ = sjson.Set(body, "key.keyType", data.KeyType.ValueString())
 	}
-	if !data.KeyName.IsNull() {
+	if !data.KeyName.IsNull()   {
 		body, _ = sjson.Set(body, "key.keyName", data.KeyName.ValueString())
 	}
-	if !data.KeySize.IsNull() {
+	if !data.KeySize.IsNull()   {
 		body, _ = sjson.Set(body, "key.keySize", data.KeySize.ValueString())
 	}
-	if !data.IgnoreIpsecKeyUsage.IsNull() {
+	if !data.IgnoreIpsecKeyUsage.IsNull()   {
 		body, _ = sjson.Set(body, "key.ignoreIpsecKeyusage", data.IgnoreIpsecKeyUsage.ValueBool())
 	}
-	if !data.CrlUseDistributionPointFromTheCertificate.IsNull() {
+	if !data.CrlUseDistributionPointFromTheCertificate.IsNull()   {
 		body, _ = sjson.Set(body, "revocation.certRevocationListContent.enableCertRevocationListDistributionPoint", data.CrlUseDistributionPointFromTheCertificate.ValueBool())
 	}
 	if !data.CrlStaticUrls.IsNull() {
@@ -268,13 +442,13 @@ func (data CertificateEnrollment) toBody(ctx context.Context, state CertificateE
 		data.CrlStaticUrls.ElementsAs(ctx, &values, false)
 		body, _ = sjson.Set(body, "revocation.certRevocationListContent.certRevocationStaticUrlList", values)
 	}
-	if !data.OcspUrl.IsNull() {
+	if !data.OcspUrl.IsNull()   {
 		body, _ = sjson.Set(body, "revocation.onlineCertificateStatusProtocolContent.onlineCertificateStatusProtocolUrl", data.OcspUrl.ValueString())
 	}
-	if !data.RevocationEvaluationPriority.IsNull() {
+	if !data.RevocationEvaluationPriority.IsNull()   {
 		body, _ = sjson.Set(body, "revocation.evaluationPriority", data.RevocationEvaluationPriority.ValueString())
 	}
-	if !data.ConsiderCertificateValidIfRevocationInformationNotReachable.IsNull() {
+	if !data.ConsiderCertificateValidIfRevocationInformationNotReachable.IsNull()   {
 		body, _ = sjson.Set(body, "revocation.ignoreRevocation", data.ConsiderCertificateValidIfRevocationInformationNotReachable.ValueBool())
 	}
 	return body
@@ -545,6 +719,7 @@ func (data *CertificateEnrollment) fromBody(ctx context.Context, res gjson.Resul
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might

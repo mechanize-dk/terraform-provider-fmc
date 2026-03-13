@@ -78,7 +78,7 @@ func (r *DeviceOSPFInterfaceResource) Schema(ctx context.Context, req resource.S
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -95,6 +95,7 @@ func (r *DeviceOSPFInterfaceResource) Schema(ctx context.Context, req resource.S
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					
 				},
 			},
 			"type": schema.StringAttribute{
@@ -102,6 +103,7 @@ func (r *DeviceOSPFInterfaceResource) Schema(ctx context.Context, req resource.S
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"interface_id": schema.StringAttribute{
@@ -115,7 +117,7 @@ func (r *DeviceOSPFInterfaceResource) Schema(ctx context.Context, req resource.S
 				Validators: []validator.Int64{
 					int64validator.Between(1, 65535),
 				},
-				Default: int64default.StaticInt64(10),
+				Default:             int64default.StaticInt64(10),
 			},
 			"priority": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Designated router for a network.").AddIntegerRangeDescription(0, 255).AddDefaultValueDescription("1").String,
@@ -124,7 +126,7 @@ func (r *DeviceOSPFInterfaceResource) Schema(ctx context.Context, req resource.S
 				Validators: []validator.Int64{
 					int64validator.Between(0, 255),
 				},
-				Default: int64default.StaticInt64(1),
+				Default:             int64default.StaticInt64(1),
 			},
 			"mtu_missmatch_ignore": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Ignore MTU mismatch on the interface.").String,
@@ -137,7 +139,7 @@ func (r *DeviceOSPFInterfaceResource) Schema(ctx context.Context, req resource.S
 				Validators: []validator.Int64{
 					int64validator.Between(1, 8192),
 				},
-				Default: int64default.StaticInt64(10),
+				Default:             int64default.StaticInt64(10),
 			},
 			"transmit_delay": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Estimated time in seconds to send an LSA packet on the interface.").AddIntegerRangeDescription(1, 65535).AddDefaultValueDescription("1").String,
@@ -146,7 +148,7 @@ func (r *DeviceOSPFInterfaceResource) Schema(ctx context.Context, req resource.S
 				Validators: []validator.Int64{
 					int64validator.Between(1, 65535),
 				},
-				Default: int64default.StaticInt64(1),
+				Default:             int64default.StaticInt64(1),
 			},
 			"retransmit_interval": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Time in seconds between LSA retransmissions for adjacencies that belong to the interface.").AddIntegerRangeDescription(1, 65535).AddDefaultValueDescription("5").String,
@@ -155,7 +157,7 @@ func (r *DeviceOSPFInterfaceResource) Schema(ctx context.Context, req resource.S
 				Validators: []validator.Int64{
 					int64validator.Between(1, 65535),
 				},
-				Default: int64default.StaticInt64(5),
+				Default:             int64default.StaticInt64(5),
 			},
 			"dead_interval": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Time period in seconds for which hello packets must not be seen before neighbors indicate that the router is down.").AddIntegerRangeDescription(1, 65535).AddDefaultValueDescription("40").String,
@@ -164,7 +166,7 @@ func (r *DeviceOSPFInterfaceResource) Schema(ctx context.Context, req resource.S
 				Validators: []validator.Int64{
 					int64validator.Between(1, 65535),
 				},
-				Default: int64default.StaticInt64(40),
+				Default:             int64default.StaticInt64(40),
 			},
 			"hello_multiplier": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Number of Hello packets to be sent per second.").AddIntegerRangeDescription(3, 20).String,
@@ -318,13 +320,14 @@ func (r *DeviceOSPFInterfaceResource) Read(ctx context.Context, req resource.Rea
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
+	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-
+	
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else if err != nil {
+	} else  if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -377,7 +380,7 @@ func (r *DeviceOSPFInterfaceResource) Update(ctx context.Context, req resource.U
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -409,7 +412,7 @@ func (r *DeviceOSPFInterfaceResource) Delete(ctx context.Context, req resource.D
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString()), reqMods...)
+	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()), reqMods...)
 	if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
@@ -424,41 +427,40 @@ func (r *DeviceOSPFInterfaceResource) Delete(ctx context.Context, req resource.D
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *DeviceOSPFInterfaceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<device_id>,<vrf_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n<vrf_id> is optional.\n" + fmt.Sprintf("Got: %q", req.ID)
-	parts := strings.Split(req.ID, ",")
-	if len(parts) < 2 || len(parts) > 4 {
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<device_id>,<vrf_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n<vrf_id> is optional.\n" + fmt.Sprintf("Got: %q", req.ID)
+		parts := strings.Split(req.ID, ",")
+		if len(parts) < 2 || len(parts) > 4 {
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	if slices.Contains(parts, "") {
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		if slices.Contains(parts, "") {
+				resp.Diagnostics.AddError("Import error", errMsg)
+				return
+		}
 
-	if len(parts) == 2 {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), parts[0])...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), parts[1])...)
-	} else if len(parts) == 3 {
-		if err := uuid.Validate(parts[0]); err == nil {
-			// First part is UUID, so it's device_id
+		if len(parts) == 2 {
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), parts[0])...)
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vrf_id"), parts[1])...)
-		} else {
-			// First part is domain
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), parts[1])...)
+		} else if len(parts) == 3 {
+			if err := uuid.Validate(parts[0]); err == nil {
+				// First part is UUID, so it's device_id
+				resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), parts[0])...)
+				resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vrf_id"), parts[1])...)
+			} else {
+				// First part is domain
+				resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), parts[0])...)
+				resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), parts[1])...)
+			}
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), parts[2])...)
+
+		} else if len(parts) == 4 {
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), parts[0])...)
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), parts[1])...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vrf_id"), parts[2])...)
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), parts[3])...)
 		}
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), parts[2])...)
-
-	} else if len(parts) == 4 {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), parts[0])...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), parts[1])...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vrf_id"), parts[2])...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), parts[3])...)
-	}
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import

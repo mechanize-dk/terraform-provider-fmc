@@ -35,51 +35,58 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type AccessRule struct {
-	Id                         types.String                           `tfsdk:"id"`
-	Domain                     types.String                           `tfsdk:"domain"`
-	AccessControlPolicyId      types.String                           `tfsdk:"access_control_policy_id"`
-	CategoryName               types.String                           `tfsdk:"category_name"`
-	Section                    types.String                           `tfsdk:"section"`
-	Action                     types.String                           `tfsdk:"action"`
-	Name                       types.String                           `tfsdk:"name"`
-	Enabled                    types.Bool                             `tfsdk:"enabled"`
-	SourceNetworkLiterals      []AccessRuleSourceNetworkLiterals      `tfsdk:"source_network_literals"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	AccessControlPolicyId types.String `tfsdk:"access_control_policy_id"`
+	CategoryName types.String `tfsdk:"category_name"`
+	Section types.String `tfsdk:"section"`
+	Action types.String `tfsdk:"action"`
+	Name types.String `tfsdk:"name"`
+	Enabled types.Bool `tfsdk:"enabled"`
+	SourceNetworkLiterals []AccessRuleSourceNetworkLiterals `tfsdk:"source_network_literals"`
 	DestinationNetworkLiterals []AccessRuleDestinationNetworkLiterals `tfsdk:"destination_network_literals"`
-	VlanTagLiterals            []AccessRuleVlanTagLiterals            `tfsdk:"vlan_tag_literals"`
-	VlanTagObjects             []AccessRuleVlanTagObjects             `tfsdk:"vlan_tag_objects"`
-	SourceNetworkObjects       []AccessRuleSourceNetworkObjects       `tfsdk:"source_network_objects"`
-	DestinationNetworkObjects  []AccessRuleDestinationNetworkObjects  `tfsdk:"destination_network_objects"`
-	SourceDynamicObjects       []AccessRuleSourceDynamicObjects       `tfsdk:"source_dynamic_objects"`
-	DestinationDynamicObjects  []AccessRuleDestinationDynamicObjects  `tfsdk:"destination_dynamic_objects"`
-	SourcePortLiterals         []AccessRuleSourcePortLiterals         `tfsdk:"source_port_literals"`
-	SourcePortObjects          []AccessRuleSourcePortObjects          `tfsdk:"source_port_objects"`
-	DestinationPortLiterals    []AccessRuleDestinationPortLiterals    `tfsdk:"destination_port_literals"`
-	DestinationPortObjects     []AccessRuleDestinationPortObjects     `tfsdk:"destination_port_objects"`
-	SourceSgtObjects           []AccessRuleSourceSgtObjects           `tfsdk:"source_sgt_objects"`
-	EndpointDeviceTypes        []AccessRuleEndpointDeviceTypes        `tfsdk:"endpoint_device_types"`
-	DestinationSgtObjects      []AccessRuleDestinationSgtObjects      `tfsdk:"destination_sgt_objects"`
-	SourceZones                []AccessRuleSourceZones                `tfsdk:"source_zones"`
-	DestinationZones           []AccessRuleDestinationZones           `tfsdk:"destination_zones"`
-	UrlLiterals                []AccessRuleUrlLiterals                `tfsdk:"url_literals"`
-	UrlObjects                 []AccessRuleUrlObjects                 `tfsdk:"url_objects"`
-	UrlCategories              []AccessRuleUrlCategories              `tfsdk:"url_categories"`
-	LogConnectionBegin         types.Bool                             `tfsdk:"log_connection_begin"`
-	LogConnectionEnd           types.Bool                             `tfsdk:"log_connection_end"`
-	LogFiles                   types.Bool                             `tfsdk:"log_files"`
-	SendEventsToFmc            types.Bool                             `tfsdk:"send_events_to_fmc"`
-	SendSyslog                 types.Bool                             `tfsdk:"send_syslog"`
-	SyslogAlertId              types.String                           `tfsdk:"syslog_alert_id"`
-	SyslogSeverity             types.String                           `tfsdk:"syslog_severity"`
-	SnmpAlertId                types.String                           `tfsdk:"snmp_alert_id"`
-	Description                types.String                           `tfsdk:"description"`
-	FilePolicyId               types.String                           `tfsdk:"file_policy_id"`
-	IntrusionPolicyId          types.String                           `tfsdk:"intrusion_policy_id"`
-	TimeRangeId                types.String                           `tfsdk:"time_range_id"`
-	VariableSetId              types.String                           `tfsdk:"variable_set_id"`
-	Applications               []AccessRuleApplications               `tfsdk:"applications"`
-	ApplicationFilterObjects   []AccessRuleApplicationFilterObjects   `tfsdk:"application_filter_objects"`
-	ApplicationFilters         []AccessRuleApplicationFilters         `tfsdk:"application_filters"`
+	VlanTagLiterals []AccessRuleVlanTagLiterals `tfsdk:"vlan_tag_literals"`
+	VlanTagObjects []AccessRuleVlanTagObjects `tfsdk:"vlan_tag_objects"`
+	SourceNetworkObjects []AccessRuleSourceNetworkObjects `tfsdk:"source_network_objects"`
+	DestinationNetworkObjects []AccessRuleDestinationNetworkObjects `tfsdk:"destination_network_objects"`
+	SourceDynamicObjects []AccessRuleSourceDynamicObjects `tfsdk:"source_dynamic_objects"`
+	DestinationDynamicObjects []AccessRuleDestinationDynamicObjects `tfsdk:"destination_dynamic_objects"`
+	SourcePortLiterals []AccessRuleSourcePortLiterals `tfsdk:"source_port_literals"`
+	SourcePortObjects []AccessRuleSourcePortObjects `tfsdk:"source_port_objects"`
+	DestinationPortLiterals []AccessRuleDestinationPortLiterals `tfsdk:"destination_port_literals"`
+	DestinationPortObjects []AccessRuleDestinationPortObjects `tfsdk:"destination_port_objects"`
+	SourceSgtObjects []AccessRuleSourceSgtObjects `tfsdk:"source_sgt_objects"`
+	EndpointDeviceTypes []AccessRuleEndpointDeviceTypes `tfsdk:"endpoint_device_types"`
+	DestinationSgtObjects []AccessRuleDestinationSgtObjects `tfsdk:"destination_sgt_objects"`
+	SourceZones []AccessRuleSourceZones `tfsdk:"source_zones"`
+	DestinationZones []AccessRuleDestinationZones `tfsdk:"destination_zones"`
+	UrlLiterals []AccessRuleUrlLiterals `tfsdk:"url_literals"`
+	UrlObjects []AccessRuleUrlObjects `tfsdk:"url_objects"`
+	UrlCategories []AccessRuleUrlCategories `tfsdk:"url_categories"`
+	LogConnectionBegin types.Bool `tfsdk:"log_connection_begin"`
+	LogConnectionEnd types.Bool `tfsdk:"log_connection_end"`
+	LogFiles types.Bool `tfsdk:"log_files"`
+	SendEventsToFmc types.Bool `tfsdk:"send_events_to_fmc"`
+	SendSyslog types.Bool `tfsdk:"send_syslog"`
+	SyslogAlertId types.String `tfsdk:"syslog_alert_id"`
+	SyslogSeverity types.String `tfsdk:"syslog_severity"`
+	SnmpAlertId types.String `tfsdk:"snmp_alert_id"`
+	Description types.String `tfsdk:"description"`
+	FilePolicyId types.String `tfsdk:"file_policy_id"`
+	IntrusionPolicyId types.String `tfsdk:"intrusion_policy_id"`
+	TimeRangeId types.String `tfsdk:"time_range_id"`
+	VariableSetId types.String `tfsdk:"variable_set_id"`
+	Applications []AccessRuleApplications `tfsdk:"applications"`
+	ApplicationFilterObjects []AccessRuleApplicationFilterObjects `tfsdk:"application_filter_objects"`
+	ApplicationFilters []AccessRuleApplicationFilters `tfsdk:"application_filters"`
 }
+
+
+
+
+
+
+
 
 type AccessRuleSourceNetworkLiterals struct {
 	Value types.String `tfsdk:"value"`
@@ -91,7 +98,7 @@ type AccessRuleDestinationNetworkLiterals struct {
 
 type AccessRuleVlanTagLiterals struct {
 	StartTag types.String `tfsdk:"start_tag"`
-	EndTag   types.String `tfsdk:"end_tag"`
+	EndTag types.String `tfsdk:"end_tag"`
 }
 
 type AccessRuleVlanTagObjects struct {
@@ -99,12 +106,12 @@ type AccessRuleVlanTagObjects struct {
 }
 
 type AccessRuleSourceNetworkObjects struct {
-	Id   types.String `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	Type types.String `tfsdk:"type"`
 }
 
 type AccessRuleDestinationNetworkObjects struct {
-	Id   types.String `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	Type types.String `tfsdk:"type"`
 }
 
@@ -118,7 +125,7 @@ type AccessRuleDestinationDynamicObjects struct {
 
 type AccessRuleSourcePortLiterals struct {
 	Protocol types.String `tfsdk:"protocol"`
-	Port     types.String `tfsdk:"port"`
+	Port types.String `tfsdk:"port"`
 }
 
 type AccessRuleSourcePortObjects struct {
@@ -126,8 +133,8 @@ type AccessRuleSourcePortObjects struct {
 }
 
 type AccessRuleDestinationPortLiterals struct {
-	Type     types.String `tfsdk:"type"`
-	Port     types.String `tfsdk:"port"`
+	Type types.String `tfsdk:"type"`
+	Port types.String `tfsdk:"port"`
 	Protocol types.String `tfsdk:"protocol"`
 	IcmpType types.String `tfsdk:"icmp_type"`
 	IcmpCode types.String `tfsdk:"icmp_code"`
@@ -139,19 +146,19 @@ type AccessRuleDestinationPortObjects struct {
 
 type AccessRuleSourceSgtObjects struct {
 	Name types.String `tfsdk:"name"`
-	Id   types.String `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	Type types.String `tfsdk:"type"`
 }
 
 type AccessRuleEndpointDeviceTypes struct {
 	Name types.String `tfsdk:"name"`
-	Id   types.String `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	Type types.String `tfsdk:"type"`
 }
 
 type AccessRuleDestinationSgtObjects struct {
 	Name types.String `tfsdk:"name"`
-	Id   types.String `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	Type types.String `tfsdk:"type"`
 }
 
@@ -172,9 +179,22 @@ type AccessRuleUrlObjects struct {
 }
 
 type AccessRuleUrlCategories struct {
-	Id         types.String `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	Reputation types.String `tfsdk:"reputation"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 type AccessRuleApplications struct {
 	Id types.String `tfsdk:"id"`
@@ -185,12 +205,78 @@ type AccessRuleApplicationFilterObjects struct {
 }
 
 type AccessRuleApplicationFilters struct {
-	Types              []AccessRuleApplicationFiltersTypes              `tfsdk:"types"`
-	Risks              []AccessRuleApplicationFiltersRisks              `tfsdk:"risks"`
+	Types []AccessRuleApplicationFiltersTypes `tfsdk:"types"`
+	Risks []AccessRuleApplicationFiltersRisks `tfsdk:"risks"`
 	BusinessRelevances []AccessRuleApplicationFiltersBusinessRelevances `tfsdk:"business_relevances"`
-	Categories         []AccessRuleApplicationFiltersCategories         `tfsdk:"categories"`
-	Tags               []AccessRuleApplicationFiltersTags               `tfsdk:"tags"`
+	Categories []AccessRuleApplicationFiltersCategories `tfsdk:"categories"`
+	Tags []AccessRuleApplicationFiltersTags `tfsdk:"tags"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 type AccessRuleApplicationFiltersTypes struct {
 	Id types.String `tfsdk:"id"`
@@ -208,6 +294,79 @@ type AccessRuleApplicationFiltersTags struct {
 	Id types.String `tfsdk:"id"`
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // End of section. //template:end types
 
 // Section below is generated&owned by "gen/generator.go". //template:begin minimumVersions
@@ -217,7 +376,7 @@ type AccessRuleApplicationFiltersTags struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data AccessRule) getPath() string {
-	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/accesspolicies/%v/accessrules", url.QueryEscape(data.AccessControlPolicyId.ValueString()))
+		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/accesspolicies/%v/accessrules", url.QueryEscape(data.AccessControlPolicyId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -229,19 +388,19 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.CategoryName.IsNull() {
+	if !data.CategoryName.IsNull()   {
 		body, _ = sjson.Set(body, "metadata.category", data.CategoryName.ValueString())
 	}
-	if !data.Section.IsNull() {
+	if !data.Section.IsNull()   {
 		body, _ = sjson.Set(body, "metadata.section", data.Section.ValueString())
 	}
-	if !data.Action.IsNull() {
+	if !data.Action.IsNull()   {
 		body, _ = sjson.Set(body, "action", data.Action.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Enabled.IsNull() {
+	if !data.Enabled.IsNull()   {
 		body, _ = sjson.Set(body, "enabled", data.Enabled.ValueBool())
 	}
 	if len(data.SourceNetworkLiterals) > 0 {
@@ -249,7 +408,7 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		for _, item := range data.SourceNetworkLiterals {
 			itemBody := ""
 			itemBody, _ = sjson.Set(itemBody, "type", "AnyNonEmptyString")
-			if !item.Value.IsNull() {
+			if !item.Value.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "value", item.Value.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "sourceNetworks.literals.-1", itemBody)
@@ -260,7 +419,7 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		for _, item := range data.DestinationNetworkLiterals {
 			itemBody := ""
 			itemBody, _ = sjson.Set(itemBody, "type", "AnyNonEmptyString")
-			if !item.Value.IsNull() {
+			if !item.Value.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "value", item.Value.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "destinationNetworks.literals.-1", itemBody)
@@ -271,10 +430,10 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		for _, item := range data.VlanTagLiterals {
 			itemBody := ""
 			itemBody, _ = sjson.Set(itemBody, "type", "AnyNonEmptyString")
-			if !item.StartTag.IsNull() {
+			if !item.StartTag.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "startTag", item.StartTag.ValueString())
 			}
-			if !item.EndTag.IsNull() {
+			if !item.EndTag.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "endTag", item.EndTag.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "vlanTags.literals.-1", itemBody)
@@ -284,7 +443,7 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		body, _ = sjson.Set(body, "vlanTags.objects", []any{})
 		for _, item := range data.VlanTagObjects {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "vlanTags.objects.-1", itemBody)
@@ -294,10 +453,10 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		body, _ = sjson.Set(body, "sourceNetworks.objects", []any{})
 		for _, item := range data.SourceNetworkObjects {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Type.IsNull() {
+			if !item.Type.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "type", item.Type.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "sourceNetworks.objects.-1", itemBody)
@@ -307,10 +466,10 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		body, _ = sjson.Set(body, "destinationNetworks.objects", []any{})
 		for _, item := range data.DestinationNetworkObjects {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Type.IsNull() {
+			if !item.Type.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "type", item.Type.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "destinationNetworks.objects.-1", itemBody)
@@ -320,7 +479,7 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		body, _ = sjson.Set(body, "sourceDynamicObjects.objects", []any{})
 		for _, item := range data.SourceDynamicObjects {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			itemBody, _ = sjson.Set(itemBody, "type", "DynamicObject")
@@ -331,7 +490,7 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		body, _ = sjson.Set(body, "destinationDynamicObjects.objects", []any{})
 		for _, item := range data.DestinationDynamicObjects {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			itemBody, _ = sjson.Set(itemBody, "type", "DynamicObject")
@@ -343,10 +502,10 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		for _, item := range data.SourcePortLiterals {
 			itemBody := ""
 			itemBody, _ = sjson.Set(itemBody, "type", "PortLiteral")
-			if !item.Protocol.IsNull() {
+			if !item.Protocol.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "protocol", item.Protocol.ValueString())
 			}
-			if !item.Port.IsNull() {
+			if !item.Port.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "port", item.Port.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "sourcePorts.literals.-1", itemBody)
@@ -356,7 +515,7 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		body, _ = sjson.Set(body, "sourcePorts.objects", []any{})
 		for _, item := range data.SourcePortObjects {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			itemBody, _ = sjson.Set(itemBody, "type", "AnyNonEmptyString")
@@ -367,19 +526,19 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		body, _ = sjson.Set(body, "destinationPorts.literals", []any{})
 		for _, item := range data.DestinationPortLiterals {
 			itemBody := ""
-			if !item.Type.IsNull() {
+			if !item.Type.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "type", item.Type.ValueString())
 			}
-			if !item.Port.IsNull() {
+			if !item.Port.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "port", item.Port.ValueString())
 			}
-			if !item.Protocol.IsNull() {
+			if !item.Protocol.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "protocol", item.Protocol.ValueString())
 			}
-			if !item.IcmpType.IsNull() {
+			if !item.IcmpType.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "icmpType", item.IcmpType.ValueString())
 			}
-			if !item.IcmpCode.IsNull() {
+			if !item.IcmpCode.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "code", item.IcmpCode.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "destinationPorts.literals.-1", itemBody)
@@ -389,7 +548,7 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		body, _ = sjson.Set(body, "destinationPorts.objects", []any{})
 		for _, item := range data.DestinationPortObjects {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			itemBody, _ = sjson.Set(itemBody, "type", "AnyNonEmptyString")
@@ -400,13 +559,13 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		body, _ = sjson.Set(body, "sourceSecurityGroupTags.objects", []any{})
 		for _, item := range data.SourceSgtObjects {
 			itemBody := ""
-			if !item.Name.IsNull() {
+			if !item.Name.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "name", item.Name.ValueString())
 			}
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Type.IsNull() {
+			if !item.Type.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "type", item.Type.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "sourceSecurityGroupTags.objects.-1", itemBody)
@@ -416,13 +575,13 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		body, _ = sjson.Set(body, "endPointDeviceTypes", []any{})
 		for _, item := range data.EndpointDeviceTypes {
 			itemBody := ""
-			if !item.Name.IsNull() {
+			if !item.Name.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "name", item.Name.ValueString())
 			}
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Type.IsNull() {
+			if !item.Type.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "type", item.Type.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "endPointDeviceTypes.-1", itemBody)
@@ -432,13 +591,13 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		body, _ = sjson.Set(body, "destinationSecurityGroupTags.objects", []any{})
 		for _, item := range data.DestinationSgtObjects {
 			itemBody := ""
-			if !item.Name.IsNull() {
+			if !item.Name.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "name", item.Name.ValueString())
 			}
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Type.IsNull() {
+			if !item.Type.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "type", item.Type.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "destinationSecurityGroupTags.objects.-1", itemBody)
@@ -448,7 +607,7 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		body, _ = sjson.Set(body, "sourceZones.objects", []any{})
 		for _, item := range data.SourceZones {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			itemBody, _ = sjson.Set(itemBody, "type", "SecurityZone")
@@ -459,7 +618,7 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		body, _ = sjson.Set(body, "destinationZones.objects", []any{})
 		for _, item := range data.DestinationZones {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			itemBody, _ = sjson.Set(itemBody, "type", "SecurityZone")
@@ -470,7 +629,7 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		body, _ = sjson.Set(body, "urls.literals", []any{})
 		for _, item := range data.UrlLiterals {
 			itemBody := ""
-			if !item.Url.IsNull() {
+			if !item.Url.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "url", item.Url.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "urls.literals.-1", itemBody)
@@ -480,7 +639,7 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		body, _ = sjson.Set(body, "urls.objects", []any{})
 		for _, item := range data.UrlObjects {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			itemBody, _ = sjson.Set(itemBody, "type", "AnyNonEmptyString")
@@ -491,60 +650,60 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		body, _ = sjson.Set(body, "urls.urlCategoriesWithReputation", []any{})
 		for _, item := range data.UrlCategories {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "category.id", item.Id.ValueString())
 			}
 			itemBody, _ = sjson.Set(itemBody, "category.type", "AnyNonEmptyString")
-			if !item.Reputation.IsNull() {
+			if !item.Reputation.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "reputation", item.Reputation.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "urls.urlCategoriesWithReputation.-1", itemBody)
 		}
 	}
-	if !data.LogConnectionBegin.IsNull() {
+	if !data.LogConnectionBegin.IsNull()   {
 		body, _ = sjson.Set(body, "logBegin", data.LogConnectionBegin.ValueBool())
 	}
-	if !data.LogConnectionEnd.IsNull() {
+	if !data.LogConnectionEnd.IsNull()   {
 		body, _ = sjson.Set(body, "logEnd", data.LogConnectionEnd.ValueBool())
 	}
-	if !data.LogFiles.IsNull() {
+	if !data.LogFiles.IsNull()   {
 		body, _ = sjson.Set(body, "logFiles", data.LogFiles.ValueBool())
 	}
-	if !data.SendEventsToFmc.IsNull() {
+	if !data.SendEventsToFmc.IsNull()   {
 		body, _ = sjson.Set(body, "sendEventsToFMC", data.SendEventsToFmc.ValueBool())
 	}
-	if !data.SendSyslog.IsNull() {
+	if !data.SendSyslog.IsNull()   {
 		body, _ = sjson.Set(body, "enableSyslog", data.SendSyslog.ValueBool())
 	}
-	if !data.SyslogAlertId.IsNull() {
+	if !data.SyslogAlertId.IsNull()   {
 		body, _ = sjson.Set(body, "syslogConfig.id", data.SyslogAlertId.ValueString())
 	}
-	if !data.SyslogSeverity.IsNull() {
+	if !data.SyslogSeverity.IsNull()   {
 		body, _ = sjson.Set(body, "syslogSeverity", data.SyslogSeverity.ValueString())
 	}
-	if !data.SnmpAlertId.IsNull() {
+	if !data.SnmpAlertId.IsNull()   {
 		body, _ = sjson.Set(body, "snmpConfig.id", data.SnmpAlertId.ValueString())
 	}
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()   {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.FilePolicyId.IsNull() {
+	if !data.FilePolicyId.IsNull()   {
 		body, _ = sjson.Set(body, "filePolicy.id", data.FilePolicyId.ValueString())
 	}
-	if !data.IntrusionPolicyId.IsNull() {
+	if !data.IntrusionPolicyId.IsNull()   {
 		body, _ = sjson.Set(body, "ipsPolicy.id", data.IntrusionPolicyId.ValueString())
 	}
-	if !data.TimeRangeId.IsNull() {
+	if !data.TimeRangeId.IsNull()   {
 		body, _ = sjson.Set(body, "timeRangeObjects.0.id", data.TimeRangeId.ValueString())
 	}
-	if !data.VariableSetId.IsNull() {
+	if !data.VariableSetId.IsNull()   {
 		body, _ = sjson.Set(body, "variableSet.id", data.VariableSetId.ValueString())
 	}
 	if len(data.Applications) > 0 {
 		body, _ = sjson.Set(body, "applications.applications", []any{})
 		for _, item := range data.Applications {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "applications.applications.-1", itemBody)
@@ -554,7 +713,7 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 		body, _ = sjson.Set(body, "applications.applicationFilters", []any{})
 		for _, item := range data.ApplicationFilterObjects {
 			itemBody := ""
-			if !item.Id.IsNull() {
+			if !item.Id.IsNull()   {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "applications.applicationFilters.-1", itemBody)
@@ -568,7 +727,7 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 				itemBody, _ = sjson.Set(itemBody, "applicationTypes", []any{})
 				for _, childItem := range item.Types {
 					itemChildBody := ""
-					if !childItem.Id.IsNull() {
+					if !childItem.Id.IsNull()  {
 						itemChildBody, _ = sjson.Set(itemChildBody, "id", childItem.Id.ValueString())
 					}
 					itemBody, _ = sjson.SetRaw(itemBody, "applicationTypes.-1", itemChildBody)
@@ -578,7 +737,7 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 				itemBody, _ = sjson.Set(itemBody, "risks", []any{})
 				for _, childItem := range item.Risks {
 					itemChildBody := ""
-					if !childItem.Id.IsNull() {
+					if !childItem.Id.IsNull()  {
 						itemChildBody, _ = sjson.Set(itemChildBody, "id", childItem.Id.ValueString())
 					}
 					itemBody, _ = sjson.SetRaw(itemBody, "risks.-1", itemChildBody)
@@ -588,7 +747,7 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 				itemBody, _ = sjson.Set(itemBody, "productivities", []any{})
 				for _, childItem := range item.BusinessRelevances {
 					itemChildBody := ""
-					if !childItem.Id.IsNull() {
+					if !childItem.Id.IsNull()  {
 						itemChildBody, _ = sjson.Set(itemChildBody, "id", childItem.Id.ValueString())
 					}
 					itemBody, _ = sjson.SetRaw(itemBody, "productivities.-1", itemChildBody)
@@ -598,7 +757,7 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 				itemBody, _ = sjson.Set(itemBody, "categories", []any{})
 				for _, childItem := range item.Categories {
 					itemChildBody := ""
-					if !childItem.Id.IsNull() {
+					if !childItem.Id.IsNull()  {
 						itemChildBody, _ = sjson.Set(itemChildBody, "id", childItem.Id.ValueString())
 					}
 					itemBody, _ = sjson.SetRaw(itemBody, "categories.-1", itemChildBody)
@@ -608,7 +767,7 @@ func (data AccessRule) toBody(ctx context.Context, state AccessRule) string {
 				itemBody, _ = sjson.Set(itemBody, "tags", []any{})
 				for _, childItem := range item.Tags {
 					itemChildBody := ""
-					if !childItem.Id.IsNull() {
+					if !childItem.Id.IsNull()  {
 						itemChildBody, _ = sjson.Set(itemChildBody, "id", childItem.Id.ValueString())
 					}
 					itemBody, _ = sjson.SetRaw(itemBody, "tags.-1", itemChildBody)
@@ -655,11 +814,11 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleSourceNetworkLiterals{}
-			if value := res.Get("value"); value.Exists() {
-				data.Value = types.StringValue(value.String())
-			} else {
-				data.Value = types.StringNull()
-			}
+	if value := res.Get("value"); value.Exists() {
+		data.Value = types.StringValue(value.String())
+	} else {
+		data.Value = types.StringNull()
+	}
 			(*parent).SourceNetworkLiterals = append((*parent).SourceNetworkLiterals, data)
 			return true
 		})
@@ -669,11 +828,11 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleDestinationNetworkLiterals{}
-			if value := res.Get("value"); value.Exists() {
-				data.Value = types.StringValue(value.String())
-			} else {
-				data.Value = types.StringNull()
-			}
+	if value := res.Get("value"); value.Exists() {
+		data.Value = types.StringValue(value.String())
+	} else {
+		data.Value = types.StringNull()
+	}
 			(*parent).DestinationNetworkLiterals = append((*parent).DestinationNetworkLiterals, data)
 			return true
 		})
@@ -683,16 +842,16 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleVlanTagLiterals{}
-			if value := res.Get("startTag"); value.Exists() {
-				data.StartTag = types.StringValue(value.String())
-			} else {
-				data.StartTag = types.StringNull()
-			}
-			if value := res.Get("endTag"); value.Exists() {
-				data.EndTag = types.StringValue(value.String())
-			} else {
-				data.EndTag = types.StringNull()
-			}
+	if value := res.Get("startTag"); value.Exists() {
+		data.StartTag = types.StringValue(value.String())
+	} else {
+		data.StartTag = types.StringNull()
+	}
+	if value := res.Get("endTag"); value.Exists() {
+		data.EndTag = types.StringValue(value.String())
+	} else {
+		data.EndTag = types.StringNull()
+	}
 			(*parent).VlanTagLiterals = append((*parent).VlanTagLiterals, data)
 			return true
 		})
@@ -702,11 +861,11 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleVlanTagObjects{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).VlanTagObjects = append((*parent).VlanTagObjects, data)
 			return true
 		})
@@ -716,16 +875,16 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleSourceNetworkObjects{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
-			if value := res.Get("type"); value.Exists() {
-				data.Type = types.StringValue(value.String())
-			} else {
-				data.Type = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
 			(*parent).SourceNetworkObjects = append((*parent).SourceNetworkObjects, data)
 			return true
 		})
@@ -735,16 +894,16 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleDestinationNetworkObjects{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
-			if value := res.Get("type"); value.Exists() {
-				data.Type = types.StringValue(value.String())
-			} else {
-				data.Type = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
 			(*parent).DestinationNetworkObjects = append((*parent).DestinationNetworkObjects, data)
 			return true
 		})
@@ -754,11 +913,11 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleSourceDynamicObjects{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).SourceDynamicObjects = append((*parent).SourceDynamicObjects, data)
 			return true
 		})
@@ -768,11 +927,11 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleDestinationDynamicObjects{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).DestinationDynamicObjects = append((*parent).DestinationDynamicObjects, data)
 			return true
 		})
@@ -782,16 +941,16 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleSourcePortLiterals{}
-			if value := res.Get("protocol"); value.Exists() {
-				data.Protocol = types.StringValue(value.String())
-			} else {
-				data.Protocol = types.StringNull()
-			}
-			if value := res.Get("port"); value.Exists() {
-				data.Port = types.StringValue(value.String())
-			} else {
-				data.Port = types.StringNull()
-			}
+	if value := res.Get("protocol"); value.Exists() {
+		data.Protocol = types.StringValue(value.String())
+	} else {
+		data.Protocol = types.StringNull()
+	}
+	if value := res.Get("port"); value.Exists() {
+		data.Port = types.StringValue(value.String())
+	} else {
+		data.Port = types.StringNull()
+	}
 			(*parent).SourcePortLiterals = append((*parent).SourcePortLiterals, data)
 			return true
 		})
@@ -801,11 +960,11 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleSourcePortObjects{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).SourcePortObjects = append((*parent).SourcePortObjects, data)
 			return true
 		})
@@ -815,31 +974,31 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleDestinationPortLiterals{}
-			if value := res.Get("type"); value.Exists() {
-				data.Type = types.StringValue(value.String())
-			} else {
-				data.Type = types.StringNull()
-			}
-			if value := res.Get("port"); value.Exists() {
-				data.Port = types.StringValue(value.String())
-			} else {
-				data.Port = types.StringNull()
-			}
-			if value := res.Get("protocol"); value.Exists() {
-				data.Protocol = types.StringValue(value.String())
-			} else {
-				data.Protocol = types.StringNull()
-			}
-			if value := res.Get("icmpType"); value.Exists() {
-				data.IcmpType = types.StringValue(value.String())
-			} else {
-				data.IcmpType = types.StringNull()
-			}
-			if value := res.Get("code"); value.Exists() {
-				data.IcmpCode = types.StringValue(value.String())
-			} else {
-				data.IcmpCode = types.StringNull()
-			}
+	if value := res.Get("type"); value.Exists() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
+	if value := res.Get("port"); value.Exists() {
+		data.Port = types.StringValue(value.String())
+	} else {
+		data.Port = types.StringNull()
+	}
+	if value := res.Get("protocol"); value.Exists() {
+		data.Protocol = types.StringValue(value.String())
+	} else {
+		data.Protocol = types.StringNull()
+	}
+	if value := res.Get("icmpType"); value.Exists() {
+		data.IcmpType = types.StringValue(value.String())
+	} else {
+		data.IcmpType = types.StringNull()
+	}
+	if value := res.Get("code"); value.Exists() {
+		data.IcmpCode = types.StringValue(value.String())
+	} else {
+		data.IcmpCode = types.StringNull()
+	}
 			(*parent).DestinationPortLiterals = append((*parent).DestinationPortLiterals, data)
 			return true
 		})
@@ -849,11 +1008,11 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleDestinationPortObjects{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).DestinationPortObjects = append((*parent).DestinationPortObjects, data)
 			return true
 		})
@@ -863,21 +1022,21 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleSourceSgtObjects{}
-			if value := res.Get("name"); value.Exists() {
-				data.Name = types.StringValue(value.String())
-			} else {
-				data.Name = types.StringNull()
-			}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
-			if value := res.Get("type"); value.Exists() {
-				data.Type = types.StringValue(value.String())
-			} else {
-				data.Type = types.StringNull()
-			}
+	if value := res.Get("name"); value.Exists() {
+		data.Name = types.StringValue(value.String())
+	} else {
+		data.Name = types.StringNull()
+	}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
 			(*parent).SourceSgtObjects = append((*parent).SourceSgtObjects, data)
 			return true
 		})
@@ -887,21 +1046,21 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleEndpointDeviceTypes{}
-			if value := res.Get("name"); value.Exists() {
-				data.Name = types.StringValue(value.String())
-			} else {
-				data.Name = types.StringNull()
-			}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
-			if value := res.Get("type"); value.Exists() {
-				data.Type = types.StringValue(value.String())
-			} else {
-				data.Type = types.StringNull()
-			}
+	if value := res.Get("name"); value.Exists() {
+		data.Name = types.StringValue(value.String())
+	} else {
+		data.Name = types.StringNull()
+	}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
 			(*parent).EndpointDeviceTypes = append((*parent).EndpointDeviceTypes, data)
 			return true
 		})
@@ -911,21 +1070,21 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleDestinationSgtObjects{}
-			if value := res.Get("name"); value.Exists() {
-				data.Name = types.StringValue(value.String())
-			} else {
-				data.Name = types.StringNull()
-			}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
-			if value := res.Get("type"); value.Exists() {
-				data.Type = types.StringValue(value.String())
-			} else {
-				data.Type = types.StringNull()
-			}
+	if value := res.Get("name"); value.Exists() {
+		data.Name = types.StringValue(value.String())
+	} else {
+		data.Name = types.StringNull()
+	}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
 			(*parent).DestinationSgtObjects = append((*parent).DestinationSgtObjects, data)
 			return true
 		})
@@ -935,11 +1094,11 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleSourceZones{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).SourceZones = append((*parent).SourceZones, data)
 			return true
 		})
@@ -949,11 +1108,11 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleDestinationZones{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).DestinationZones = append((*parent).DestinationZones, data)
 			return true
 		})
@@ -963,11 +1122,11 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleUrlLiterals{}
-			if value := res.Get("url"); value.Exists() {
-				data.Url = types.StringValue(value.String())
-			} else {
-				data.Url = types.StringNull()
-			}
+	if value := res.Get("url"); value.Exists() {
+		data.Url = types.StringValue(value.String())
+	} else {
+		data.Url = types.StringNull()
+	}
 			(*parent).UrlLiterals = append((*parent).UrlLiterals, data)
 			return true
 		})
@@ -977,11 +1136,11 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleUrlObjects{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).UrlObjects = append((*parent).UrlObjects, data)
 			return true
 		})
@@ -991,16 +1150,16 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleUrlCategories{}
-			if value := res.Get("category.id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
-			if value := res.Get("reputation"); value.Exists() {
-				data.Reputation = types.StringValue(value.String())
-			} else {
-				data.Reputation = types.StringNull()
-			}
+	if value := res.Get("category.id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("reputation"); value.Exists() {
+		data.Reputation = types.StringValue(value.String())
+	} else {
+		data.Reputation = types.StringNull()
+	}
 			(*parent).UrlCategories = append((*parent).UrlCategories, data)
 			return true
 		})
@@ -1070,11 +1229,11 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleApplications{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).Applications = append((*parent).Applications, data)
 			return true
 		})
@@ -1084,11 +1243,11 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleApplicationFilterObjects{}
-			if value := res.Get("id"); value.Exists() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 			(*parent).ApplicationFilterObjects = append((*parent).ApplicationFilterObjects, data)
 			return true
 		})
@@ -1098,76 +1257,76 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := AccessRuleApplicationFilters{}
-			if value := res.Get("applicationTypes"); value.Exists() {
-				data.Types = make([]AccessRuleApplicationFiltersTypes, 0)
-				value.ForEach(func(k, res gjson.Result) bool {
-					parent := &data
-					data := AccessRuleApplicationFiltersTypes{}
-					if value := res.Get("id"); value.Exists() {
-						data.Id = types.StringValue(value.String())
-					} else {
-						data.Id = types.StringNull()
-					}
-					(*parent).Types = append((*parent).Types, data)
-					return true
-				})
-			}
-			if value := res.Get("risks"); value.Exists() {
-				data.Risks = make([]AccessRuleApplicationFiltersRisks, 0)
-				value.ForEach(func(k, res gjson.Result) bool {
-					parent := &data
-					data := AccessRuleApplicationFiltersRisks{}
-					if value := res.Get("id"); value.Exists() {
-						data.Id = types.StringValue(value.String())
-					} else {
-						data.Id = types.StringNull()
-					}
-					(*parent).Risks = append((*parent).Risks, data)
-					return true
-				})
-			}
-			if value := res.Get("productivities"); value.Exists() {
-				data.BusinessRelevances = make([]AccessRuleApplicationFiltersBusinessRelevances, 0)
-				value.ForEach(func(k, res gjson.Result) bool {
-					parent := &data
-					data := AccessRuleApplicationFiltersBusinessRelevances{}
-					if value := res.Get("id"); value.Exists() {
-						data.Id = types.StringValue(value.String())
-					} else {
-						data.Id = types.StringNull()
-					}
-					(*parent).BusinessRelevances = append((*parent).BusinessRelevances, data)
-					return true
-				})
-			}
-			if value := res.Get("categories"); value.Exists() {
-				data.Categories = make([]AccessRuleApplicationFiltersCategories, 0)
-				value.ForEach(func(k, res gjson.Result) bool {
-					parent := &data
-					data := AccessRuleApplicationFiltersCategories{}
-					if value := res.Get("id"); value.Exists() {
-						data.Id = types.StringValue(value.String())
-					} else {
-						data.Id = types.StringNull()
-					}
-					(*parent).Categories = append((*parent).Categories, data)
-					return true
-				})
-			}
-			if value := res.Get("tags"); value.Exists() {
-				data.Tags = make([]AccessRuleApplicationFiltersTags, 0)
-				value.ForEach(func(k, res gjson.Result) bool {
-					parent := &data
-					data := AccessRuleApplicationFiltersTags{}
-					if value := res.Get("id"); value.Exists() {
-						data.Id = types.StringValue(value.String())
-					} else {
-						data.Id = types.StringNull()
-					}
-					(*parent).Tags = append((*parent).Tags, data)
-					return true
-				})
-			}
+	if value := res.Get("applicationTypes"); value.Exists() {
+		data.Types = make([]AccessRuleApplicationFiltersTypes, 0)
+		value.ForEach(func(k, res gjson.Result) bool {
+			parent := &data
+			data := AccessRuleApplicationFiltersTypes{}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+			(*parent).Types = append((*parent).Types, data)
+			return true
+		})
+	}
+	if value := res.Get("risks"); value.Exists() {
+		data.Risks = make([]AccessRuleApplicationFiltersRisks, 0)
+		value.ForEach(func(k, res gjson.Result) bool {
+			parent := &data
+			data := AccessRuleApplicationFiltersRisks{}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+			(*parent).Risks = append((*parent).Risks, data)
+			return true
+		})
+	}
+	if value := res.Get("productivities"); value.Exists() {
+		data.BusinessRelevances = make([]AccessRuleApplicationFiltersBusinessRelevances, 0)
+		value.ForEach(func(k, res gjson.Result) bool {
+			parent := &data
+			data := AccessRuleApplicationFiltersBusinessRelevances{}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+			(*parent).BusinessRelevances = append((*parent).BusinessRelevances, data)
+			return true
+		})
+	}
+	if value := res.Get("categories"); value.Exists() {
+		data.Categories = make([]AccessRuleApplicationFiltersCategories, 0)
+		value.ForEach(func(k, res gjson.Result) bool {
+			parent := &data
+			data := AccessRuleApplicationFiltersCategories{}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+			(*parent).Categories = append((*parent).Categories, data)
+			return true
+		})
+	}
+	if value := res.Get("tags"); value.Exists() {
+		data.Tags = make([]AccessRuleApplicationFiltersTags, 0)
+		value.ForEach(func(k, res gjson.Result) bool {
+			parent := &data
+			data := AccessRuleApplicationFiltersTags{}
+	if value := res.Get("id"); value.Exists() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+			(*parent).Tags = append((*parent).Tags, data)
+			return true
+		})
+	}
 			(*parent).ApplicationFilters = append((*parent).ApplicationFilters, data)
 			return true
 		})
@@ -1177,6 +1336,7 @@ func (data *AccessRule) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -1209,8 +1369,8 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 		data.Enabled = types.BoolNull()
 	}
 	for i := 0; i < len(data.SourceNetworkLiterals); i++ {
-		keys := [...]string{"value"}
-		keyValues := [...]string{data.SourceNetworkLiterals[i].Value.ValueString()}
+		keys := [...]string{ "value",  }
+		keyValues := [...]string{ data.SourceNetworkLiterals[i].Value.ValueString(),  }
 
 		parent := &data
 		data := (*parent).SourceNetworkLiterals[i]
@@ -1244,16 +1404,16 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("value"); value.Exists() && !data.Value.IsNull() {
-			data.Value = types.StringValue(value.String())
-		} else {
-			data.Value = types.StringNull()
-		}
+	if value := res.Get("value"); value.Exists() && !data.Value.IsNull() {
+		data.Value = types.StringValue(value.String())
+	} else {
+		data.Value = types.StringNull()
+	}
 		(*parent).SourceNetworkLiterals[i] = data
 	}
 	for i := 0; i < len(data.DestinationNetworkLiterals); i++ {
-		keys := [...]string{"value"}
-		keyValues := [...]string{data.DestinationNetworkLiterals[i].Value.ValueString()}
+		keys := [...]string{ "value",  }
+		keyValues := [...]string{ data.DestinationNetworkLiterals[i].Value.ValueString(),  }
 
 		parent := &data
 		data := (*parent).DestinationNetworkLiterals[i]
@@ -1287,16 +1447,16 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("value"); value.Exists() && !data.Value.IsNull() {
-			data.Value = types.StringValue(value.String())
-		} else {
-			data.Value = types.StringNull()
-		}
+	if value := res.Get("value"); value.Exists() && !data.Value.IsNull() {
+		data.Value = types.StringValue(value.String())
+	} else {
+		data.Value = types.StringNull()
+	}
 		(*parent).DestinationNetworkLiterals[i] = data
 	}
 	for i := 0; i < len(data.VlanTagLiterals); i++ {
-		keys := [...]string{"startTag", "endTag"}
-		keyValues := [...]string{data.VlanTagLiterals[i].StartTag.ValueString(), data.VlanTagLiterals[i].EndTag.ValueString()}
+		keys := [...]string{ "startTag", "endTag",  }
+		keyValues := [...]string{ data.VlanTagLiterals[i].StartTag.ValueString(), data.VlanTagLiterals[i].EndTag.ValueString(),  }
 
 		parent := &data
 		data := (*parent).VlanTagLiterals[i]
@@ -1330,21 +1490,21 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("startTag"); value.Exists() && !data.StartTag.IsNull() {
-			data.StartTag = types.StringValue(value.String())
-		} else {
-			data.StartTag = types.StringNull()
-		}
-		if value := res.Get("endTag"); value.Exists() && !data.EndTag.IsNull() {
-			data.EndTag = types.StringValue(value.String())
-		} else {
-			data.EndTag = types.StringNull()
-		}
+	if value := res.Get("startTag"); value.Exists() && !data.StartTag.IsNull() {
+		data.StartTag = types.StringValue(value.String())
+	} else {
+		data.StartTag = types.StringNull()
+	}
+	if value := res.Get("endTag"); value.Exists() && !data.EndTag.IsNull() {
+		data.EndTag = types.StringValue(value.String())
+	} else {
+		data.EndTag = types.StringNull()
+	}
 		(*parent).VlanTagLiterals[i] = data
 	}
 	for i := 0; i < len(data.VlanTagObjects); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.VlanTagObjects[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.VlanTagObjects[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).VlanTagObjects[i]
@@ -1378,16 +1538,16 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).VlanTagObjects[i] = data
 	}
 	for i := 0; i < len(data.SourceNetworkObjects); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.SourceNetworkObjects[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.SourceNetworkObjects[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).SourceNetworkObjects[i]
@@ -1421,21 +1581,21 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
 		(*parent).SourceNetworkObjects[i] = data
 	}
 	for i := 0; i < len(data.DestinationNetworkObjects); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.DestinationNetworkObjects[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.DestinationNetworkObjects[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).DestinationNetworkObjects[i]
@@ -1469,21 +1629,21 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
 		(*parent).DestinationNetworkObjects[i] = data
 	}
 	for i := 0; i < len(data.SourceDynamicObjects); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.SourceDynamicObjects[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.SourceDynamicObjects[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).SourceDynamicObjects[i]
@@ -1517,16 +1677,16 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).SourceDynamicObjects[i] = data
 	}
 	for i := 0; i < len(data.DestinationDynamicObjects); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.DestinationDynamicObjects[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.DestinationDynamicObjects[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).DestinationDynamicObjects[i]
@@ -1560,16 +1720,16 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).DestinationDynamicObjects[i] = data
 	}
 	for i := 0; i < len(data.SourcePortLiterals); i++ {
-		keys := [...]string{"protocol", "port"}
-		keyValues := [...]string{data.SourcePortLiterals[i].Protocol.ValueString(), data.SourcePortLiterals[i].Port.ValueString()}
+		keys := [...]string{ "protocol", "port",  }
+		keyValues := [...]string{ data.SourcePortLiterals[i].Protocol.ValueString(), data.SourcePortLiterals[i].Port.ValueString(),  }
 
 		parent := &data
 		data := (*parent).SourcePortLiterals[i]
@@ -1603,21 +1763,21 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("protocol"); value.Exists() && !data.Protocol.IsNull() {
-			data.Protocol = types.StringValue(value.String())
-		} else {
-			data.Protocol = types.StringNull()
-		}
-		if value := res.Get("port"); value.Exists() && !data.Port.IsNull() {
-			data.Port = types.StringValue(value.String())
-		} else {
-			data.Port = types.StringNull()
-		}
+	if value := res.Get("protocol"); value.Exists() && !data.Protocol.IsNull() {
+		data.Protocol = types.StringValue(value.String())
+	} else {
+		data.Protocol = types.StringNull()
+	}
+	if value := res.Get("port"); value.Exists() && !data.Port.IsNull() {
+		data.Port = types.StringValue(value.String())
+	} else {
+		data.Port = types.StringNull()
+	}
 		(*parent).SourcePortLiterals[i] = data
 	}
 	for i := 0; i < len(data.SourcePortObjects); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.SourcePortObjects[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.SourcePortObjects[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).SourcePortObjects[i]
@@ -1651,16 +1811,16 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).SourcePortObjects[i] = data
 	}
 	for i := 0; i < len(data.DestinationPortLiterals); i++ {
-		keys := [...]string{"type", "port", "protocol", "icmpType", "code"}
-		keyValues := [...]string{data.DestinationPortLiterals[i].Type.ValueString(), data.DestinationPortLiterals[i].Port.ValueString(), data.DestinationPortLiterals[i].Protocol.ValueString(), data.DestinationPortLiterals[i].IcmpType.ValueString(), data.DestinationPortLiterals[i].IcmpCode.ValueString()}
+		keys := [...]string{ "type", "port", "protocol", "icmpType", "code",  }
+		keyValues := [...]string{ data.DestinationPortLiterals[i].Type.ValueString(), data.DestinationPortLiterals[i].Port.ValueString(), data.DestinationPortLiterals[i].Protocol.ValueString(), data.DestinationPortLiterals[i].IcmpType.ValueString(), data.DestinationPortLiterals[i].IcmpCode.ValueString(),  }
 
 		parent := &data
 		data := (*parent).DestinationPortLiterals[i]
@@ -1694,36 +1854,36 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
-		if value := res.Get("port"); value.Exists() && !data.Port.IsNull() {
-			data.Port = types.StringValue(value.String())
-		} else {
-			data.Port = types.StringNull()
-		}
-		if value := res.Get("protocol"); value.Exists() && !data.Protocol.IsNull() {
-			data.Protocol = types.StringValue(value.String())
-		} else {
-			data.Protocol = types.StringNull()
-		}
-		if value := res.Get("icmpType"); value.Exists() && !data.IcmpType.IsNull() {
-			data.IcmpType = types.StringValue(value.String())
-		} else {
-			data.IcmpType = types.StringNull()
-		}
-		if value := res.Get("code"); value.Exists() && !data.IcmpCode.IsNull() {
-			data.IcmpCode = types.StringValue(value.String())
-		} else {
-			data.IcmpCode = types.StringNull()
-		}
+	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
+	if value := res.Get("port"); value.Exists() && !data.Port.IsNull() {
+		data.Port = types.StringValue(value.String())
+	} else {
+		data.Port = types.StringNull()
+	}
+	if value := res.Get("protocol"); value.Exists() && !data.Protocol.IsNull() {
+		data.Protocol = types.StringValue(value.String())
+	} else {
+		data.Protocol = types.StringNull()
+	}
+	if value := res.Get("icmpType"); value.Exists() && !data.IcmpType.IsNull() {
+		data.IcmpType = types.StringValue(value.String())
+	} else {
+		data.IcmpType = types.StringNull()
+	}
+	if value := res.Get("code"); value.Exists() && !data.IcmpCode.IsNull() {
+		data.IcmpCode = types.StringValue(value.String())
+	} else {
+		data.IcmpCode = types.StringNull()
+	}
 		(*parent).DestinationPortLiterals[i] = data
 	}
 	for i := 0; i < len(data.DestinationPortObjects); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.DestinationPortObjects[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.DestinationPortObjects[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).DestinationPortObjects[i]
@@ -1757,16 +1917,16 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).DestinationPortObjects[i] = data
 	}
 	for i := 0; i < len(data.SourceSgtObjects); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.SourceSgtObjects[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.SourceSgtObjects[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).SourceSgtObjects[i]
@@ -1800,26 +1960,26 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
-			data.Name = types.StringValue(value.String())
-		} else {
-			data.Name = types.StringNull()
-		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
+	if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
+		data.Name = types.StringValue(value.String())
+	} else {
+		data.Name = types.StringNull()
+	}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
 		(*parent).SourceSgtObjects[i] = data
 	}
 	for i := 0; i < len(data.EndpointDeviceTypes); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.EndpointDeviceTypes[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.EndpointDeviceTypes[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).EndpointDeviceTypes[i]
@@ -1853,26 +2013,26 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
-			data.Name = types.StringValue(value.String())
-		} else {
-			data.Name = types.StringNull()
-		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
+	if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
+		data.Name = types.StringValue(value.String())
+	} else {
+		data.Name = types.StringNull()
+	}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
 		(*parent).EndpointDeviceTypes[i] = data
 	}
 	for i := 0; i < len(data.DestinationSgtObjects); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.DestinationSgtObjects[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.DestinationSgtObjects[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).DestinationSgtObjects[i]
@@ -1906,26 +2066,26 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
-			data.Name = types.StringValue(value.String())
-		} else {
-			data.Name = types.StringNull()
-		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-			data.Type = types.StringValue(value.String())
-		} else {
-			data.Type = types.StringNull()
-		}
+	if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
+		data.Name = types.StringValue(value.String())
+	} else {
+		data.Name = types.StringNull()
+	}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+		data.Type = types.StringValue(value.String())
+	} else {
+		data.Type = types.StringNull()
+	}
 		(*parent).DestinationSgtObjects[i] = data
 	}
 	for i := 0; i < len(data.SourceZones); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.SourceZones[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.SourceZones[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).SourceZones[i]
@@ -1959,16 +2119,16 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).SourceZones[i] = data
 	}
 	for i := 0; i < len(data.DestinationZones); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.DestinationZones[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.DestinationZones[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).DestinationZones[i]
@@ -2002,16 +2162,16 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).DestinationZones[i] = data
 	}
 	for i := 0; i < len(data.UrlLiterals); i++ {
-		keys := [...]string{"url"}
-		keyValues := [...]string{data.UrlLiterals[i].Url.ValueString()}
+		keys := [...]string{ "url",  }
+		keyValues := [...]string{ data.UrlLiterals[i].Url.ValueString(),  }
 
 		parent := &data
 		data := (*parent).UrlLiterals[i]
@@ -2045,16 +2205,16 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("url"); value.Exists() && !data.Url.IsNull() {
-			data.Url = types.StringValue(value.String())
-		} else {
-			data.Url = types.StringNull()
-		}
+	if value := res.Get("url"); value.Exists() && !data.Url.IsNull() {
+		data.Url = types.StringValue(value.String())
+	} else {
+		data.Url = types.StringNull()
+	}
 		(*parent).UrlLiterals[i] = data
 	}
 	for i := 0; i < len(data.UrlObjects); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.UrlObjects[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.UrlObjects[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).UrlObjects[i]
@@ -2088,16 +2248,16 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).UrlObjects[i] = data
 	}
 	for i := 0; i < len(data.UrlCategories); i++ {
-		keys := [...]string{"category.id"}
-		keyValues := [...]string{data.UrlCategories[i].Id.ValueString()}
+		keys := [...]string{ "category.id",  }
+		keyValues := [...]string{ data.UrlCategories[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).UrlCategories[i]
@@ -2131,16 +2291,16 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("category.id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
-		if value := res.Get("reputation"); value.Exists() && !data.Reputation.IsNull() {
-			data.Reputation = types.StringValue(value.String())
-		} else {
-			data.Reputation = types.StringNull()
-		}
+	if value := res.Get("category.id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+	if value := res.Get("reputation"); value.Exists() && !data.Reputation.IsNull() {
+		data.Reputation = types.StringValue(value.String())
+	} else {
+		data.Reputation = types.StringNull()
+	}
 		(*parent).UrlCategories[i] = data
 	}
 	if value := res.Get("logBegin"); value.Exists() && !data.LogConnectionBegin.IsNull() {
@@ -2204,8 +2364,8 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 		data.VariableSetId = types.StringNull()
 	}
 	for i := 0; i < len(data.Applications); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.Applications[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.Applications[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).Applications[i]
@@ -2239,16 +2399,16 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).Applications[i] = data
 	}
 	for i := 0; i < len(data.ApplicationFilterObjects); i++ {
-		keys := [...]string{"id"}
-		keyValues := [...]string{data.ApplicationFilterObjects[i].Id.ValueString()}
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.ApplicationFilterObjects[i].Id.ValueString(),  }
 
 		parent := &data
 		data := (*parent).ApplicationFilterObjects[i]
@@ -2282,11 +2442,11 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-			data.Id = types.StringValue(value.String())
-		} else {
-			data.Id = types.StringNull()
-		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
 		(*parent).ApplicationFilterObjects[i] = data
 	}
 	{
@@ -2304,221 +2464,221 @@ func (data *AccessRule) fromBodyPartial(ctx context.Context, res gjson.Result) {
 		data := (*parent).ApplicationFilters[i]
 		parentRes := &res
 		res := parentRes.Get(fmt.Sprintf("applications.inlineApplicationFilters.%d", i))
-		for i := 0; i < len(data.Types); i++ {
-			keys := [...]string{"id"}
-			keyValues := [...]string{data.Types[i].Id.ValueString()}
+	for i := 0; i < len(data.Types); i++ {
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.Types[i].Id.ValueString(),  }
 
-			parent := &data
-			data := (*parent).Types[i]
-			parentRes := &res
-			var res gjson.Result
+		parent := &data
+		data := (*parent).Types[i]
+		parentRes := &res
+		var res gjson.Result
 
-			parentRes.Get("applicationTypes").ForEach(
-				func(_, v gjson.Result) bool {
-					found := false
-					for ik := range keys {
-						if v.Get(keys[ik]).String() != keyValues[ik] {
-							found = false
-							break
-						}
-						found = true
+		parentRes.Get("applicationTypes").ForEach(
+			func(_, v gjson.Result) bool {
+				found := false
+				for ik := range keys {
+					if v.Get(keys[ik]).String() != keyValues[ik] {
+						found = false
+						break
 					}
-					if found {
-						res = v
-						return false
-					}
-					return true
-				},
-			)
-			if !res.Exists() {
-				tflog.Debug(ctx, fmt.Sprintf("removing Types[%d] = %+v",
-					i,
-					(*parent).Types[i],
-				))
-				(*parent).Types = slices.Delete((*parent).Types, i, i+1)
-				i--
+					found = true
+				}
+				if found {
+					res = v
+					return false
+				}
+				return true
+			},
+		)
+		if !res.Exists() {
+			tflog.Debug(ctx, fmt.Sprintf("removing Types[%d] = %+v",
+				i,
+				(*parent).Types[i],
+			))
+			(*parent).Types = slices.Delete((*parent).Types, i, i+1)
+			i--
 
-				continue
-			}
-			if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
-			(*parent).Types[i] = data
+			continue
 		}
-		for i := 0; i < len(data.Risks); i++ {
-			keys := [...]string{"id"}
-			keyValues := [...]string{data.Risks[i].Id.ValueString()}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+		(*parent).Types[i] = data
+	}
+	for i := 0; i < len(data.Risks); i++ {
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.Risks[i].Id.ValueString(),  }
 
-			parent := &data
-			data := (*parent).Risks[i]
-			parentRes := &res
-			var res gjson.Result
+		parent := &data
+		data := (*parent).Risks[i]
+		parentRes := &res
+		var res gjson.Result
 
-			parentRes.Get("risks").ForEach(
-				func(_, v gjson.Result) bool {
-					found := false
-					for ik := range keys {
-						if v.Get(keys[ik]).String() != keyValues[ik] {
-							found = false
-							break
-						}
-						found = true
+		parentRes.Get("risks").ForEach(
+			func(_, v gjson.Result) bool {
+				found := false
+				for ik := range keys {
+					if v.Get(keys[ik]).String() != keyValues[ik] {
+						found = false
+						break
 					}
-					if found {
-						res = v
-						return false
-					}
-					return true
-				},
-			)
-			if !res.Exists() {
-				tflog.Debug(ctx, fmt.Sprintf("removing Risks[%d] = %+v",
-					i,
-					(*parent).Risks[i],
-				))
-				(*parent).Risks = slices.Delete((*parent).Risks, i, i+1)
-				i--
+					found = true
+				}
+				if found {
+					res = v
+					return false
+				}
+				return true
+			},
+		)
+		if !res.Exists() {
+			tflog.Debug(ctx, fmt.Sprintf("removing Risks[%d] = %+v",
+				i,
+				(*parent).Risks[i],
+			))
+			(*parent).Risks = slices.Delete((*parent).Risks, i, i+1)
+			i--
 
-				continue
-			}
-			if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
-			(*parent).Risks[i] = data
+			continue
 		}
-		for i := 0; i < len(data.BusinessRelevances); i++ {
-			keys := [...]string{"id"}
-			keyValues := [...]string{data.BusinessRelevances[i].Id.ValueString()}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+		(*parent).Risks[i] = data
+	}
+	for i := 0; i < len(data.BusinessRelevances); i++ {
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.BusinessRelevances[i].Id.ValueString(),  }
 
-			parent := &data
-			data := (*parent).BusinessRelevances[i]
-			parentRes := &res
-			var res gjson.Result
+		parent := &data
+		data := (*parent).BusinessRelevances[i]
+		parentRes := &res
+		var res gjson.Result
 
-			parentRes.Get("productivities").ForEach(
-				func(_, v gjson.Result) bool {
-					found := false
-					for ik := range keys {
-						if v.Get(keys[ik]).String() != keyValues[ik] {
-							found = false
-							break
-						}
-						found = true
+		parentRes.Get("productivities").ForEach(
+			func(_, v gjson.Result) bool {
+				found := false
+				for ik := range keys {
+					if v.Get(keys[ik]).String() != keyValues[ik] {
+						found = false
+						break
 					}
-					if found {
-						res = v
-						return false
-					}
-					return true
-				},
-			)
-			if !res.Exists() {
-				tflog.Debug(ctx, fmt.Sprintf("removing BusinessRelevances[%d] = %+v",
-					i,
-					(*parent).BusinessRelevances[i],
-				))
-				(*parent).BusinessRelevances = slices.Delete((*parent).BusinessRelevances, i, i+1)
-				i--
+					found = true
+				}
+				if found {
+					res = v
+					return false
+				}
+				return true
+			},
+		)
+		if !res.Exists() {
+			tflog.Debug(ctx, fmt.Sprintf("removing BusinessRelevances[%d] = %+v",
+				i,
+				(*parent).BusinessRelevances[i],
+			))
+			(*parent).BusinessRelevances = slices.Delete((*parent).BusinessRelevances, i, i+1)
+			i--
 
-				continue
-			}
-			if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
-			(*parent).BusinessRelevances[i] = data
+			continue
 		}
-		for i := 0; i < len(data.Categories); i++ {
-			keys := [...]string{"id"}
-			keyValues := [...]string{data.Categories[i].Id.ValueString()}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+		(*parent).BusinessRelevances[i] = data
+	}
+	for i := 0; i < len(data.Categories); i++ {
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.Categories[i].Id.ValueString(),  }
 
-			parent := &data
-			data := (*parent).Categories[i]
-			parentRes := &res
-			var res gjson.Result
+		parent := &data
+		data := (*parent).Categories[i]
+		parentRes := &res
+		var res gjson.Result
 
-			parentRes.Get("categories").ForEach(
-				func(_, v gjson.Result) bool {
-					found := false
-					for ik := range keys {
-						if v.Get(keys[ik]).String() != keyValues[ik] {
-							found = false
-							break
-						}
-						found = true
+		parentRes.Get("categories").ForEach(
+			func(_, v gjson.Result) bool {
+				found := false
+				for ik := range keys {
+					if v.Get(keys[ik]).String() != keyValues[ik] {
+						found = false
+						break
 					}
-					if found {
-						res = v
-						return false
-					}
-					return true
-				},
-			)
-			if !res.Exists() {
-				tflog.Debug(ctx, fmt.Sprintf("removing Categories[%d] = %+v",
-					i,
-					(*parent).Categories[i],
-				))
-				(*parent).Categories = slices.Delete((*parent).Categories, i, i+1)
-				i--
+					found = true
+				}
+				if found {
+					res = v
+					return false
+				}
+				return true
+			},
+		)
+		if !res.Exists() {
+			tflog.Debug(ctx, fmt.Sprintf("removing Categories[%d] = %+v",
+				i,
+				(*parent).Categories[i],
+			))
+			(*parent).Categories = slices.Delete((*parent).Categories, i, i+1)
+			i--
 
-				continue
-			}
-			if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
-			(*parent).Categories[i] = data
+			continue
 		}
-		for i := 0; i < len(data.Tags); i++ {
-			keys := [...]string{"id"}
-			keyValues := [...]string{data.Tags[i].Id.ValueString()}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+		(*parent).Categories[i] = data
+	}
+	for i := 0; i < len(data.Tags); i++ {
+		keys := [...]string{ "id",  }
+		keyValues := [...]string{ data.Tags[i].Id.ValueString(),  }
 
-			parent := &data
-			data := (*parent).Tags[i]
-			parentRes := &res
-			var res gjson.Result
+		parent := &data
+		data := (*parent).Tags[i]
+		parentRes := &res
+		var res gjson.Result
 
-			parentRes.Get("tags").ForEach(
-				func(_, v gjson.Result) bool {
-					found := false
-					for ik := range keys {
-						if v.Get(keys[ik]).String() != keyValues[ik] {
-							found = false
-							break
-						}
-						found = true
+		parentRes.Get("tags").ForEach(
+			func(_, v gjson.Result) bool {
+				found := false
+				for ik := range keys {
+					if v.Get(keys[ik]).String() != keyValues[ik] {
+						found = false
+						break
 					}
-					if found {
-						res = v
-						return false
-					}
-					return true
-				},
-			)
-			if !res.Exists() {
-				tflog.Debug(ctx, fmt.Sprintf("removing Tags[%d] = %+v",
-					i,
-					(*parent).Tags[i],
-				))
-				(*parent).Tags = slices.Delete((*parent).Tags, i, i+1)
-				i--
+					found = true
+				}
+				if found {
+					res = v
+					return false
+				}
+				return true
+			},
+		)
+		if !res.Exists() {
+			tflog.Debug(ctx, fmt.Sprintf("removing Tags[%d] = %+v",
+				i,
+				(*parent).Tags[i],
+			))
+			(*parent).Tags = slices.Delete((*parent).Tags, i, i+1)
+			i--
 
-				continue
-			}
-			if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-				data.Id = types.StringValue(value.String())
-			} else {
-				data.Id = types.StringNull()
-			}
-			(*parent).Tags[i] = data
+			continue
 		}
+	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+		data.Id = types.StringValue(value.String())
+	} else {
+		data.Id = types.StringNull()
+	}
+		(*parent).Tags[i] = data
+	}
 		(*parent).ApplicationFilters[i] = data
 	}
 }
@@ -2536,21 +2696,31 @@ func (data *AccessRule) fromBodyUnknowns(ctx context.Context, res gjson.Result) 
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
+
+
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
 
+
+
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
+
+
 
 // End of section. //template:end toBodyPutDelete
 
@@ -2561,5 +2731,7 @@ func (data AccessRule) adjustBody(ctx context.Context, req string) string {
 }
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
+
+
 
 // End of section. //template:end adjustBodyBulk

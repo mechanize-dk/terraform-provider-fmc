@@ -64,7 +64,7 @@ func (d *FTDPlatformSettingsSyslogSettingsSyslogIDDataSource) Schema(ctx context
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 			},
 			"ftd_platform_settings_id": schema.StringAttribute{
 				MarkdownDescription: "Id of the parent FTD Platform Settings.",
@@ -129,7 +129,7 @@ func (d *FTDPlatformSettingsSyslogSettingsSyslogIDDataSource) Read(ctx context.C
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
-	urlPath := config.getPath() + "/" + url.QueryEscape(config.Id.ValueString())
+	urlPath := config.getPath()+"/"+url.QueryEscape(config.Id.ValueString())
 	res, err := d.client.Get(urlPath, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object, got error: %s", err))

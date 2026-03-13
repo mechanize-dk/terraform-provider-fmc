@@ -33,34 +33,115 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type DeviceBGPGeneralSettings struct {
-	Id                               types.String `tfsdk:"id"`
-	Domain                           types.String `tfsdk:"domain"`
-	DeviceId                         types.String `tfsdk:"device_id"`
-	Name                             types.String `tfsdk:"name"`
-	AsNumber                         types.String `tfsdk:"as_number"`
-	RouterId                         types.String `tfsdk:"router_id"`
-	ScanningInterval                 types.Int64  `tfsdk:"scanning_interval"`
-	AsNumberInPathAttribute          types.Int64  `tfsdk:"as_number_in_path_attribute"`
-	LogNeighborChanges               types.Bool   `tfsdk:"log_neighbor_changes"`
-	TcpPathMtuDiscovery              types.Bool   `tfsdk:"tcp_path_mtu_discovery"`
-	ResetSessionUponFailover         types.Bool   `tfsdk:"reset_session_upon_failover"`
-	EnforceFirstPeerAs               types.Bool   `tfsdk:"enforce_first_peer_as"`
-	UseDotNotation                   types.Bool   `tfsdk:"use_dot_notation"`
-	AggregateTimer                   types.Int64  `tfsdk:"aggregate_timer"`
-	DefaultLocalPreference           types.Int64  `tfsdk:"default_local_preference"`
-	CompareMedFromDifferentNeighbors types.Bool   `tfsdk:"compare_med_from_different_neighbors"`
-	CompareRouterIdInPath            types.Bool   `tfsdk:"compare_router_id_in_path"`
-	PickBestMed                      types.Bool   `tfsdk:"pick_best_med"`
-	MissingMedAsBest                 types.Bool   `tfsdk:"missing_med_as_best"`
-	KeepaliveInterval                types.Int64  `tfsdk:"keepalive_interval"`
-	HoldTime                         types.Int64  `tfsdk:"hold_time"`
-	MinHoldTime                      types.Int64  `tfsdk:"min_hold_time"`
-	NextHopAddressTracking           types.Bool   `tfsdk:"next_hop_address_tracking"`
-	NextHopDelayInterval             types.Int64  `tfsdk:"next_hop_delay_interval"`
-	GracefulRestart                  types.Bool   `tfsdk:"graceful_restart"`
-	GracefulRestartRestartTime       types.Int64  `tfsdk:"graceful_restart_restart_time"`
-	GracefulRestartStalePathTime     types.Int64  `tfsdk:"graceful_restart_stale_path_time"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	DeviceId types.String `tfsdk:"device_id"`
+	Name types.String `tfsdk:"name"`
+	AsNumber types.String `tfsdk:"as_number"`
+	RouterId types.String `tfsdk:"router_id"`
+	ScanningInterval types.Int64 `tfsdk:"scanning_interval"`
+	AsNumberInPathAttribute types.Int64 `tfsdk:"as_number_in_path_attribute"`
+	LogNeighborChanges types.Bool `tfsdk:"log_neighbor_changes"`
+	TcpPathMtuDiscovery types.Bool `tfsdk:"tcp_path_mtu_discovery"`
+	ResetSessionUponFailover types.Bool `tfsdk:"reset_session_upon_failover"`
+	EnforceFirstPeerAs types.Bool `tfsdk:"enforce_first_peer_as"`
+	UseDotNotation types.Bool `tfsdk:"use_dot_notation"`
+	AggregateTimer types.Int64 `tfsdk:"aggregate_timer"`
+	DefaultLocalPreference types.Int64 `tfsdk:"default_local_preference"`
+	CompareMedFromDifferentNeighbors types.Bool `tfsdk:"compare_med_from_different_neighbors"`
+	CompareRouterIdInPath types.Bool `tfsdk:"compare_router_id_in_path"`
+	PickBestMed types.Bool `tfsdk:"pick_best_med"`
+	MissingMedAsBest types.Bool `tfsdk:"missing_med_as_best"`
+	KeepaliveInterval types.Int64 `tfsdk:"keepalive_interval"`
+	HoldTime types.Int64 `tfsdk:"hold_time"`
+	MinHoldTime types.Int64 `tfsdk:"min_hold_time"`
+	NextHopAddressTracking types.Bool `tfsdk:"next_hop_address_tracking"`
+	NextHopDelayInterval types.Int64 `tfsdk:"next_hop_delay_interval"`
+	GracefulRestart types.Bool `tfsdk:"graceful_restart"`
+	GracefulRestartRestartTime types.Int64 `tfsdk:"graceful_restart_restart_time"`
+	GracefulRestartStalePathTime types.Int64 `tfsdk:"graceful_restart_stale_path_time"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -71,7 +152,7 @@ type DeviceBGPGeneralSettings struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data DeviceBGPGeneralSettings) getPath() string {
-	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/devices/devicerecords/%v/routing/bgpgeneralsettings", url.QueryEscape(data.DeviceId.ValueString()))
+		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/devices/devicerecords/%v/routing/bgpgeneralsettings", url.QueryEscape(data.DeviceId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -83,73 +164,73 @@ func (data DeviceBGPGeneralSettings) toBody(ctx context.Context, state DeviceBGP
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.AsNumber.IsNull() {
+	if !data.AsNumber.IsNull()   {
 		body, _ = sjson.Set(body, "asNumber", data.AsNumber.ValueString())
 	}
-	if !data.RouterId.IsNull() {
+	if !data.RouterId.IsNull()   {
 		body, _ = sjson.Set(body, "routerId", data.RouterId.ValueString())
 	}
-	if !data.ScanningInterval.IsNull() {
+	if !data.ScanningInterval.IsNull()   {
 		body, _ = sjson.Set(body, "scanTime", data.ScanningInterval.ValueInt64())
 	}
-	if !data.AsNumberInPathAttribute.IsNull() {
+	if !data.AsNumberInPathAttribute.IsNull()   {
 		body, _ = sjson.Set(body, "maxasLimit", data.AsNumberInPathAttribute.ValueInt64())
 	}
-	if !data.LogNeighborChanges.IsNull() {
+	if !data.LogNeighborChanges.IsNull()   {
 		body, _ = sjson.Set(body, "logNeighborChanges", data.LogNeighborChanges.ValueBool())
 	}
-	if !data.TcpPathMtuDiscovery.IsNull() {
+	if !data.TcpPathMtuDiscovery.IsNull()   {
 		body, _ = sjson.Set(body, "transportPathMtuDiscovery", data.TcpPathMtuDiscovery.ValueBool())
 	}
-	if !data.ResetSessionUponFailover.IsNull() {
+	if !data.ResetSessionUponFailover.IsNull()   {
 		body, _ = sjson.Set(body, "fastExternalFallOver", data.ResetSessionUponFailover.ValueBool())
 	}
-	if !data.EnforceFirstPeerAs.IsNull() {
+	if !data.EnforceFirstPeerAs.IsNull()   {
 		body, _ = sjson.Set(body, "enforceFirstAs", data.EnforceFirstPeerAs.ValueBool())
 	}
-	if !data.UseDotNotation.IsNull() {
+	if !data.UseDotNotation.IsNull()   {
 		body, _ = sjson.Set(body, "asnotationDot", data.UseDotNotation.ValueBool())
 	}
-	if !data.AggregateTimer.IsNull() {
+	if !data.AggregateTimer.IsNull()   {
 		body, _ = sjson.Set(body, "aggregateTimer", data.AggregateTimer.ValueInt64())
 	}
-	if !data.DefaultLocalPreference.IsNull() {
+	if !data.DefaultLocalPreference.IsNull()   {
 		body, _ = sjson.Set(body, "bestPath.defaultLocalPreferenceValue", data.DefaultLocalPreference.ValueInt64())
 	}
-	if !data.CompareMedFromDifferentNeighbors.IsNull() {
+	if !data.CompareMedFromDifferentNeighbors.IsNull()   {
 		body, _ = sjson.Set(body, "bestPath.alwaysCompareMed", data.CompareMedFromDifferentNeighbors.ValueBool())
 	}
-	if !data.CompareRouterIdInPath.IsNull() {
+	if !data.CompareRouterIdInPath.IsNull()   {
 		body, _ = sjson.Set(body, "bestPath.deterministicMed", data.CompareRouterIdInPath.ValueBool())
 	}
-	if !data.PickBestMed.IsNull() {
+	if !data.PickBestMed.IsNull()   {
 		body, _ = sjson.Set(body, "bestPath.bestPathCompareRouterId", data.PickBestMed.ValueBool())
 	}
-	if !data.MissingMedAsBest.IsNull() {
+	if !data.MissingMedAsBest.IsNull()   {
 		body, _ = sjson.Set(body, "bestPath.bestPathMedMissingAsWorst", data.MissingMedAsBest.ValueBool())
 	}
-	if !data.KeepaliveInterval.IsNull() {
+	if !data.KeepaliveInterval.IsNull()   {
 		body, _ = sjson.Set(body, "bgptimers.keepAlive", data.KeepaliveInterval.ValueInt64())
 	}
-	if !data.HoldTime.IsNull() {
+	if !data.HoldTime.IsNull()   {
 		body, _ = sjson.Set(body, "bgptimers.holdTime", data.HoldTime.ValueInt64())
 	}
-	if !data.MinHoldTime.IsNull() {
+	if !data.MinHoldTime.IsNull()   {
 		body, _ = sjson.Set(body, "bgptimers.minHoldTime", data.MinHoldTime.ValueInt64())
 	}
-	if !data.NextHopAddressTracking.IsNull() {
+	if !data.NextHopAddressTracking.IsNull()   {
 		body, _ = sjson.Set(body, "bgpNextHopTriggerEnable", data.NextHopAddressTracking.ValueBool())
 	}
-	if !data.NextHopDelayInterval.IsNull() {
+	if !data.NextHopDelayInterval.IsNull()   {
 		body, _ = sjson.Set(body, "bgpNextHopTriggerDelay", data.NextHopDelayInterval.ValueInt64())
 	}
-	if !data.GracefulRestart.IsNull() {
+	if !data.GracefulRestart.IsNull()   {
 		body, _ = sjson.Set(body, "bgpGracefulRestart.gracefulRestart", data.GracefulRestart.ValueBool())
 	}
-	if !data.GracefulRestartRestartTime.IsNull() {
+	if !data.GracefulRestartRestartTime.IsNull()   {
 		body, _ = sjson.Set(body, "bgpGracefulRestart.gracefulRestartRestartTime", data.GracefulRestartRestartTime.ValueInt64())
 	}
-	if !data.GracefulRestartStalePathTime.IsNull() {
+	if !data.GracefulRestartStalePathTime.IsNull()   {
 		body, _ = sjson.Set(body, "bgpGracefulRestart.gracefulRestartStalePathTime", data.GracefulRestartStalePathTime.ValueInt64())
 	}
 	return body
@@ -285,6 +366,7 @@ func (data *DeviceBGPGeneralSettings) fromBody(ctx context.Context, res gjson.Re
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -433,8 +515,12 @@ func (data *DeviceBGPGeneralSettings) fromBodyUnknowns(ctx context.Context, res 
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
+
+
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
+
+
 
 // End of section. //template:end toBodyNonBulk

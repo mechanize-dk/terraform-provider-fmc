@@ -70,7 +70,7 @@ func (d *AccessControlPolicyDataSource) Schema(ctx context.Context, req datasour
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: "Name of the Access Control Policy.",
@@ -643,12 +643,12 @@ func (d *AccessControlPolicyDataSource) Schema(ctx context.Context, req datasour
 	}
 }
 func (d *AccessControlPolicyDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
-	return []datasource.ConfigValidator{
-		datasourcevalidator.ExactlyOneOf(
-			path.MatchRoot("id"),
+    return []datasource.ConfigValidator{
+        datasourcevalidator.ExactlyOneOf(
+            path.MatchRoot("id"),
 			path.MatchRoot("name"),
-		),
-	}
+        ),
+    }
 }
 
 func (d *AccessControlPolicyDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {

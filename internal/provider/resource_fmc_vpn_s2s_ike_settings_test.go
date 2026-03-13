@@ -39,19 +39,19 @@ func TestAccFmcVPNS2SIKESettings(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccFmcVPNS2SIKESettingsPrerequisitesConfig + testAccFmcVPNS2SIKESettingsConfig_minimum(),
+			Config: testAccFmcVPNS2SIKESettingsPrerequisitesConfig+testAccFmcVPNS2SIKESettingsConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcVPNS2SIKESettingsPrerequisitesConfig + testAccFmcVPNS2SIKESettingsConfig_all(),
-		Check:  resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcVPNS2SIKESettingsPrerequisitesConfig+testAccFmcVPNS2SIKESettingsConfig_all(),
+		Check: resource.ComposeTestCheckFunc(checks...),
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps:                    steps,
+		Steps: steps,
 	})
 }
 
@@ -82,7 +82,6 @@ resource "fmc_ikev2_policies" "test" {
   }
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -97,7 +96,6 @@ func testAccFmcVPNS2SIKESettingsConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
-
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

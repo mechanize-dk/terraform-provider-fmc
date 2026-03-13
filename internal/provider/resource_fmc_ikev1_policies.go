@@ -81,7 +81,7 @@ func (r *IKEv1PoliciesResource) Schema(ctx context.Context, req resource.SchemaR
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -117,24 +117,24 @@ func (r *IKEv1PoliciesResource) Schema(ctx context.Context, req resource.SchemaR
 							},
 						},
 						"encryption_algorithm": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("IKEv1 Encryption algorithm.").AddStringEnumDescription("DES", "3DES", "AES-128", "AES-192", "AES-256").String,
+							MarkdownDescription: helpers.NewAttributeDescription("IKEv1 Encryption algorithm.").AddStringEnumDescription("DES", "3DES", "AES-128", "AES-192", "AES-256", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("DES", "3DES", "AES-128", "AES-192", "AES-256"),
+								stringvalidator.OneOf("DES", "3DES", "AES-128", "AES-192", "AES-256", ),
 							},
 						},
 						"hash": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("IKEv1 Hash algorithm.").AddStringEnumDescription("SHA", "MD5").String,
+							MarkdownDescription: helpers.NewAttributeDescription("IKEv1 Hash algorithm.").AddStringEnumDescription("SHA", "MD5", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("SHA", "MD5"),
+								stringvalidator.OneOf("SHA", "MD5", ),
 							},
 						},
 						"dh_group": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Diffie-Hellman group.").AddStringEnumDescription("1", "2", "5", "14").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Diffie-Hellman group.").AddStringEnumDescription("1", "2", "5", "14", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("1", "2", "5", "14"),
+								stringvalidator.OneOf("1", "2", "5", "14", ),
 							},
 						},
 						"lifetime": schema.Int64Attribute{
@@ -145,10 +145,10 @@ func (r *IKEv1PoliciesResource) Schema(ctx context.Context, req resource.SchemaR
 							},
 						},
 						"authentication_method": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Authentication method.").AddStringEnumDescription("Certificate", "Preshared Key").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Authentication method.").AddStringEnumDescription("Certificate", "Preshared Key", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("Certificate", "Preshared Key"),
+								stringvalidator.OneOf("Certificate", "Preshared Key", ),
 							},
 						},
 					},
@@ -186,24 +186,24 @@ func (r *IKEv1PoliciesResource) Create(ctx context.Context, req resource.CreateR
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
-
+	
 	//// Prepare state to track creation process. Create request is split to multiple requests, where just subset of them may be successful
-	// Copy fields, as those may contain domain information or other references
-	state := plan
-	// Create random ID to track bulk resource. This does not relate to FMC in any way
-	state.Id = types.StringValue(uuid.New().String())
+    // Copy fields, as those may contain domain information or other references
+    state := plan
+    // Create random ID to track bulk resource. This does not relate to FMC in any way
+    state.Id = types.StringValue(uuid.New().String())
 	// Erase all Items, those will be filled in after creation
-	state.Items = make(map[string]IKEv1PoliciesItems, len(plan.Items))
-	// Creation process is put in a separate function, as that same proces will be needed with `Update`
-	plan, diags = r.createSubresources(ctx, state, plan, reqMods...)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		// Save state for whatever was already created
-		diags = resp.State.Set(ctx, &plan)
+    state.Items = make(map[string]IKEv1PoliciesItems, len(plan.Items))
+    // Creation process is put in a separate function, as that same proces will be needed with `Update`
+    plan, diags = r.createSubresources(ctx, state, plan, reqMods...)
+    resp.Diagnostics.Append(diags...)
+    if resp.Diagnostics.HasError() {
+        // Save state for whatever was already created
+        diags = resp.State.Set(ctx, &plan)
 		tflog.Debug(ctx, fmt.Sprintf("%s: Create failed, some items might have been created", plan.Id.ValueString()))
-		resp.Diagnostics.Append(diags...)
-		return
-	}
+        resp.Diagnostics.Append(diags...)
+        return
+    }
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -234,10 +234,11 @@ func (r *IKEv1PoliciesResource) Read(ctx context.Context, req resource.ReadReque
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
+	
 	// Get all objects from FMC
 	urlPath := state.getPath() + "?expanded=true"
 	res, err := r.client.Get(urlPath, reqMods...)
-	if err != nil {
+	 if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -349,7 +350,7 @@ func (r *IKEv1PoliciesResource) Update(ctx context.Context, req resource.UpdateR
 	var notEqual bool
 	var toUpdate IKEv1Policies
 	toUpdate.Items = make(map[string]IKEv1PoliciesItems, len(plan.Items))
-
+	
 	for _, valueState := range state.Items {
 
 		// Check if the ID from plan exists on list of ID owned by state
@@ -432,33 +433,32 @@ func (r *IKEv1PoliciesResource) Delete(ctx context.Context, req resource.DeleteR
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *IKEv1PoliciesResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Parse import ID
-	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?\[(?P<names>.*?)\]$`)
-	match := inputPattern.FindStringSubmatch(req.ID)
-	if match == nil {
-		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,[<item1_name>,<item2_name>,...]\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		// Parse import ID
+		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?\[(?P<names>.*?)\]$`)
+		match := inputPattern.FindStringSubmatch(req.ID)
+		if match == nil {
+			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,[<item1_name>,<item2_name>,...]\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	// Set domain, if provided
-	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-	}
-	// Generate new ID (random, does not relate to FMC in any way)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), uuid.New().String())...)
+		// Set domain, if provided
+		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+		}
+		// Generate new ID (random, does not relate to FMC in any way)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), uuid.New().String())...)
 
-	// Fill state with names of objects to import
-	names := strings.Split(match[inputPattern.SubexpIndex("names")], ",")
-	itemsMap := make(map[string]IKEv1PoliciesItems, len(names))
-	for _, v := range names {
-		itemsMap[v] = IKEv1PoliciesItems{}
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("items"), itemsMap)...)
+		// Fill state with names of objects to import
+		names := strings.Split(match[inputPattern.SubexpIndex("names")], ",")
+		itemsMap := make(map[string]IKEv1PoliciesItems, len(names))
+		for _, v := range names {
+			itemsMap[v] = IKEv1PoliciesItems{}
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("items"), itemsMap)...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import
 
 // Section below is generated&owned by "gen/generator.go". //template:begin createSubresources

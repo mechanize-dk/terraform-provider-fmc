@@ -78,7 +78,7 @@ func (r *ICMPv6sResource) Schema(ctx context.Context, req resource.SchemaRequest
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -156,24 +156,24 @@ func (r *ICMPv6sResource) Create(ctx context.Context, req resource.CreateRequest
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
-
+	
 	//// Prepare state to track creation process. Create request is split to multiple requests, where just subset of them may be successful
-	// Copy fields, as those may contain domain information or other references
-	state := plan
-	// Create random ID to track bulk resource. This does not relate to FMC in any way
-	state.Id = types.StringValue(uuid.New().String())
+    // Copy fields, as those may contain domain information or other references
+    state := plan
+    // Create random ID to track bulk resource. This does not relate to FMC in any way
+    state.Id = types.StringValue(uuid.New().String())
 	// Erase all Items, those will be filled in after creation
-	state.Items = make(map[string]ICMPv6sItems, len(plan.Items))
-	// Creation process is put in a separate function, as that same proces will be needed with `Update`
-	plan, diags = r.createSubresources(ctx, state, plan, reqMods...)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		// Save state for whatever was already created
-		diags = resp.State.Set(ctx, &plan)
+    state.Items = make(map[string]ICMPv6sItems, len(plan.Items))
+    // Creation process is put in a separate function, as that same proces will be needed with `Update`
+    plan, diags = r.createSubresources(ctx, state, plan, reqMods...)
+    resp.Diagnostics.Append(diags...)
+    if resp.Diagnostics.HasError() {
+        // Save state for whatever was already created
+        diags = resp.State.Set(ctx, &plan)
 		tflog.Debug(ctx, fmt.Sprintf("%s: Create failed, some items might have been created", plan.Id.ValueString()))
-		resp.Diagnostics.Append(diags...)
-		return
-	}
+        resp.Diagnostics.Append(diags...)
+        return
+    }
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -204,10 +204,11 @@ func (r *ICMPv6sResource) Read(ctx context.Context, req resource.ReadRequest, re
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
+	
 	// Get all objects from FMC
 	urlPath := state.getPath() + "?expanded=true"
 	res, err := r.client.Get(urlPath, reqMods...)
-	if err != nil {
+	 if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -319,7 +320,7 @@ func (r *ICMPv6sResource) Update(ctx context.Context, req resource.UpdateRequest
 	var notEqual bool
 	var toUpdate ICMPv6s
 	toUpdate.Items = make(map[string]ICMPv6sItems, len(plan.Items))
-
+	
 	for _, valueState := range state.Items {
 
 		// Check if the ID from plan exists on list of ID owned by state
@@ -402,76 +403,75 @@ func (r *ICMPv6sResource) Delete(ctx context.Context, req resource.DeleteRequest
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *ICMPv6sResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Parse import ID
-	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?\[(?P<names>.*?)\]$`)
-	match := inputPattern.FindStringSubmatch(req.ID)
-	if match == nil {
-		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,[<item1_name>,<item2_name>,...]\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		// Parse import ID
+		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?\[(?P<names>.*?)\]$`)
+		match := inputPattern.FindStringSubmatch(req.ID)
+		if match == nil {
+			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,[<item1_name>,<item2_name>,...]\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	// Set domain, if provided
-	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-	}
-	// Generate new ID (random, does not relate to FMC in any way)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), uuid.New().String())...)
+		// Set domain, if provided
+		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+		}
+		// Generate new ID (random, does not relate to FMC in any way)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), uuid.New().String())...)
 
-	// Fill state with names of objects to import
-	names := strings.Split(match[inputPattern.SubexpIndex("names")], ",")
-	itemsMap := make(map[string]ICMPv6sItems, len(names))
-	for _, v := range names {
-		itemsMap[v] = ICMPv6sItems{}
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("items"), itemsMap)...)
+		// Fill state with names of objects to import
+		names := strings.Split(match[inputPattern.SubexpIndex("names")], ",")
+		itemsMap := make(map[string]ICMPv6sItems, len(names))
+		for _, v := range names {
+			itemsMap[v] = ICMPv6sItems{}
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("items"), itemsMap)...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import
 
 // Section below is generated&owned by "gen/generator.go". //template:begin createSubresources
 // createSubresources takes list of objects, splits them into bulks and creates them
 // We want to save the state after each create event, to be able track already created resources
 func (r *ICMPv6sResource) createSubresources(ctx context.Context, state, plan ICMPv6s, reqMods ...func(*fmc.Req)) (ICMPv6s, diag.Diagnostics) {
-	var idx = 0
-	var bulk ICMPv6s
-	bulk.Items = make(map[string]ICMPv6sItems, bulkSizeCreate)
+		var idx = 0
+		var bulk ICMPv6s
+		bulk.Items = make(map[string]ICMPv6sItems, bulkSizeCreate)
 
-	tflog.Debug(ctx, fmt.Sprintf("%s: Bulk creation mode (ICMPv6s)", state.Id.ValueString()))
+		tflog.Debug(ctx, fmt.Sprintf("%s: Bulk creation mode (ICMPv6s)", state.Id.ValueString()))
 
-	// iterate over all items
-	for k, v := range plan.Items {
-		// count loops
-		idx++
+		// iterate over all items
+		for k, v := range plan.Items {
+			// count loops
+			idx++
 
-		// add object to current bulk
-		bulk.Items[k] = v
+			// add object to current bulk
+			bulk.Items[k] = v
 
-		// If bulk size was reached or all entries have been processed
-		if idx%bulkSizeCreate == 0 || idx == len(plan.Items) {
+			// If bulk size was reached or all entries have been processed
+			if idx%bulkSizeCreate == 0 || idx == len(plan.Items) {
 
-			// Parse body of the request to string
-			body := bulk.toBody(ctx, ICMPv6s{})
+				// Parse body of the request to string
+				body := bulk.toBody(ctx, ICMPv6s{})
 
-			// Execute request
-			urlPath := state.getPath() + "?bulk=true"
-			res, err := r.client.Post(urlPath, body, reqMods...)
-			if err != nil {
-				return state, diag.Diagnostics{
-					diag.NewErrorDiagnostic("Client Error", fmt.Sprintf("Failed to create a bulk (POST) id: %s, got error: %s, %s", state.Id.ValueString(), err, res.String())),
+				// Execute request
+				urlPath := state.getPath() + "?bulk=true"
+				res, err := r.client.Post(urlPath, body, reqMods...)
+				if err != nil {
+					return state, diag.Diagnostics{
+						diag.NewErrorDiagnostic("Client Error", fmt.Sprintf("Failed to create a bulk (POST) id: %s, got error: %s, %s", state.Id.ValueString(), err, res.String())),
+					}
 				}
+
+				// Read result and save it to the state
+				bulk.fromBodyUnknowns(ctx, res)
+				maps.Copy(state.Items, bulk.Items)
+
+				// Clear bulk item for next run
+				bulk.Items = make(map[string]ICMPv6sItems, bulkSizeCreate)
 			}
-
-			// Read result and save it to the state
-			bulk.fromBodyUnknowns(ctx, res)
-			maps.Copy(state.Items, bulk.Items)
-
-			// Clear bulk item for next run
-			bulk.Items = make(map[string]ICMPv6sItems, bulkSizeCreate)
 		}
-	}
 
 	return state, nil
 }

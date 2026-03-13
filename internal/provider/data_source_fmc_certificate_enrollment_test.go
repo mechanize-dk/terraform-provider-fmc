@@ -39,12 +39,12 @@ func TestAccDataSourceFmcCertificateEnrollment(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcCertificateEnrollmentPrerequisitesConfig + testAccDataSourceFmcCertificateEnrollmentConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcCertificateEnrollmentPrerequisitesConfig+testAccDataSourceFmcCertificateEnrollmentConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcCertificateEnrollmentPrerequisitesConfig + testAccNamedDataSourceFmcCertificateEnrollmentConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcCertificateEnrollmentPrerequisitesConfig+testAccNamedDataSourceFmcCertificateEnrollmentConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -331,7 +331,6 @@ locals {
     EOT
   }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

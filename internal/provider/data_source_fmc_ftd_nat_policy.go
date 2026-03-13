@@ -70,7 +70,7 @@ func (d *FTDNATPolicyDataSource) Schema(ctx context.Context, req datasource.Sche
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: "Name of the FTD Network Address Translation (NAT) policy.",
@@ -270,12 +270,12 @@ func (d *FTDNATPolicyDataSource) Schema(ctx context.Context, req datasource.Sche
 	}
 }
 func (d *FTDNATPolicyDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
-	return []datasource.ConfigValidator{
-		datasourcevalidator.ExactlyOneOf(
-			path.MatchRoot("id"),
+    return []datasource.ConfigValidator{
+        datasourcevalidator.ExactlyOneOf(
+            path.MatchRoot("id"),
 			path.MatchRoot("name"),
-		),
-	}
+        ),
+    }
 }
 
 func (d *FTDNATPolicyDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {

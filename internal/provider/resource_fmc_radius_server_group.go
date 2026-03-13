@@ -79,7 +79,7 @@ func (r *RadiusServerGroupResource) Schema(ctx context.Context, req resource.Sch
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -93,6 +93,7 @@ func (r *RadiusServerGroupResource) Schema(ctx context.Context, req resource.Sch
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					
 				},
 			},
 			"description": schema.StringAttribute{
@@ -100,13 +101,13 @@ func (r *RadiusServerGroupResource) Schema(ctx context.Context, req resource.Sch
 				Optional:            true,
 			},
 			"group_accounting_mode": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether accounting messages are sent to a single server (SINGLE) or sent to all servers in the group simultaneously (MULTIPLE).").AddStringEnumDescription("SINGLE", "MULTIPLE").AddDefaultValueDescription("SINGLE").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether accounting messages are sent to a single server (SINGLE) or sent to all servers in the group simultaneously (MULTIPLE).").AddStringEnumDescription("SINGLE", "MULTIPLE", ).AddDefaultValueDescription("SINGLE").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("SINGLE", "MULTIPLE"),
+					stringvalidator.OneOf("SINGLE", "MULTIPLE", ),
 				},
-				Default: stringdefault.StaticString("SINGLE"),
+				Default:             stringdefault.StaticString("SINGLE"),
 			},
 			"retry_interval": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Retry interval (in seconds) for the request.").AddIntegerRangeDescription(1, 10).AddDefaultValueDescription("10").String,
@@ -115,7 +116,7 @@ func (r *RadiusServerGroupResource) Schema(ctx context.Context, req resource.Sch
 				Validators: []validator.Int64{
 					int64validator.Between(1, 10),
 				},
-				Default: int64default.StaticInt64(10),
+				Default:             int64default.StaticInt64(10),
 			},
 			"ad_realm_id": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Id of Active Directory (AD) realm this RADIUS server group is associated with.").String,
@@ -144,10 +145,10 @@ func (r *RadiusServerGroupResource) Schema(ctx context.Context, req resource.Sch
 				},
 			},
 			"merge_downloadable_access_list_order": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Placement order of the downloadable Access List with the Cisco AV pair Access List.").AddStringEnumDescription("MERGE_DACL_BEFORE_AV_PAIR_ACL", "MERGE_DACL_AFTER_AV_PAIR_ACL").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Placement order of the downloadable Access List with the Cisco AV pair Access List.").AddStringEnumDescription("MERGE_DACL_BEFORE_AV_PAIR_ACL", "MERGE_DACL_AFTER_AV_PAIR_ACL", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("MERGE_DACL_BEFORE_AV_PAIR_ACL", "MERGE_DACL_AFTER_AV_PAIR_ACL"),
+					stringvalidator.OneOf("MERGE_DACL_BEFORE_AV_PAIR_ACL", "MERGE_DACL_AFTER_AV_PAIR_ACL", ),
 				},
 			},
 			"radius_servers": schema.ListNestedAttribute{
@@ -172,7 +173,7 @@ func (r *RadiusServerGroupResource) Schema(ctx context.Context, req resource.Sch
 							Validators: []validator.Int64{
 								int64validator.Between(1, 65535),
 							},
-							Default: int64default.StaticInt64(1812),
+							Default:             int64default.StaticInt64(1812),
 						},
 						"key": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Shared secret that is used for data encryption.").String,
@@ -186,7 +187,7 @@ func (r *RadiusServerGroupResource) Schema(ctx context.Context, req resource.Sch
 							Validators: []validator.Int64{
 								int64validator.Between(1, 65535),
 							},
-							Default: int64default.StaticInt64(1813),
+							Default:             int64default.StaticInt64(1813),
 						},
 						"timeout": schema.Int64Attribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Timeout (in seconds) for the RADIUS server.").AddIntegerRangeDescription(1, 300).AddDefaultValueDescription("10").String,
@@ -195,7 +196,7 @@ func (r *RadiusServerGroupResource) Schema(ctx context.Context, req resource.Sch
 							Validators: []validator.Int64{
 								int64validator.Between(1, 300),
 							},
-							Default: int64default.StaticInt64(10),
+							Default:             int64default.StaticInt64(10),
 						},
 						"use_routing_to_select_interface": schema.BoolAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Use routing to select the interface for the RADIUS server (true) or use specified interface (false).").AddDefaultValueDescription("true").String,
@@ -252,11 +253,48 @@ func (r *RadiusServerGroupResource) Create(ctx context.Context, req resource.Cre
 	body = plan.adjustBody(ctx, body)
 	res, err := r.client.Post(plan.getPath(), body, reqMods...)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
-		return
+		if strings.Contains(err.Error(), "StatusCode 409") || (strings.Contains(err.Error(), "StatusCode 400") && strings.Contains(res.String(), "already exists")) {
+			// Object already exists in FMC - search for existing object and ingest it
+			tflog.Debug(ctx, fmt.Sprintf("%s: Object already exists (409/400), searching for existing object by name", plan.Id.ValueString()))
+			offset := 0
+			limit := 1000
+			for page := 1; ; page++ {
+				queryString := fmt.Sprintf("?limit=%d&offset=%d&expanded=true", limit, offset)
+				listRes, listErr := r.client.Get(plan.getPath()+queryString, reqMods...)
+				if listErr != nil {
+					resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists but failed to retrieve objects (GET), got error: %s, %s", listErr, listRes.String()))
+					return
+				}
+				for _, v := range listRes.Get("items").Array() {
+					if plan.Name.ValueString()== v.Get("name").String(){
+						plan.Id = types.StringValue(v.Get("id").String())
+						tflog.Debug(ctx, fmt.Sprintf("%s: Found existing object with name '%v'", plan.Id.ValueString(), plan.Name.ValueString()))
+						break
+					}
+				}
+				if plan.Id.ValueString() != "" || !listRes.Get("paging.next.0").Exists() {
+					break
+				}
+				offset += limit
+			}
+			if plan.Id.ValueString() == "" {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists (conflict) but failed to find existing object with name '%v': %s", plan.Name.ValueString(), err))
+				return
+			}
+			res, err = r.client.Get(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), reqMods...)
+			if err != nil {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists (conflict) but failed to retrieve existing object (GET), got error: %s, %s", err, res.String()))
+				return
+			}
+			plan.fromBodyUnknowns(ctx, res)
+		} else {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
+			return
+		}
+	} else {
+		plan.Id = types.StringValue(res.Get("id").String())
+		plan.fromBodyUnknowns(ctx, res)
 	}
-	plan.Id = types.StringValue(res.Get("id").String())
-	plan.fromBodyUnknowns(ctx, res)
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -287,13 +325,14 @@ func (r *RadiusServerGroupResource) Read(ctx context.Context, req resource.ReadR
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
+	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-
+	
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else if err != nil {
+	} else  if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -347,7 +386,7 @@ func (r *RadiusServerGroupResource) Update(ctx context.Context, req resource.Upd
 
 	body := plan.toBody(ctx, state)
 	body = plan.adjustBody(ctx, body)
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -379,7 +418,7 @@ func (r *RadiusServerGroupResource) Delete(ctx context.Context, req resource.Del
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString()), reqMods...)
+	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()), reqMods...)
 	if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
@@ -394,22 +433,21 @@ func (r *RadiusServerGroupResource) Delete(ctx context.Context, req resource.Del
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *RadiusServerGroupResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Parse import ID
-	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
-	match := inputPattern.FindStringSubmatch(req.ID)
-	if match == nil {
-		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-		resp.Diagnostics.AddError("Import error", errMsg)
-		return
-	}
+		// Parse import ID
+		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
+		match := inputPattern.FindStringSubmatch(req.ID)
+		if match == nil {
+			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+			resp.Diagnostics.AddError("Import error", errMsg)
+			return
+		}
 
-	// Set domain, if provided
-	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+		// Set domain, if provided
+		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
-
 // End of section. //template:end import

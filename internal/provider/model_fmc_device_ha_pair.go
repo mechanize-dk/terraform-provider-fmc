@@ -31,43 +31,151 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type DeviceHAPair struct {
-	Id                            types.String `tfsdk:"id"`
-	Domain                        types.String `tfsdk:"domain"`
-	Name                          types.String `tfsdk:"name"`
-	Type                          types.String `tfsdk:"type"`
-	PrimaryDeviceId               types.String `tfsdk:"primary_device_id"`
-	SecondaryDeviceId             types.String `tfsdk:"secondary_device_id"`
-	HaLinkInterfaceId             types.String `tfsdk:"ha_link_interface_id"`
-	HaLinkInterfaceName           types.String `tfsdk:"ha_link_interface_name"`
-	HaLinkInterfaceType           types.String `tfsdk:"ha_link_interface_type"`
-	HaLinkLogicalName             types.String `tfsdk:"ha_link_logical_name"`
-	HaLinkUseIpv6                 types.Bool   `tfsdk:"ha_link_use_ipv6"`
-	HaLinkPrimaryIp               types.String `tfsdk:"ha_link_primary_ip"`
-	HaLinkSecondaryIp             types.String `tfsdk:"ha_link_secondary_ip"`
-	HaLinkNetmask                 types.String `tfsdk:"ha_link_netmask"`
-	StateLinkUseSameAsHa          types.Bool   `tfsdk:"state_link_use_same_as_ha"`
-	StateLinkInterfaceId          types.String `tfsdk:"state_link_interface_id"`
-	StateLinkInterfaceName        types.String `tfsdk:"state_link_interface_name"`
-	StateLinkInterfaceType        types.String `tfsdk:"state_link_interface_type"`
-	StateLinkLogicalName          types.String `tfsdk:"state_link_logical_name"`
-	StateLinkUseIpv6              types.Bool   `tfsdk:"state_link_use_ipv6"`
-	StateLinkPrimaryIp            types.String `tfsdk:"state_link_primary_ip"`
-	StateLinkSecondaryIp          types.String `tfsdk:"state_link_secondary_ip"`
-	StateLinkNetmask              types.String `tfsdk:"state_link_netmask"`
-	EncryptionEnabled             types.Bool   `tfsdk:"encryption_enabled"`
+	Id types.String `tfsdk:"id"`
+	Domain types.String `tfsdk:"domain"`
+	Name types.String `tfsdk:"name"`
+	Type types.String `tfsdk:"type"`
+	PrimaryDeviceId types.String `tfsdk:"primary_device_id"`
+	SecondaryDeviceId types.String `tfsdk:"secondary_device_id"`
+	HaLinkInterfaceId types.String `tfsdk:"ha_link_interface_id"`
+	HaLinkInterfaceName types.String `tfsdk:"ha_link_interface_name"`
+	HaLinkInterfaceType types.String `tfsdk:"ha_link_interface_type"`
+	HaLinkLogicalName types.String `tfsdk:"ha_link_logical_name"`
+	HaLinkUseIpv6 types.Bool `tfsdk:"ha_link_use_ipv6"`
+	HaLinkPrimaryIp types.String `tfsdk:"ha_link_primary_ip"`
+	HaLinkSecondaryIp types.String `tfsdk:"ha_link_secondary_ip"`
+	HaLinkNetmask types.String `tfsdk:"ha_link_netmask"`
+	StateLinkUseSameAsHa types.Bool `tfsdk:"state_link_use_same_as_ha"`
+	StateLinkInterfaceId types.String `tfsdk:"state_link_interface_id"`
+	StateLinkInterfaceName types.String `tfsdk:"state_link_interface_name"`
+	StateLinkInterfaceType types.String `tfsdk:"state_link_interface_type"`
+	StateLinkLogicalName types.String `tfsdk:"state_link_logical_name"`
+	StateLinkUseIpv6 types.Bool `tfsdk:"state_link_use_ipv6"`
+	StateLinkPrimaryIp types.String `tfsdk:"state_link_primary_ip"`
+	StateLinkSecondaryIp types.String `tfsdk:"state_link_secondary_ip"`
+	StateLinkNetmask types.String `tfsdk:"state_link_netmask"`
+	EncryptionEnabled types.Bool `tfsdk:"encryption_enabled"`
 	EncryptionKeyGenerationScheme types.String `tfsdk:"encryption_key_generation_scheme"`
-	EncryptionKey                 types.String `tfsdk:"encryption_key"`
-	FailedInterfacesPercent       types.Int64  `tfsdk:"failed_interfaces_percent"`
-	FailedInterfacesLimit         types.Int64  `tfsdk:"failed_interfaces_limit"`
-	PeerPollTime                  types.Int64  `tfsdk:"peer_poll_time"`
-	PeerPollTimeUnit              types.String `tfsdk:"peer_poll_time_unit"`
-	PeerHoldTime                  types.Int64  `tfsdk:"peer_hold_time"`
-	PeerHoldTimeUnit              types.String `tfsdk:"peer_hold_time_unit"`
-	InterfacePollTime             types.Int64  `tfsdk:"interface_poll_time"`
-	InterfacePollTimeUnit         types.String `tfsdk:"interface_poll_time_unit"`
-	InterfaceHoldTime             types.Int64  `tfsdk:"interface_hold_time"`
-	Action                        types.String `tfsdk:"action"`
+	EncryptionKey types.String `tfsdk:"encryption_key"`
+	FailedInterfacesPercent types.Int64 `tfsdk:"failed_interfaces_percent"`
+	FailedInterfacesLimit types.Int64 `tfsdk:"failed_interfaces_limit"`
+	PeerPollTime types.Int64 `tfsdk:"peer_poll_time"`
+	PeerPollTimeUnit types.String `tfsdk:"peer_poll_time_unit"`
+	PeerHoldTime types.Int64 `tfsdk:"peer_hold_time"`
+	PeerHoldTimeUnit types.String `tfsdk:"peer_hold_time_unit"`
+	InterfacePollTime types.Int64 `tfsdk:"interface_poll_time"`
+	InterfacePollTimeUnit types.String `tfsdk:"interface_poll_time_unit"`
+	InterfaceHoldTime types.Int64 `tfsdk:"interface_hold_time"`
+	Action types.String `tfsdk:"action"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // End of section. //template:end types
 
@@ -78,7 +186,7 @@ type DeviceHAPair struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data DeviceHAPair) getPath() string {
-	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/devicehapairs/ftddevicehapairs"
+		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/devicehapairs/ftddevicehapairs"
 }
 
 // End of section. //template:end getPath
@@ -90,103 +198,103 @@ func (data DeviceHAPair) toBody(ctx context.Context, state DeviceHAPair) string 
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()   {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.PrimaryDeviceId.IsNull() {
+	if !data.PrimaryDeviceId.IsNull()   {
 		body, _ = sjson.Set(body, "primary.id", data.PrimaryDeviceId.ValueString())
 	}
-	if !data.SecondaryDeviceId.IsNull() {
+	if !data.SecondaryDeviceId.IsNull()   {
 		body, _ = sjson.Set(body, "secondary.id", data.SecondaryDeviceId.ValueString())
 	}
-	if !data.HaLinkInterfaceId.IsNull() {
+	if !data.HaLinkInterfaceId.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.lanFailover.interfaceObject.id", data.HaLinkInterfaceId.ValueString())
 	}
-	if !data.HaLinkInterfaceName.IsNull() {
+	if !data.HaLinkInterfaceName.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.lanFailover.interfaceObject.name", data.HaLinkInterfaceName.ValueString())
 	}
-	if !data.HaLinkInterfaceType.IsNull() {
+	if !data.HaLinkInterfaceType.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.lanFailover.interfaceObject.type", data.HaLinkInterfaceType.ValueString())
 	}
-	if !data.HaLinkLogicalName.IsNull() {
+	if !data.HaLinkLogicalName.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.lanFailover.logicalName", data.HaLinkLogicalName.ValueString())
 	}
-	if !data.HaLinkUseIpv6.IsNull() {
+	if !data.HaLinkUseIpv6.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.lanFailover.useIPv6Address", data.HaLinkUseIpv6.ValueBool())
 	}
-	if !data.HaLinkPrimaryIp.IsNull() {
+	if !data.HaLinkPrimaryIp.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.lanFailover.activeIP", data.HaLinkPrimaryIp.ValueString())
 	}
-	if !data.HaLinkSecondaryIp.IsNull() {
+	if !data.HaLinkSecondaryIp.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.lanFailover.standbyIP", data.HaLinkSecondaryIp.ValueString())
 	}
-	if !data.HaLinkNetmask.IsNull() {
+	if !data.HaLinkNetmask.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.lanFailover.subnetMask", data.HaLinkNetmask.ValueString())
 	}
-	if !data.StateLinkUseSameAsHa.IsNull() {
+	if !data.StateLinkUseSameAsHa.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.useSameLinkForFailovers", data.StateLinkUseSameAsHa.ValueBool())
 	}
-	if !data.StateLinkInterfaceId.IsNull() {
+	if !data.StateLinkInterfaceId.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.statefulFailover.interfaceObject.id", data.StateLinkInterfaceId.ValueString())
 	}
-	if !data.StateLinkInterfaceName.IsNull() {
+	if !data.StateLinkInterfaceName.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.statefulFailover.interfaceObject.name", data.StateLinkInterfaceName.ValueString())
 	}
-	if !data.StateLinkInterfaceType.IsNull() {
+	if !data.StateLinkInterfaceType.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.statefulFailover.interfaceObject.type", data.StateLinkInterfaceType.ValueString())
 	}
-	if !data.StateLinkLogicalName.IsNull() {
+	if !data.StateLinkLogicalName.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.statefulFailover.logicalName", data.StateLinkLogicalName.ValueString())
 	}
-	if !data.StateLinkUseIpv6.IsNull() {
+	if !data.StateLinkUseIpv6.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.statefulFailover.useIPv6Address", data.StateLinkUseIpv6.ValueBool())
 	}
-	if !data.StateLinkPrimaryIp.IsNull() {
+	if !data.StateLinkPrimaryIp.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.statefulFailover.activeIP", data.StateLinkPrimaryIp.ValueString())
 	}
-	if !data.StateLinkSecondaryIp.IsNull() {
+	if !data.StateLinkSecondaryIp.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.statefulFailover.standbyIP", data.StateLinkSecondaryIp.ValueString())
 	}
-	if !data.StateLinkNetmask.IsNull() {
+	if !data.StateLinkNetmask.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.statefulFailover.subnetMask", data.StateLinkNetmask.ValueString())
 	}
-	if !data.EncryptionEnabled.IsNull() {
+	if !data.EncryptionEnabled.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.isEncryptionEnabled", data.EncryptionEnabled.ValueBool())
 	}
-	if !data.EncryptionKeyGenerationScheme.IsNull() {
+	if !data.EncryptionKeyGenerationScheme.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.encKeyGenerationScheme", data.EncryptionKeyGenerationScheme.ValueString())
 	}
-	if !data.EncryptionKey.IsNull() {
+	if !data.EncryptionKey.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHABootstrap.sharedKey", data.EncryptionKey.ValueString())
 	}
-	if !data.FailedInterfacesPercent.IsNull() {
+	if !data.FailedInterfacesPercent.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHAFailoverTriggerCriteria.percentFailedInterfaceExceed", data.FailedInterfacesPercent.ValueInt64())
 	}
-	if !data.FailedInterfacesLimit.IsNull() {
+	if !data.FailedInterfacesLimit.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHAFailoverTriggerCriteria.noOfFailedInterfaceLimit", data.FailedInterfacesLimit.ValueInt64())
 	}
-	if !data.PeerPollTime.IsNull() {
+	if !data.PeerPollTime.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHAFailoverTriggerCriteria.peerPollTime", data.PeerPollTime.ValueInt64())
 	}
-	if !data.PeerPollTimeUnit.IsNull() {
+	if !data.PeerPollTimeUnit.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHAFailoverTriggerCriteria.peerPollTimeUnit", data.PeerPollTimeUnit.ValueString())
 	}
-	if !data.PeerHoldTime.IsNull() {
+	if !data.PeerHoldTime.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHAFailoverTriggerCriteria.peerHoldTime", data.PeerHoldTime.ValueInt64())
 	}
-	if !data.PeerHoldTimeUnit.IsNull() {
+	if !data.PeerHoldTimeUnit.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHAFailoverTriggerCriteria.peerHoldTimeUnit", data.PeerHoldTimeUnit.ValueString())
 	}
-	if !data.InterfacePollTime.IsNull() {
+	if !data.InterfacePollTime.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHAFailoverTriggerCriteria.interfacePollTime", data.InterfacePollTime.ValueInt64())
 	}
-	if !data.InterfacePollTimeUnit.IsNull() {
+	if !data.InterfacePollTimeUnit.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHAFailoverTriggerCriteria.interfacePollTimeUnit", data.InterfacePollTimeUnit.ValueString())
 	}
-	if !data.InterfaceHoldTime.IsNull() {
+	if !data.InterfaceHoldTime.IsNull()   {
 		body, _ = sjson.Set(body, "ftdHAFailoverTriggerCriteria.interfaceHoldTime", data.InterfaceHoldTime.ValueInt64())
 	}
-	if !data.Action.IsNull() {
+	if !data.Action.IsNull()   {
 		body, _ = sjson.Set(body, "action", data.Action.ValueString())
 	}
 	return body
@@ -332,6 +440,7 @@ func (data *DeviceHAPair) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
+
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might

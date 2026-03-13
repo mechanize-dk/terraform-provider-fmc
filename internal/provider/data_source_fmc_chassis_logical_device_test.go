@@ -31,7 +31,7 @@ import (
 
 func TestAccDataSourceFmcChassisLogicalDevice(t *testing.T) {
 	if os.Getenv("TF_VAR_chassis_id") == "" {
-		t.Skip("skipping test, set environment variable TF_VAR_chassis_id")
+        t.Skip("skipping test, set environment variable TF_VAR_chassis_id")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("data.fmc_chassis_logical_device.test", "type"))
@@ -68,11 +68,11 @@ func TestAccDataSourceFmcChassisLogicalDevice(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcChassisLogicalDeviceConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 			{
 				Config: testAccNamedDataSourceFmcChassisLogicalDeviceConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})

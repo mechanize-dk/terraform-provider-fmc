@@ -31,7 +31,7 @@ import (
 
 func TestAccDataSourceFmcDeviceCluster(t *testing.T) {
 	if os.Getenv("TF_VAR_device_id") == "" || os.Getenv("TF_VAR_device_interface_name") == "" {
-		t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_device_interface_name")
+        t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_device_interface_name")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.fmc_device_cluster.test", "name", "my_device_cluster"))
@@ -49,12 +49,12 @@ func TestAccDataSourceFmcDeviceCluster(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcDeviceClusterPrerequisitesConfig + testAccDataSourceFmcDeviceClusterConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcDeviceClusterPrerequisitesConfig+testAccDataSourceFmcDeviceClusterConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcDeviceClusterPrerequisitesConfig + testAccNamedDataSourceFmcDeviceClusterConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcDeviceClusterPrerequisitesConfig+testAccNamedDataSourceFmcDeviceClusterConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -73,7 +73,6 @@ data "fmc_device_physical_interface" "test" {
   id          = var.device_interface_name
 }
 `
-
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

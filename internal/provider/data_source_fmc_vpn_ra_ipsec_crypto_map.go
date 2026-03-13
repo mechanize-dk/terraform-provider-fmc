@@ -71,7 +71,7 @@ func (d *VPNRAIPSecCryptoMapDataSource) Schema(ctx context.Context, req datasour
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:            true,
+				Optional:			true,
 			},
 			"vpn_ra_id": schema.StringAttribute{
 				MarkdownDescription: "Id of the parent VPN RA Configuration.",
@@ -154,12 +154,12 @@ func (d *VPNRAIPSecCryptoMapDataSource) Schema(ctx context.Context, req datasour
 	}
 }
 func (d *VPNRAIPSecCryptoMapDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
-	return []datasource.ConfigValidator{
-		datasourcevalidator.ExactlyOneOf(
-			path.MatchRoot("id"),
+    return []datasource.ConfigValidator{
+        datasourcevalidator.ExactlyOneOf(
+            path.MatchRoot("id"),
 			path.MatchRoot("interface_id"),
-		),
-	}
+        ),
+    }
 }
 
 func (d *VPNRAIPSecCryptoMapDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
