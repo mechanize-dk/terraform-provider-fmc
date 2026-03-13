@@ -762,9 +762,69 @@ func (bulk *networkGroupsBulk) Create(ctx context.Context, plan, state NetworkGr
 
 	res, err := client.Post(plan.getPath()+"?bulk=true", bodies, reqMods...)
 	if err != nil {
-		return ret, diag.Diagnostics{
-			diag.NewErrorDiagnostic("Client Error", fmt.Sprintf("Failed to create a bulk (POST), got error: %s, %s", err, res.String())),
+		if !(strings.Contains(err.Error(), "StatusCode 409") || (strings.Contains(err.Error(), "StatusCode 400") && strings.Contains(res.String(), "already exists"))) {
+			return ret, diag.Diagnostics{
+				diag.NewErrorDiagnostic("Client Error", fmt.Sprintf("Failed to create a bulk (POST), got error: %s, %s", err, res.String())),
+			}
 		}
+
+		// Bulk failed due to conflict — fall back to individual POSTs with per-item idempotency
+		tflog.Debug(ctx, fmt.Sprintf("%s: Bulk create conflict, falling back to individual creates", plan.Id.ValueString()))
+		if ret.Items == nil && len(bulk.groups) != 0 {
+			ret.Items = map[string]NetworkGroupsItems{}
+		}
+		for i, g := range bulk.groups {
+			name := g.name
+			itemRes, itemErr := client.Post(plan.getPath(), bodyParts[i], reqMods...)
+			if itemErr != nil {
+				if strings.Contains(itemErr.Error(), "StatusCode 409") || (strings.Contains(itemErr.Error(), "StatusCode 400") && strings.Contains(itemRes.String(), "already exists")) {
+					// Object already exists — find it by name and ingest
+					tflog.Debug(ctx, fmt.Sprintf("%s: Network group '%s' already exists, searching by name", plan.Id.ValueString(), name))
+					found := false
+					offset := 0
+					limit := 1000
+					for {
+						queryString := fmt.Sprintf("?limit=%d&offset=%d&expanded=true", limit, offset)
+						listRes, listErr := client.Get(plan.getPath()+queryString, reqMods...)
+						if listErr != nil {
+							return ret, diag.Diagnostics{
+								diag.NewErrorDiagnostic("Client Error", fmt.Sprintf("Network group '%s' already exists but failed to list objects: %s, %s", name, listErr, listRes.String())),
+							}
+						}
+						for _, v := range listRes.Get("items").Array() {
+							if v.Get("name").String() == name {
+								tmp := plan.Items[name]
+								tmp.Id = types.StringValue(v.Get("id").String())
+								tmp.Type = types.StringValue(v.Get("type").String())
+								ret.Items[name] = tmp
+								found = true
+								tflog.Debug(ctx, fmt.Sprintf("%s: Found existing network group '%s' (id=%s)", plan.Id.ValueString(), name, v.Get("id").String()))
+								break
+							}
+						}
+						if found || !listRes.Get("paging.next.0").Exists() {
+							break
+						}
+						offset += limit
+					}
+					if !found {
+						return ret, diag.Diagnostics{
+							diag.NewErrorDiagnostic("Client Error", fmt.Sprintf("Network group '%s' already exists (conflict) but could not be found in the list: %s", name, itemErr)),
+						}
+					}
+				} else {
+					return ret, diag.Diagnostics{
+						diag.NewErrorDiagnostic("Client Error", fmt.Sprintf("Failed to create network group '%s': %s, %s", name, itemErr, itemRes.String())),
+					}
+				}
+			} else {
+				tmp := plan.Items[name]
+				tmp.Id = types.StringValue(itemRes.Get("id").String())
+				tmp.Type = types.StringValue(itemRes.Get("type").String())
+				ret.Items[name] = tmp
+			}
+		}
+		return ret, nil
 	}
 
 	if ret.Items == nil && len(bulk.groups) != 0 {

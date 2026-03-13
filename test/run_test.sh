@@ -395,6 +395,122 @@ info "Destroying access control policy..."
 terraform destroy -target=fmc_access_control_policy.test_acp -auto-approve
 pass "ACP destroyed"
 
+# ══════════════════════════════════════════════════════════════════════════════
+header "TEST 6 — fmc_network_groups (bulk) idempotency"
+# Pre-create both network groups via API, then verify the bulk resource ingests them.
+# ══════════════════════════════════════════════════════════════════════════════
+
+fmc_authenticate && [[ -n "$AUTH_TOKEN" ]] && pass "Auth token refreshed" || fail "Re-authentication failed"
+
+info "Pre-creating network group 'tf-idempotency-test-ng1' via FMC REST API..."
+API_RESPONSE=$(fmc_create_network_group "$AUTH_TOKEN" "$DOMAIN_UUID" "tf-idempotency-test-ng1" "10.88.0.0/24")
+NG1_ID=$(echo "$API_RESPONSE" | json_id)
+[[ -z "$NG1_ID" ]] && fail "API pre-creation failed. Response: $API_RESPONSE"
+EMERGENCY_CLEANUPS+=("/api/fmc_config/v1/domain/${DOMAIN_UUID}/object/networkgroups/${NG1_ID}")
+pass "ng1 pre-created (ID: $NG1_ID)"
+
+info "Pre-creating network group 'tf-idempotency-test-ng2' via FMC REST API..."
+API_RESPONSE=$(fmc_create_network_group "$AUTH_TOKEN" "$DOMAIN_UUID" "tf-idempotency-test-ng2" "10.88.1.0/24")
+NG2_ID=$(echo "$API_RESPONSE" | json_id)
+[[ -z "$NG2_ID" ]] && fail "API pre-creation failed. Response: $API_RESPONSE"
+EMERGENCY_CLEANUPS+=("/api/fmc_config/v1/domain/${DOMAIN_UUID}/object/networkgroups/${NG2_ID}")
+pass "ng2 pre-created (ID: $NG2_ID)"
+
+info "terraform apply -target=fmc_network_groups.idempotency_test (expecting idempotent ingest)..."
+terraform apply -target=fmc_network_groups.idempotency_test -auto-approve
+pass "terraform apply succeeded"
+
+info "Verifying Terraform state IDs match the pre-created object IDs..."
+TF_STATE_JSON=$(terraform show -json 2>/dev/null)
+TF_NG1_ID=$(echo "$TF_STATE_JSON" | python3 -c "
+import sys,json
+s=json.load(sys.stdin)
+for r in s.get('values',{}).get('root_module',{}).get('resources',[]):
+    if r.get('type')=='fmc_network_groups' and r.get('name')=='idempotency_test':
+        print(r.get('values',{}).get('items',{}).get('tf-idempotency-test-ng1',{}).get('id',''))
+" 2>/dev/null || true)
+TF_NG2_ID=$(echo "$TF_STATE_JSON" | python3 -c "
+import sys,json
+s=json.load(sys.stdin)
+for r in s.get('values',{}).get('root_module',{}).get('resources',[]):
+    if r.get('type')=='fmc_network_groups' and r.get('name')=='idempotency_test':
+        print(r.get('values',{}).get('items',{}).get('tf-idempotency-test-ng2',{}).get('id',''))
+" 2>/dev/null || true)
+
+[[ "$TF_NG1_ID" == "$NG1_ID" ]] && pass "ng1 state ID matches ($TF_NG1_ID)" || fail "ng1 ID mismatch: state='$TF_NG1_ID', pre-created='$NG1_ID'"
+[[ "$TF_NG2_ID" == "$NG2_ID" ]] && pass "ng2 state ID matches ($TF_NG2_ID)" || fail "ng2 ID mismatch: state='$TF_NG2_ID', pre-created='$NG2_ID'"
+EMERGENCY_CLEANUPS=("${EMERGENCY_CLEANUPS[@]//*networkgroups*}")
+
+info "terraform plan -target=fmc_network_groups.idempotency_test (expecting: no changes)..."
+terraform plan -target=fmc_network_groups.idempotency_test -detailed-exitcode -out=/dev/null
+pass "No changes detected after ingest"
+
+info "terraform destroy -target=fmc_network_groups.idempotency_test..."
+terraform destroy -target=fmc_network_groups.idempotency_test -auto-approve
+pass "TEST 6 — fmc_network_groups PASSED — existing objects were ingested correctly"
+
+# ══════════════════════════════════════════════════════════════════════════════
+header "TEST 7 — fmc_access_rules (bulk) idempotency"
+# Pre-create both rules via API, then verify the bulk resource ingests them.
+# ══════════════════════════════════════════════════════════════════════════════
+
+info "Creating access control policy (prerequisite)..."
+terraform apply -target=fmc_access_control_policy.test_acp2 -auto-approve
+ACP2_ID=$(tf_resource_id "fmc_access_control_policy" "test_acp2")
+[[ -z "$ACP2_ID" ]] && fail "Could not get ACP2 ID from Terraform state"
+pass "ACP2 created (ID: $ACP2_ID)"
+
+fmc_authenticate && [[ -n "$AUTH_TOKEN" ]] && pass "Auth token refreshed" || fail "Re-authentication failed"
+
+info "Pre-creating access rule 'tf-idempotency-test-bulk-rule1' via FMC REST API..."
+API_RESPONSE=$(fmc_create_access_rule "$AUTH_TOKEN" "$DOMAIN_UUID" "$ACP2_ID" "tf-idempotency-test-bulk-rule1")
+RULE1_ID=$(echo "$API_RESPONSE" | json_id)
+[[ -z "$RULE1_ID" ]] && fail "API pre-creation failed. Response: $API_RESPONSE"
+EMERGENCY_CLEANUPS+=("/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/accesspolicies/${ACP2_ID}/accessrules/${RULE1_ID}")
+pass "rule1 pre-created (ID: $RULE1_ID)"
+
+info "Pre-creating access rule 'tf-idempotency-test-bulk-rule2' via FMC REST API..."
+API_RESPONSE=$(fmc_create_access_rule "$AUTH_TOKEN" "$DOMAIN_UUID" "$ACP2_ID" "tf-idempotency-test-bulk-rule2")
+RULE2_ID=$(echo "$API_RESPONSE" | json_id)
+[[ -z "$RULE2_ID" ]] && fail "API pre-creation failed. Response: $API_RESPONSE"
+EMERGENCY_CLEANUPS+=("/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/accesspolicies/${ACP2_ID}/accessrules/${RULE2_ID}")
+pass "rule2 pre-created (ID: $RULE2_ID)"
+
+info "terraform apply -target=fmc_access_rules.idempotency_test (expecting idempotent ingest)..."
+terraform apply -target=fmc_access_rules.idempotency_test -auto-approve
+pass "terraform apply succeeded"
+
+info "Verifying Terraform state IDs match the pre-created rule IDs..."
+TF_STATE_JSON=$(terraform show -json 2>/dev/null)
+TF_RULE1_ID=$(echo "$TF_STATE_JSON" | python3 -c "
+import sys,json
+s=json.load(sys.stdin)
+for r in s.get('values',{}).get('root_module',{}).get('resources',[]):
+    if r.get('type')=='fmc_access_rules' and r.get('name')=='idempotency_test':
+        items=r.get('values',{}).get('items',[])
+        if items: print(items[0].get('id',''))
+" 2>/dev/null || true)
+TF_RULE2_ID=$(echo "$TF_STATE_JSON" | python3 -c "
+import sys,json
+s=json.load(sys.stdin)
+for r in s.get('values',{}).get('root_module',{}).get('resources',[]):
+    if r.get('type')=='fmc_access_rules' and r.get('name')=='idempotency_test':
+        items=r.get('values',{}).get('items',[])
+        if len(items)>1: print(items[1].get('id',''))
+" 2>/dev/null || true)
+
+[[ "$TF_RULE1_ID" == "$RULE1_ID" ]] && pass "rule1 state ID matches ($TF_RULE1_ID)" || fail "rule1 ID mismatch: state='$TF_RULE1_ID', pre-created='$RULE1_ID'"
+[[ "$TF_RULE2_ID" == "$RULE2_ID" ]] && pass "rule2 state ID matches ($TF_RULE2_ID)" || fail "rule2 ID mismatch: state='$TF_RULE2_ID', pre-created='$RULE2_ID'"
+EMERGENCY_CLEANUPS=("${EMERGENCY_CLEANUPS[@]//*accessrules*}")
+
+info "terraform plan -target=fmc_access_rules.idempotency_test (expecting: no changes)..."
+terraform plan -target=fmc_access_rules.idempotency_test -detailed-exitcode -out=/dev/null
+pass "No changes detected after ingest"
+
+info "terraform destroy -target=fmc_access_rules.idempotency_test -target=fmc_access_control_policy.test_acp2..."
+terraform destroy -target=fmc_access_rules.idempotency_test -target=fmc_access_control_policy.test_acp2 -auto-approve
+pass "TEST 7 — fmc_access_rules PASSED — existing rules were ingested correctly"
+
 # ── Done ──────────────────────────────────────────────────────────────────────
 echo ""
 echo -e "${GREEN}${BOLD}══════════════════════════════${NC}"
