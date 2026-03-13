@@ -2,13 +2,16 @@
 # run_test.sh — diagnostic test: does Terraform force-recreate an fmc_access_rule
 #               when its position in the policy is changed externally?
 #
-# Steps:
-#   1. Build the provider.
-#   2. Create 5 access rules via Terraform (for_each map).
-#   3. Move the last rule to position 1 via the FMC REST API (move_rule.py).
-#   4. Run terraform plan and inspect the output for replace actions.
-#   5. Report: BUG CONFIRMED or NO ISSUE DETECTED.
-#   6. Clean up (terraform destroy).
+# NOTE: FMC's PUT endpoint does not accept ?insert_before as a query parameter.
+#       The test therefore simulates a position change via DELETE + POST, which
+#       gives the re-created rule a new ID in FMC while keeping the same name.
+#       Terraform's state will reference the stale (old) ID.
+#
+# This tests two behaviours:
+#   a) Does Terraform plan a *replace* (destroy + create) for the moved rule?
+#      → Would indicate the bug the user reported.
+#   b) Does Terraform plan a *create* for the moved rule (ID gone from FMC)?
+#      → Expected when state holds a stale ID. Our idempotency fix handles this.
 #
 # Usage:
 #   ./run_test.sh -u <username> -p <password> --url <fmc_url> [--terraform /path/to/terraform]
@@ -71,7 +74,6 @@ terraform() { "$TERRAFORM_BIN" "$@"; }
 
 # ── Build provider ────────────────────────────────────────────────────────────
 header "Building provider"
-info "Running: go build -o $PROVIDER_BIN"
 (cd "$REPO_DIR" && go build -o "$PROVIDER_BIN" .) || fail "go build failed"
 pass "Provider binary: $PROVIDER_BIN"
 
@@ -94,7 +96,7 @@ cleanup() {
     terraform destroy -auto-approve 2>/dev/null || true
   fi
   rm -f terraform.tfstate terraform.tfstate.backup .terraform.lock.hcl \
-        "$PROVIDER_BIN" "$TFRC" plan.tfplan
+        "$PROVIDER_BIN" "$TFRC" move_result.json
   rm -rf .terraform
 }
 trap cleanup EXIT
@@ -118,30 +120,41 @@ terraform plan -detailed-exitcode -out=/dev/null
 pass "Baseline plan shows no changes"
 
 # ══════════════════════════════════════════════════════════════════════════════
-header "Step 2 — Move last rule to position 1 via FMC API"
+header "Step 2 — Move last rule to position 1 via FMC API (DELETE + POST)"
 # ══════════════════════════════════════════════════════════════════════════════
 
 python3 "$SCRIPT_DIR/move_rule.py" "$POLICY_ID"
 pass "Rule repositioned"
 
+MOVED_RULE=$(python3 -c "import json; d=json.load(open('move_result.json')); print(d['rule_name'])")
+OLD_ID=$(python3 -c "import json; d=json.load(open('move_result.json')); print(d['old_id'])")
+NEW_ID=$(python3 -c "import json; d=json.load(open('move_result.json')); print(d['new_id'])")
+info "Moved rule: $MOVED_RULE"
+info "Old ID (still in terraform state): $OLD_ID"
+info "New ID (assigned by FMC):          $NEW_ID"
+
 # ══════════════════════════════════════════════════════════════════════════════
-header "Step 3 — terraform plan (checking for unexpected replacements)"
+header "Step 3 — terraform plan (checking for planned changes)"
 # ══════════════════════════════════════════════════════════════════════════════
 
 info "Running terraform plan..."
-# Allow non-zero exit (exit 2 = changes detected) — we want to inspect the plan.
-terraform plan -out=plan.tfplan 2>&1 | tee /tmp/tf_plan_output.txt || true
+# Allow exit 2 (changes detected) — we want to inspect the plan regardless.
+terraform plan 2>&1 | tee /tmp/tf_plan_output.txt || true
 
-info "Analysing plan for destroy+recreate actions..."
-REPLACE_REPORT=$(terraform show -json plan.tfplan 2>/dev/null | python3 - <<'PYEOF'
-import json, sys
-data = json.load(sys.stdin)
-for rc in data.get("resource_changes", []):
-    actions = rc.get("change", {}).get("actions", [])
-    if "delete" in actions and "create" in actions:
-        print(rc["address"])
-PYEOF
-)
+info "Analysing plan output..."
+
+# Strip ANSI colour codes before grepping so patterns match reliably.
+PLAIN_PLAN=$(sed 's/\x1b\[[0-9;]*m//g' /tmp/tf_plan_output.txt)
+
+# Resources planned for destroy+create (true force-replace)
+# Detected by the "must be replaced" marker in Terraform's text output.
+REPLACE_REPORT=$(echo "$PLAIN_PLAN" | grep -E "^\s+# .*must be replaced" \
+  | sed 's/.*# //' | sed 's/ must be replaced//' || true)
+
+# Resources planned for create only (stale ID — resource gone from FMC).
+# "will be created" lines that are NOT also "must be replaced".
+CREATE_REPORT=$(echo "$PLAIN_PLAN" | grep -E "^\s+# .* will be created" \
+  | sed 's/.*# //' | sed 's/ will be created//' || true)
 
 # ══════════════════════════════════════════════════════════════════════════════
 header "Result"
@@ -149,24 +162,31 @@ header "Result"
 
 echo ""
 if [[ -n "$REPLACE_REPORT" ]]; then
-  echo -e "${RED}${BOLD}BUG CONFIRMED${NC} — Terraform plans destroy+recreate for the following resource(s):"
+  echo -e "${RED}${BOLD}BUG CONFIRMED${NC} — Terraform plans destroy+recreate for:"
   echo ""
   while IFS= read -r addr; do
     echo -e "  ${RED}✗  $addr${NC}"
   done <<< "$REPLACE_REPORT"
   echo ""
-  info "Repositioning an access rule (within the same section/category) triggers"
-  info "force-replacement. The position change was detected as a configuration drift."
+  info "An attribute with requires_replace changed after the rule was repositioned."
+
+elif [[ -n "$CREATE_REPORT" ]]; then
+  echo -e "${YELLOW}${BOLD}EXPECTED BEHAVIOUR${NC} — Terraform plans create (not replace) for:"
   echo ""
-  # Show the relevant section of the plan output
-  echo -e "${BOLD}Relevant plan output:${NC}"
-  grep -A5 "must be replaced\|will be replaced\|force replacement" /tmp/tf_plan_output.txt || true
+  while IFS= read -r addr; do
+    echo -e "  ${YELLOW}→  $addr${NC}"
+  done <<< "$CREATE_REPORT"
+  echo ""
+  info "The rule's old ID ($OLD_ID) is gone from FMC (deleted during move)."
+  info "Terraform sees it as missing and plans to create it — not force-replace."
+  info "Our idempotency fix will ingest the existing rule by name on next apply."
+
 else
-  echo -e "${GREEN}${BOLD}NO ISSUE DETECTED${NC} — Terraform plans no replacement after repositioning."
+  echo -e "${GREEN}${BOLD}NO CHANGES DETECTED${NC} — Terraform plans no action for the moved rule."
   echo ""
-  info "Moving a rule to a different position does not trigger any planned changes."
+  info "Unexpected: the rule was deleted from FMC but Terraform sees no change."
 fi
 
 echo ""
 echo -e "${BOLD}Plan summary:${NC}"
-grep -E "^Plan:|No changes\." /tmp/tf_plan_output.txt || true
+echo "$PLAIN_PLAN" | grep -E "^Plan:|No changes\." || true
