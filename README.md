@@ -1,3 +1,6 @@
+> **This is a fork of [CiscoDevNet/terraform-provider-fmc](https://github.com/CiscoDevNet/terraform-provider-fmc).**
+> The primary addition in this fork is **idempotent resource creation**: when Terraform attempts to create an object that already exists in FMC (e.g. because it was created manually or by a previous run whose state was lost), the provider detects the conflict (HTTP 409, or HTTP 400 with an "already exists" body), looks up the existing object by name, and imports it into state — instead of failing with an error. This makes the provider safe to use in environments where FMC objects may pre-exist outside of Terraform.
+
 [![Tests](https://github.com/CiscoDevNet/terraform-provider-fmc/actions/workflows/test.yml/badge.svg)](https://github.com/CiscoDevNet/terraform-provider-fmc/actions/workflows/test.yml)
 
 # Terraform Provider FMC
