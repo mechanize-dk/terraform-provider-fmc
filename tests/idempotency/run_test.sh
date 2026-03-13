@@ -59,7 +59,7 @@ FMC_URL="${FMC_URL%/}"
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_DIR="$(dirname "$SCRIPT_DIR")"
+REPO_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"   # tests/idempotency → tests → repo root
 PROVIDER_BIN="$SCRIPT_DIR/terraform-provider-fmc"
 TFRC="$SCRIPT_DIR/dev.tfrc"
 
