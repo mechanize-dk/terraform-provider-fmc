@@ -82,7 +82,7 @@ func (r *BFDTemplatesResource) Schema(ctx context.Context, req resource.SchemaRe
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -107,24 +107,24 @@ func (r *BFDTemplatesResource) Schema(ctx context.Context, req resource.SchemaRe
 							},
 						},
 						"hop_type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Hop type.").AddStringEnumDescription("SINGLE_HOP", "MULTI_HOP", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Hop type.").AddStringEnumDescription("SINGLE_HOP", "MULTI_HOP").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("SINGLE_HOP", "MULTI_HOP", ),
+								stringvalidator.OneOf("SINGLE_HOP", "MULTI_HOP"),
 							},
 						},
 						"echo": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("BFD echo status.").AddStringEnumDescription("ENABLED", "DISABLED", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("BFD echo status.").AddStringEnumDescription("ENABLED", "DISABLED").String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("ENABLED", "DISABLED", ),
+								stringvalidator.OneOf("ENABLED", "DISABLED"),
 							},
 						},
 						"interval_type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Interval unit of measurement of time.").AddStringEnumDescription("MILLISECONDS", "MICROSECONDS", "NONE", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Interval unit of measurement of time.").AddStringEnumDescription("MILLISECONDS", "MICROSECONDS", "NONE").String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("MILLISECONDS", "MICROSECONDS", "NONE", ),
+								stringvalidator.OneOf("MILLISECONDS", "MICROSECONDS", "NONE"),
 							},
 						},
 						"multiplier": schema.Int64Attribute{
@@ -149,10 +149,10 @@ func (r *BFDTemplatesResource) Schema(ctx context.Context, req resource.SchemaRe
 							},
 						},
 						"authentication_type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Authentication type.").AddStringEnumDescription("MD5", "METICULOUSMD5", "METICULOUSSHA1", "SHA1", "NONE", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Authentication type.").AddStringEnumDescription("MD5", "METICULOUSMD5", "METICULOUSSHA1", "SHA1", "NONE").String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("MD5", "METICULOUSMD5", "METICULOUSSHA1", "SHA1", "NONE", ),
+								stringvalidator.OneOf("MD5", "METICULOUSMD5", "METICULOUSSHA1", "SHA1", "NONE"),
 							},
 						},
 						"authentication_password": schema.StringAttribute{
@@ -164,10 +164,10 @@ func (r *BFDTemplatesResource) Schema(ctx context.Context, req resource.SchemaRe
 							},
 						},
 						"authentication_password_encryption": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Determines if `authentication_password` is encrypted").AddStringEnumDescription("UN_ENCRYPTED", "ENCRYPTED", "NONE", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Determines if `authentication_password` is encrypted").AddStringEnumDescription("UN_ENCRYPTED", "ENCRYPTED", "NONE").String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("UN_ENCRYPTED", "ENCRYPTED", "NONE", ),
+								stringvalidator.OneOf("UN_ENCRYPTED", "ENCRYPTED", "NONE"),
 							},
 						},
 						"authentication_key_id": schema.Int64Attribute{
@@ -218,24 +218,24 @@ func (r *BFDTemplatesResource) Create(ctx context.Context, req resource.CreateRe
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
-	
+
 	//// Prepare state to track creation process. Create request is split to multiple requests, where just subset of them may be successful
-    // Copy fields, as those may contain domain information or other references
-    state := plan
-    // Create random ID to track bulk resource. This does not relate to FMC in any way
-    state.Id = types.StringValue(uuid.New().String())
+	// Copy fields, as those may contain domain information or other references
+	state := plan
+	// Create random ID to track bulk resource. This does not relate to FMC in any way
+	state.Id = types.StringValue(uuid.New().String())
 	// Erase all Items, those will be filled in after creation
-    state.Items = make(map[string]BFDTemplatesItems, len(plan.Items))
-    // Creation process is put in a separate function, as that same proces will be needed with `Update`
-    plan, diags = r.createSubresources(ctx, state, plan, reqMods...)
-    resp.Diagnostics.Append(diags...)
-    if resp.Diagnostics.HasError() {
-        // Save state for whatever was already created
-        diags = resp.State.Set(ctx, &plan)
+	state.Items = make(map[string]BFDTemplatesItems, len(plan.Items))
+	// Creation process is put in a separate function, as that same proces will be needed with `Update`
+	plan, diags = r.createSubresources(ctx, state, plan, reqMods...)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		// Save state for whatever was already created
+		diags = resp.State.Set(ctx, &plan)
 		tflog.Debug(ctx, fmt.Sprintf("%s: Create failed, some items might have been created", plan.Id.ValueString()))
-        resp.Diagnostics.Append(diags...)
-        return
-    }
+		resp.Diagnostics.Append(diags...)
+		return
+	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -271,11 +271,10 @@ func (r *BFDTemplatesResource) Read(ctx context.Context, req resource.ReadReques
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	
 	// Get all objects from FMC
 	urlPath := state.getPath() + "?expanded=true"
 	res, err := r.client.Get(urlPath, reqMods...)
-	 if err != nil {
+	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -476,32 +475,33 @@ func (r *BFDTemplatesResource) Delete(ctx context.Context, req resource.DeleteRe
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *BFDTemplatesResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-		// Parse import ID
-		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?\[(?P<names>.*?)\]$`)
-		match := inputPattern.FindStringSubmatch(req.ID)
-		if match == nil {
-			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,[<item1_name>,<item2_name>,...]\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-			resp.Diagnostics.AddError("Import error", errMsg)
-			return
-		}
+	// Parse import ID
+	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?\[(?P<names>.*?)\]$`)
+	match := inputPattern.FindStringSubmatch(req.ID)
+	if match == nil {
+		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,[<item1_name>,<item2_name>,...]\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+		resp.Diagnostics.AddError("Import error", errMsg)
+		return
+	}
 
-		// Set domain, if provided
-		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-		}
-		// Generate new ID (random, does not relate to FMC in any way)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), uuid.New().String())...)
+	// Set domain, if provided
+	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+	}
+	// Generate new ID (random, does not relate to FMC in any way)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), uuid.New().String())...)
 
-		// Fill state with names of objects to import
-		names := strings.Split(match[inputPattern.SubexpIndex("names")], ",")
-		itemsMap := make(map[string]BFDTemplatesItems, len(names))
-		for _, v := range names {
-			itemsMap[v] = BFDTemplatesItems{}
-		}
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("items"), itemsMap)...)
+	// Fill state with names of objects to import
+	names := strings.Split(match[inputPattern.SubexpIndex("names")], ",")
+	itemsMap := make(map[string]BFDTemplatesItems, len(names))
+	for _, v := range names {
+		itemsMap[v] = BFDTemplatesItems{}
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("items"), itemsMap)...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
+
 // End of section. //template:end import
 
 // Section below is generated&owned by "gen/generator.go". //template:begin createSubresources

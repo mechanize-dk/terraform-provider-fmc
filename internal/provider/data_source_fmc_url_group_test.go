@@ -40,12 +40,12 @@ func TestAccDataSourceFmcURLGroup(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcURLGroupPrerequisitesConfig+testAccDataSourceFmcURLGroupConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcURLGroupPrerequisitesConfig + testAccDataSourceFmcURLGroupConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcURLGroupPrerequisitesConfig+testAccNamedDataSourceFmcURLGroupConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcURLGroupPrerequisitesConfig + testAccNamedDataSourceFmcURLGroupConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -61,6 +61,7 @@ resource "fmc_url" "test" {
   url         = "https://www.example.com/app"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

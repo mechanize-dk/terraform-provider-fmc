@@ -51,12 +51,12 @@ func TestAccDataSourceFmcExtendedAccessList(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcExtendedAccessListPrerequisitesConfig+testAccDataSourceFmcExtendedAccessListConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcExtendedAccessListPrerequisitesConfig + testAccDataSourceFmcExtendedAccessListConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcExtendedAccessListPrerequisitesConfig+testAccNamedDataSourceFmcExtendedAccessListConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcExtendedAccessListPrerequisitesConfig + testAccNamedDataSourceFmcExtendedAccessListConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -88,6 +88,7 @@ resource "fmc_sgt" "test" {
   tag = "11"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

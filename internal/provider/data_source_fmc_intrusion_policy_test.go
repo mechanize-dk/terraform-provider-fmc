@@ -40,12 +40,12 @@ func TestAccDataSourceFmcIntrusionPolicy(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcIntrusionPolicyPrerequisitesConfig+testAccDataSourceFmcIntrusionPolicyConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcIntrusionPolicyPrerequisitesConfig + testAccDataSourceFmcIntrusionPolicyConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcIntrusionPolicyPrerequisitesConfig+testAccNamedDataSourceFmcIntrusionPolicyConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcIntrusionPolicyPrerequisitesConfig + testAccNamedDataSourceFmcIntrusionPolicyConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -60,6 +60,7 @@ data "fmc_intrusion_policy" "builtin" {
   name = "Balanced Security and Connectivity"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

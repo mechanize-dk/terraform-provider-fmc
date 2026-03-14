@@ -31,7 +31,7 @@ import (
 
 func TestAccFmcDeviceCluster(t *testing.T) {
 	if os.Getenv("TF_VAR_device_id") == "" || os.Getenv("TF_VAR_device_interface_name") == "" {
-        t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_device_interface_name")
+		t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_device_interface_name")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("fmc_device_cluster.test", "name", "my_device_cluster"))
@@ -47,23 +47,23 @@ func TestAccFmcDeviceCluster(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccFmcDeviceClusterPrerequisitesConfig+testAccFmcDeviceClusterConfig_minimum(),
+			Config: testAccFmcDeviceClusterPrerequisitesConfig + testAccFmcDeviceClusterConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcDeviceClusterPrerequisitesConfig+testAccFmcDeviceClusterConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcDeviceClusterPrerequisitesConfig + testAccFmcDeviceClusterConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName:  "fmc_device_cluster.test",
-		ImportState:   true,
+		ResourceName: "fmc_device_cluster.test",
+		ImportState:  true,
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -80,6 +80,7 @@ data "fmc_device_physical_interface" "test" {
   id          = var.device_interface_name
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -98,6 +99,7 @@ func testAccFmcDeviceClusterConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

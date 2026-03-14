@@ -33,36 +33,20 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type StandardCommunityList struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Type types.String `tfsdk:"type"`
+	Id      types.String                   `tfsdk:"id"`
+	Domain  types.String                   `tfsdk:"domain"`
+	Name    types.String                   `tfsdk:"name"`
+	Type    types.String                   `tfsdk:"type"`
 	Entries []StandardCommunityListEntries `tfsdk:"entries"`
 }
 
-
-
-
 type StandardCommunityListEntries struct {
-	Action types.String `tfsdk:"action"`
+	Action      types.String `tfsdk:"action"`
 	Communities types.String `tfsdk:"communities"`
-	Internet types.Bool `tfsdk:"internet"`
-	NoAdvertise types.Bool `tfsdk:"no_advertise"`
-	NoExport types.Bool `tfsdk:"no_export"`
+	Internet    types.Bool   `tfsdk:"internet"`
+	NoAdvertise types.Bool   `tfsdk:"no_advertise"`
+	NoExport    types.Bool   `tfsdk:"no_export"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -73,7 +57,7 @@ type StandardCommunityListEntries struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data StandardCommunityList) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/standardcommunitylists"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/standardcommunitylists"
 }
 
 // End of section. //template:end getPath
@@ -85,7 +69,7 @@ func (data StandardCommunityList) toBody(ctx context.Context, state StandardComm
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
 	if len(data.Entries) > 0 {
@@ -93,19 +77,19 @@ func (data StandardCommunityList) toBody(ctx context.Context, state StandardComm
 		for _, item := range data.Entries {
 			itemBody := ""
 			itemBody, _ = sjson.Set(itemBody, "type", "Standard")
-			if !item.Action.IsNull()   {
+			if !item.Action.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "action", item.Action.ValueString())
 			}
-			if !item.Communities.IsNull()   {
+			if !item.Communities.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "communities", item.Communities.ValueString())
 			}
-			if !item.Internet.IsNull()   {
+			if !item.Internet.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "internet", item.Internet.ValueBool())
 			}
-			if !item.NoAdvertise.IsNull()   {
+			if !item.NoAdvertise.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "noAdvertise", item.NoAdvertise.ValueBool())
 			}
-			if !item.NoExport.IsNull()   {
+			if !item.NoExport.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "noExport", item.NoExport.ValueBool())
 			}
 			body, _ = sjson.SetRaw(body, "entries.-1", itemBody)
@@ -134,31 +118,31 @@ func (data *StandardCommunityList) fromBody(ctx context.Context, res gjson.Resul
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := StandardCommunityListEntries{}
-	if value := res.Get("action"); value.Exists() {
-		data.Action = types.StringValue(value.String())
-	} else {
-		data.Action = types.StringNull()
-	}
-	if value := res.Get("communities"); value.Exists() {
-		data.Communities = types.StringValue(value.String())
-	} else {
-		data.Communities = types.StringNull()
-	}
-	if value := res.Get("internet"); value.Exists() {
-		data.Internet = types.BoolValue(value.Bool())
-	} else {
-		data.Internet = types.BoolNull()
-	}
-	if value := res.Get("noAdvertise"); value.Exists() {
-		data.NoAdvertise = types.BoolValue(value.Bool())
-	} else {
-		data.NoAdvertise = types.BoolNull()
-	}
-	if value := res.Get("noExport"); value.Exists() {
-		data.NoExport = types.BoolValue(value.Bool())
-	} else {
-		data.NoExport = types.BoolNull()
-	}
+			if value := res.Get("action"); value.Exists() {
+				data.Action = types.StringValue(value.String())
+			} else {
+				data.Action = types.StringNull()
+			}
+			if value := res.Get("communities"); value.Exists() {
+				data.Communities = types.StringValue(value.String())
+			} else {
+				data.Communities = types.StringNull()
+			}
+			if value := res.Get("internet"); value.Exists() {
+				data.Internet = types.BoolValue(value.Bool())
+			} else {
+				data.Internet = types.BoolNull()
+			}
+			if value := res.Get("noAdvertise"); value.Exists() {
+				data.NoAdvertise = types.BoolValue(value.Bool())
+			} else {
+				data.NoAdvertise = types.BoolNull()
+			}
+			if value := res.Get("noExport"); value.Exists() {
+				data.NoExport = types.BoolValue(value.Bool())
+			} else {
+				data.NoExport = types.BoolNull()
+			}
 			(*parent).Entries = append((*parent).Entries, data)
 			return true
 		})
@@ -168,7 +152,6 @@ func (data *StandardCommunityList) fromBody(ctx context.Context, res gjson.Resul
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -200,31 +183,31 @@ func (data *StandardCommunityList) fromBodyPartial(ctx context.Context, res gjso
 		data := (*parent).Entries[i]
 		parentRes := &res
 		res := parentRes.Get(fmt.Sprintf("entries.%d", i))
-	if value := res.Get("action"); value.Exists() && !data.Action.IsNull() {
-		data.Action = types.StringValue(value.String())
-	} else {
-		data.Action = types.StringNull()
-	}
-	if value := res.Get("communities"); value.Exists() && !data.Communities.IsNull() {
-		data.Communities = types.StringValue(value.String())
-	} else {
-		data.Communities = types.StringNull()
-	}
-	if value := res.Get("internet"); value.Exists() && !data.Internet.IsNull() {
-		data.Internet = types.BoolValue(value.Bool())
-	} else {
-		data.Internet = types.BoolNull()
-	}
-	if value := res.Get("noAdvertise"); value.Exists() && !data.NoAdvertise.IsNull() {
-		data.NoAdvertise = types.BoolValue(value.Bool())
-	} else {
-		data.NoAdvertise = types.BoolNull()
-	}
-	if value := res.Get("noExport"); value.Exists() && !data.NoExport.IsNull() {
-		data.NoExport = types.BoolValue(value.Bool())
-	} else {
-		data.NoExport = types.BoolNull()
-	}
+		if value := res.Get("action"); value.Exists() && !data.Action.IsNull() {
+			data.Action = types.StringValue(value.String())
+		} else {
+			data.Action = types.StringNull()
+		}
+		if value := res.Get("communities"); value.Exists() && !data.Communities.IsNull() {
+			data.Communities = types.StringValue(value.String())
+		} else {
+			data.Communities = types.StringNull()
+		}
+		if value := res.Get("internet"); value.Exists() && !data.Internet.IsNull() {
+			data.Internet = types.BoolValue(value.Bool())
+		} else {
+			data.Internet = types.BoolNull()
+		}
+		if value := res.Get("noAdvertise"); value.Exists() && !data.NoAdvertise.IsNull() {
+			data.NoAdvertise = types.BoolValue(value.Bool())
+		} else {
+			data.NoAdvertise = types.BoolNull()
+		}
+		if value := res.Get("noExport"); value.Exists() && !data.NoExport.IsNull() {
+			data.NoExport = types.BoolValue(value.Bool())
+		} else {
+			data.NoExport = types.BoolNull()
+		}
 		(*parent).Entries[i] = data
 	}
 }
@@ -249,31 +232,21 @@ func (data *StandardCommunityList) fromBodyUnknowns(ctx context.Context, res gjs
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
-
-
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
 
-
-
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
-
-
 
 // End of section. //template:end toBodyPutDelete
 
@@ -286,7 +259,5 @@ func (data StandardCommunityList) adjustBody(ctx context.Context, req string) st
 }
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
-
-
 
 // End of section. //template:end adjustBodyBulk

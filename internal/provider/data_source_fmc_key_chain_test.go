@@ -48,11 +48,11 @@ func TestAccDataSourceFmcKeyChain(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcKeyChainConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
 				Config: testAccNamedDataSourceFmcKeyChainConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})

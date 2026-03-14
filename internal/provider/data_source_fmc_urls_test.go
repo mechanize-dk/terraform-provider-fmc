@@ -41,7 +41,7 @@ func TestAccDataSourceFmcURLs(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcURLsConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -74,7 +74,5 @@ func testAccDataSourceFmcURLsConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

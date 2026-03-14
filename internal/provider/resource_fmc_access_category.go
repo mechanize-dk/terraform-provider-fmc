@@ -73,7 +73,7 @@ func (r *AccessCategoryResource) Schema(ctx context.Context, req resource.Schema
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -83,7 +83,6 @@ func (r *AccessCategoryResource) Schema(ctx context.Context, req resource.Schema
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"name": schema.StringAttribute{
@@ -95,7 +94,6 @@ func (r *AccessCategoryResource) Schema(ctx context.Context, req resource.Schema
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					
 				},
 			},
 		},
@@ -149,7 +147,7 @@ func (r *AccessCategoryResource) Create(ctx context.Context, req resource.Create
 					return
 				}
 				for _, v := range listRes.Get("items").Array() {
-					if plan.Name.ValueString()== v.Get("name").String(){
+					if plan.Name.ValueString() == v.Get("name").String() {
 						plan.Id = types.StringValue(v.Get("id").String())
 						tflog.Debug(ctx, fmt.Sprintf("%s: Found existing object with name '%v'", plan.Id.ValueString(), plan.Name.ValueString()))
 						break
@@ -208,14 +206,13 @@ func (r *AccessCategoryResource) Read(ctx context.Context, req resource.ReadRequ
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-	
+
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else  if err != nil {
+	} else if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -269,7 +266,7 @@ func (r *AccessCategoryResource) Update(ctx context.Context, req resource.Update
 
 	body := plan.toBody(ctx, state)
 	body = plan.adjustBody(ctx, body)
-	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -301,7 +298,7 @@ func (r *AccessCategoryResource) Delete(ctx context.Context, req resource.Delete
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()), reqMods...)
+	res, err := r.client.Delete(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString()), reqMods...)
 	if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
@@ -316,22 +313,23 @@ func (r *AccessCategoryResource) Delete(ctx context.Context, req resource.Delete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *AccessCategoryResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-		// Parse import ID
-		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<access_control_policy_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
-		match := inputPattern.FindStringSubmatch(req.ID)
-		if match == nil {
-			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<access_control_policy_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-			resp.Diagnostics.AddError("Import error", errMsg)
-			return
-		}
+	// Parse import ID
+	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<access_control_policy_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
+	match := inputPattern.FindStringSubmatch(req.ID)
+	if match == nil {
+		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<access_control_policy_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+		resp.Diagnostics.AddError("Import error", errMsg)
+		return
+	}
 
-		// Set domain, if provided
-		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-		}
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("access_control_policy_id"), match[inputPattern.SubexpIndex("access_control_policy_id")])...)
+	// Set domain, if provided
+	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("access_control_policy_id"), match[inputPattern.SubexpIndex("access_control_policy_id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
+
 // End of section. //template:end import

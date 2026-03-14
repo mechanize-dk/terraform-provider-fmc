@@ -33,54 +33,18 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type ChassisPhysicalInterface struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	ChassisId types.String `tfsdk:"chassis_id"`
-	Type types.String `tfsdk:"type"`
-	Name types.String `tfsdk:"name"`
-	PortType types.String `tfsdk:"port_type"`
-	AdminState types.String `tfsdk:"admin_state"`
-	AutoNegotiation types.Bool `tfsdk:"auto_negotiation"`
-	Duplex types.String `tfsdk:"duplex"`
-	Speed types.String `tfsdk:"speed"`
-	FecMode types.String `tfsdk:"fec_mode"`
+	Id              types.String `tfsdk:"id"`
+	Domain          types.String `tfsdk:"domain"`
+	ChassisId       types.String `tfsdk:"chassis_id"`
+	Type            types.String `tfsdk:"type"`
+	Name            types.String `tfsdk:"name"`
+	PortType        types.String `tfsdk:"port_type"`
+	AdminState      types.String `tfsdk:"admin_state"`
+	AutoNegotiation types.Bool   `tfsdk:"auto_negotiation"`
+	Duplex          types.String `tfsdk:"duplex"`
+	Speed           types.String `tfsdk:"speed"`
+	FecMode         types.String `tfsdk:"fec_mode"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -91,7 +55,7 @@ type ChassisPhysicalInterface struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data ChassisPhysicalInterface) getPath() string {
-		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/chassis/fmcmanagedchassis/%v/physicalinterfaces", url.QueryEscape(data.ChassisId.ValueString()))
+	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/chassis/fmcmanagedchassis/%v/physicalinterfaces", url.QueryEscape(data.ChassisId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -104,25 +68,25 @@ func (data ChassisPhysicalInterface) toBody(ctx context.Context, state ChassisPh
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "PhysicalInterface")
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.PortType.IsNull()   {
+	if !data.PortType.IsNull() {
 		body, _ = sjson.Set(body, "portType", data.PortType.ValueString())
 	}
-	if !data.AdminState.IsNull()   {
+	if !data.AdminState.IsNull() {
 		body, _ = sjson.Set(body, "adminState", data.AdminState.ValueString())
 	}
-	if !data.AutoNegotiation.IsNull()   {
+	if !data.AutoNegotiation.IsNull() {
 		body, _ = sjson.Set(body, "hardware.autoNegState", data.AutoNegotiation.ValueBool())
 	}
-	if !data.Duplex.IsNull()   {
+	if !data.Duplex.IsNull() {
 		body, _ = sjson.Set(body, "hardware.duplex", data.Duplex.ValueString())
 	}
-	if !data.Speed.IsNull()   {
+	if !data.Speed.IsNull() {
 		body, _ = sjson.Set(body, "hardware.speed", data.Speed.ValueString())
 	}
-	if !data.FecMode.IsNull()   {
+	if !data.FecMode.IsNull() {
 		body, _ = sjson.Set(body, "hardware.fecMode", data.FecMode.ValueString())
 	}
 	return body
@@ -178,7 +142,6 @@ func (data *ChassisPhysicalInterface) fromBody(ctx context.Context, res gjson.Re
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -247,25 +210,17 @@ func (data *ChassisPhysicalInterface) fromBodyUnknowns(ctx context.Context, res 
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
-
-
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
-
-
 
 // End of section. //template:end clearItemIds
 

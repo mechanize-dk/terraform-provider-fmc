@@ -46,11 +46,11 @@ func TestAccDataSourceFmcVPNS2S(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcVPNS2SConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
 				Config: testAccNamedDataSourceFmcVPNS2SConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})

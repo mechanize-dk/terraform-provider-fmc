@@ -41,7 +41,7 @@ func TestAccDataSourceFmcResourceProfiles(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcResourceProfilesConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -73,7 +73,5 @@ func testAccDataSourceFmcResourceProfilesConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

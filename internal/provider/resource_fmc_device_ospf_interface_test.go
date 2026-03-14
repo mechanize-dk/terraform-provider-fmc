@@ -31,7 +31,7 @@ import (
 
 func TestAccFmcDeviceOSPFInterface(t *testing.T) {
 	if os.Getenv("TF_VAR_device_id") == "" {
-        t.Skip("skipping test, set environment variable TF_VAR_device_id")
+		t.Skip("skipping test, set environment variable TF_VAR_device_id")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("fmc_device_ospf_interface.test", "type"))
@@ -49,19 +49,19 @@ func TestAccFmcDeviceOSPFInterface(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccFmcDeviceOSPFInterfacePrerequisitesConfig+testAccFmcDeviceOSPFInterfaceConfig_minimum(),
+			Config: testAccFmcDeviceOSPFInterfacePrerequisitesConfig + testAccFmcDeviceOSPFInterfaceConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcDeviceOSPFInterfacePrerequisitesConfig+testAccFmcDeviceOSPFInterfaceConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcDeviceOSPFInterfacePrerequisitesConfig + testAccFmcDeviceOSPFInterfaceConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -80,6 +80,7 @@ resource "fmc_device_physical_interface" "test" {
   logical_name = "OSPF_Interface"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -91,6 +92,7 @@ func testAccFmcDeviceOSPFInterfaceConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

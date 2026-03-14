@@ -75,7 +75,7 @@ func (r *VPNRALDAPAttributeMapResource) Schema(ctx context.Context, req resource
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -85,7 +85,6 @@ func (r *VPNRALDAPAttributeMapResource) Schema(ctx context.Context, req resource
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"type": schema.StringAttribute{
@@ -93,7 +92,6 @@ func (r *VPNRALDAPAttributeMapResource) Schema(ctx context.Context, req resource
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					
 				},
 			},
 			"realms": schema.ListNestedAttribute{
@@ -387,22 +385,23 @@ func (r *VPNRALDAPAttributeMapResource) Delete(ctx context.Context, req resource
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *VPNRALDAPAttributeMapResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-		// Parse import ID
-		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<vpn_ra_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
-		match := inputPattern.FindStringSubmatch(req.ID)
-		if match == nil {
-			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<vpn_ra_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-			resp.Diagnostics.AddError("Import error", errMsg)
-			return
-		}
+	// Parse import ID
+	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<vpn_ra_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
+	match := inputPattern.FindStringSubmatch(req.ID)
+	if match == nil {
+		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<vpn_ra_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+		resp.Diagnostics.AddError("Import error", errMsg)
+		return
+	}
 
-		// Set domain, if provided
-		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-		}
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vpn_ra_id"), match[inputPattern.SubexpIndex("vpn_ra_id")])...)
+	// Set domain, if provided
+	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vpn_ra_id"), match[inputPattern.SubexpIndex("vpn_ra_id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
+
 // End of section. //template:end import

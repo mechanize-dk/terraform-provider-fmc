@@ -34,20 +34,15 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type VLANTagGroup struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Type types.String `tfsdk:"type"`
-	Overridable types.Bool `tfsdk:"overridable"`
-	VlanTags []VLANTagGroupVlanTags `tfsdk:"vlan_tags"`
-	Literals []VLANTagGroupLiterals `tfsdk:"literals"`
+	Id          types.String           `tfsdk:"id"`
+	Domain      types.String           `tfsdk:"domain"`
+	Name        types.String           `tfsdk:"name"`
+	Description types.String           `tfsdk:"description"`
+	Type        types.String           `tfsdk:"type"`
+	Overridable types.Bool             `tfsdk:"overridable"`
+	VlanTags    []VLANTagGroupVlanTags `tfsdk:"vlan_tags"`
+	Literals    []VLANTagGroupLiterals `tfsdk:"literals"`
 }
-
-
-
-
-
 
 type VLANTagGroupVlanTags struct {
 	Id types.String `tfsdk:"id"`
@@ -55,29 +50,8 @@ type VLANTagGroupVlanTags struct {
 
 type VLANTagGroupLiterals struct {
 	StartTag types.String `tfsdk:"start_tag"`
-	EndTag types.String `tfsdk:"end_tag"`
+	EndTag   types.String `tfsdk:"end_tag"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -88,7 +62,7 @@ type VLANTagGroupLiterals struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data VLANTagGroup) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/vlangrouptags"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/vlangrouptags"
 }
 
 // End of section. //template:end getPath
@@ -100,20 +74,20 @@ func (data VLANTagGroup) toBody(ctx context.Context, state VLANTagGroup) string 
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()   {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.Overridable.IsNull()   {
+	if !data.Overridable.IsNull() {
 		body, _ = sjson.Set(body, "overridable", data.Overridable.ValueBool())
 	}
 	if len(data.VlanTags) > 0 {
 		body, _ = sjson.Set(body, "objects", []any{})
 		for _, item := range data.VlanTags {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "objects.-1", itemBody)
@@ -123,10 +97,10 @@ func (data VLANTagGroup) toBody(ctx context.Context, state VLANTagGroup) string 
 		body, _ = sjson.Set(body, "literals", []any{})
 		for _, item := range data.Literals {
 			itemBody := ""
-			if !item.StartTag.IsNull()   {
+			if !item.StartTag.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "startTag", item.StartTag.ValueString())
 			}
-			if !item.EndTag.IsNull()   {
+			if !item.EndTag.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "endTag", item.EndTag.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "literals.-1", itemBody)
@@ -165,11 +139,11 @@ func (data *VLANTagGroup) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VLANTagGroupVlanTags{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+			if value := res.Get("id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
 			(*parent).VlanTags = append((*parent).VlanTags, data)
 			return true
 		})
@@ -179,16 +153,16 @@ func (data *VLANTagGroup) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VLANTagGroupLiterals{}
-	if value := res.Get("startTag"); value.Exists() {
-		data.StartTag = types.StringValue(value.String())
-	} else {
-		data.StartTag = types.StringNull()
-	}
-	if value := res.Get("endTag"); value.Exists() {
-		data.EndTag = types.StringValue(value.String())
-	} else {
-		data.EndTag = types.StringNull()
-	}
+			if value := res.Get("startTag"); value.Exists() {
+				data.StartTag = types.StringValue(value.String())
+			} else {
+				data.StartTag = types.StringNull()
+			}
+			if value := res.Get("endTag"); value.Exists() {
+				data.EndTag = types.StringValue(value.String())
+			} else {
+				data.EndTag = types.StringNull()
+			}
 			(*parent).Literals = append((*parent).Literals, data)
 			return true
 		})
@@ -198,7 +172,6 @@ func (data *VLANTagGroup) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -230,8 +203,8 @@ func (data *VLANTagGroup) fromBodyPartial(ctx context.Context, res gjson.Result)
 		data.Overridable = types.BoolNull()
 	}
 	for i := 0; i < len(data.VlanTags); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.VlanTags[i].Id.ValueString(),  }
+		keys := [...]string{"id"}
+		keyValues := [...]string{data.VlanTags[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).VlanTags[i]
@@ -265,16 +238,16 @@ func (data *VLANTagGroup) fromBodyPartial(ctx context.Context, res gjson.Result)
 
 			continue
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
 		(*parent).VlanTags[i] = data
 	}
 	for i := 0; i < len(data.Literals); i++ {
-		keys := [...]string{ "startTag", "endTag",  }
-		keyValues := [...]string{ data.Literals[i].StartTag.ValueString(), data.Literals[i].EndTag.ValueString(),  }
+		keys := [...]string{"startTag", "endTag"}
+		keyValues := [...]string{data.Literals[i].StartTag.ValueString(), data.Literals[i].EndTag.ValueString()}
 
 		parent := &data
 		data := (*parent).Literals[i]
@@ -308,16 +281,16 @@ func (data *VLANTagGroup) fromBodyPartial(ctx context.Context, res gjson.Result)
 
 			continue
 		}
-	if value := res.Get("startTag"); value.Exists() && !data.StartTag.IsNull() {
-		data.StartTag = types.StringValue(value.String())
-	} else {
-		data.StartTag = types.StringNull()
-	}
-	if value := res.Get("endTag"); value.Exists() && !data.EndTag.IsNull() {
-		data.EndTag = types.StringValue(value.String())
-	} else {
-		data.EndTag = types.StringNull()
-	}
+		if value := res.Get("startTag"); value.Exists() && !data.StartTag.IsNull() {
+			data.StartTag = types.StringValue(value.String())
+		} else {
+			data.StartTag = types.StringNull()
+		}
+		if value := res.Get("endTag"); value.Exists() && !data.EndTag.IsNull() {
+			data.EndTag = types.StringValue(value.String())
+		} else {
+			data.EndTag = types.StringNull()
+		}
 		(*parent).Literals[i] = data
 	}
 }

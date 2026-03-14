@@ -35,31 +35,13 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type FTDPlatformSettingsTimeSynchronization struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
+	Id                    types.String `tfsdk:"id"`
+	Domain                types.String `tfsdk:"domain"`
 	FtdPlatformSettingsId types.String `tfsdk:"ftd_platform_settings_id"`
-	Type types.String `tfsdk:"type"`
-	SynchronizationMode types.String `tfsdk:"synchronization_mode"`
-	NtpServers types.List `tfsdk:"ntp_servers"`
+	Type                  types.String `tfsdk:"type"`
+	SynchronizationMode   types.String `tfsdk:"synchronization_mode"`
+	NtpServers            types.List   `tfsdk:"ntp_servers"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -71,7 +53,7 @@ var minFMCVersionFTDPlatformSettingsTimeSynchronization = version.Must(version.N
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data FTDPlatformSettingsTimeSynchronization) getPath() string {
-		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/ntpsettings", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
+	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/ntpsettings", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -83,7 +65,7 @@ func (data FTDPlatformSettingsTimeSynchronization) toBody(ctx context.Context, s
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.SynchronizationMode.IsNull()   {
+	if !data.SynchronizationMode.IsNull() {
 		body, _ = sjson.Set(body, "ntpMode", data.SynchronizationMode.ValueString())
 	}
 	if !data.NtpServers.IsNull() {
@@ -119,7 +101,6 @@ func (data *FTDPlatformSettingsTimeSynchronization) fromBody(ctx context.Context
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might

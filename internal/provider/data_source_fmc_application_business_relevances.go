@@ -63,7 +63,7 @@ func (d *ApplicationBusinessRelevancesDataSource) Schema(ctx context.Context, re
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 			},
 			"items": schema.MapNestedAttribute{
 				MarkdownDescription: "Map of Application Business Relevance levels. The key of the map is the name of the individual Application Business Relevance level.",
@@ -115,7 +115,7 @@ func (d *ApplicationBusinessRelevancesDataSource) Read(ctx context.Context, req 
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
-	
+
 	// Get all objects from FMC
 	urlPath := config.getPath() + "?expanded=true"
 	res, err := d.client.Get(urlPath, reqMods...)

@@ -76,7 +76,7 @@ func (r *VPNS2SIPSECSettingsResource) Schema(ctx context.Context, req resource.S
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -86,7 +86,6 @@ func (r *VPNS2SIPSECSettingsResource) Schema(ctx context.Context, req resource.S
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"type": schema.StringAttribute{
@@ -94,21 +93,20 @@ func (r *VPNS2SIPSECSettingsResource) Schema(ctx context.Context, req resource.S
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					
 				},
 			},
 			"crypto_map_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Type of the crypto map.").AddStringEnumDescription("STATIC", "DYNAMIC", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Type of the crypto map.").AddStringEnumDescription("STATIC", "DYNAMIC").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("STATIC", "DYNAMIC", ),
+					stringvalidator.OneOf("STATIC", "DYNAMIC"),
 				},
 			},
 			"ikev2_mode": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("IKEv2 mode.").AddStringEnumDescription("TUNNEL", "TRANSPORT_PREFERRED", "TRANSPORT_REQUIRE", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("IKEv2 mode.").AddStringEnumDescription("TUNNEL", "TRANSPORT_PREFERRED", "TRANSPORT_REQUIRE").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("TUNNEL", "TRANSPORT_PREFERRED", "TRANSPORT_REQUIRE", ),
+					stringvalidator.OneOf("TUNNEL", "TRANSPORT_PREFERRED", "TRANSPORT_REQUIRE"),
 				},
 			},
 			"ikev1_ipsec_proposals": schema.SetNestedAttribute{
@@ -156,10 +154,10 @@ func (r *VPNS2SIPSECSettingsResource) Schema(ctx context.Context, req resource.S
 				Optional:            true,
 			},
 			"perfect_forward_secrecy_modulus_group": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Modulus group for IPSEC Perfect Forward Secrecy (PFS).").AddStringEnumDescription("1", "2", "5", "14", "15", "16", "19", "20", "21", "24", "31", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Modulus group for IPSEC Perfect Forward Secrecy (PFS).").AddStringEnumDescription("1", "2", "5", "14", "15", "16", "19", "20", "21", "24", "31").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("1", "2", "5", "14", "15", "16", "19", "20", "21", "24", "31", ),
+					stringvalidator.OneOf("1", "2", "5", "14", "15", "16", "19", "20", "21", "24", "31"),
 				},
 			},
 			"lifetime_duration": schema.Int64Attribute{
@@ -181,10 +179,10 @@ func (r *VPNS2SIPSECSettingsResource) Schema(ctx context.Context, req resource.S
 				Optional:            true,
 			},
 			"do_not_fragment_policy": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Policy for handling Do Not Fragment (DNF) packets.").AddStringEnumDescription("SET", "COPY", "CLEAR", "NONE", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Policy for handling Do Not Fragment (DNF) packets.").AddStringEnumDescription("SET", "COPY", "CLEAR", "NONE").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("SET", "COPY", "CLEAR", "NONE", ),
+					stringvalidator.OneOf("SET", "COPY", "CLEAR", "NONE"),
 				},
 			},
 			"tfc": schema.BoolAttribute{
@@ -306,14 +304,13 @@ func (r *VPNS2SIPSECSettingsResource) Read(ctx context.Context, req resource.Rea
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-	
+
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else  if err != nil {
+	} else if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -366,7 +363,7 @@ func (r *VPNS2SIPSECSettingsResource) Update(ctx context.Context, req resource.U
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -414,22 +411,23 @@ func (r *VPNS2SIPSECSettingsResource) Delete(ctx context.Context, req resource.D
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *VPNS2SIPSECSettingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-		// Parse import ID
-		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<vpn_s2s_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
-		match := inputPattern.FindStringSubmatch(req.ID)
-		if match == nil {
-			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<vpn_s2s_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-			resp.Diagnostics.AddError("Import error", errMsg)
-			return
-		}
+	// Parse import ID
+	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<vpn_s2s_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
+	match := inputPattern.FindStringSubmatch(req.ID)
+	if match == nil {
+		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<vpn_s2s_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+		resp.Diagnostics.AddError("Import error", errMsg)
+		return
+	}
 
-		// Set domain, if provided
-		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-		}
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vpn_s2s_id"), match[inputPattern.SubexpIndex("vpn_s2s_id")])...)
+	// Set domain, if provided
+	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vpn_s2s_id"), match[inputPattern.SubexpIndex("vpn_s2s_id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
+
 // End of section. //template:end import

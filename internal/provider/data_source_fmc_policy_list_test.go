@@ -31,7 +31,7 @@ import (
 
 func TestAccDataSourceFmcPolicyList(t *testing.T) {
 	if os.Getenv("TF_VAR_interface_name") == "" {
-        t.Skip("skipping test, set environment variable TF_VAR_interface_name")
+		t.Skip("skipping test, set environment variable TF_VAR_interface_name")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.fmc_policy_list.test", "name", "my_policy_list"))
@@ -46,12 +46,12 @@ func TestAccDataSourceFmcPolicyList(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcPolicyListPrerequisitesConfig+testAccDataSourceFmcPolicyListConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcPolicyListPrerequisitesConfig + testAccDataSourceFmcPolicyListConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcPolicyListPrerequisitesConfig+testAccNamedDataSourceFmcPolicyListConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcPolicyListPrerequisitesConfig + testAccNamedDataSourceFmcPolicyListConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -93,6 +93,7 @@ resource "fmc_standard_community_list" "test" {
   ]
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

@@ -40,11 +40,11 @@ func TestAccDataSourceFmcDynamicAccessPolicy(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcDynamicAccessPolicyConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
 				Config: testAccNamedDataSourceFmcDynamicAccessPolicyConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})

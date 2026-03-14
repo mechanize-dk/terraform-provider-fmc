@@ -35,46 +35,28 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type VPNRALDAPAttributeMap struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	VpnRaId types.String `tfsdk:"vpn_ra_id"`
-	Type types.String `tfsdk:"type"`
-	Realms []VPNRALDAPAttributeMapRealms `tfsdk:"realms"`
+	Id      types.String                  `tfsdk:"id"`
+	Domain  types.String                  `tfsdk:"domain"`
+	VpnRaId types.String                  `tfsdk:"vpn_ra_id"`
+	Type    types.String                  `tfsdk:"type"`
+	Realms  []VPNRALDAPAttributeMapRealms `tfsdk:"realms"`
 }
 
-
-
-
-
 type VPNRALDAPAttributeMapRealms struct {
-	RealmAdLdapId types.String `tfsdk:"realm_ad_ldap_id"`
+	RealmAdLdapId types.String                               `tfsdk:"realm_ad_ldap_id"`
 	AttributeMaps []VPNRALDAPAttributeMapRealmsAttributeMaps `tfsdk:"attribute_maps"`
 }
 
-
-
-
-
-
-
 type VPNRALDAPAttributeMapRealmsAttributeMaps struct {
-	LdapAttributeName types.String `tfsdk:"ldap_attribute_name"`
-	CiscoAttributeName types.String `tfsdk:"cisco_attribute_name"`
-	ValueMaps []VPNRALDAPAttributeMapRealmsAttributeMapsValueMaps `tfsdk:"value_maps"`
+	LdapAttributeName  types.String                                        `tfsdk:"ldap_attribute_name"`
+	CiscoAttributeName types.String                                        `tfsdk:"cisco_attribute_name"`
+	ValueMaps          []VPNRALDAPAttributeMapRealmsAttributeMapsValueMaps `tfsdk:"value_maps"`
 }
-
-
-
-
-
-
-
 
 type VPNRALDAPAttributeMapRealmsAttributeMapsValueMaps struct {
-	LdapAttributeValue types.String `tfsdk:"ldap_attribute_value"`
+	LdapAttributeValue  types.String `tfsdk:"ldap_attribute_value"`
 	CiscoAttributeValue types.String `tfsdk:"cisco_attribute_value"`
 }
-
 
 // End of section. //template:end types
 
@@ -85,7 +67,7 @@ type VPNRALDAPAttributeMapRealmsAttributeMapsValueMaps struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data VPNRALDAPAttributeMap) getPath() string {
-		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ravpns/%v/ldapattributemaps", url.QueryEscape(data.VpnRaId.ValueString()))
+	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ravpns/%v/ldapattributemaps", url.QueryEscape(data.VpnRaId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -102,27 +84,27 @@ func (data VPNRALDAPAttributeMap) toBody(ctx context.Context, state VPNRALDAPAtt
 		body, _ = sjson.Set(body, "ldapAttributeMapList", []any{})
 		for _, item := range data.Realms {
 			itemBody := ""
-			if !item.RealmAdLdapId.IsNull()   {
+			if !item.RealmAdLdapId.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "ldapServer.id", item.RealmAdLdapId.ValueString())
 			}
 			if len(item.AttributeMaps) > 0 {
 				itemBody, _ = sjson.Set(itemBody, "ldapAttributeMaps", []any{})
 				for _, childItem := range item.AttributeMaps {
 					itemChildBody := ""
-					if !childItem.LdapAttributeName.IsNull()  {
+					if !childItem.LdapAttributeName.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "ldapName", childItem.LdapAttributeName.ValueString())
 					}
-					if !childItem.CiscoAttributeName.IsNull()  {
+					if !childItem.CiscoAttributeName.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "ciscoName", childItem.CiscoAttributeName.ValueString())
 					}
 					if len(childItem.ValueMaps) > 0 {
 						itemChildBody, _ = sjson.Set(itemChildBody, "valueMappings", []any{})
 						for _, childChildItem := range childItem.ValueMaps {
 							itemChildChildBody := ""
-							if !childChildItem.LdapAttributeValue.IsNull()  {
+							if !childChildItem.LdapAttributeValue.IsNull() {
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "ldapValue", childChildItem.LdapAttributeValue.ValueString())
 							}
-							if !childChildItem.CiscoAttributeValue.IsNull()  {
+							if !childChildItem.CiscoAttributeValue.IsNull() {
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "ciscoValue", childChildItem.CiscoAttributeValue.ValueString())
 							}
 							itemChildBody, _ = sjson.SetRaw(itemChildBody, "valueMappings.-1", itemChildChildBody)
@@ -152,49 +134,49 @@ func (data *VPNRALDAPAttributeMap) fromBody(ctx context.Context, res gjson.Resul
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VPNRALDAPAttributeMapRealms{}
-	if value := res.Get("ldapServer.id"); value.Exists() {
-		data.RealmAdLdapId = types.StringValue(value.String())
-	} else {
-		data.RealmAdLdapId = types.StringNull()
-	}
-	if value := res.Get("ldapAttributeMaps"); value.Exists() {
-		data.AttributeMaps = make([]VPNRALDAPAttributeMapRealmsAttributeMaps, 0)
-		value.ForEach(func(k, res gjson.Result) bool {
-			parent := &data
-			data := VPNRALDAPAttributeMapRealmsAttributeMaps{}
-	if value := res.Get("ldapName"); value.Exists() {
-		data.LdapAttributeName = types.StringValue(value.String())
-	} else {
-		data.LdapAttributeName = types.StringNull()
-	}
-	if value := res.Get("ciscoName"); value.Exists() {
-		data.CiscoAttributeName = types.StringValue(value.String())
-	} else {
-		data.CiscoAttributeName = types.StringNull()
-	}
-	if value := res.Get("valueMappings"); value.Exists() {
-		data.ValueMaps = make([]VPNRALDAPAttributeMapRealmsAttributeMapsValueMaps, 0)
-		value.ForEach(func(k, res gjson.Result) bool {
-			parent := &data
-			data := VPNRALDAPAttributeMapRealmsAttributeMapsValueMaps{}
-	if value := res.Get("ldapValue"); value.Exists() {
-		data.LdapAttributeValue = types.StringValue(value.String())
-	} else {
-		data.LdapAttributeValue = types.StringNull()
-	}
-	if value := res.Get("ciscoValue"); value.Exists() {
-		data.CiscoAttributeValue = types.StringValue(value.String())
-	} else {
-		data.CiscoAttributeValue = types.StringNull()
-	}
-			(*parent).ValueMaps = append((*parent).ValueMaps, data)
-			return true
-		})
-	}
-			(*parent).AttributeMaps = append((*parent).AttributeMaps, data)
-			return true
-		})
-	}
+			if value := res.Get("ldapServer.id"); value.Exists() {
+				data.RealmAdLdapId = types.StringValue(value.String())
+			} else {
+				data.RealmAdLdapId = types.StringNull()
+			}
+			if value := res.Get("ldapAttributeMaps"); value.Exists() {
+				data.AttributeMaps = make([]VPNRALDAPAttributeMapRealmsAttributeMaps, 0)
+				value.ForEach(func(k, res gjson.Result) bool {
+					parent := &data
+					data := VPNRALDAPAttributeMapRealmsAttributeMaps{}
+					if value := res.Get("ldapName"); value.Exists() {
+						data.LdapAttributeName = types.StringValue(value.String())
+					} else {
+						data.LdapAttributeName = types.StringNull()
+					}
+					if value := res.Get("ciscoName"); value.Exists() {
+						data.CiscoAttributeName = types.StringValue(value.String())
+					} else {
+						data.CiscoAttributeName = types.StringNull()
+					}
+					if value := res.Get("valueMappings"); value.Exists() {
+						data.ValueMaps = make([]VPNRALDAPAttributeMapRealmsAttributeMapsValueMaps, 0)
+						value.ForEach(func(k, res gjson.Result) bool {
+							parent := &data
+							data := VPNRALDAPAttributeMapRealmsAttributeMapsValueMaps{}
+							if value := res.Get("ldapValue"); value.Exists() {
+								data.LdapAttributeValue = types.StringValue(value.String())
+							} else {
+								data.LdapAttributeValue = types.StringNull()
+							}
+							if value := res.Get("ciscoValue"); value.Exists() {
+								data.CiscoAttributeValue = types.StringValue(value.String())
+							} else {
+								data.CiscoAttributeValue = types.StringNull()
+							}
+							(*parent).ValueMaps = append((*parent).ValueMaps, data)
+							return true
+						})
+					}
+					(*parent).AttributeMaps = append((*parent).AttributeMaps, data)
+					return true
+				})
+			}
 			(*parent).Realms = append((*parent).Realms, data)
 			return true
 		})
@@ -204,7 +186,6 @@ func (data *VPNRALDAPAttributeMap) fromBody(ctx context.Context, res gjson.Resul
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -217,8 +198,8 @@ func (data *VPNRALDAPAttributeMap) fromBodyPartial(ctx context.Context, res gjso
 		data.Type = types.StringNull()
 	}
 	for i := 0; i < len(data.Realms); i++ {
-		keys := [...]string{ "ldapServer.id",  }
-		keyValues := [...]string{ data.Realms[i].RealmAdLdapId.ValueString(),  }
+		keys := [...]string{"ldapServer.id"}
+		keyValues := [...]string{data.Realms[i].RealmAdLdapId.ValueString()}
 
 		parent := &data
 		data := (*parent).Realms[i]
@@ -252,107 +233,107 @@ func (data *VPNRALDAPAttributeMap) fromBodyPartial(ctx context.Context, res gjso
 
 			continue
 		}
-	if value := res.Get("ldapServer.id"); value.Exists() && !data.RealmAdLdapId.IsNull() {
-		data.RealmAdLdapId = types.StringValue(value.String())
-	} else {
-		data.RealmAdLdapId = types.StringNull()
-	}
-	for i := 0; i < len(data.AttributeMaps); i++ {
-		keys := [...]string{ "ldapName", "ciscoName",  }
-		keyValues := [...]string{ data.AttributeMaps[i].LdapAttributeName.ValueString(), data.AttributeMaps[i].CiscoAttributeName.ValueString(),  }
-
-		parent := &data
-		data := (*parent).AttributeMaps[i]
-		parentRes := &res
-		var res gjson.Result
-
-		parentRes.Get("ldapAttributeMaps").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() != keyValues[ik] {
-						found = false
-						break
-					}
-					found = true
-				}
-				if found {
-					res = v
-					return false
-				}
-				return true
-			},
-		)
-		if !res.Exists() {
-			tflog.Debug(ctx, fmt.Sprintf("removing AttributeMaps[%d] = %+v",
-				i,
-				(*parent).AttributeMaps[i],
-			))
-			(*parent).AttributeMaps = slices.Delete((*parent).AttributeMaps, i, i+1)
-			i--
-
-			continue
+		if value := res.Get("ldapServer.id"); value.Exists() && !data.RealmAdLdapId.IsNull() {
+			data.RealmAdLdapId = types.StringValue(value.String())
+		} else {
+			data.RealmAdLdapId = types.StringNull()
 		}
-	if value := res.Get("ldapName"); value.Exists() && !data.LdapAttributeName.IsNull() {
-		data.LdapAttributeName = types.StringValue(value.String())
-	} else {
-		data.LdapAttributeName = types.StringNull()
-	}
-	if value := res.Get("ciscoName"); value.Exists() && !data.CiscoAttributeName.IsNull() {
-		data.CiscoAttributeName = types.StringValue(value.String())
-	} else {
-		data.CiscoAttributeName = types.StringNull()
-	}
-	for i := 0; i < len(data.ValueMaps); i++ {
-		keys := [...]string{ "ldapValue", "ciscoValue",  }
-		keyValues := [...]string{ data.ValueMaps[i].LdapAttributeValue.ValueString(), data.ValueMaps[i].CiscoAttributeValue.ValueString(),  }
+		for i := 0; i < len(data.AttributeMaps); i++ {
+			keys := [...]string{"ldapName", "ciscoName"}
+			keyValues := [...]string{data.AttributeMaps[i].LdapAttributeName.ValueString(), data.AttributeMaps[i].CiscoAttributeName.ValueString()}
 
-		parent := &data
-		data := (*parent).ValueMaps[i]
-		parentRes := &res
-		var res gjson.Result
+			parent := &data
+			data := (*parent).AttributeMaps[i]
+			parentRes := &res
+			var res gjson.Result
 
-		parentRes.Get("valueMappings").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() != keyValues[ik] {
-						found = false
-						break
+			parentRes.Get("ldapAttributeMaps").ForEach(
+				func(_, v gjson.Result) bool {
+					found := false
+					for ik := range keys {
+						if v.Get(keys[ik]).String() != keyValues[ik] {
+							found = false
+							break
+						}
+						found = true
 					}
-					found = true
-				}
-				if found {
-					res = v
-					return false
-				}
-				return true
-			},
-		)
-		if !res.Exists() {
-			tflog.Debug(ctx, fmt.Sprintf("removing ValueMaps[%d] = %+v",
-				i,
-				(*parent).ValueMaps[i],
-			))
-			(*parent).ValueMaps = slices.Delete((*parent).ValueMaps, i, i+1)
-			i--
+					if found {
+						res = v
+						return false
+					}
+					return true
+				},
+			)
+			if !res.Exists() {
+				tflog.Debug(ctx, fmt.Sprintf("removing AttributeMaps[%d] = %+v",
+					i,
+					(*parent).AttributeMaps[i],
+				))
+				(*parent).AttributeMaps = slices.Delete((*parent).AttributeMaps, i, i+1)
+				i--
 
-			continue
+				continue
+			}
+			if value := res.Get("ldapName"); value.Exists() && !data.LdapAttributeName.IsNull() {
+				data.LdapAttributeName = types.StringValue(value.String())
+			} else {
+				data.LdapAttributeName = types.StringNull()
+			}
+			if value := res.Get("ciscoName"); value.Exists() && !data.CiscoAttributeName.IsNull() {
+				data.CiscoAttributeName = types.StringValue(value.String())
+			} else {
+				data.CiscoAttributeName = types.StringNull()
+			}
+			for i := 0; i < len(data.ValueMaps); i++ {
+				keys := [...]string{"ldapValue", "ciscoValue"}
+				keyValues := [...]string{data.ValueMaps[i].LdapAttributeValue.ValueString(), data.ValueMaps[i].CiscoAttributeValue.ValueString()}
+
+				parent := &data
+				data := (*parent).ValueMaps[i]
+				parentRes := &res
+				var res gjson.Result
+
+				parentRes.Get("valueMappings").ForEach(
+					func(_, v gjson.Result) bool {
+						found := false
+						for ik := range keys {
+							if v.Get(keys[ik]).String() != keyValues[ik] {
+								found = false
+								break
+							}
+							found = true
+						}
+						if found {
+							res = v
+							return false
+						}
+						return true
+					},
+				)
+				if !res.Exists() {
+					tflog.Debug(ctx, fmt.Sprintf("removing ValueMaps[%d] = %+v",
+						i,
+						(*parent).ValueMaps[i],
+					))
+					(*parent).ValueMaps = slices.Delete((*parent).ValueMaps, i, i+1)
+					i--
+
+					continue
+				}
+				if value := res.Get("ldapValue"); value.Exists() && !data.LdapAttributeValue.IsNull() {
+					data.LdapAttributeValue = types.StringValue(value.String())
+				} else {
+					data.LdapAttributeValue = types.StringNull()
+				}
+				if value := res.Get("ciscoValue"); value.Exists() && !data.CiscoAttributeValue.IsNull() {
+					data.CiscoAttributeValue = types.StringValue(value.String())
+				} else {
+					data.CiscoAttributeValue = types.StringNull()
+				}
+				(*parent).ValueMaps[i] = data
+			}
+			(*parent).AttributeMaps[i] = data
 		}
-	if value := res.Get("ldapValue"); value.Exists() && !data.LdapAttributeValue.IsNull() {
-		data.LdapAttributeValue = types.StringValue(value.String())
-	} else {
-		data.LdapAttributeValue = types.StringNull()
-	}
-	if value := res.Get("ciscoValue"); value.Exists() && !data.CiscoAttributeValue.IsNull() {
-		data.CiscoAttributeValue = types.StringValue(value.String())
-	} else {
-		data.CiscoAttributeValue = types.StringNull()
-	}
-		(*parent).ValueMaps[i] = data
-	}
-		(*parent).AttributeMaps[i] = data
-	}
 		(*parent).Realms[i] = data
 	}
 }
@@ -376,7 +357,6 @@ func (data *VPNRALDAPAttributeMap) fromBodyUnknowns(ctx context.Context, res gjs
 // End of section. //template:end fromBodyUnknowns
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
-
 
 // toBodyPutDelete is used to create the body for PUT requests to clear the resource state
 func (data VPNRALDAPAttributeMap) toBodyPutDelete(ctx context.Context) string {

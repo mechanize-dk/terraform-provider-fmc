@@ -31,39 +31,15 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type Port struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Type types.String `tfsdk:"type"`
-	Protocol types.String `tfsdk:"protocol"`
-	Port types.String `tfsdk:"port"`
+	Id          types.String `tfsdk:"id"`
+	Domain      types.String `tfsdk:"domain"`
+	Name        types.String `tfsdk:"name"`
+	Type        types.String `tfsdk:"type"`
+	Protocol    types.String `tfsdk:"protocol"`
+	Port        types.String `tfsdk:"port"`
 	Description types.String `tfsdk:"description"`
-	Overridable types.Bool `tfsdk:"overridable"`
+	Overridable types.Bool   `tfsdk:"overridable"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -74,7 +50,7 @@ type Port struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data Port) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/protocolportobjects"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/protocolportobjects"
 }
 
 // End of section. //template:end getPath
@@ -86,19 +62,19 @@ func (data Port) toBody(ctx context.Context, state Port) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Protocol.IsNull()   {
+	if !data.Protocol.IsNull() {
 		body, _ = sjson.Set(body, "protocol", data.Protocol.ValueString())
 	}
-	if !data.Port.IsNull()   {
+	if !data.Port.IsNull() {
 		body, _ = sjson.Set(body, "port", data.Port.ValueString())
 	}
-	if !data.Description.IsNull()   {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.Overridable.IsNull()   {
+	if !data.Overridable.IsNull() {
 		body, _ = sjson.Set(body, "overridable", data.Overridable.ValueBool())
 	}
 	return body
@@ -144,7 +120,6 @@ func (data *Port) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might

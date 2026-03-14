@@ -79,7 +79,7 @@ func (r *NetworkGroupsResource) Schema(ctx context.Context, req resource.SchemaR
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},

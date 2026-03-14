@@ -82,7 +82,7 @@ func (r *FTDNATPolicyResource) Schema(ctx context.Context, req resource.SchemaRe
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -100,7 +100,6 @@ func (r *FTDNATPolicyResource) Schema(ctx context.Context, req resource.SchemaRe
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					
 				},
 			},
 			"manage_rules": schema.BoolAttribute{
@@ -127,17 +126,17 @@ func (r *FTDNATPolicyResource) Schema(ctx context.Context, req resource.SchemaRe
 							Optional:            true,
 						},
 						"section": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Name of section to which the rule belongs.").AddStringEnumDescription("BEFORE_AUTO", "AFTER_AUTO", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Name of section to which the rule belongs.").AddStringEnumDescription("BEFORE_AUTO", "AFTER_AUTO").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("BEFORE_AUTO", "AFTER_AUTO", ),
+								stringvalidator.OneOf("BEFORE_AUTO", "AFTER_AUTO"),
 							},
 						},
 						"nat_type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Type of the rule").AddStringEnumDescription("STATIC", "DYNAMIC", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Type of the rule").AddStringEnumDescription("STATIC", "DYNAMIC").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("STATIC", "DYNAMIC", ),
+								stringvalidator.OneOf("STATIC", "DYNAMIC"),
 							},
 						},
 						"fall_through": schema.BoolAttribute{
@@ -229,10 +228,10 @@ func (r *FTDNATPolicyResource) Schema(ctx context.Context, req resource.SchemaRe
 							Computed:            true,
 						},
 						"nat_type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Type of the rule").AddStringEnumDescription("STATIC", "DYNAMIC", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Type of the rule").AddStringEnumDescription("STATIC", "DYNAMIC").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("STATIC", "DYNAMIC", ),
+								stringvalidator.OneOf("STATIC", "DYNAMIC"),
 							},
 						},
 						"destination_interface_id": schema.StringAttribute{
@@ -264,10 +263,10 @@ func (r *FTDNATPolicyResource) Schema(ctx context.Context, req resource.SchemaRe
 							Optional:            true,
 						},
 						"protocol": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Service protocol.").AddStringEnumDescription("TCP", "UDP", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Service protocol.").AddStringEnumDescription("TCP", "UDP").String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("TCP", "UDP", ),
+								stringvalidator.OneOf("TCP", "UDP"),
 							},
 						},
 						"route_lookup": schema.BoolAttribute{
@@ -771,7 +770,7 @@ func (r *FTDNATPolicyResource) Delete(ctx context.Context, req resource.DeleteRe
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()), reqMods...)
+	res, err := r.client.Delete(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString()), reqMods...)
 	if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return

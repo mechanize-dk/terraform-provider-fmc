@@ -45,12 +45,12 @@ func TestAccDataSourceFmcFTDNATPolicy(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcFTDNATPolicyPrerequisitesConfig+testAccDataSourceFmcFTDNATPolicyConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcFTDNATPolicyPrerequisitesConfig + testAccDataSourceFmcFTDNATPolicyConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcFTDNATPolicyPrerequisitesConfig+testAccNamedDataSourceFmcFTDNATPolicyConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcFTDNATPolicyPrerequisitesConfig + testAccNamedDataSourceFmcFTDNATPolicyConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -78,6 +78,7 @@ resource "fmc_hosts" "test" {
   }
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

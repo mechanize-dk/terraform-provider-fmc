@@ -32,31 +32,13 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type SGT struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Type types.String `tfsdk:"type"`
+	Id          types.String `tfsdk:"id"`
+	Domain      types.String `tfsdk:"domain"`
+	Name        types.String `tfsdk:"name"`
+	Type        types.String `tfsdk:"type"`
 	Description types.String `tfsdk:"description"`
-	Tag types.String `tfsdk:"tag"`
+	Tag         types.String `tfsdk:"tag"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -68,7 +50,7 @@ var minFMCVersionCreateSGT = version.Must(version.NewVersion("7.4"))
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data SGT) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/securitygrouptags"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/securitygrouptags"
 }
 
 // End of section. //template:end getPath
@@ -80,13 +62,13 @@ func (data SGT) toBody(ctx context.Context, state SGT) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()   {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.Tag.IsNull()   {
+	if !data.Tag.IsNull() {
 		body, _ = sjson.Set(body, "tag", data.Tag.ValueString())
 	}
 	return body
@@ -122,7 +104,6 @@ func (data *SGT) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might

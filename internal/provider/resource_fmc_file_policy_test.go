@@ -31,7 +31,7 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin testAcc
 
 func TestAccFmcFilePolicy(t *testing.T) {
-	if v := os.Getenv("FMC_VERSION"); v != "" && slices.Contains([]string{"7.7" }, v) {
+	if v := os.Getenv("FMC_VERSION"); v != "" && slices.Contains([]string{"7.7"}, v) {
 		t.Skip("skipping test for FMC version " + v)
 	}
 	var checks []resource.TestCheckFunc
@@ -62,18 +62,18 @@ func TestAccFmcFilePolicy(t *testing.T) {
 	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccFmcFilePolicyConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName:  "fmc_file_policy.test",
-		ImportState:   true,
+		ResourceName: "fmc_file_policy.test",
+		ImportState:  true,
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -90,6 +90,7 @@ func testAccFmcFilePolicyConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

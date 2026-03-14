@@ -31,7 +31,7 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSource
 
 func TestAccDataSourceFmcGeolocations(t *testing.T) {
-	if v := os.Getenv("FMC_VERSION"); v != "" && slices.Contains([]string{"7.2" }, v) {
+	if v := os.Getenv("FMC_VERSION"); v != "" && slices.Contains([]string{"7.2"}, v) {
 		t.Skip("skipping test for FMC version " + v)
 	}
 	var checks []resource.TestCheckFunc
@@ -43,8 +43,8 @@ func TestAccDataSourceFmcGeolocations(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcGeolocationsPrerequisitesConfig+testAccDataSourceFmcGeolocationsConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcGeolocationsPrerequisitesConfig + testAccDataSourceFmcGeolocationsConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -67,6 +67,7 @@ data "fmc_continents" "test" {
   }
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -94,7 +95,5 @@ func testAccDataSourceFmcGeolocationsConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

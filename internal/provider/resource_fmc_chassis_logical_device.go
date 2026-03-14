@@ -80,7 +80,7 @@ func (r *ChassisLogicalDeviceResource) Schema(ctx context.Context, req resource.
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -90,7 +90,6 @@ func (r *ChassisLogicalDeviceResource) Schema(ctx context.Context, req resource.
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"type": schema.StringAttribute{
@@ -98,7 +97,6 @@ func (r *ChassisLogicalDeviceResource) Schema(ctx context.Context, req resource.
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					
 				},
 			},
 			"device_id": schema.StringAttribute{
@@ -106,7 +104,6 @@ func (r *ChassisLogicalDeviceResource) Schema(ctx context.Context, req resource.
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					
 				},
 			},
 			"device_type": schema.StringAttribute{
@@ -114,7 +111,6 @@ func (r *ChassisLogicalDeviceResource) Schema(ctx context.Context, req resource.
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					
 				},
 			},
 			"name": schema.StringAttribute{
@@ -122,7 +118,6 @@ func (r *ChassisLogicalDeviceResource) Schema(ctx context.Context, req resource.
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"ftd_version": schema.StringAttribute{
@@ -130,7 +125,6 @@ func (r *ChassisLogicalDeviceResource) Schema(ctx context.Context, req resource.
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"ipv4_address": schema.StringAttribute{
@@ -138,7 +132,6 @@ func (r *ChassisLogicalDeviceResource) Schema(ctx context.Context, req resource.
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"ipv4_netmask": schema.StringAttribute{
@@ -146,7 +139,6 @@ func (r *ChassisLogicalDeviceResource) Schema(ctx context.Context, req resource.
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"ipv4_gateway": schema.StringAttribute{
@@ -154,7 +146,6 @@ func (r *ChassisLogicalDeviceResource) Schema(ctx context.Context, req resource.
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"ipv6_address": schema.StringAttribute{
@@ -162,7 +153,6 @@ func (r *ChassisLogicalDeviceResource) Schema(ctx context.Context, req resource.
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"ipv6_prefix": schema.Int64Attribute{
@@ -170,7 +160,6 @@ func (r *ChassisLogicalDeviceResource) Schema(ctx context.Context, req resource.
 				Optional:            true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.RequiresReplace(),
-					
 				},
 			},
 			"ipv6_gateway": schema.StringAttribute{
@@ -178,7 +167,6 @@ func (r *ChassisLogicalDeviceResource) Schema(ctx context.Context, req resource.
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"search_domain": schema.StringAttribute{
@@ -186,7 +174,6 @@ func (r *ChassisLogicalDeviceResource) Schema(ctx context.Context, req resource.
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"fqdn": schema.StringAttribute{
@@ -194,18 +181,16 @@ func (r *ChassisLogicalDeviceResource) Schema(ctx context.Context, req resource.
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"firewall_mode": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Firewall mode of the device.").AddStringEnumDescription("ROUTED", "TRANSPARENT", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Firewall mode of the device.").AddStringEnumDescription("ROUTED", "TRANSPARENT").String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("ROUTED", "TRANSPARENT", ),
+					stringvalidator.OneOf("ROUTED", "TRANSPARENT"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"dns_servers": schema.StringAttribute{
@@ -213,7 +198,6 @@ func (r *ChassisLogicalDeviceResource) Schema(ctx context.Context, req resource.
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"device_password": schema.StringAttribute{
@@ -222,23 +206,22 @@ func (r *ChassisLogicalDeviceResource) Schema(ctx context.Context, req resource.
 				Sensitive:           true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"admin_state": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Admin state of the device.").AddStringEnumDescription("ENABLED", "DISABLED", ).AddDefaultValueDescription("ENABLED").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Admin state of the device.").AddStringEnumDescription("ENABLED", "DISABLED").AddDefaultValueDescription("ENABLED").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("ENABLED", "DISABLED", ),
+					stringvalidator.OneOf("ENABLED", "DISABLED"),
 				},
-				Default:             stringdefault.StaticString("ENABLED"),
+				Default: stringdefault.StaticString("ENABLED"),
 			},
 			"permit_expert_mode": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Permit expert mode for the device.").AddStringEnumDescription("yes", "no", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Permit expert mode for the device.").AddStringEnumDescription("yes", "no").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("yes", "no", ),
+					stringvalidator.OneOf("yes", "no"),
 				},
 			},
 			"resource_profile_id": schema.StringAttribute{
@@ -274,12 +257,12 @@ func (r *ChassisLogicalDeviceResource) Schema(ctx context.Context, req resource.
 				Optional:            true,
 			},
 			"licenses": schema.SetAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("License capabilities to be assigned to the device. This is used only as bootstrap configuration.").AddStringEnumDescription("MALWARE", "URLFilter", "CARRIER", "PROTECT", "THREAT", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("License capabilities to be assigned to the device. This is used only as bootstrap configuration.").AddStringEnumDescription("MALWARE", "URLFilter", "CARRIER", "PROTECT", "THREAT").String,
 				ElementType:         types.StringType,
 				Optional:            true,
 				Validators: []validator.Set{
 					setvalidator.ValueStringsAre(
-						stringvalidator.OneOf("MALWARE", "URLFilter", "CARRIER", "PROTECT", "THREAT", ),
+						stringvalidator.OneOf("MALWARE", "URLFilter", "CARRIER", "PROTECT", "THREAT"),
 					),
 				},
 			},
@@ -423,14 +406,13 @@ func (r *ChassisLogicalDeviceResource) Read(ctx context.Context, req resource.Re
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-	
+
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else  if err != nil {
+	} else if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -601,22 +583,23 @@ func (r *ChassisLogicalDeviceResource) Delete(ctx context.Context, req resource.
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *ChassisLogicalDeviceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-		// Parse import ID
-		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<chassis_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
-		match := inputPattern.FindStringSubmatch(req.ID)
-		if match == nil {
-			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<chassis_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-			resp.Diagnostics.AddError("Import error", errMsg)
-			return
-		}
+	// Parse import ID
+	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<chassis_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
+	match := inputPattern.FindStringSubmatch(req.ID)
+	if match == nil {
+		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<chassis_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+		resp.Diagnostics.AddError("Import error", errMsg)
+		return
+	}
 
-		// Set domain, if provided
-		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-		}
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("chassis_id"), match[inputPattern.SubexpIndex("chassis_id")])...)
+	// Set domain, if provided
+	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("chassis_id"), match[inputPattern.SubexpIndex("chassis_id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
+
 // End of section. //template:end import

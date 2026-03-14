@@ -31,7 +31,7 @@ import (
 
 func TestAccDataSourceFmcInterfaceGroups(t *testing.T) {
 	if os.Getenv("TF_VAR_device_id") == "" || os.Getenv("TF_VAR_interface_name") == "" {
-        t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_interface_name")
+		t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_interface_name")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("data.fmc_interface_groups.test", "items.my_interface_groups.id"))
@@ -44,8 +44,8 @@ func TestAccDataSourceFmcInterfaceGroups(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcInterfaceGroupsPrerequisitesConfig+testAccDataSourceFmcInterfaceGroupsConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcInterfaceGroupsPrerequisitesConfig + testAccDataSourceFmcInterfaceGroupsConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -67,6 +67,7 @@ resource "fmc_device_physical_interface" "test" {
   enabled      = true
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -92,7 +93,5 @@ func testAccDataSourceFmcInterfaceGroupsConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

@@ -63,7 +63,7 @@ func (d *URLsDataSource) Schema(ctx context.Context, req datasource.SchemaReques
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 			},
 			"items": schema.MapNestedAttribute{
 				MarkdownDescription: "Map of URLs. The key of the map is the name of the individual URL object.",
@@ -127,7 +127,7 @@ func (d *URLsDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
-	
+
 	// Get all objects from FMC
 	urlPath := config.getPath() + "?expanded=true"
 	res, err := d.client.Get(urlPath, reqMods...)

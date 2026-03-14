@@ -44,7 +44,7 @@ func TestAccDataSourceFmcDNSServerGroups(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcDNSServerGroupsConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -80,7 +80,5 @@ func testAccDataSourceFmcDNSServerGroupsConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

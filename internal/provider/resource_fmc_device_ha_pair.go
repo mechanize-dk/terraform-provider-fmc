@@ -83,7 +83,7 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -97,7 +97,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					
 				},
 			},
 			"primary_device_id": schema.StringAttribute{
@@ -105,7 +104,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"secondary_device_id": schema.StringAttribute{
@@ -113,7 +111,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"ha_link_interface_id": schema.StringAttribute{
@@ -121,7 +118,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"ha_link_interface_name": schema.StringAttribute{
@@ -129,7 +125,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"ha_link_interface_type": schema.StringAttribute{
@@ -137,7 +132,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"ha_link_logical_name": schema.StringAttribute{
@@ -145,7 +139,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"ha_link_use_ipv6": schema.BoolAttribute{
@@ -155,7 +148,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Default:             booldefault.StaticBool(false),
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"ha_link_primary_ip": schema.StringAttribute{
@@ -163,7 +155,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"ha_link_secondary_ip": schema.StringAttribute{
@@ -171,7 +162,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"ha_link_netmask": schema.StringAttribute{
@@ -179,7 +169,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"state_link_use_same_as_ha": schema.BoolAttribute{
@@ -187,7 +176,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Required:            true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"state_link_interface_id": schema.StringAttribute{
@@ -195,7 +183,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"state_link_interface_name": schema.StringAttribute{
@@ -203,7 +190,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"state_link_interface_type": schema.StringAttribute{
@@ -211,7 +197,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"state_link_logical_name": schema.StringAttribute{
@@ -219,7 +204,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"state_link_use_ipv6": schema.BoolAttribute{
@@ -227,7 +211,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:            true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"state_link_primary_ip": schema.StringAttribute{
@@ -235,7 +218,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"state_link_secondary_ip": schema.StringAttribute{
@@ -243,7 +225,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"state_link_netmask": schema.StringAttribute{
@@ -251,7 +232,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"encryption_enabled": schema.BoolAttribute{
@@ -259,18 +239,16 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:            true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"encryption_key_generation_scheme": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Select the encyption key generation scheme.").AddStringEnumDescription("AUTO", "CUSTOM", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Select the encyption key generation scheme.").AddStringEnumDescription("AUTO", "CUSTOM").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("AUTO", "CUSTOM", ),
+					stringvalidator.OneOf("AUTO", "CUSTOM"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"encryption_key": schema.StringAttribute{
@@ -278,7 +256,6 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"failed_interfaces_percent": schema.Int64Attribute{
@@ -302,16 +279,16 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Validators: []validator.Int64{
 					int64validator.Between(1, 999),
 				},
-				Default:             int64default.StaticInt64(1),
+				Default: int64default.StaticInt64(1),
 			},
 			"peer_poll_time_unit": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Peer Pool Time Unit").AddStringEnumDescription("SEC", "MSEC", ).AddDefaultValueDescription("SEC").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Peer Pool Time Unit").AddStringEnumDescription("SEC", "MSEC").AddDefaultValueDescription("SEC").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("SEC", "MSEC", ),
+					stringvalidator.OneOf("SEC", "MSEC"),
 				},
-				Default:             stringdefault.StaticString("SEC"),
+				Default: stringdefault.StaticString("SEC"),
 			},
 			"peer_hold_time": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Peer Hold Time (3-45 SEC or 800-999 MSEC)").AddIntegerRangeDescription(3, 999).AddDefaultValueDescription("15").String,
@@ -320,16 +297,16 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Validators: []validator.Int64{
 					int64validator.Between(3, 999),
 				},
-				Default:             int64default.StaticInt64(15),
+				Default: int64default.StaticInt64(15),
 			},
 			"peer_hold_time_unit": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Peer Hold Time Unit").AddStringEnumDescription("SEC", "MSEC", ).AddDefaultValueDescription("SEC").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Peer Hold Time Unit").AddStringEnumDescription("SEC", "MSEC").AddDefaultValueDescription("SEC").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("SEC", "MSEC", ),
+					stringvalidator.OneOf("SEC", "MSEC"),
 				},
-				Default:             stringdefault.StaticString("SEC"),
+				Default: stringdefault.StaticString("SEC"),
 			},
 			"interface_poll_time": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Peer Pool Time (1-15 SEC or 500-999 MSEC)").AddIntegerRangeDescription(1, 999).AddDefaultValueDescription("5").String,
@@ -338,16 +315,16 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Validators: []validator.Int64{
 					int64validator.Between(1, 999),
 				},
-				Default:             int64default.StaticInt64(5),
+				Default: int64default.StaticInt64(5),
 			},
 			"interface_poll_time_unit": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Peer Pool Time Unit").AddStringEnumDescription("SEC", "MSEC", ).AddDefaultValueDescription("SEC").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Peer Pool Time Unit").AddStringEnumDescription("SEC", "MSEC").AddDefaultValueDescription("SEC").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("SEC", "MSEC", ),
+					stringvalidator.OneOf("SEC", "MSEC"),
 				},
-				Default:             stringdefault.StaticString("SEC"),
+				Default: stringdefault.StaticString("SEC"),
 			},
 			"interface_hold_time": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Interface Hold Time in seconds").AddIntegerRangeDescription(25, 75).AddDefaultValueDescription("25").String,
@@ -356,13 +333,13 @@ func (r *DeviceHAPairResource) Schema(ctx context.Context, req resource.SchemaRe
 				Validators: []validator.Int64{
 					int64validator.Between(25, 75),
 				},
-				Default:             int64default.StaticInt64(25),
+				Default: int64default.StaticInt64(25),
 			},
 			"action": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("FTD HA PUT operation action. Specifically used for manual switch.").AddStringEnumDescription("SWITCH", "HABREAK", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("FTD HA PUT operation action. Specifically used for manual switch.").AddStringEnumDescription("SWITCH", "HABREAK").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("SWITCH", "HABREAK", ),
+					stringvalidator.OneOf("SWITCH", "HABREAK"),
 				},
 			},
 		},
@@ -653,21 +630,22 @@ func (r *DeviceHAPairResource) Delete(ctx context.Context, req resource.DeleteRe
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *DeviceHAPairResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-		// Parse import ID
-		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
-		match := inputPattern.FindStringSubmatch(req.ID)
-		if match == nil {
-			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-			resp.Diagnostics.AddError("Import error", errMsg)
-			return
-		}
+	// Parse import ID
+	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
+	match := inputPattern.FindStringSubmatch(req.ID)
+	if match == nil {
+		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+		resp.Diagnostics.AddError("Import error", errMsg)
+		return
+	}
 
-		// Set domain, if provided
-		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-		}
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+	// Set domain, if provided
+	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
+
 // End of section. //template:end import

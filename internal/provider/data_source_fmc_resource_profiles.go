@@ -63,7 +63,7 @@ func (d *ResourceProfilesDataSource) Schema(ctx context.Context, req datasource.
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 			},
 			"items": schema.MapNestedAttribute{
 				MarkdownDescription: "Map of Resource Profiles. The key of the map is the name of the individual Resource Profile.",
@@ -123,7 +123,7 @@ func (d *ResourceProfilesDataSource) Read(ctx context.Context, req datasource.Re
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
-	
+
 	// Get all objects from FMC
 	urlPath := config.getPath() + "?expanded=true"
 	res, err := d.client.Get(urlPath, reqMods...)

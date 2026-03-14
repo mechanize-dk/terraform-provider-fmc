@@ -37,19 +37,19 @@ func TestAccFmcAccessCategory(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccFmcAccessCategoryPrerequisitesConfig+testAccFmcAccessCategoryConfig_minimum(),
+			Config: testAccFmcAccessCategoryPrerequisitesConfig + testAccFmcAccessCategoryConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcAccessCategoryPrerequisitesConfig+testAccFmcAccessCategoryConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcAccessCategoryPrerequisitesConfig + testAccFmcAccessCategoryConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -65,6 +65,7 @@ resource "fmc_access_control_policy" "test" {
   manage_categories = false
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -76,6 +77,7 @@ func testAccFmcAccessCategoryConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

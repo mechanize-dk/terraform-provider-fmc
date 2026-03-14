@@ -36,31 +36,21 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type InterfaceGroups struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Items map[string]InterfaceGroupsItems `tfsdk:"items"`
+	Id     types.String                    `tfsdk:"id"`
+	Domain types.String                    `tfsdk:"domain"`
+	Items  map[string]InterfaceGroupsItems `tfsdk:"items"`
 }
-
 
 type InterfaceGroupsItems struct {
-	Id types.String `tfsdk:"id"`
-	Type types.String `tfsdk:"type"`
-	InterfaceType types.String `tfsdk:"interface_type"`
-	Interfaces []InterfaceGroupsItemsInterfaces `tfsdk:"interfaces"`
+	Id            types.String                     `tfsdk:"id"`
+	Type          types.String                     `tfsdk:"type"`
+	InterfaceType types.String                     `tfsdk:"interface_type"`
+	Interfaces    []InterfaceGroupsItemsInterfaces `tfsdk:"interfaces"`
 }
-
-
-
 
 type InterfaceGroupsItemsInterfaces struct {
 	Id types.String `tfsdk:"id"`
 }
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -72,7 +62,7 @@ var minFMCVersionBulkDeleteInterfaceGroups = version.Must(version.NewVersion("99
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data InterfaceGroups) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/interfacegroups"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/interfacegroups"
 }
 
 // End of section. //template:end getPath
@@ -88,17 +78,17 @@ func (data InterfaceGroups) toBody(ctx context.Context, state InterfaceGroups) s
 		body, _ = sjson.Set(body, "items", []any{})
 		for key, item := range data.Items {
 			itemBody, _ := sjson.Set("{}", "name", key)
-			if !item.Id.IsNull() && !item.Id.IsUnknown()  {
+			if !item.Id.IsNull() && !item.Id.IsUnknown() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.InterfaceType.IsNull()   {
+			if !item.InterfaceType.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "interfaceMode", item.InterfaceType.ValueString())
 			}
 			if len(item.Interfaces) > 0 {
 				itemBody, _ = sjson.Set(itemBody, "interfaces", []any{})
 				for _, childItem := range item.Interfaces {
 					itemChildBody := ""
-					if !childItem.Id.IsNull()  {
+					if !childItem.Id.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "id", childItem.Id.ValueString())
 					}
 					itemBody, _ = sjson.SetRaw(itemBody, "interfaces.-1", itemChildBody)
@@ -127,39 +117,40 @@ func (data *InterfaceGroups) fromBody(ctx context.Context, res gjson.Result) {
 		parent := &data
 		data := (*parent).Items[k]
 		res, found := itemsByName[k]
-		if !found {tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
+		if !found {
+			tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
 			delete((*parent).Items, k)
 			continue
 		}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("interfaceMode"); value.Exists() {
-		data.InterfaceType = types.StringValue(value.String())
-	} else {
-		data.InterfaceType = types.StringNull()
-	}
-	if value := res.Get("interfaces"); value.Exists() {
-		data.Interfaces = make([]InterfaceGroupsItemsInterfaces, 0)
-		value.ForEach(func(k, res gjson.Result) bool {
-			parent := &data
-			data := InterfaceGroupsItemsInterfaces{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-			(*parent).Interfaces = append((*parent).Interfaces, data)
-			return true
-		})
-	}
+		if value := res.Get("id"); value.Exists() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("type"); value.Exists() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
+		}
+		if value := res.Get("interfaceMode"); value.Exists() {
+			data.InterfaceType = types.StringValue(value.String())
+		} else {
+			data.InterfaceType = types.StringNull()
+		}
+		if value := res.Get("interfaces"); value.Exists() {
+			data.Interfaces = make([]InterfaceGroupsItemsInterfaces, 0)
+			value.ForEach(func(k, res gjson.Result) bool {
+				parent := &data
+				data := InterfaceGroupsItemsInterfaces{}
+				if value := res.Get("id"); value.Exists() {
+					data.Id = types.StringValue(value.String())
+				} else {
+					data.Id = types.StringNull()
+				}
+				(*parent).Interfaces = append((*parent).Interfaces, data)
+				return true
+			})
+		}
 		(*parent).Items[k] = data
 	}
 }
@@ -167,7 +158,6 @@ func (data *InterfaceGroups) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -189,64 +179,64 @@ func (data *InterfaceGroups) fromBodyPartial(ctx context.Context, res gjson.Resu
 			continue
 		}
 		res, _ := itemsById[data.Id.ValueString()]
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("interfaceMode"); value.Exists() && !data.InterfaceType.IsNull() {
-		data.InterfaceType = types.StringValue(value.String())
-	} else {
-		data.InterfaceType = types.StringNull()
-	}
-	for i := 0; i < len(data.Interfaces); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.Interfaces[i].Id.ValueString(),  }
-
-		parent := &data
-		data := (*parent).Interfaces[i]
-		parentRes := &res
-		var res gjson.Result
-
-		parentRes.Get("interfaces").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() != keyValues[ik] {
-						found = false
-						break
-					}
-					found = true
-				}
-				if found {
-					res = v
-					return false
-				}
-				return true
-			},
-		)
-		if !res.Exists() {
-			tflog.Debug(ctx, fmt.Sprintf("removing Interfaces[%d] = %+v",
-				i,
-				(*parent).Interfaces[i],
-			))
-			(*parent).Interfaces = slices.Delete((*parent).Interfaces, i, i+1)
-			i--
-
-			continue
+		if value := res.Get("id"); value.Exists() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-		(*parent).Interfaces[i] = data
-	}
+		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
+		}
+		if value := res.Get("interfaceMode"); value.Exists() && !data.InterfaceType.IsNull() {
+			data.InterfaceType = types.StringValue(value.String())
+		} else {
+			data.InterfaceType = types.StringNull()
+		}
+		for i := 0; i < len(data.Interfaces); i++ {
+			keys := [...]string{"id"}
+			keyValues := [...]string{data.Interfaces[i].Id.ValueString()}
+
+			parent := &data
+			data := (*parent).Interfaces[i]
+			parentRes := &res
+			var res gjson.Result
+
+			parentRes.Get("interfaces").ForEach(
+				func(_, v gjson.Result) bool {
+					found := false
+					for ik := range keys {
+						if v.Get(keys[ik]).String() != keyValues[ik] {
+							found = false
+							break
+						}
+						found = true
+					}
+					if found {
+						res = v
+						return false
+					}
+					return true
+				},
+			)
+			if !res.Exists() {
+				tflog.Debug(ctx, fmt.Sprintf("removing Interfaces[%d] = %+v",
+					i,
+					(*parent).Interfaces[i],
+				))
+				(*parent).Interfaces = slices.Delete((*parent).Interfaces, i, i+1)
+				i--
+
+				continue
+			}
+			if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
+			(*parent).Interfaces[i] = data
+		}
 		(*parent).Items[i] = data
 	}
 }
@@ -300,7 +290,6 @@ func (data *InterfaceGroups) fromBodyUnknowns(ctx context.Context, res gjson.Res
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
 func (data *InterfaceGroups) Clone() InterfaceGroups {
 	ret := *data
 	ret.Items = maps.Clone(data.Items)
@@ -311,7 +300,6 @@ func (data *InterfaceGroups) Clone() InterfaceGroups {
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
 
 // Updates done one-by-one require different API body
 func (data InterfaceGroups) toBodyNonBulk(ctx context.Context, state InterfaceGroups) string {
@@ -331,7 +319,6 @@ func (data InterfaceGroups) toBodyNonBulk(ctx context.Context, state InterfaceGr
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
-
 // Check if single object within bulk requires replace due to `requires_replace`
 // Since here we assume object has changed, it must be present in both state and plan (data)
 func (data InterfaceGroups) findObjectsToBeReplaced(ctx context.Context, state InterfaceGroups) InterfaceGroups {
@@ -348,10 +335,10 @@ func (data InterfaceGroups) findObjectsToBeReplaced(ctx context.Context, state I
 		}
 
 		// Check if any field marked as `requires_replace` has changed
-					if item.InterfaceType != state.Items[key].InterfaceType {
-						toBeReplaced.Items[key] = item
-						continue
-					}
+		if item.InterfaceType != state.Items[key].InterfaceType {
+			toBeReplaced.Items[key] = item
+			continue
+		}
 	}
 
 	return toBeReplaced
@@ -360,7 +347,6 @@ func (data InterfaceGroups) findObjectsToBeReplaced(ctx context.Context, state I
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
-
 
 func (data *InterfaceGroups) clearItemsIds(ctx context.Context) {
 	for key, value := range data.Items {

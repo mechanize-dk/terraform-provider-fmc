@@ -46,12 +46,12 @@ func TestAccDataSourceFmcSingleSignOnServer(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcSingleSignOnServerPrerequisitesConfig+testAccDataSourceFmcSingleSignOnServerConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcSingleSignOnServerPrerequisitesConfig + testAccDataSourceFmcSingleSignOnServerConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcSingleSignOnServerPrerequisitesConfig+testAccNamedDataSourceFmcSingleSignOnServerConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcSingleSignOnServerPrerequisitesConfig + testAccNamedDataSourceFmcSingleSignOnServerConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -345,6 +345,7 @@ resource "fmc_certificate_enrollment" "test" {
   pkcs12_certificate_passphrase = "cisco123"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

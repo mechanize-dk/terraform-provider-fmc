@@ -31,7 +31,7 @@ import (
 
 func TestAccFmcPolicyList(t *testing.T) {
 	if os.Getenv("TF_VAR_interface_name") == "" {
-        t.Skip("skipping test, set environment variable TF_VAR_interface_name")
+		t.Skip("skipping test, set environment variable TF_VAR_interface_name")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("fmc_policy_list.test", "name", "my_policy_list"))
@@ -44,23 +44,23 @@ func TestAccFmcPolicyList(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccFmcPolicyListPrerequisitesConfig+testAccFmcPolicyListConfig_minimum(),
+			Config: testAccFmcPolicyListPrerequisitesConfig + testAccFmcPolicyListConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcPolicyListPrerequisitesConfig+testAccFmcPolicyListConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcPolicyListPrerequisitesConfig + testAccFmcPolicyListConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName:  "fmc_policy_list.test",
-		ImportState:   true,
+		ResourceName: "fmc_policy_list.test",
+		ImportState:  true,
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -100,6 +100,7 @@ resource "fmc_standard_community_list" "test" {
   ]
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -111,6 +112,7 @@ func testAccFmcPolicyListConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

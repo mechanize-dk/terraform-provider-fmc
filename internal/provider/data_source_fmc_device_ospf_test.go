@@ -31,7 +31,7 @@ import (
 
 func TestAccDataSourceFmcDeviceOSPF(t *testing.T) {
 	if os.Getenv("TF_VAR_device_id") == "" {
-        t.Skip("skipping test, set environment variable TF_VAR_device_id")
+		t.Skip("skipping test, set environment variable TF_VAR_device_id")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("data.fmc_device_ospf.test", "type"))
@@ -58,8 +58,8 @@ func TestAccDataSourceFmcDeviceOSPF(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcDeviceOSPFPrerequisitesConfig+testAccDataSourceFmcDeviceOSPFConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcDeviceOSPFPrerequisitesConfig + testAccDataSourceFmcDeviceOSPFConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -97,6 +97,7 @@ resource "fmc_ipv4_prefix_list" "test" {
   ]
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -144,7 +145,5 @@ func testAccDataSourceFmcDeviceOSPFConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

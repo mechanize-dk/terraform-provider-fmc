@@ -33,50 +33,17 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type VPNRAAddressAssignmentPolicy struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	VpnRaId types.String `tfsdk:"vpn_ra_id"`
-	Type types.String `tfsdk:"type"`
-	Ipv4UseAuthorizationServer types.Bool `tfsdk:"ipv4_use_authorization_server"`
-	Ipv4UseDhcp types.Bool `tfsdk:"ipv4_use_dhcp"`
-	Ipv4UseInternalAddressPool types.Bool `tfsdk:"ipv4_use_internal_address_pool"`
-	Ipv4InternalAddressPoolReuseInterval types.Int64 `tfsdk:"ipv4_internal_address_pool_reuse_interval"`
-	Ipv6UseAuthorizationServer types.Bool `tfsdk:"ipv6_use_authorization_server"`
-	Ipv6UseInternalAddressPool types.Bool `tfsdk:"ipv6_use_internal_address_pool"`
+	Id                                   types.String `tfsdk:"id"`
+	Domain                               types.String `tfsdk:"domain"`
+	VpnRaId                              types.String `tfsdk:"vpn_ra_id"`
+	Type                                 types.String `tfsdk:"type"`
+	Ipv4UseAuthorizationServer           types.Bool   `tfsdk:"ipv4_use_authorization_server"`
+	Ipv4UseDhcp                          types.Bool   `tfsdk:"ipv4_use_dhcp"`
+	Ipv4UseInternalAddressPool           types.Bool   `tfsdk:"ipv4_use_internal_address_pool"`
+	Ipv4InternalAddressPoolReuseInterval types.Int64  `tfsdk:"ipv4_internal_address_pool_reuse_interval"`
+	Ipv6UseAuthorizationServer           types.Bool   `tfsdk:"ipv6_use_authorization_server"`
+	Ipv6UseInternalAddressPool           types.Bool   `tfsdk:"ipv6_use_internal_address_pool"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -87,7 +54,7 @@ type VPNRAAddressAssignmentPolicy struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data VPNRAAddressAssignmentPolicy) getPath() string {
-		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ravpns/%v/addressassignmentsettings", url.QueryEscape(data.VpnRaId.ValueString()))
+	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ravpns/%v/addressassignmentsettings", url.QueryEscape(data.VpnRaId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -100,22 +67,22 @@ func (data VPNRAAddressAssignmentPolicy) toBody(ctx context.Context, state VPNRA
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "RaVpnAddressAssignmentSetting")
-	if !data.Ipv4UseAuthorizationServer.IsNull()   {
+	if !data.Ipv4UseAuthorizationServer.IsNull() {
 		body, _ = sjson.Set(body, "useAuthorizationServerForIPv4", data.Ipv4UseAuthorizationServer.ValueBool())
 	}
-	if !data.Ipv4UseDhcp.IsNull()   {
+	if !data.Ipv4UseDhcp.IsNull() {
 		body, _ = sjson.Set(body, "useDHCP", data.Ipv4UseDhcp.ValueBool())
 	}
-	if !data.Ipv4UseInternalAddressPool.IsNull()   {
+	if !data.Ipv4UseInternalAddressPool.IsNull() {
 		body, _ = sjson.Set(body, "useInternalAddressPoolForIPv4", data.Ipv4UseInternalAddressPool.ValueBool())
 	}
-	if !data.Ipv4InternalAddressPoolReuseInterval.IsNull()   {
+	if !data.Ipv4InternalAddressPoolReuseInterval.IsNull() {
 		body, _ = sjson.Set(body, "ipAddressReuseInterval", data.Ipv4InternalAddressPoolReuseInterval.ValueInt64())
 	}
-	if !data.Ipv6UseAuthorizationServer.IsNull()   {
+	if !data.Ipv6UseAuthorizationServer.IsNull() {
 		body, _ = sjson.Set(body, "useAuthorizationServerForIPv6", data.Ipv6UseAuthorizationServer.ValueBool())
 	}
-	if !data.Ipv6UseInternalAddressPool.IsNull()   {
+	if !data.Ipv6UseInternalAddressPool.IsNull() {
 		body, _ = sjson.Set(body, "useInternalAddressPoolForIPv6", data.Ipv6UseInternalAddressPool.ValueBool())
 	}
 	return body
@@ -166,7 +133,6 @@ func (data *VPNRAAddressAssignmentPolicy) fromBody(ctx context.Context, res gjso
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -243,7 +209,5 @@ func (data VPNRAAddressAssignmentPolicy) toBodyPutDelete(ctx context.Context) st
 }
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
-
-
 
 // End of section. //template:end adjustBody

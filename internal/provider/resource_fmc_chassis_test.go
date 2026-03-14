@@ -31,7 +31,7 @@ import (
 
 func TestAccFmcChassis(t *testing.T) {
 	if os.Getenv("TF_VAR_chassis_registration_key") == "" {
-        t.Skip("skipping test, set environment variable TF_VAR_chassis_registration_key")
+		t.Skip("skipping test, set environment variable TF_VAR_chassis_registration_key")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("fmc_chassis.test", "name", "my_chassis"))
@@ -45,18 +45,18 @@ func TestAccFmcChassis(t *testing.T) {
 	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccFmcChassisConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName:  "fmc_chassis.test",
-		ImportState:   true,
+		ResourceName: "fmc_chassis.test",
+		ImportState:  true,
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -74,6 +74,7 @@ func testAccFmcChassisConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

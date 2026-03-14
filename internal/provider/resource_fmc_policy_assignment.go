@@ -86,7 +86,7 @@ func (r *PolicyAssignmentResource) Schema(ctx context.Context, req resource.Sche
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -96,7 +96,6 @@ func (r *PolicyAssignmentResource) Schema(ctx context.Context, req resource.Sche
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					
 				},
 			},
 			"policy_name": schema.StringAttribute{
@@ -104,7 +103,6 @@ func (r *PolicyAssignmentResource) Schema(ctx context.Context, req resource.Sche
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					
 				},
 			},
 			"policy_id": schema.StringAttribute{
@@ -112,14 +110,13 @@ func (r *PolicyAssignmentResource) Schema(ctx context.Context, req resource.Sche
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"policy_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Type of the policy to be assigned.").AddStringEnumDescription("FTDNatPolicy", "HealthPolicy", "AccessPolicy", "RAVpn", "FTDPlatformSettingsPolicy", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Type of the policy to be assigned.").AddStringEnumDescription("FTDNatPolicy", "HealthPolicy", "AccessPolicy", "RAVpn", "FTDPlatformSettingsPolicy").String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("FTDNatPolicy", "HealthPolicy", "AccessPolicy", "RAVpn", "FTDPlatformSettingsPolicy", ),
+					stringvalidator.OneOf("FTDNatPolicy", "HealthPolicy", "AccessPolicy", "RAVpn", "FTDPlatformSettingsPolicy"),
 				},
 			},
 			"after_destroy_policy_id": schema.StringAttribute{
@@ -136,10 +133,10 @@ func (r *PolicyAssignmentResource) Schema(ctx context.Context, req resource.Sche
 							Required:            true,
 						},
 						"type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Type of the device").AddStringEnumDescription("Device", "DeviceHAPair", "DeviceGroup", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Type of the device").AddStringEnumDescription("Device", "DeviceHAPair", "DeviceGroup").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("Device", "DeviceHAPair", "DeviceGroup", ),
+								stringvalidator.OneOf("Device", "DeviceHAPair", "DeviceGroup"),
 							},
 						},
 						"name": schema.StringAttribute{
@@ -491,23 +488,24 @@ func (r *PolicyAssignmentResource) Delete(ctx context.Context, req resource.Dele
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *PolicyAssignmentResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-		// Parse import ID
-		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
-		match := inputPattern.FindStringSubmatch(req.ID)
-		if match == nil {
-			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-			resp.Diagnostics.AddError("Import error", errMsg)
-			return
-		}
+	// Parse import ID
+	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
+	match := inputPattern.FindStringSubmatch(req.ID)
+	if match == nil {
+		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+		resp.Diagnostics.AddError("Import error", errMsg)
+		return
+	}
 
-		// Set domain, if provided
-		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-		}
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+	// Set domain, if provided
+	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
+
 // End of section. //template:end import
 
 // createPolicyAssignment creates a new policy assignment using POST request

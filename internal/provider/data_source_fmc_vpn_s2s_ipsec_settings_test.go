@@ -51,8 +51,8 @@ func TestAccDataSourceFmcVPNS2SIPSECSettings(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcVPNS2SIPSECSettingsPrerequisitesConfig+testAccDataSourceFmcVPNS2SIPSECSettingsConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcVPNS2SIPSECSettingsPrerequisitesConfig + testAccDataSourceFmcVPNS2SIPSECSettingsConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -81,6 +81,7 @@ resource "fmc_ikev2_ipsec_proposals" "test" {
   }
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -116,7 +117,5 @@ func testAccDataSourceFmcVPNS2SIPSECSettingsConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

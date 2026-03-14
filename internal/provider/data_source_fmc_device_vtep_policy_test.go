@@ -31,7 +31,7 @@ import (
 
 func TestAccDataSourceFmcDeviceVTEPPolicy(t *testing.T) {
 	if os.Getenv("TF_VAR_device_id") == "" || os.Getenv("TF_VAR_interface_name") == "" {
-        t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_interface_name")
+		t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_interface_name")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("data.fmc_device_vtep_policy.test", "type"))
@@ -44,8 +44,8 @@ func TestAccDataSourceFmcDeviceVTEPPolicy(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcDeviceVTEPPolicyPrerequisitesConfig+testAccDataSourceFmcDeviceVTEPPolicyConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcDeviceVTEPPolicyPrerequisitesConfig + testAccDataSourceFmcDeviceVTEPPolicyConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -66,6 +66,7 @@ resource "fmc_device_physical_interface" "test" {
   logical_name = "myinterface-0-1"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -90,7 +91,5 @@ func testAccDataSourceFmcDeviceVTEPPolicyConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

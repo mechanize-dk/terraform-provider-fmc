@@ -36,33 +36,23 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type DNSServerGroups struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Items map[string]DNSServerGroupsItems `tfsdk:"items"`
+	Id     types.String                    `tfsdk:"id"`
+	Domain types.String                    `tfsdk:"domain"`
+	Items  map[string]DNSServerGroupsItems `tfsdk:"items"`
 }
-
 
 type DNSServerGroupsItems struct {
-	Id types.String `tfsdk:"id"`
-	Type types.String `tfsdk:"type"`
-	DefaultDomain types.String `tfsdk:"default_domain"`
-	Timeout types.Int64 `tfsdk:"timeout"`
-	Retries types.Int64 `tfsdk:"retries"`
-	DnsServers []DNSServerGroupsItemsDnsServers `tfsdk:"dns_servers"`
+	Id            types.String                     `tfsdk:"id"`
+	Type          types.String                     `tfsdk:"type"`
+	DefaultDomain types.String                     `tfsdk:"default_domain"`
+	Timeout       types.Int64                      `tfsdk:"timeout"`
+	Retries       types.Int64                      `tfsdk:"retries"`
+	DnsServers    []DNSServerGroupsItemsDnsServers `tfsdk:"dns_servers"`
 }
-
-
-
 
 type DNSServerGroupsItemsDnsServers struct {
 	Ip types.String `tfsdk:"ip"`
 }
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -76,7 +66,7 @@ var minFMCVersionBulkDeleteDNSServerGroups = version.Must(version.NewVersion("99
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data DNSServerGroups) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/dnsservergroups"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/dnsservergroups"
 }
 
 // End of section. //template:end getPath
@@ -92,24 +82,24 @@ func (data DNSServerGroups) toBody(ctx context.Context, state DNSServerGroups) s
 		body, _ = sjson.Set(body, "items", []any{})
 		for key, item := range data.Items {
 			itemBody, _ := sjson.Set("{}", "name", key)
-			if !item.Id.IsNull() && !item.Id.IsUnknown()  {
+			if !item.Id.IsNull() && !item.Id.IsUnknown() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			itemBody, _ = sjson.Set(itemBody, "type", "DNSServerGroupObject")
-			if !item.DefaultDomain.IsNull()   {
+			if !item.DefaultDomain.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "defaultdomain", item.DefaultDomain.ValueString())
 			}
-			if !item.Timeout.IsNull()   {
+			if !item.Timeout.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "timeout", item.Timeout.ValueInt64())
 			}
-			if !item.Retries.IsNull()   {
+			if !item.Retries.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "retries", item.Retries.ValueInt64())
 			}
 			if len(item.DnsServers) > 0 {
 				itemBody, _ = sjson.Set(itemBody, "dnsservers", []any{})
 				for _, childItem := range item.DnsServers {
 					itemChildBody := ""
-					if !childItem.Ip.IsNull()  {
+					if !childItem.Ip.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "name-server", childItem.Ip.ValueString())
 					}
 					itemBody, _ = sjson.SetRaw(itemBody, "dnsservers.-1", itemChildBody)
@@ -138,49 +128,50 @@ func (data *DNSServerGroups) fromBody(ctx context.Context, res gjson.Result) {
 		parent := &data
 		data := (*parent).Items[k]
 		res, found := itemsByName[k]
-		if !found {tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
+		if !found {
+			tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
 			delete((*parent).Items, k)
 			continue
 		}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("defaultdomain"); value.Exists() {
-		data.DefaultDomain = types.StringValue(value.String())
-	} else {
-		data.DefaultDomain = types.StringNull()
-	}
-	if value := res.Get("timeout"); value.Exists() {
-		data.Timeout = types.Int64Value(value.Int())
-	} else {
-		data.Timeout = types.Int64Value(2)
-	}
-	if value := res.Get("retries"); value.Exists() {
-		data.Retries = types.Int64Value(value.Int())
-	} else {
-		data.Retries = types.Int64Value(2)
-	}
-	if value := res.Get("dnsservers"); value.Exists() {
-		data.DnsServers = make([]DNSServerGroupsItemsDnsServers, 0)
-		value.ForEach(func(k, res gjson.Result) bool {
-			parent := &data
-			data := DNSServerGroupsItemsDnsServers{}
-	if value := res.Get("name-server"); value.Exists() {
-		data.Ip = types.StringValue(value.String())
-	} else {
-		data.Ip = types.StringNull()
-	}
-			(*parent).DnsServers = append((*parent).DnsServers, data)
-			return true
-		})
-	}
+		if value := res.Get("id"); value.Exists() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("type"); value.Exists() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
+		}
+		if value := res.Get("defaultdomain"); value.Exists() {
+			data.DefaultDomain = types.StringValue(value.String())
+		} else {
+			data.DefaultDomain = types.StringNull()
+		}
+		if value := res.Get("timeout"); value.Exists() {
+			data.Timeout = types.Int64Value(value.Int())
+		} else {
+			data.Timeout = types.Int64Value(2)
+		}
+		if value := res.Get("retries"); value.Exists() {
+			data.Retries = types.Int64Value(value.Int())
+		} else {
+			data.Retries = types.Int64Value(2)
+		}
+		if value := res.Get("dnsservers"); value.Exists() {
+			data.DnsServers = make([]DNSServerGroupsItemsDnsServers, 0)
+			value.ForEach(func(k, res gjson.Result) bool {
+				parent := &data
+				data := DNSServerGroupsItemsDnsServers{}
+				if value := res.Get("name-server"); value.Exists() {
+					data.Ip = types.StringValue(value.String())
+				} else {
+					data.Ip = types.StringNull()
+				}
+				(*parent).DnsServers = append((*parent).DnsServers, data)
+				return true
+			})
+		}
 		(*parent).Items[k] = data
 	}
 }
@@ -188,7 +179,6 @@ func (data *DNSServerGroups) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -210,74 +200,74 @@ func (data *DNSServerGroups) fromBodyPartial(ctx context.Context, res gjson.Resu
 			continue
 		}
 		res, _ := itemsById[data.Id.ValueString()]
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("defaultdomain"); value.Exists() && !data.DefaultDomain.IsNull() {
-		data.DefaultDomain = types.StringValue(value.String())
-	} else {
-		data.DefaultDomain = types.StringNull()
-	}
-	if value := res.Get("timeout"); value.Exists() && !data.Timeout.IsNull() {
-		data.Timeout = types.Int64Value(value.Int())
-	} else if data.Timeout.ValueInt64() != 2 {
-		data.Timeout = types.Int64Null()
-	}
-	if value := res.Get("retries"); value.Exists() && !data.Retries.IsNull() {
-		data.Retries = types.Int64Value(value.Int())
-	} else if data.Retries.ValueInt64() != 2 {
-		data.Retries = types.Int64Null()
-	}
-	for i := 0; i < len(data.DnsServers); i++ {
-		keys := [...]string{ "name-server",  }
-		keyValues := [...]string{ data.DnsServers[i].Ip.ValueString(),  }
-
-		parent := &data
-		data := (*parent).DnsServers[i]
-		parentRes := &res
-		var res gjson.Result
-
-		parentRes.Get("dnsservers").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() != keyValues[ik] {
-						found = false
-						break
-					}
-					found = true
-				}
-				if found {
-					res = v
-					return false
-				}
-				return true
-			},
-		)
-		if !res.Exists() {
-			tflog.Debug(ctx, fmt.Sprintf("removing DnsServers[%d] = %+v",
-				i,
-				(*parent).DnsServers[i],
-			))
-			(*parent).DnsServers = slices.Delete((*parent).DnsServers, i, i+1)
-			i--
-
-			continue
+		if value := res.Get("id"); value.Exists() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
 		}
-	if value := res.Get("name-server"); value.Exists() && !data.Ip.IsNull() {
-		data.Ip = types.StringValue(value.String())
-	} else {
-		data.Ip = types.StringNull()
-	}
-		(*parent).DnsServers[i] = data
-	}
+		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
+		}
+		if value := res.Get("defaultdomain"); value.Exists() && !data.DefaultDomain.IsNull() {
+			data.DefaultDomain = types.StringValue(value.String())
+		} else {
+			data.DefaultDomain = types.StringNull()
+		}
+		if value := res.Get("timeout"); value.Exists() && !data.Timeout.IsNull() {
+			data.Timeout = types.Int64Value(value.Int())
+		} else if data.Timeout.ValueInt64() != 2 {
+			data.Timeout = types.Int64Null()
+		}
+		if value := res.Get("retries"); value.Exists() && !data.Retries.IsNull() {
+			data.Retries = types.Int64Value(value.Int())
+		} else if data.Retries.ValueInt64() != 2 {
+			data.Retries = types.Int64Null()
+		}
+		for i := 0; i < len(data.DnsServers); i++ {
+			keys := [...]string{"name-server"}
+			keyValues := [...]string{data.DnsServers[i].Ip.ValueString()}
+
+			parent := &data
+			data := (*parent).DnsServers[i]
+			parentRes := &res
+			var res gjson.Result
+
+			parentRes.Get("dnsservers").ForEach(
+				func(_, v gjson.Result) bool {
+					found := false
+					for ik := range keys {
+						if v.Get(keys[ik]).String() != keyValues[ik] {
+							found = false
+							break
+						}
+						found = true
+					}
+					if found {
+						res = v
+						return false
+					}
+					return true
+				},
+			)
+			if !res.Exists() {
+				tflog.Debug(ctx, fmt.Sprintf("removing DnsServers[%d] = %+v",
+					i,
+					(*parent).DnsServers[i],
+				))
+				(*parent).DnsServers = slices.Delete((*parent).DnsServers, i, i+1)
+				i--
+
+				continue
+			}
+			if value := res.Get("name-server"); value.Exists() && !data.Ip.IsNull() {
+				data.Ip = types.StringValue(value.String())
+			} else {
+				data.Ip = types.StringNull()
+			}
+			(*parent).DnsServers[i] = data
+		}
 		(*parent).Items[i] = data
 	}
 }
@@ -331,7 +321,6 @@ func (data *DNSServerGroups) fromBodyUnknowns(ctx context.Context, res gjson.Res
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
 func (data *DNSServerGroups) Clone() DNSServerGroups {
 	ret := *data
 	ret.Items = maps.Clone(data.Items)
@@ -342,7 +331,6 @@ func (data *DNSServerGroups) Clone() DNSServerGroups {
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
 
 // Updates done one-by-one require different API body
 func (data DNSServerGroups) toBodyNonBulk(ctx context.Context, state DNSServerGroups) string {
@@ -362,30 +350,20 @@ func (data DNSServerGroups) toBodyNonBulk(ctx context.Context, state DNSServerGr
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
-
-
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
-
-
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
-
-
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
-
-
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
-
-
 
 // End of section. //template:end adjustBodyBulk

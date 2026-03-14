@@ -31,7 +31,7 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin testAcc
 
 func TestAccFmcFTDPlatformSettingsSyslogSettingsSyslogID(t *testing.T) {
-	if v := os.Getenv("FMC_VERSION"); v != "" && slices.Contains([]string{"7.7", "CDFMC" }, v) {
+	if v := os.Getenv("FMC_VERSION"); v != "" && slices.Contains([]string{"7.7", "CDFMC"}, v) {
 		t.Skip("skipping test for FMC version " + v)
 	}
 	var checks []resource.TestCheckFunc
@@ -42,15 +42,15 @@ func TestAccFmcFTDPlatformSettingsSyslogSettingsSyslogID(t *testing.T) {
 
 	var steps []resource.TestStep
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcFTDPlatformSettingsSyslogSettingsSyslogIDPrerequisitesConfig+testAccFmcFTDPlatformSettingsSyslogSettingsSyslogIDConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcFTDPlatformSettingsSyslogSettingsSyslogIDPrerequisitesConfig + testAccFmcFTDPlatformSettingsSyslogSettingsSyslogIDConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -67,6 +67,7 @@ resource "fmc_ftd_platform_settings_syslog_settings" "test" {
  ftd_platform_settings_id = fmc_ftd_platform_settings.test.id
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal

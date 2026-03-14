@@ -33,70 +33,22 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type SecureClientCustomAttribute struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Type types.String `tfsdk:"type"`
-	Description types.String `tfsdk:"description"`
-	AttributeType types.String `tfsdk:"attribute_type"`
-	UserDefinedAttributeName types.String `tfsdk:"user_defined_attribute_name"`
-	UserDefinedAttributeValue types.String `tfsdk:"user_defined_attribute_value"`
-	PerAppVpnValue types.String `tfsdk:"per_app_vpn_value"`
-	DynamicSplitTunnelIncludedDomains types.List `tfsdk:"dynamic_split_tunnel_included_domains"`
-	DynamicSplitTunnelExcludedDomains types.List `tfsdk:"dynamic_split_tunnel_excluded_domains"`
-	DeferUpdatePromptType types.String `tfsdk:"defer_update_prompt_type"`
-	DeferUpdateDefaultAction types.String `tfsdk:"defer_update_default_action"`
+	Id                                    types.String `tfsdk:"id"`
+	Domain                                types.String `tfsdk:"domain"`
+	Name                                  types.String `tfsdk:"name"`
+	Type                                  types.String `tfsdk:"type"`
+	Description                           types.String `tfsdk:"description"`
+	AttributeType                         types.String `tfsdk:"attribute_type"`
+	UserDefinedAttributeName              types.String `tfsdk:"user_defined_attribute_name"`
+	UserDefinedAttributeValue             types.String `tfsdk:"user_defined_attribute_value"`
+	PerAppVpnValue                        types.String `tfsdk:"per_app_vpn_value"`
+	DynamicSplitTunnelIncludedDomains     types.List   `tfsdk:"dynamic_split_tunnel_included_domains"`
+	DynamicSplitTunnelExcludedDomains     types.List   `tfsdk:"dynamic_split_tunnel_excluded_domains"`
+	DeferUpdatePromptType                 types.String `tfsdk:"defer_update_prompt_type"`
+	DeferUpdateDefaultAction              types.String `tfsdk:"defer_update_default_action"`
 	DeferUpdateMinimumSecureClientVersion types.String `tfsdk:"defer_update_minimum_secure_client_version"`
-	DeferUpdatePromptDismissTimeout types.Int64 `tfsdk:"defer_update_prompt_dismiss_timeout"`
+	DeferUpdatePromptDismissTimeout       types.Int64  `tfsdk:"defer_update_prompt_dismiss_timeout"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -108,7 +60,7 @@ var minFMCVersionCreateSecureClientCustomAttribute = version.Must(version.NewVer
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data SecureClientCustomAttribute) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/anyconnectcustomattributes"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/anyconnectcustomattributes"
 }
 
 // End of section. //template:end getPath
@@ -120,23 +72,23 @@ func (data SecureClientCustomAttribute) toBody(ctx context.Context, state Secure
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "AnyConnectCustomAttribute")
-	if !data.Description.IsNull()   {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.AttributeType.IsNull()   {
+	if !data.AttributeType.IsNull() {
 		body, _ = sjson.Set(body, "attributeType", data.AttributeType.ValueString())
 	}
-	if !data.UserDefinedAttributeName.IsNull()   {
+	if !data.UserDefinedAttributeName.IsNull() {
 		body, _ = sjson.Set(body, "userDefinedAttribute.name", data.UserDefinedAttributeName.ValueString())
 	}
-	if !data.UserDefinedAttributeValue.IsNull()   {
+	if !data.UserDefinedAttributeValue.IsNull() {
 		body, _ = sjson.Set(body, "userDefinedAttribute.value", data.UserDefinedAttributeValue.ValueString())
 	}
-	if !data.PerAppVpnValue.IsNull()   {
+	if !data.PerAppVpnValue.IsNull() {
 		body, _ = sjson.Set(body, "perAppVpnBase64EncodedValue", data.PerAppVpnValue.ValueString())
 	}
 	if !data.DynamicSplitTunnelIncludedDomains.IsNull() {
@@ -149,16 +101,16 @@ func (data SecureClientCustomAttribute) toBody(ctx context.Context, state Secure
 		data.DynamicSplitTunnelExcludedDomains.ElementsAs(ctx, &values, false)
 		body, _ = sjson.Set(body, "dynamicSplitTunnel.excludeDomains", values)
 	}
-	if !data.DeferUpdatePromptType.IsNull()   {
+	if !data.DeferUpdatePromptType.IsNull() {
 		body, _ = sjson.Set(body, "deferUpdate.promptType", data.DeferUpdatePromptType.ValueString())
 	}
-	if !data.DeferUpdateDefaultAction.IsNull()   {
+	if !data.DeferUpdateDefaultAction.IsNull() {
 		body, _ = sjson.Set(body, "deferUpdate.defaultAction", data.DeferUpdateDefaultAction.ValueString())
 	}
-	if !data.DeferUpdateMinimumSecureClientVersion.IsNull()   {
+	if !data.DeferUpdateMinimumSecureClientVersion.IsNull() {
 		body, _ = sjson.Set(body, "deferUpdate.minimumAnyConnectVersion", data.DeferUpdateMinimumSecureClientVersion.ValueString())
 	}
-	if !data.DeferUpdatePromptDismissTimeout.IsNull()   {
+	if !data.DeferUpdatePromptDismissTimeout.IsNull() {
 		body, _ = sjson.Set(body, "deferUpdate.promptDismissTimeout", data.DeferUpdatePromptDismissTimeout.ValueInt64())
 	}
 	return body
@@ -239,7 +191,6 @@ func (data *SecureClientCustomAttribute) fromBody(ctx context.Context, res gjson
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might

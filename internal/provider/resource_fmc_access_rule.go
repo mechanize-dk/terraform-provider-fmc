@@ -77,7 +77,7 @@ func (r *AccessRuleResource) Schema(ctx context.Context, req resource.SchemaRequ
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -87,7 +87,6 @@ func (r *AccessRuleResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"category_name": schema.StringAttribute{
@@ -95,25 +94,23 @@ func (r *AccessRuleResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"section": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The section of the policy to which the rule belongs. Either 'section' or 'category_name' can be set.").AddStringEnumDescription("default", "mandatory", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("The section of the policy to which the rule belongs. Either 'section' or 'category_name' can be set.").AddStringEnumDescription("default", "mandatory").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("default", "mandatory", ),
+					stringvalidator.OneOf("default", "mandatory"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"action": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Rule action.").AddStringEnumDescription("ALLOW", "TRUST", "BLOCK", "MONITOR", "BLOCK_RESET", "BLOCK_INTERACTIVE", "BLOCK_RESET_INTERACTIVE", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Rule action.").AddStringEnumDescription("ALLOW", "TRUST", "BLOCK", "MONITOR", "BLOCK_RESET", "BLOCK_INTERACTIVE", "BLOCK_RESET_INTERACTIVE").String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("ALLOW", "TRUST", "BLOCK", "MONITOR", "BLOCK_RESET", "BLOCK_INTERACTIVE", "BLOCK_RESET_INTERACTIVE", ),
+					stringvalidator.OneOf("ALLOW", "TRUST", "BLOCK", "MONITOR", "BLOCK_RESET", "BLOCK_INTERACTIVE", "BLOCK_RESET_INTERACTIVE"),
 				},
 			},
 			"name": schema.StringAttribute{
@@ -240,10 +237,10 @@ func (r *AccessRuleResource) Schema(ctx context.Context, req resource.SchemaRequ
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"protocol": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("IANA protocol number.").AddStringEnumDescription("6", "17", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("IANA protocol number.").AddStringEnumDescription("6", "17").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("6", "17", ),
+								stringvalidator.OneOf("6", "17"),
 							},
 						},
 						"port": schema.StringAttribute{
@@ -271,10 +268,10 @@ func (r *AccessRuleResource) Schema(ctx context.Context, req resource.SchemaRequ
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Type of the object.").AddStringEnumDescription("PortLiteral", "ICMPv4PortLiteral", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Type of the object.").AddStringEnumDescription("PortLiteral", "ICMPv4PortLiteral").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("PortLiteral", "ICMPv4PortLiteral", ),
+								stringvalidator.OneOf("PortLiteral", "ICMPv4PortLiteral"),
 							},
 						},
 						"port": schema.StringAttribute{
@@ -426,10 +423,10 @@ func (r *AccessRuleResource) Schema(ctx context.Context, req resource.SchemaRequ
 							Optional:            true,
 						},
 						"reputation": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Reputation applicable to the URL Category.").AddStringEnumDescription("ANY_EXCEPT_UNKNOWN", "TRUSTED", "FAVORABLE", "NEUTRAL", "QUESTIONABLE", "UNTRUSTED", "ANY_AND_UNKNOWN", "TRUSTED_AND_UNKNOWN", "FAVORABLE_AND_UNKNOWN", "NEUTRAL_AND_UNKNOWN", "QUESTIONABLE_AND_UNKNOWN", "UNTRUSTED_AND_UNKNOWN", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Reputation applicable to the URL Category.").AddStringEnumDescription("ANY_EXCEPT_UNKNOWN", "TRUSTED", "FAVORABLE", "NEUTRAL", "QUESTIONABLE", "UNTRUSTED", "ANY_AND_UNKNOWN", "TRUSTED_AND_UNKNOWN", "FAVORABLE_AND_UNKNOWN", "NEUTRAL_AND_UNKNOWN", "QUESTIONABLE_AND_UNKNOWN", "UNTRUSTED_AND_UNKNOWN").String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("ANY_EXCEPT_UNKNOWN", "TRUSTED", "FAVORABLE", "NEUTRAL", "QUESTIONABLE", "UNTRUSTED", "ANY_AND_UNKNOWN", "TRUSTED_AND_UNKNOWN", "FAVORABLE_AND_UNKNOWN", "NEUTRAL_AND_UNKNOWN", "QUESTIONABLE_AND_UNKNOWN", "UNTRUSTED_AND_UNKNOWN", ),
+								stringvalidator.OneOf("ANY_EXCEPT_UNKNOWN", "TRUSTED", "FAVORABLE", "NEUTRAL", "QUESTIONABLE", "UNTRUSTED", "ANY_AND_UNKNOWN", "TRUSTED_AND_UNKNOWN", "FAVORABLE_AND_UNKNOWN", "NEUTRAL_AND_UNKNOWN", "QUESTIONABLE_AND_UNKNOWN", "UNTRUSTED_AND_UNKNOWN"),
 							},
 						},
 					},
@@ -470,10 +467,10 @@ func (r *AccessRuleResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Optional:            true,
 			},
 			"syslog_severity": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Override the Severity of syslog alerts.").AddStringEnumDescription("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Override the Severity of syslog alerts.").AddStringEnumDescription("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING", ),
+					stringvalidator.OneOf("ALERT", "CRIT", "DEBUG", "EMERG", "ERR", "INFO", "NOTICE", "WARNING"),
 				},
 			},
 			"snmp_alert_id": schema.StringAttribute{
@@ -775,7 +772,7 @@ func (r *AccessRuleResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	body := plan.toBody(ctx, state)
 	body = plan.adjustBody(ctx, body)
-	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -807,7 +804,7 @@ func (r *AccessRuleResource) Delete(ctx context.Context, req resource.DeleteRequ
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()), reqMods...)
+	res, err := r.client.Delete(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString()), reqMods...)
 	if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
@@ -822,22 +819,23 @@ func (r *AccessRuleResource) Delete(ctx context.Context, req resource.DeleteRequ
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *AccessRuleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-		// Parse import ID
-		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<access_control_policy_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
-		match := inputPattern.FindStringSubmatch(req.ID)
-		if match == nil {
-			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<access_control_policy_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-			resp.Diagnostics.AddError("Import error", errMsg)
-			return
-		}
+	// Parse import ID
+	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<access_control_policy_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
+	match := inputPattern.FindStringSubmatch(req.ID)
+	if match == nil {
+		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<access_control_policy_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+		resp.Diagnostics.AddError("Import error", errMsg)
+		return
+	}
 
-		// Set domain, if provided
-		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-		}
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("access_control_policy_id"), match[inputPattern.SubexpIndex("access_control_policy_id")])...)
+	// Set domain, if provided
+	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("access_control_policy_id"), match[inputPattern.SubexpIndex("access_control_policy_id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
+
 // End of section. //template:end import

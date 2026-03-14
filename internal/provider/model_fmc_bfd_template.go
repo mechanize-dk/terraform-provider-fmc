@@ -32,66 +32,21 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type BFDTemplate struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Type types.String `tfsdk:"type"`
-	HopType types.String `tfsdk:"hop_type"`
-	Echo types.String `tfsdk:"echo"`
-	IntervalType types.String `tfsdk:"interval_type"`
-	Multiplier types.Int64 `tfsdk:"multiplier"`
-	MinimumTransmit types.Int64 `tfsdk:"minimum_transmit"`
-	MinimumReceive types.Int64 `tfsdk:"minimum_receive"`
-	AuthenticationType types.String `tfsdk:"authentication_type"`
-	AuthenticationPassword types.String `tfsdk:"authentication_password"`
+	Id                               types.String `tfsdk:"id"`
+	Domain                           types.String `tfsdk:"domain"`
+	Name                             types.String `tfsdk:"name"`
+	Type                             types.String `tfsdk:"type"`
+	HopType                          types.String `tfsdk:"hop_type"`
+	Echo                             types.String `tfsdk:"echo"`
+	IntervalType                     types.String `tfsdk:"interval_type"`
+	Multiplier                       types.Int64  `tfsdk:"multiplier"`
+	MinimumTransmit                  types.Int64  `tfsdk:"minimum_transmit"`
+	MinimumReceive                   types.Int64  `tfsdk:"minimum_receive"`
+	AuthenticationType               types.String `tfsdk:"authentication_type"`
+	AuthenticationPassword           types.String `tfsdk:"authentication_password"`
 	AuthenticationPasswordEncryption types.String `tfsdk:"authentication_password_encryption"`
-	AuthenticationKeyId types.Int64 `tfsdk:"authentication_key_id"`
+	AuthenticationKeyId              types.Int64  `tfsdk:"authentication_key_id"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -103,7 +58,7 @@ var minFMCVersionBFDTemplate = version.Must(version.NewVersion("7.4"))
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data BFDTemplate) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/bfdtemplates"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/bfdtemplates"
 }
 
 // End of section. //template:end getPath
@@ -115,38 +70,38 @@ func (data BFDTemplate) toBody(ctx context.Context, state BFDTemplate) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "BFDTemplate")
-	if !data.HopType.IsNull()   {
+	if !data.HopType.IsNull() {
 		body, _ = sjson.Set(body, "hopType", data.HopType.ValueString())
 	}
-	if !data.Echo.IsNull()   {
+	if !data.Echo.IsNull() {
 		body, _ = sjson.Set(body, "echo", data.Echo.ValueString())
 	}
-	if !data.IntervalType.IsNull()   {
+	if !data.IntervalType.IsNull() {
 		body, _ = sjson.Set(body, "txRxInterval", data.IntervalType.ValueString())
 	}
-	if !data.Multiplier.IsNull()   {
+	if !data.Multiplier.IsNull() {
 		body, _ = sjson.Set(body, "txRxMultiplier", data.Multiplier.ValueInt64())
 	}
-	if !data.MinimumTransmit.IsNull()   {
+	if !data.MinimumTransmit.IsNull() {
 		body, _ = sjson.Set(body, "minTransmit", data.MinimumTransmit.ValueInt64())
 	}
-	if !data.MinimumReceive.IsNull()   {
+	if !data.MinimumReceive.IsNull() {
 		body, _ = sjson.Set(body, "minReceive", data.MinimumReceive.ValueInt64())
 	}
-	if !data.AuthenticationType.IsNull()   {
+	if !data.AuthenticationType.IsNull() {
 		body, _ = sjson.Set(body, "authentication.authType", data.AuthenticationType.ValueString())
 	}
-	if !data.AuthenticationPassword.IsNull()   {
+	if !data.AuthenticationPassword.IsNull() {
 		body, _ = sjson.Set(body, "authentication.authKey", data.AuthenticationPassword.ValueString())
 	}
-	if !data.AuthenticationPasswordEncryption.IsNull()   {
+	if !data.AuthenticationPasswordEncryption.IsNull() {
 		body, _ = sjson.Set(body, "authentication.pwdEncryption", data.AuthenticationPasswordEncryption.ValueString())
 	}
-	if !data.AuthenticationKeyId.IsNull()   {
+	if !data.AuthenticationKeyId.IsNull() {
 		body, _ = sjson.Set(body, "authentication.authKeyId", data.AuthenticationKeyId.ValueInt64())
 	}
 	return body
@@ -217,7 +172,6 @@ func (data *BFDTemplate) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -301,12 +255,8 @@ func (data *BFDTemplate) fromBodyUnknowns(ctx context.Context, res gjson.Result)
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk

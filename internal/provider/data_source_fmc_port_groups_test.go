@@ -42,8 +42,8 @@ func TestAccDataSourceFmcPortGroups(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcPortGroupsPrerequisitesConfig+testAccDataSourceFmcPortGroupsConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcPortGroupsPrerequisitesConfig + testAccDataSourceFmcPortGroupsConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -61,6 +61,7 @@ resource "fmc_port" "test" {
   port        = "443"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -88,7 +89,5 @@ func testAccDataSourceFmcPortGroupsConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

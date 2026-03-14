@@ -31,51 +31,18 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type VPNS2S struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Type types.String `tfsdk:"type"`
-	RouteBased types.Bool `tfsdk:"route_based"`
-	NetworkTopology types.String `tfsdk:"network_topology"`
-	Ikev1 types.Bool `tfsdk:"ikev1"`
-	Ikev2 types.Bool `tfsdk:"ikev2"`
-	IpsecPolicyId types.String `tfsdk:"ipsec_policy_id"`
-	IkePolicyId types.String `tfsdk:"ike_policy_id"`
+	Id                       types.String `tfsdk:"id"`
+	Domain                   types.String `tfsdk:"domain"`
+	Name                     types.String `tfsdk:"name"`
+	Type                     types.String `tfsdk:"type"`
+	RouteBased               types.Bool   `tfsdk:"route_based"`
+	NetworkTopology          types.String `tfsdk:"network_topology"`
+	Ikev1                    types.Bool   `tfsdk:"ikev1"`
+	Ikev2                    types.Bool   `tfsdk:"ikev2"`
+	IpsecPolicyId            types.String `tfsdk:"ipsec_policy_id"`
+	IkePolicyId              types.String `tfsdk:"ike_policy_id"`
 	AdvancedSettingsPolicyId types.String `tfsdk:"advanced_settings_policy_id"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -86,7 +53,7 @@ type VPNS2S struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data VPNS2S) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftds2svpns"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftds2svpns"
 }
 
 // End of section. //template:end getPath
@@ -98,19 +65,19 @@ func (data VPNS2S) toBody(ctx context.Context, state VPNS2S) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.RouteBased.IsNull()   {
+	if !data.RouteBased.IsNull() {
 		body, _ = sjson.Set(body, "routeBased", data.RouteBased.ValueBool())
 	}
-	if !data.NetworkTopology.IsNull()   {
+	if !data.NetworkTopology.IsNull() {
 		body, _ = sjson.Set(body, "topologyType", data.NetworkTopology.ValueString())
 	}
-	if !data.Ikev1.IsNull()   {
+	if !data.Ikev1.IsNull() {
 		body, _ = sjson.Set(body, "ikeV1Enabled", data.Ikev1.ValueBool())
 	}
-	if !data.Ikev2.IsNull()   {
+	if !data.Ikev2.IsNull() {
 		body, _ = sjson.Set(body, "ikeV2Enabled", data.Ikev2.ValueBool())
 	}
 	return body
@@ -171,7 +138,6 @@ func (data *VPNS2S) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -266,24 +232,16 @@ func (data *VPNS2S) fromBodyUnknowns(ctx context.Context, res gjson.Result) {
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
-
-
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
-
-
 
 // End of section. //template:end clearItemIds

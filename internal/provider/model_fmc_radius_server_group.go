@@ -34,76 +34,33 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type RadiusServerGroup struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Type types.String `tfsdk:"type"`
-	Description types.String `tfsdk:"description"`
-	GroupAccountingMode types.String `tfsdk:"group_accounting_mode"`
-	RetryInterval types.Int64 `tfsdk:"retry_interval"`
-	AdRealmId types.String `tfsdk:"ad_realm_id"`
-	AuthorizeOnly types.Bool `tfsdk:"authorize_only"`
-	InterimAccountUpdateInterval types.Int64 `tfsdk:"interim_account_update_interval"`
-	DynamicAuthorization types.Bool `tfsdk:"dynamic_authorization"`
-	DynamicAuthorizationPort types.Int64 `tfsdk:"dynamic_authorization_port"`
-	MergeDownloadableAccessListOrder types.String `tfsdk:"merge_downloadable_access_list_order"`
-	RadiusServers []RadiusServerGroupRadiusServers `tfsdk:"radius_servers"`
+	Id                               types.String                     `tfsdk:"id"`
+	Domain                           types.String                     `tfsdk:"domain"`
+	Name                             types.String                     `tfsdk:"name"`
+	Type                             types.String                     `tfsdk:"type"`
+	Description                      types.String                     `tfsdk:"description"`
+	GroupAccountingMode              types.String                     `tfsdk:"group_accounting_mode"`
+	RetryInterval                    types.Int64                      `tfsdk:"retry_interval"`
+	AdRealmId                        types.String                     `tfsdk:"ad_realm_id"`
+	AuthorizeOnly                    types.Bool                       `tfsdk:"authorize_only"`
+	InterimAccountUpdateInterval     types.Int64                      `tfsdk:"interim_account_update_interval"`
+	DynamicAuthorization             types.Bool                       `tfsdk:"dynamic_authorization"`
+	DynamicAuthorizationPort         types.Int64                      `tfsdk:"dynamic_authorization_port"`
+	MergeDownloadableAccessListOrder types.String                     `tfsdk:"merge_downloadable_access_list_order"`
+	RadiusServers                    []RadiusServerGroupRadiusServers `tfsdk:"radius_servers"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 type RadiusServerGroupRadiusServers struct {
-	Hostname types.String `tfsdk:"hostname"`
-	MessageAuthenticator types.Bool `tfsdk:"message_authenticator"`
-	AuthenticationPort types.Int64 `tfsdk:"authentication_port"`
-	Key types.String `tfsdk:"key"`
-	AccountingPort types.Int64 `tfsdk:"accounting_port"`
-	Timeout types.Int64 `tfsdk:"timeout"`
-	UseRoutingToSelectInterface types.Bool `tfsdk:"use_routing_to_select_interface"`
-	InterfaceId types.String `tfsdk:"interface_id"`
-	RedirectAccessListId types.String `tfsdk:"redirect_access_list_id"`
+	Hostname                    types.String `tfsdk:"hostname"`
+	MessageAuthenticator        types.Bool   `tfsdk:"message_authenticator"`
+	AuthenticationPort          types.Int64  `tfsdk:"authentication_port"`
+	Key                         types.String `tfsdk:"key"`
+	AccountingPort              types.Int64  `tfsdk:"accounting_port"`
+	Timeout                     types.Int64  `tfsdk:"timeout"`
+	UseRoutingToSelectInterface types.Bool   `tfsdk:"use_routing_to_select_interface"`
+	InterfaceId                 types.String `tfsdk:"interface_id"`
+	RedirectAccessListId        types.String `tfsdk:"redirect_access_list_id"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -114,7 +71,7 @@ type RadiusServerGroupRadiusServers struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data RadiusServerGroup) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/radiusservergroups"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/radiusservergroups"
 }
 
 // End of section. //template:end getPath
@@ -126,65 +83,65 @@ func (data RadiusServerGroup) toBody(ctx context.Context, state RadiusServerGrou
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()   {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.GroupAccountingMode.IsNull()   {
+	if !data.GroupAccountingMode.IsNull() {
 		body, _ = sjson.Set(body, "groupAccountingMode", data.GroupAccountingMode.ValueString())
 	}
-	if !data.RetryInterval.IsNull()   {
+	if !data.RetryInterval.IsNull() {
 		body, _ = sjson.Set(body, "retryInterval", data.RetryInterval.ValueInt64())
 	}
-	if !data.AdRealmId.IsNull()   {
+	if !data.AdRealmId.IsNull() {
 		body, _ = sjson.Set(body, "realm.id", data.AdRealmId.ValueString())
 	}
-	if !data.AuthorizeOnly.IsNull()   {
+	if !data.AuthorizeOnly.IsNull() {
 		body, _ = sjson.Set(body, "enableAuthorizeOnly", data.AuthorizeOnly.ValueBool())
 	}
-	if !data.InterimAccountUpdateInterval.IsNull()   {
+	if !data.InterimAccountUpdateInterval.IsNull() {
 		body, _ = sjson.Set(body, "interimAccountUpdateInterval", data.InterimAccountUpdateInterval.ValueInt64())
 	}
-	if !data.DynamicAuthorization.IsNull()   {
+	if !data.DynamicAuthorization.IsNull() {
 		body, _ = sjson.Set(body, "enableDynamicAuthorization", data.DynamicAuthorization.ValueBool())
 	}
-	if !data.DynamicAuthorizationPort.IsNull()   {
+	if !data.DynamicAuthorizationPort.IsNull() {
 		body, _ = sjson.Set(body, "dynamicAuthorizationPort", data.DynamicAuthorizationPort.ValueInt64())
 	}
-	if !data.MergeDownloadableAccessListOrder.IsNull()   {
+	if !data.MergeDownloadableAccessListOrder.IsNull() {
 		body, _ = sjson.Set(body, "mergeDaclPlacementOrder", data.MergeDownloadableAccessListOrder.ValueString())
 	}
 	if len(data.RadiusServers) > 0 {
 		body, _ = sjson.Set(body, "radiusServers", []any{})
 		for _, item := range data.RadiusServers {
 			itemBody := ""
-			if !item.Hostname.IsNull()   {
+			if !item.Hostname.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "host", item.Hostname.ValueString())
 			}
-			if !item.MessageAuthenticator.IsNull()   {
+			if !item.MessageAuthenticator.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "enableMessageAuthenticator", item.MessageAuthenticator.ValueBool())
 			}
-			if !item.AuthenticationPort.IsNull()   {
+			if !item.AuthenticationPort.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "authenticationPort", item.AuthenticationPort.ValueInt64())
 			}
-			if !item.Key.IsNull()   {
+			if !item.Key.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "secretKey", item.Key.ValueString())
 			}
-			if !item.AccountingPort.IsNull()   {
+			if !item.AccountingPort.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "accountingPort", item.AccountingPort.ValueInt64())
 			}
-			if !item.Timeout.IsNull()   {
+			if !item.Timeout.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "timeout", item.Timeout.ValueInt64())
 			}
-			if !item.UseRoutingToSelectInterface.IsNull()   {
+			if !item.UseRoutingToSelectInterface.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "useRoutingToSelectInterface", item.UseRoutingToSelectInterface.ValueBool())
 			}
-			if !item.InterfaceId.IsNull()   {
+			if !item.InterfaceId.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "interface.id", item.InterfaceId.ValueString())
 			}
-			if !item.RedirectAccessListId.IsNull()   {
+			if !item.RedirectAccessListId.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "redirectACL.id", item.RedirectAccessListId.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "radiusServers.-1", itemBody)
@@ -258,46 +215,46 @@ func (data *RadiusServerGroup) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := RadiusServerGroupRadiusServers{}
-	if value := res.Get("host"); value.Exists() {
-		data.Hostname = types.StringValue(value.String())
-	} else {
-		data.Hostname = types.StringNull()
-	}
-	if value := res.Get("enableMessageAuthenticator"); value.Exists() {
-		data.MessageAuthenticator = types.BoolValue(value.Bool())
-	} else {
-		data.MessageAuthenticator = types.BoolValue(true)
-	}
-	if value := res.Get("authenticationPort"); value.Exists() {
-		data.AuthenticationPort = types.Int64Value(value.Int())
-	} else {
-		data.AuthenticationPort = types.Int64Value(1812)
-	}
-	if value := res.Get("accountingPort"); value.Exists() {
-		data.AccountingPort = types.Int64Value(value.Int())
-	} else {
-		data.AccountingPort = types.Int64Value(1813)
-	}
-	if value := res.Get("timeout"); value.Exists() {
-		data.Timeout = types.Int64Value(value.Int())
-	} else {
-		data.Timeout = types.Int64Value(10)
-	}
-	if value := res.Get("useRoutingToSelectInterface"); value.Exists() {
-		data.UseRoutingToSelectInterface = types.BoolValue(value.Bool())
-	} else {
-		data.UseRoutingToSelectInterface = types.BoolValue(true)
-	}
-	if value := res.Get("interface.id"); value.Exists() {
-		data.InterfaceId = types.StringValue(value.String())
-	} else {
-		data.InterfaceId = types.StringNull()
-	}
-	if value := res.Get("redirectACL.id"); value.Exists() {
-		data.RedirectAccessListId = types.StringValue(value.String())
-	} else {
-		data.RedirectAccessListId = types.StringNull()
-	}
+			if value := res.Get("host"); value.Exists() {
+				data.Hostname = types.StringValue(value.String())
+			} else {
+				data.Hostname = types.StringNull()
+			}
+			if value := res.Get("enableMessageAuthenticator"); value.Exists() {
+				data.MessageAuthenticator = types.BoolValue(value.Bool())
+			} else {
+				data.MessageAuthenticator = types.BoolValue(true)
+			}
+			if value := res.Get("authenticationPort"); value.Exists() {
+				data.AuthenticationPort = types.Int64Value(value.Int())
+			} else {
+				data.AuthenticationPort = types.Int64Value(1812)
+			}
+			if value := res.Get("accountingPort"); value.Exists() {
+				data.AccountingPort = types.Int64Value(value.Int())
+			} else {
+				data.AccountingPort = types.Int64Value(1813)
+			}
+			if value := res.Get("timeout"); value.Exists() {
+				data.Timeout = types.Int64Value(value.Int())
+			} else {
+				data.Timeout = types.Int64Value(10)
+			}
+			if value := res.Get("useRoutingToSelectInterface"); value.Exists() {
+				data.UseRoutingToSelectInterface = types.BoolValue(value.Bool())
+			} else {
+				data.UseRoutingToSelectInterface = types.BoolValue(true)
+			}
+			if value := res.Get("interface.id"); value.Exists() {
+				data.InterfaceId = types.StringValue(value.String())
+			} else {
+				data.InterfaceId = types.StringNull()
+			}
+			if value := res.Get("redirectACL.id"); value.Exists() {
+				data.RedirectAccessListId = types.StringValue(value.String())
+			} else {
+				data.RedirectAccessListId = types.StringNull()
+			}
 			(*parent).RadiusServers = append((*parent).RadiusServers, data)
 			return true
 		})
@@ -307,7 +264,6 @@ func (data *RadiusServerGroup) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -370,8 +326,8 @@ func (data *RadiusServerGroup) fromBodyPartial(ctx context.Context, res gjson.Re
 		data.MergeDownloadableAccessListOrder = types.StringNull()
 	}
 	for i := 0; i < len(data.RadiusServers); i++ {
-		keys := [...]string{ "host",  }
-		keyValues := [...]string{ data.RadiusServers[i].Hostname.ValueString(),  }
+		keys := [...]string{"host"}
+		keyValues := [...]string{data.RadiusServers[i].Hostname.ValueString()}
 
 		parent := &data
 		data := (*parent).RadiusServers[i]
@@ -405,46 +361,46 @@ func (data *RadiusServerGroup) fromBodyPartial(ctx context.Context, res gjson.Re
 
 			continue
 		}
-	if value := res.Get("host"); value.Exists() && !data.Hostname.IsNull() {
-		data.Hostname = types.StringValue(value.String())
-	} else {
-		data.Hostname = types.StringNull()
-	}
-	if value := res.Get("enableMessageAuthenticator"); value.Exists() && !data.MessageAuthenticator.IsNull() {
-		data.MessageAuthenticator = types.BoolValue(value.Bool())
-	} else if data.MessageAuthenticator.ValueBool() != true {
-		data.MessageAuthenticator = types.BoolNull()
-	}
-	if value := res.Get("authenticationPort"); value.Exists() && !data.AuthenticationPort.IsNull() {
-		data.AuthenticationPort = types.Int64Value(value.Int())
-	} else if data.AuthenticationPort.ValueInt64() != 1812 {
-		data.AuthenticationPort = types.Int64Null()
-	}
-	if value := res.Get("accountingPort"); value.Exists() && !data.AccountingPort.IsNull() {
-		data.AccountingPort = types.Int64Value(value.Int())
-	} else if data.AccountingPort.ValueInt64() != 1813 {
-		data.AccountingPort = types.Int64Null()
-	}
-	if value := res.Get("timeout"); value.Exists() && !data.Timeout.IsNull() {
-		data.Timeout = types.Int64Value(value.Int())
-	} else if data.Timeout.ValueInt64() != 10 {
-		data.Timeout = types.Int64Null()
-	}
-	if value := res.Get("useRoutingToSelectInterface"); value.Exists() && !data.UseRoutingToSelectInterface.IsNull() {
-		data.UseRoutingToSelectInterface = types.BoolValue(value.Bool())
-	} else if data.UseRoutingToSelectInterface.ValueBool() != true {
-		data.UseRoutingToSelectInterface = types.BoolNull()
-	}
-	if value := res.Get("interface.id"); value.Exists() && !data.InterfaceId.IsNull() {
-		data.InterfaceId = types.StringValue(value.String())
-	} else {
-		data.InterfaceId = types.StringNull()
-	}
-	if value := res.Get("redirectACL.id"); value.Exists() && !data.RedirectAccessListId.IsNull() {
-		data.RedirectAccessListId = types.StringValue(value.String())
-	} else {
-		data.RedirectAccessListId = types.StringNull()
-	}
+		if value := res.Get("host"); value.Exists() && !data.Hostname.IsNull() {
+			data.Hostname = types.StringValue(value.String())
+		} else {
+			data.Hostname = types.StringNull()
+		}
+		if value := res.Get("enableMessageAuthenticator"); value.Exists() && !data.MessageAuthenticator.IsNull() {
+			data.MessageAuthenticator = types.BoolValue(value.Bool())
+		} else if data.MessageAuthenticator.ValueBool() != true {
+			data.MessageAuthenticator = types.BoolNull()
+		}
+		if value := res.Get("authenticationPort"); value.Exists() && !data.AuthenticationPort.IsNull() {
+			data.AuthenticationPort = types.Int64Value(value.Int())
+		} else if data.AuthenticationPort.ValueInt64() != 1812 {
+			data.AuthenticationPort = types.Int64Null()
+		}
+		if value := res.Get("accountingPort"); value.Exists() && !data.AccountingPort.IsNull() {
+			data.AccountingPort = types.Int64Value(value.Int())
+		} else if data.AccountingPort.ValueInt64() != 1813 {
+			data.AccountingPort = types.Int64Null()
+		}
+		if value := res.Get("timeout"); value.Exists() && !data.Timeout.IsNull() {
+			data.Timeout = types.Int64Value(value.Int())
+		} else if data.Timeout.ValueInt64() != 10 {
+			data.Timeout = types.Int64Null()
+		}
+		if value := res.Get("useRoutingToSelectInterface"); value.Exists() && !data.UseRoutingToSelectInterface.IsNull() {
+			data.UseRoutingToSelectInterface = types.BoolValue(value.Bool())
+		} else if data.UseRoutingToSelectInterface.ValueBool() != true {
+			data.UseRoutingToSelectInterface = types.BoolNull()
+		}
+		if value := res.Get("interface.id"); value.Exists() && !data.InterfaceId.IsNull() {
+			data.InterfaceId = types.StringValue(value.String())
+		} else {
+			data.InterfaceId = types.StringNull()
+		}
+		if value := res.Get("redirectACL.id"); value.Exists() && !data.RedirectAccessListId.IsNull() {
+			data.RedirectAccessListId = types.StringValue(value.String())
+		} else {
+			data.RedirectAccessListId = types.StringNull()
+		}
 		(*parent).RadiusServers[i] = data
 	}
 }

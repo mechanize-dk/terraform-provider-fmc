@@ -33,50 +33,17 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type ChassisSubinterface struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	ChassisId types.String `tfsdk:"chassis_id"`
-	Type types.String `tfsdk:"type"`
-	Name types.String `tfsdk:"name"`
-	InterfaceName types.String `tfsdk:"interface_name"`
-	InterfaceId types.String `tfsdk:"interface_id"`
-	SubInterfaceId types.Int64 `tfsdk:"sub_interface_id"`
-	VlanId types.Int64 `tfsdk:"vlan_id"`
-	PortType types.String `tfsdk:"port_type"`
+	Id             types.String `tfsdk:"id"`
+	Domain         types.String `tfsdk:"domain"`
+	ChassisId      types.String `tfsdk:"chassis_id"`
+	Type           types.String `tfsdk:"type"`
+	Name           types.String `tfsdk:"name"`
+	InterfaceName  types.String `tfsdk:"interface_name"`
+	InterfaceId    types.String `tfsdk:"interface_id"`
+	SubInterfaceId types.Int64  `tfsdk:"sub_interface_id"`
+	VlanId         types.Int64  `tfsdk:"vlan_id"`
+	PortType       types.String `tfsdk:"port_type"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -87,7 +54,7 @@ type ChassisSubinterface struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data ChassisSubinterface) getPath() string {
-		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/chassis/fmcmanagedchassis/%v/subinterfaces", url.QueryEscape(data.ChassisId.ValueString()))
+	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/chassis/fmcmanagedchassis/%v/subinterfaces", url.QueryEscape(data.ChassisId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -100,19 +67,19 @@ func (data ChassisSubinterface) toBody(ctx context.Context, state ChassisSubinte
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "SubInterface")
-	if !data.InterfaceName.IsNull()   {
+	if !data.InterfaceName.IsNull() {
 		body, _ = sjson.Set(body, "parentInterface.name", data.InterfaceName.ValueString())
 	}
-	if !data.InterfaceId.IsNull()   {
+	if !data.InterfaceId.IsNull() {
 		body, _ = sjson.Set(body, "parentInterface.id", data.InterfaceId.ValueString())
 	}
-	if !data.SubInterfaceId.IsNull()   {
+	if !data.SubInterfaceId.IsNull() {
 		body, _ = sjson.Set(body, "subIntfId", data.SubInterfaceId.ValueInt64())
 	}
-	if !data.VlanId.IsNull()   {
+	if !data.VlanId.IsNull() {
 		body, _ = sjson.Set(body, "vlanId", data.VlanId.ValueInt64())
 	}
-	if !data.PortType.IsNull()   {
+	if !data.PortType.IsNull() {
 		body, _ = sjson.Set(body, "portType", data.PortType.ValueString())
 	}
 	return body
@@ -163,7 +130,6 @@ func (data *ChassisSubinterface) fromBody(ctx context.Context, res gjson.Result)
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -234,24 +200,16 @@ func (data *ChassisSubinterface) fromBodyUnknowns(ctx context.Context, res gjson
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
-
-
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
-
-
 
 // End of section. //template:end clearItemIds

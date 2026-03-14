@@ -31,30 +31,12 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type TunnelZone struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Type types.String `tfsdk:"type"`
+	Id          types.String `tfsdk:"id"`
+	Domain      types.String `tfsdk:"domain"`
+	Name        types.String `tfsdk:"name"`
+	Type        types.String `tfsdk:"type"`
 	Description types.String `tfsdk:"description"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -65,7 +47,7 @@ type TunnelZone struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data TunnelZone) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/tunneltags"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/tunneltags"
 }
 
 // End of section. //template:end getPath
@@ -77,11 +59,11 @@ func (data TunnelZone) toBody(ctx context.Context, state TunnelZone) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "TunnelTag")
-	if !data.Description.IsNull()   {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
 	return body
@@ -112,7 +94,6 @@ func (data *TunnelZone) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -160,12 +141,8 @@ func (data *TunnelZone) fromBodyUnknowns(ctx context.Context, res gjson.Result) 
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk

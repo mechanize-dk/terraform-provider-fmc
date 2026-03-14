@@ -34,140 +34,55 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type VPNRA struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Type types.String `tfsdk:"type"`
-	ProtocolSsl types.Bool `tfsdk:"protocol_ssl"`
-	ProtocolIpsecIkev2 types.Bool `tfsdk:"protocol_ipsec_ikev2"`
-	LocalRealmId types.String `tfsdk:"local_realm_id"`
-	DynamicAccessPolicyId types.String `tfsdk:"dynamic_access_policy_id"`
-	AccessInterfaces []VPNRAAccessInterfaces `tfsdk:"access_interfaces"`
-	AllowUsersToSelectConnectionProfile types.Bool `tfsdk:"allow_users_to_select_connection_profile"`
-	WebAccessPort types.Int64 `tfsdk:"web_access_port"`
-	DtlsPort types.Int64 `tfsdk:"dtls_port"`
-	SslGlobalIdentityCertificateId types.String `tfsdk:"ssl_global_identity_certificate_id"`
-	IpsecIkev2IdentityCertificateId types.String `tfsdk:"ipsec_ikev2_identity_certificate_id"`
-	ServiceAccessObjectId types.String `tfsdk:"service_access_object_id"`
-	BypassAccessControlPolicyForDecryptedTraffic types.Bool `tfsdk:"bypass_access_control_policy_for_decrypted_traffic"`
-	SecureClientImages []VPNRASecureClientImages `tfsdk:"secure_client_images"`
-	ExternalBrowserPackageId types.String `tfsdk:"external_browser_package_id"`
-	SecureClientCustomizationId types.String `tfsdk:"secure_client_customization_id"`
-	AddressAssignmentPolicyId types.String `tfsdk:"address_assignment_policy_id"`
-	CertificateMapId types.String `tfsdk:"certificate_map_id"`
-	GroupPolicies []VPNRAGroupPolicies `tfsdk:"group_policies"`
-	LdapAttributeMapId types.String `tfsdk:"ldap_attribute_map_id"`
-	LoadBalancingId types.String `tfsdk:"load_balancing_id"`
-	Ikev2Policies []VPNRAIkev2Policies `tfsdk:"ikev2_policies"`
-	IpsecIkeParametersId types.String `tfsdk:"ipsec_ike_parameters_id"`
+	Id                                           types.String              `tfsdk:"id"`
+	Domain                                       types.String              `tfsdk:"domain"`
+	Name                                         types.String              `tfsdk:"name"`
+	Description                                  types.String              `tfsdk:"description"`
+	Type                                         types.String              `tfsdk:"type"`
+	ProtocolSsl                                  types.Bool                `tfsdk:"protocol_ssl"`
+	ProtocolIpsecIkev2                           types.Bool                `tfsdk:"protocol_ipsec_ikev2"`
+	LocalRealmId                                 types.String              `tfsdk:"local_realm_id"`
+	DynamicAccessPolicyId                        types.String              `tfsdk:"dynamic_access_policy_id"`
+	AccessInterfaces                             []VPNRAAccessInterfaces   `tfsdk:"access_interfaces"`
+	AllowUsersToSelectConnectionProfile          types.Bool                `tfsdk:"allow_users_to_select_connection_profile"`
+	WebAccessPort                                types.Int64               `tfsdk:"web_access_port"`
+	DtlsPort                                     types.Int64               `tfsdk:"dtls_port"`
+	SslGlobalIdentityCertificateId               types.String              `tfsdk:"ssl_global_identity_certificate_id"`
+	IpsecIkev2IdentityCertificateId              types.String              `tfsdk:"ipsec_ikev2_identity_certificate_id"`
+	ServiceAccessObjectId                        types.String              `tfsdk:"service_access_object_id"`
+	BypassAccessControlPolicyForDecryptedTraffic types.Bool                `tfsdk:"bypass_access_control_policy_for_decrypted_traffic"`
+	SecureClientImages                           []VPNRASecureClientImages `tfsdk:"secure_client_images"`
+	ExternalBrowserPackageId                     types.String              `tfsdk:"external_browser_package_id"`
+	SecureClientCustomizationId                  types.String              `tfsdk:"secure_client_customization_id"`
+	AddressAssignmentPolicyId                    types.String              `tfsdk:"address_assignment_policy_id"`
+	CertificateMapId                             types.String              `tfsdk:"certificate_map_id"`
+	GroupPolicies                                []VPNRAGroupPolicies      `tfsdk:"group_policies"`
+	LdapAttributeMapId                           types.String              `tfsdk:"ldap_attribute_map_id"`
+	LoadBalancingId                              types.String              `tfsdk:"load_balancing_id"`
+	Ikev2Policies                                []VPNRAIkev2Policies      `tfsdk:"ikev2_policies"`
+	IpsecIkeParametersId                         types.String              `tfsdk:"ipsec_ike_parameters_id"`
 }
 
-
-
-
-
-
-
-
-
 type VPNRAAccessInterfaces struct {
-	Id types.String `tfsdk:"id"`
-	ProtocolIpsecIkev2 types.Bool `tfsdk:"protocol_ipsec_ikev2"`
-	ProtocolSsl types.Bool `tfsdk:"protocol_ssl"`
-	ProtocolSslDtls types.Bool `tfsdk:"protocol_ssl_dtls"`
+	Id                             types.String `tfsdk:"id"`
+	ProtocolIpsecIkev2             types.Bool   `tfsdk:"protocol_ipsec_ikev2"`
+	ProtocolSsl                    types.Bool   `tfsdk:"protocol_ssl"`
+	ProtocolSslDtls                types.Bool   `tfsdk:"protocol_ssl_dtls"`
 	InterfaceSpecificCertificateId types.String `tfsdk:"interface_specific_certificate_id"`
 }
 
-
-
-
-
-
-
-
 type VPNRASecureClientImages struct {
-	Id types.String `tfsdk:"id"`
+	Id              types.String `tfsdk:"id"`
 	OperatingSystem types.String `tfsdk:"operating_system"`
 }
-
-
-
-
 
 type VPNRAGroupPolicies struct {
 	Id types.String `tfsdk:"id"`
 }
 
-
-
 type VPNRAIkev2Policies struct {
 	Id types.String `tfsdk:"id"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -178,7 +93,7 @@ type VPNRAIkev2Policies struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data VPNRA) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ravpns"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ravpns"
 }
 
 // End of section. //template:end getPath
@@ -190,88 +105,88 @@ func (data VPNRA) toBody(ctx context.Context, state VPNRA) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()   {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.ProtocolSsl.IsNull()   {
+	if !data.ProtocolSsl.IsNull() {
 		body, _ = sjson.Set(body, "configureSSL", data.ProtocolSsl.ValueBool())
 	}
-	if !data.ProtocolIpsecIkev2.IsNull()   {
+	if !data.ProtocolIpsecIkev2.IsNull() {
 		body, _ = sjson.Set(body, "configureIpsec", data.ProtocolIpsecIkev2.ValueBool())
 	}
-	if !data.LocalRealmId.IsNull()   {
+	if !data.LocalRealmId.IsNull() {
 		body, _ = sjson.Set(body, "localRealmServer.id", data.LocalRealmId.ValueString())
 	}
-	if !data.DynamicAccessPolicyId.IsNull()   {
+	if !data.DynamicAccessPolicyId.IsNull() {
 		body, _ = sjson.Set(body, "dapPolicy.id", data.DynamicAccessPolicyId.ValueString())
 	}
 	if len(data.AccessInterfaces) > 0 {
 		body, _ = sjson.Set(body, "accessInterfaceSettings.interfaceSettings", []any{})
 		for _, item := range data.AccessInterfaces {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "accessInterface.id", item.Id.ValueString())
 			}
-			if !item.ProtocolIpsecIkev2.IsNull()   {
+			if !item.ProtocolIpsecIkev2.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "enableIPSecIkev2", item.ProtocolIpsecIkev2.ValueBool())
 			}
-			if !item.ProtocolSsl.IsNull()   {
+			if !item.ProtocolSsl.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "enableSSL", item.ProtocolSsl.ValueBool())
 			}
-			if !item.ProtocolSslDtls.IsNull()   {
+			if !item.ProtocolSslDtls.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "enableDTLS", item.ProtocolSslDtls.ValueBool())
 			}
-			if !item.InterfaceSpecificCertificateId.IsNull()   {
+			if !item.InterfaceSpecificCertificateId.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "idCertificate.id", item.InterfaceSpecificCertificateId.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "accessInterfaceSettings.interfaceSettings.-1", itemBody)
 		}
 	}
-	if !data.AllowUsersToSelectConnectionProfile.IsNull()   {
+	if !data.AllowUsersToSelectConnectionProfile.IsNull() {
 		body, _ = sjson.Set(body, "accessInterfaceSettings.allowConnectionProfileSelection", data.AllowUsersToSelectConnectionProfile.ValueBool())
 	}
-	if !data.WebAccessPort.IsNull()   {
+	if !data.WebAccessPort.IsNull() {
 		body, _ = sjson.Set(body, "accessInterfaceSettings.webPort", data.WebAccessPort.ValueInt64())
 	}
-	if !data.DtlsPort.IsNull()   {
+	if !data.DtlsPort.IsNull() {
 		body, _ = sjson.Set(body, "accessInterfaceSettings.dtlsPort", data.DtlsPort.ValueInt64())
 	}
-	if !data.SslGlobalIdentityCertificateId.IsNull()   {
+	if !data.SslGlobalIdentityCertificateId.IsNull() {
 		body, _ = sjson.Set(body, "accessInterfaceSettings.sslIdCertificate.id", data.SslGlobalIdentityCertificateId.ValueString())
 	}
-	if !data.IpsecIkev2IdentityCertificateId.IsNull()   {
+	if !data.IpsecIkev2IdentityCertificateId.IsNull() {
 		body, _ = sjson.Set(body, "accessInterfaceSettings.ipsecIdCertificate.id", data.IpsecIkev2IdentityCertificateId.ValueString())
 	}
-	if !data.ServiceAccessObjectId.IsNull()   {
+	if !data.ServiceAccessObjectId.IsNull() {
 		body, _ = sjson.Set(body, "accessInterfaceSettings.serviceAccessObject.id", data.ServiceAccessObjectId.ValueString())
 	}
-	if !data.BypassAccessControlPolicyForDecryptedTraffic.IsNull()   {
+	if !data.BypassAccessControlPolicyForDecryptedTraffic.IsNull() {
 		body, _ = sjson.Set(body, "accessInterfaceSettings.bypassACPolicyForDecryptTraffic", data.BypassAccessControlPolicyForDecryptedTraffic.ValueBool())
 	}
 	if len(data.SecureClientImages) > 0 {
 		body, _ = sjson.Set(body, "anyConnectClientImages", []any{})
 		for _, item := range data.SecureClientImages {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "anyconnectImage.id", item.Id.ValueString())
 			}
-			if !item.OperatingSystem.IsNull()   {
+			if !item.OperatingSystem.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "operatingSystem", item.OperatingSystem.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "anyConnectClientImages.-1", itemBody)
 		}
 	}
-	if !data.ExternalBrowserPackageId.IsNull()   {
+	if !data.ExternalBrowserPackageId.IsNull() {
 		body, _ = sjson.Set(body, "externalBrowserPackage.id", data.ExternalBrowserPackageId.ValueString())
 	}
 	if len(data.GroupPolicies) > 0 {
 		body, _ = sjson.Set(body, "groupPolicies", []any{})
 		for _, item := range data.GroupPolicies {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "groupPolicies.-1", itemBody)
@@ -281,7 +196,7 @@ func (data VPNRA) toBody(ctx context.Context, state VPNRA) string {
 		body, _ = sjson.Set(body, "ikev2Policies", []any{})
 		for _, item := range data.Ikev2Policies {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "ikev2Policies.-1", itemBody)
@@ -335,31 +250,31 @@ func (data *VPNRA) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VPNRAAccessInterfaces{}
-	if value := res.Get("accessInterface.id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("enableIPSecIkev2"); value.Exists() {
-		data.ProtocolIpsecIkev2 = types.BoolValue(value.Bool())
-	} else {
-		data.ProtocolIpsecIkev2 = types.BoolNull()
-	}
-	if value := res.Get("enableSSL"); value.Exists() {
-		data.ProtocolSsl = types.BoolValue(value.Bool())
-	} else {
-		data.ProtocolSsl = types.BoolNull()
-	}
-	if value := res.Get("enableDTLS"); value.Exists() {
-		data.ProtocolSslDtls = types.BoolValue(value.Bool())
-	} else {
-		data.ProtocolSslDtls = types.BoolNull()
-	}
-	if value := res.Get("idCertificate.id"); value.Exists() {
-		data.InterfaceSpecificCertificateId = types.StringValue(value.String())
-	} else {
-		data.InterfaceSpecificCertificateId = types.StringNull()
-	}
+			if value := res.Get("accessInterface.id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
+			if value := res.Get("enableIPSecIkev2"); value.Exists() {
+				data.ProtocolIpsecIkev2 = types.BoolValue(value.Bool())
+			} else {
+				data.ProtocolIpsecIkev2 = types.BoolNull()
+			}
+			if value := res.Get("enableSSL"); value.Exists() {
+				data.ProtocolSsl = types.BoolValue(value.Bool())
+			} else {
+				data.ProtocolSsl = types.BoolNull()
+			}
+			if value := res.Get("enableDTLS"); value.Exists() {
+				data.ProtocolSslDtls = types.BoolValue(value.Bool())
+			} else {
+				data.ProtocolSslDtls = types.BoolNull()
+			}
+			if value := res.Get("idCertificate.id"); value.Exists() {
+				data.InterfaceSpecificCertificateId = types.StringValue(value.String())
+			} else {
+				data.InterfaceSpecificCertificateId = types.StringNull()
+			}
 			(*parent).AccessInterfaces = append((*parent).AccessInterfaces, data)
 			return true
 		})
@@ -404,16 +319,16 @@ func (data *VPNRA) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VPNRASecureClientImages{}
-	if value := res.Get("anyconnectImage.id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("operatingSystem"); value.Exists() {
-		data.OperatingSystem = types.StringValue(value.String())
-	} else {
-		data.OperatingSystem = types.StringNull()
-	}
+			if value := res.Get("anyconnectImage.id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
+			if value := res.Get("operatingSystem"); value.Exists() {
+				data.OperatingSystem = types.StringValue(value.String())
+			} else {
+				data.OperatingSystem = types.StringNull()
+			}
 			(*parent).SecureClientImages = append((*parent).SecureClientImages, data)
 			return true
 		})
@@ -443,11 +358,11 @@ func (data *VPNRA) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VPNRAGroupPolicies{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+			if value := res.Get("id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
 			(*parent).GroupPolicies = append((*parent).GroupPolicies, data)
 			return true
 		})
@@ -467,11 +382,11 @@ func (data *VPNRA) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VPNRAIkev2Policies{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+			if value := res.Get("id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
 			(*parent).Ikev2Policies = append((*parent).Ikev2Policies, data)
 			return true
 		})
@@ -486,7 +401,6 @@ func (data *VPNRA) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -529,8 +443,8 @@ func (data *VPNRA) fromBodyPartial(ctx context.Context, res gjson.Result) {
 		data.DynamicAccessPolicyId = types.StringNull()
 	}
 	for i := 0; i < len(data.AccessInterfaces); i++ {
-		keys := [...]string{ "accessInterface.id",  }
-		keyValues := [...]string{ data.AccessInterfaces[i].Id.ValueString(),  }
+		keys := [...]string{"accessInterface.id"}
+		keyValues := [...]string{data.AccessInterfaces[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).AccessInterfaces[i]
@@ -564,31 +478,31 @@ func (data *VPNRA) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-	if value := res.Get("accessInterface.id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("enableIPSecIkev2"); value.Exists() && !data.ProtocolIpsecIkev2.IsNull() {
-		data.ProtocolIpsecIkev2 = types.BoolValue(value.Bool())
-	} else {
-		data.ProtocolIpsecIkev2 = types.BoolNull()
-	}
-	if value := res.Get("enableSSL"); value.Exists() && !data.ProtocolSsl.IsNull() {
-		data.ProtocolSsl = types.BoolValue(value.Bool())
-	} else {
-		data.ProtocolSsl = types.BoolNull()
-	}
-	if value := res.Get("enableDTLS"); value.Exists() && !data.ProtocolSslDtls.IsNull() {
-		data.ProtocolSslDtls = types.BoolValue(value.Bool())
-	} else {
-		data.ProtocolSslDtls = types.BoolNull()
-	}
-	if value := res.Get("idCertificate.id"); value.Exists() && !data.InterfaceSpecificCertificateId.IsNull() {
-		data.InterfaceSpecificCertificateId = types.StringValue(value.String())
-	} else {
-		data.InterfaceSpecificCertificateId = types.StringNull()
-	}
+		if value := res.Get("accessInterface.id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("enableIPSecIkev2"); value.Exists() && !data.ProtocolIpsecIkev2.IsNull() {
+			data.ProtocolIpsecIkev2 = types.BoolValue(value.Bool())
+		} else {
+			data.ProtocolIpsecIkev2 = types.BoolNull()
+		}
+		if value := res.Get("enableSSL"); value.Exists() && !data.ProtocolSsl.IsNull() {
+			data.ProtocolSsl = types.BoolValue(value.Bool())
+		} else {
+			data.ProtocolSsl = types.BoolNull()
+		}
+		if value := res.Get("enableDTLS"); value.Exists() && !data.ProtocolSslDtls.IsNull() {
+			data.ProtocolSslDtls = types.BoolValue(value.Bool())
+		} else {
+			data.ProtocolSslDtls = types.BoolNull()
+		}
+		if value := res.Get("idCertificate.id"); value.Exists() && !data.InterfaceSpecificCertificateId.IsNull() {
+			data.InterfaceSpecificCertificateId = types.StringValue(value.String())
+		} else {
+			data.InterfaceSpecificCertificateId = types.StringNull()
+		}
 		(*parent).AccessInterfaces[i] = data
 	}
 	if value := res.Get("accessInterfaceSettings.allowConnectionProfileSelection"); value.Exists() && !data.AllowUsersToSelectConnectionProfile.IsNull() {
@@ -641,16 +555,16 @@ func (data *VPNRA) fromBodyPartial(ctx context.Context, res gjson.Result) {
 		data := (*parent).SecureClientImages[i]
 		parentRes := &res
 		res := parentRes.Get(fmt.Sprintf("anyConnectClientImages.%d", i))
-	if value := res.Get("anyconnectImage.id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("operatingSystem"); value.Exists() && !data.OperatingSystem.IsNull() {
-		data.OperatingSystem = types.StringValue(value.String())
-	} else {
-		data.OperatingSystem = types.StringNull()
-	}
+		if value := res.Get("anyconnectImage.id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("operatingSystem"); value.Exists() && !data.OperatingSystem.IsNull() {
+			data.OperatingSystem = types.StringValue(value.String())
+		} else {
+			data.OperatingSystem = types.StringNull()
+		}
 		(*parent).SecureClientImages[i] = data
 	}
 	if value := res.Get("externalBrowserPackage.id"); value.Exists() && !data.ExternalBrowserPackageId.IsNull() {
@@ -674,8 +588,8 @@ func (data *VPNRA) fromBodyPartial(ctx context.Context, res gjson.Result) {
 		data.CertificateMapId = types.StringNull()
 	}
 	for i := 0; i < len(data.GroupPolicies); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.GroupPolicies[i].Id.ValueString(),  }
+		keys := [...]string{"id"}
+		keyValues := [...]string{data.GroupPolicies[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).GroupPolicies[i]
@@ -709,11 +623,11 @@ func (data *VPNRA) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
 		(*parent).GroupPolicies[i] = data
 	}
 	if value := res.Get("ldapAttributeMaps.id"); value.Exists() && !data.LdapAttributeMapId.IsNull() {
@@ -727,8 +641,8 @@ func (data *VPNRA) fromBodyPartial(ctx context.Context, res gjson.Result) {
 		data.LoadBalancingId = types.StringNull()
 	}
 	for i := 0; i < len(data.Ikev2Policies); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.Ikev2Policies[i].Id.ValueString(),  }
+		keys := [...]string{"id"}
+		keyValues := [...]string{data.Ikev2Policies[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).Ikev2Policies[i]
@@ -762,11 +676,11 @@ func (data *VPNRA) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
 		(*parent).Ikev2Policies[i] = data
 	}
 	if value := res.Get("ipsecAdvancedSettings.id"); value.Exists() && !data.IpsecIkeParametersId.IsNull() {

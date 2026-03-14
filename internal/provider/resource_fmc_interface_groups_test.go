@@ -31,7 +31,7 @@ import (
 
 func TestAccFmcInterfaceGroups(t *testing.T) {
 	if os.Getenv("TF_VAR_device_id") == "" || os.Getenv("TF_VAR_interface_name") == "" {
-        t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_interface_name")
+		t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_interface_name")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("fmc_interface_groups.test", "items.my_interface_groups.id"))
@@ -41,19 +41,19 @@ func TestAccFmcInterfaceGroups(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccFmcInterfaceGroupsPrerequisitesConfig+testAccFmcInterfaceGroupsConfig_minimum(),
+			Config: testAccFmcInterfaceGroupsPrerequisitesConfig + testAccFmcInterfaceGroupsConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcInterfaceGroupsPrerequisitesConfig+testAccFmcInterfaceGroupsConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcInterfaceGroupsPrerequisitesConfig + testAccFmcInterfaceGroupsConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -73,6 +73,7 @@ resource "fmc_device_physical_interface" "test" {
   enabled      = true
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -85,6 +86,7 @@ func testAccFmcInterfaceGroupsConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

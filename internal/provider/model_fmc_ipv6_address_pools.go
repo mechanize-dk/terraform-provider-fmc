@@ -35,29 +35,19 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type IPv6AddressPools struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Items map[string]IPv6AddressPoolsItems `tfsdk:"items"`
+	Id     types.String                     `tfsdk:"id"`
+	Domain types.String                     `tfsdk:"domain"`
+	Items  map[string]IPv6AddressPoolsItems `tfsdk:"items"`
 }
-
 
 type IPv6AddressPoolsItems struct {
-	Id types.String `tfsdk:"id"`
-	Type types.String `tfsdk:"type"`
-	Description types.String `tfsdk:"description"`
-	StartAddress types.String `tfsdk:"start_address"`
-	NumberOfAddresses types.Int64 `tfsdk:"number_of_addresses"`
-	Overridable types.Bool `tfsdk:"overridable"`
+	Id                types.String `tfsdk:"id"`
+	Type              types.String `tfsdk:"type"`
+	Description       types.String `tfsdk:"description"`
+	StartAddress      types.String `tfsdk:"start_address"`
+	NumberOfAddresses types.Int64  `tfsdk:"number_of_addresses"`
+	Overridable       types.Bool   `tfsdk:"overridable"`
 }
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -70,7 +60,7 @@ var minFMCVersionBulkDeleteIPv6AddressPools = version.Must(version.NewVersion("9
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data IPv6AddressPools) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/ipv6addresspools"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/ipv6addresspools"
 }
 
 // End of section. //template:end getPath
@@ -86,20 +76,20 @@ func (data IPv6AddressPools) toBody(ctx context.Context, state IPv6AddressPools)
 		body, _ = sjson.Set(body, "items", []any{})
 		for key, item := range data.Items {
 			itemBody, _ := sjson.Set("{}", "name", key)
-			if !item.Id.IsNull() && !item.Id.IsUnknown()  {
+			if !item.Id.IsNull() && !item.Id.IsUnknown() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			itemBody, _ = sjson.Set(itemBody, "type", "IPv6AddressPool")
-			if !item.Description.IsNull()   {
+			if !item.Description.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "description", item.Description.ValueString())
 			}
-			if !item.StartAddress.IsNull()   {
+			if !item.StartAddress.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "ipv6StartAddress", item.StartAddress.ValueString())
 			}
-			if !item.NumberOfAddresses.IsNull()   {
+			if !item.NumberOfAddresses.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "numberOfAddresses", item.NumberOfAddresses.ValueInt64())
 			}
-			if !item.Overridable.IsNull()   {
+			if !item.Overridable.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "overridable", item.Overridable.ValueBool())
 			}
 			body, _ = sjson.SetRaw(body, "items.-1", itemBody)
@@ -125,40 +115,41 @@ func (data *IPv6AddressPools) fromBody(ctx context.Context, res gjson.Result) {
 		parent := &data
 		data := (*parent).Items[k]
 		res, found := itemsByName[k]
-		if !found {tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
+		if !found {
+			tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
 			delete((*parent).Items, k)
 			continue
 		}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("description"); value.Exists() {
-		data.Description = types.StringValue(value.String())
-	} else {
-		data.Description = types.StringNull()
-	}
-	if value := res.Get("ipv6StartAddress"); value.Exists() {
-		data.StartAddress = types.StringValue(value.String())
-	} else {
-		data.StartAddress = types.StringNull()
-	}
-	if value := res.Get("numberOfAddresses"); value.Exists() {
-		data.NumberOfAddresses = types.Int64Value(value.Int())
-	} else {
-		data.NumberOfAddresses = types.Int64Null()
-	}
-	if value := res.Get("overridable"); value.Exists() {
-		data.Overridable = types.BoolValue(value.Bool())
-	} else {
-		data.Overridable = types.BoolNull()
-	}
+		if value := res.Get("id"); value.Exists() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("type"); value.Exists() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
+		}
+		if value := res.Get("description"); value.Exists() {
+			data.Description = types.StringValue(value.String())
+		} else {
+			data.Description = types.StringNull()
+		}
+		if value := res.Get("ipv6StartAddress"); value.Exists() {
+			data.StartAddress = types.StringValue(value.String())
+		} else {
+			data.StartAddress = types.StringNull()
+		}
+		if value := res.Get("numberOfAddresses"); value.Exists() {
+			data.NumberOfAddresses = types.Int64Value(value.Int())
+		} else {
+			data.NumberOfAddresses = types.Int64Null()
+		}
+		if value := res.Get("overridable"); value.Exists() {
+			data.Overridable = types.BoolValue(value.Bool())
+		} else {
+			data.Overridable = types.BoolNull()
+		}
 		(*parent).Items[k] = data
 	}
 }
@@ -166,7 +157,6 @@ func (data *IPv6AddressPools) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -188,40 +178,40 @@ func (data *IPv6AddressPools) fromBodyPartial(ctx context.Context, res gjson.Res
 			continue
 		}
 		res, _ := itemsById[data.Id.ValueString()]
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("description"); value.Exists() && !data.Description.IsNull() {
-		data.Description = types.StringValue(value.String())
-	} else {
-		if !data.Description.IsNull() && data.Description.ValueString() == "" {
-			data.Description = types.StringValue("")
+		if value := res.Get("id"); value.Exists() {
+			data.Id = types.StringValue(value.String())
 		} else {
-			data.Description = types.StringNull()
+			data.Id = types.StringNull()
 		}
-	}
-	if value := res.Get("ipv6StartAddress"); value.Exists() && !data.StartAddress.IsNull() {
-		data.StartAddress = types.StringValue(value.String())
-	} else {
-		data.StartAddress = types.StringNull()
-	}
-	if value := res.Get("numberOfAddresses"); value.Exists() && !data.NumberOfAddresses.IsNull() {
-		data.NumberOfAddresses = types.Int64Value(value.Int())
-	} else {
-		data.NumberOfAddresses = types.Int64Null()
-	}
-	if value := res.Get("overridable"); value.Exists() && !data.Overridable.IsNull() {
-		data.Overridable = types.BoolValue(value.Bool())
-	} else {
-		data.Overridable = types.BoolNull()
-	}
+		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
+		}
+		if value := res.Get("description"); value.Exists() && !data.Description.IsNull() {
+			data.Description = types.StringValue(value.String())
+		} else {
+			if !data.Description.IsNull() && data.Description.ValueString() == "" {
+				data.Description = types.StringValue("")
+			} else {
+				data.Description = types.StringNull()
+			}
+		}
+		if value := res.Get("ipv6StartAddress"); value.Exists() && !data.StartAddress.IsNull() {
+			data.StartAddress = types.StringValue(value.String())
+		} else {
+			data.StartAddress = types.StringNull()
+		}
+		if value := res.Get("numberOfAddresses"); value.Exists() && !data.NumberOfAddresses.IsNull() {
+			data.NumberOfAddresses = types.Int64Value(value.Int())
+		} else {
+			data.NumberOfAddresses = types.Int64Null()
+		}
+		if value := res.Get("overridable"); value.Exists() && !data.Overridable.IsNull() {
+			data.Overridable = types.BoolValue(value.Bool())
+		} else {
+			data.Overridable = types.BoolNull()
+		}
 		(*parent).Items[i] = data
 	}
 }
@@ -275,7 +265,6 @@ func (data *IPv6AddressPools) fromBodyUnknowns(ctx context.Context, res gjson.Re
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
 func (data *IPv6AddressPools) Clone() IPv6AddressPools {
 	ret := *data
 	ret.Items = maps.Clone(data.Items)
@@ -286,7 +275,6 @@ func (data *IPv6AddressPools) Clone() IPv6AddressPools {
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
 
 // Updates done one-by-one require different API body
 func (data IPv6AddressPools) toBodyNonBulk(ctx context.Context, state IPv6AddressPools) string {

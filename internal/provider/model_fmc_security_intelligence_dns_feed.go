@@ -30,35 +30,14 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type SecurityIntelligenceDNSFeed struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Type types.String `tfsdk:"type"`
-	FeedUrl types.String `tfsdk:"feed_url"`
-	ChecksumUrl types.String `tfsdk:"checksum_url"`
-	UpdateFrequency types.Int64 `tfsdk:"update_frequency"`
+	Id              types.String `tfsdk:"id"`
+	Domain          types.String `tfsdk:"domain"`
+	Name            types.String `tfsdk:"name"`
+	Type            types.String `tfsdk:"type"`
+	FeedUrl         types.String `tfsdk:"feed_url"`
+	ChecksumUrl     types.String `tfsdk:"checksum_url"`
+	UpdateFrequency types.Int64  `tfsdk:"update_frequency"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -69,7 +48,7 @@ type SecurityIntelligenceDNSFeed struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data SecurityIntelligenceDNSFeed) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/sidnsfeeds"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/sidnsfeeds"
 }
 
 // End of section. //template:end getPath
@@ -112,7 +91,6 @@ func (data *SecurityIntelligenceDNSFeed) fromBody(ctx context.Context, res gjson
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
 
-
 // End of section. //template:end fromBodyPartial
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyUnknowns
@@ -121,42 +99,28 @@ func (data *SecurityIntelligenceDNSFeed) fromBody(ctx context.Context, res gjson
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
-
-
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
-
-
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
-
-
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
-
-
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
-
-
 
 // End of section. //template:end adjustBodyBulk

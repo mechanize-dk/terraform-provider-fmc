@@ -35,21 +35,17 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type VPNRASecureClientCustomization struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	VpnRaId types.String `tfsdk:"vpn_ra_id"`
-	Type types.String `tfsdk:"type"`
-	GuiAndTextMessages []VPNRASecureClientCustomizationGuiAndTextMessages `tfsdk:"gui_and_text_messages"`
-	IconsAndImages []VPNRASecureClientCustomizationIconsAndImages `tfsdk:"icons_and_images"`
-	Scripts []VPNRASecureClientCustomizationScripts `tfsdk:"scripts"`
-	Binaries []VPNRASecureClientCustomizationBinaries `tfsdk:"binaries"`
-	CustomInstallerTransforms []VPNRASecureClientCustomizationCustomInstallerTransforms `tfsdk:"custom_installer_transforms"`
+	Id                           types.String                                                 `tfsdk:"id"`
+	Domain                       types.String                                                 `tfsdk:"domain"`
+	VpnRaId                      types.String                                                 `tfsdk:"vpn_ra_id"`
+	Type                         types.String                                                 `tfsdk:"type"`
+	GuiAndTextMessages           []VPNRASecureClientCustomizationGuiAndTextMessages           `tfsdk:"gui_and_text_messages"`
+	IconsAndImages               []VPNRASecureClientCustomizationIconsAndImages               `tfsdk:"icons_and_images"`
+	Scripts                      []VPNRASecureClientCustomizationScripts                      `tfsdk:"scripts"`
+	Binaries                     []VPNRASecureClientCustomizationBinaries                     `tfsdk:"binaries"`
+	CustomInstallerTransforms    []VPNRASecureClientCustomizationCustomInstallerTransforms    `tfsdk:"custom_installer_transforms"`
 	LocalizedInstallerTransforms []VPNRASecureClientCustomizationLocalizedInstallerTransforms `tfsdk:"localized_installer_transforms"`
 }
-
-
-
-
 
 type VPNRASecureClientCustomizationGuiAndTextMessages struct {
 	Id types.String `tfsdk:"id"`
@@ -75,41 +71,6 @@ type VPNRASecureClientCustomizationLocalizedInstallerTransforms struct {
 	Id types.String `tfsdk:"id"`
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // End of section. //template:end types
 
 // Section below is generated&owned by "gen/generator.go". //template:begin minimumVersions
@@ -119,7 +80,7 @@ type VPNRASecureClientCustomizationLocalizedInstallerTransforms struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data VPNRASecureClientCustomization) getPath() string {
-		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ravpns/%v/secureclientcustomizationsettings", url.QueryEscape(data.VpnRaId.ValueString()))
+	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ravpns/%v/secureclientcustomizationsettings", url.QueryEscape(data.VpnRaId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -136,7 +97,7 @@ func (data VPNRASecureClientCustomization) toBody(ctx context.Context, state VPN
 		body, _ = sjson.Set(body, "languageTranslations", []any{})
 		for _, item := range data.GuiAndTextMessages {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "languageTranslations.-1", itemBody)
@@ -146,7 +107,7 @@ func (data VPNRASecureClientCustomization) toBody(ctx context.Context, state VPN
 		body, _ = sjson.Set(body, "imagesAndIcons", []any{})
 		for _, item := range data.IconsAndImages {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "imagesAndIcons.-1", itemBody)
@@ -156,7 +117,7 @@ func (data VPNRASecureClientCustomization) toBody(ctx context.Context, state VPN
 		body, _ = sjson.Set(body, "scripts", []any{})
 		for _, item := range data.Scripts {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "scripts.-1", itemBody)
@@ -166,7 +127,7 @@ func (data VPNRASecureClientCustomization) toBody(ctx context.Context, state VPN
 		body, _ = sjson.Set(body, "binaries", []any{})
 		for _, item := range data.Binaries {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "binaries.-1", itemBody)
@@ -176,7 +137,7 @@ func (data VPNRASecureClientCustomization) toBody(ctx context.Context, state VPN
 		body, _ = sjson.Set(body, "customizedInstallerTransforms", []any{})
 		for _, item := range data.CustomInstallerTransforms {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "customizedInstallerTransforms.-1", itemBody)
@@ -186,7 +147,7 @@ func (data VPNRASecureClientCustomization) toBody(ctx context.Context, state VPN
 		body, _ = sjson.Set(body, "localizedInstallerTransforms", []any{})
 		for _, item := range data.LocalizedInstallerTransforms {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "localizedInstallerTransforms.-1", itemBody)
@@ -210,11 +171,11 @@ func (data *VPNRASecureClientCustomization) fromBody(ctx context.Context, res gj
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VPNRASecureClientCustomizationGuiAndTextMessages{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+			if value := res.Get("id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
 			(*parent).GuiAndTextMessages = append((*parent).GuiAndTextMessages, data)
 			return true
 		})
@@ -224,11 +185,11 @@ func (data *VPNRASecureClientCustomization) fromBody(ctx context.Context, res gj
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VPNRASecureClientCustomizationIconsAndImages{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+			if value := res.Get("id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
 			(*parent).IconsAndImages = append((*parent).IconsAndImages, data)
 			return true
 		})
@@ -238,11 +199,11 @@ func (data *VPNRASecureClientCustomization) fromBody(ctx context.Context, res gj
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VPNRASecureClientCustomizationScripts{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+			if value := res.Get("id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
 			(*parent).Scripts = append((*parent).Scripts, data)
 			return true
 		})
@@ -252,11 +213,11 @@ func (data *VPNRASecureClientCustomization) fromBody(ctx context.Context, res gj
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VPNRASecureClientCustomizationBinaries{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+			if value := res.Get("id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
 			(*parent).Binaries = append((*parent).Binaries, data)
 			return true
 		})
@@ -266,11 +227,11 @@ func (data *VPNRASecureClientCustomization) fromBody(ctx context.Context, res gj
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VPNRASecureClientCustomizationCustomInstallerTransforms{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+			if value := res.Get("id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
 			(*parent).CustomInstallerTransforms = append((*parent).CustomInstallerTransforms, data)
 			return true
 		})
@@ -280,11 +241,11 @@ func (data *VPNRASecureClientCustomization) fromBody(ctx context.Context, res gj
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VPNRASecureClientCustomizationLocalizedInstallerTransforms{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+			if value := res.Get("id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
 			(*parent).LocalizedInstallerTransforms = append((*parent).LocalizedInstallerTransforms, data)
 			return true
 		})
@@ -294,7 +255,6 @@ func (data *VPNRASecureClientCustomization) fromBody(ctx context.Context, res gj
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -307,8 +267,8 @@ func (data *VPNRASecureClientCustomization) fromBodyPartial(ctx context.Context,
 		data.Type = types.StringNull()
 	}
 	for i := 0; i < len(data.GuiAndTextMessages); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.GuiAndTextMessages[i].Id.ValueString(),  }
+		keys := [...]string{"id"}
+		keyValues := [...]string{data.GuiAndTextMessages[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).GuiAndTextMessages[i]
@@ -342,16 +302,16 @@ func (data *VPNRASecureClientCustomization) fromBodyPartial(ctx context.Context,
 
 			continue
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
 		(*parent).GuiAndTextMessages[i] = data
 	}
 	for i := 0; i < len(data.IconsAndImages); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.IconsAndImages[i].Id.ValueString(),  }
+		keys := [...]string{"id"}
+		keyValues := [...]string{data.IconsAndImages[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).IconsAndImages[i]
@@ -385,16 +345,16 @@ func (data *VPNRASecureClientCustomization) fromBodyPartial(ctx context.Context,
 
 			continue
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
 		(*parent).IconsAndImages[i] = data
 	}
 	for i := 0; i < len(data.Scripts); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.Scripts[i].Id.ValueString(),  }
+		keys := [...]string{"id"}
+		keyValues := [...]string{data.Scripts[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).Scripts[i]
@@ -428,16 +388,16 @@ func (data *VPNRASecureClientCustomization) fromBodyPartial(ctx context.Context,
 
 			continue
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
 		(*parent).Scripts[i] = data
 	}
 	for i := 0; i < len(data.Binaries); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.Binaries[i].Id.ValueString(),  }
+		keys := [...]string{"id"}
+		keyValues := [...]string{data.Binaries[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).Binaries[i]
@@ -471,16 +431,16 @@ func (data *VPNRASecureClientCustomization) fromBodyPartial(ctx context.Context,
 
 			continue
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
 		(*parent).Binaries[i] = data
 	}
 	for i := 0; i < len(data.CustomInstallerTransforms); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.CustomInstallerTransforms[i].Id.ValueString(),  }
+		keys := [...]string{"id"}
+		keyValues := [...]string{data.CustomInstallerTransforms[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).CustomInstallerTransforms[i]
@@ -514,16 +474,16 @@ func (data *VPNRASecureClientCustomization) fromBodyPartial(ctx context.Context,
 
 			continue
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
 		(*parent).CustomInstallerTransforms[i] = data
 	}
 	for i := 0; i < len(data.LocalizedInstallerTransforms); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.LocalizedInstallerTransforms[i].Id.ValueString(),  }
+		keys := [...]string{"id"}
+		keyValues := [...]string{data.LocalizedInstallerTransforms[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).LocalizedInstallerTransforms[i]
@@ -557,11 +517,11 @@ func (data *VPNRASecureClientCustomization) fromBodyPartial(ctx context.Context,
 
 			continue
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
 		(*parent).LocalizedInstallerTransforms[i] = data
 	}
 }
@@ -585,7 +545,6 @@ func (data *VPNRASecureClientCustomization) fromBodyUnknowns(ctx context.Context
 // End of section. //template:end fromBodyUnknowns
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
-
 
 // toBodyPutDelete is used to create the body for PUT requests to clear the resource state
 func (data VPNRASecureClientCustomization) toBodyPutDelete(ctx context.Context) string {

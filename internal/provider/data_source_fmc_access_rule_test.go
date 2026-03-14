@@ -55,12 +55,12 @@ func TestAccDataSourceFmcAccessRule(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcAccessRulePrerequisitesConfig+testAccDataSourceFmcAccessRuleConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcAccessRulePrerequisitesConfig + testAccDataSourceFmcAccessRuleConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcAccessRulePrerequisitesConfig+testAccNamedDataSourceFmcAccessRuleConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcAccessRulePrerequisitesConfig + testAccNamedDataSourceFmcAccessRuleConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -100,6 +100,7 @@ resource "fmc_vlan_tag" "test" {
   end_tag   = "11"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

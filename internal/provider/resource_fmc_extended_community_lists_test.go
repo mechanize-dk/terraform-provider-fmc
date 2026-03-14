@@ -39,14 +39,14 @@ func TestAccFmcExtendedCommunityLists(t *testing.T) {
 	var steps []resource.TestStep
 	steps = append(steps, resource.TestStep{
 		Config: testAccFmcExtendedCommunityListsConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 

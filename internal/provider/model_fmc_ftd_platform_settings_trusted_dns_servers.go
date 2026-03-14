@@ -37,56 +37,22 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type FTDPlatformSettingsTrustedDNSServers struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	FtdPlatformSettingsId types.String `tfsdk:"ftd_platform_settings_id"`
-	Type types.String `tfsdk:"type"`
-	TrustAnyDnsServer types.Bool `tfsdk:"trust_any_dns_server"`
-	TrustDhcpPool types.Bool `tfsdk:"trust_dhcp_pool"`
-	TrustDhcpRelay types.Bool `tfsdk:"trust_dhcp_relay"`
-	TrustDhcpClient types.Bool `tfsdk:"trust_dhcp_client"`
-	TrustDnsServerGroup types.Bool `tfsdk:"trust_dns_server_group"`
-	TrustedDnsServersLiterals types.Set `tfsdk:"trusted_dns_servers_literals"`
-	TrustedDnsServersObjects []FTDPlatformSettingsTrustedDNSServersTrustedDnsServersObjects `tfsdk:"trusted_dns_servers_objects"`
+	Id                        types.String                                                   `tfsdk:"id"`
+	Domain                    types.String                                                   `tfsdk:"domain"`
+	FtdPlatformSettingsId     types.String                                                   `tfsdk:"ftd_platform_settings_id"`
+	Type                      types.String                                                   `tfsdk:"type"`
+	TrustAnyDnsServer         types.Bool                                                     `tfsdk:"trust_any_dns_server"`
+	TrustDhcpPool             types.Bool                                                     `tfsdk:"trust_dhcp_pool"`
+	TrustDhcpRelay            types.Bool                                                     `tfsdk:"trust_dhcp_relay"`
+	TrustDhcpClient           types.Bool                                                     `tfsdk:"trust_dhcp_client"`
+	TrustDnsServerGroup       types.Bool                                                     `tfsdk:"trust_dns_server_group"`
+	TrustedDnsServersLiterals types.Set                                                      `tfsdk:"trusted_dns_servers_literals"`
+	TrustedDnsServersObjects  []FTDPlatformSettingsTrustedDNSServersTrustedDnsServersObjects `tfsdk:"trusted_dns_servers_objects"`
 }
-
-
-
-
-
-
-
-
-
 
 type FTDPlatformSettingsTrustedDNSServersTrustedDnsServersObjects struct {
 	Id types.String `tfsdk:"id"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -98,7 +64,7 @@ var minFMCVersionFTDPlatformSettingsTrustedDNSServers = version.Must(version.New
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data FTDPlatformSettingsTrustedDNSServers) getPath() string {
-		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/trusteddnssettings", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
+	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/trusteddnssettings", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -110,19 +76,19 @@ func (data FTDPlatformSettingsTrustedDNSServers) toBody(ctx context.Context, sta
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.TrustAnyDnsServer.IsNull()   {
+	if !data.TrustAnyDnsServer.IsNull() {
 		body, _ = sjson.Set(body, "trustAnyDNSServer", data.TrustAnyDnsServer.ValueBool())
 	}
-	if !data.TrustDhcpPool.IsNull()   {
+	if !data.TrustDhcpPool.IsNull() {
 		body, _ = sjson.Set(body, "trustDhcpPool", data.TrustDhcpPool.ValueBool())
 	}
-	if !data.TrustDhcpRelay.IsNull()   {
+	if !data.TrustDhcpRelay.IsNull() {
 		body, _ = sjson.Set(body, "trustDhcpRelay", data.TrustDhcpRelay.ValueBool())
 	}
-	if !data.TrustDhcpClient.IsNull()   {
+	if !data.TrustDhcpClient.IsNull() {
 		body, _ = sjson.Set(body, "trustDhcpClient", data.TrustDhcpClient.ValueBool())
 	}
-	if !data.TrustDnsServerGroup.IsNull()   {
+	if !data.TrustDnsServerGroup.IsNull() {
 		body, _ = sjson.Set(body, "trustDNSServerGroup", data.TrustDnsServerGroup.ValueBool())
 	}
 	if !data.TrustedDnsServersLiterals.IsNull() {
@@ -134,7 +100,7 @@ func (data FTDPlatformSettingsTrustedDNSServers) toBody(ctx context.Context, sta
 		body, _ = sjson.Set(body, "dnsServers.objects", []any{})
 		for _, item := range data.TrustedDnsServersObjects {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "dnsServers.objects.-1", itemBody)
@@ -188,11 +154,11 @@ func (data *FTDPlatformSettingsTrustedDNSServers) fromBody(ctx context.Context, 
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := FTDPlatformSettingsTrustedDNSServersTrustedDnsServersObjects{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+			if value := res.Get("id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
 			(*parent).TrustedDnsServersObjects = append((*parent).TrustedDnsServersObjects, data)
 			return true
 		})
@@ -202,7 +168,6 @@ func (data *FTDPlatformSettingsTrustedDNSServers) fromBody(ctx context.Context, 
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -245,8 +210,8 @@ func (data *FTDPlatformSettingsTrustedDNSServers) fromBodyPartial(ctx context.Co
 		data.TrustedDnsServersLiterals = types.SetNull(types.StringType)
 	}
 	for i := 0; i < len(data.TrustedDnsServersObjects); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.TrustedDnsServersObjects[i].Id.ValueString(),  }
+		keys := [...]string{"id"}
+		keyValues := [...]string{data.TrustedDnsServersObjects[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).TrustedDnsServersObjects[i]
@@ -280,11 +245,11 @@ func (data *FTDPlatformSettingsTrustedDNSServers) fromBodyPartial(ctx context.Co
 
 			continue
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
 		(*parent).TrustedDnsServersObjects[i] = data
 	}
 }
@@ -308,7 +273,6 @@ func (data *FTDPlatformSettingsTrustedDNSServers) fromBodyUnknowns(ctx context.C
 // End of section. //template:end fromBodyUnknowns
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
-
 
 // toBodyPutDelete is used to create the body for PUT requests to clear the resource state
 func (data FTDPlatformSettingsTrustedDNSServers) toBodyPutDelete(ctx context.Context) string {

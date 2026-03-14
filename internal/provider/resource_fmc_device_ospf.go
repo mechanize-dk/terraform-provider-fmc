@@ -80,7 +80,7 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -97,7 +97,6 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"type": schema.StringAttribute{
@@ -105,7 +104,6 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					
 				},
 			},
 			"process_id": schema.Int64Attribute{
@@ -123,10 +121,10 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Default:             booldefault.StaticBool(false),
 			},
 			"log_adjacency_changes": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Log adjacency changes.").AddStringEnumDescription("DEFAULT", "DETAILED", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Log adjacency changes.").AddStringEnumDescription("DEFAULT", "DETAILED").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("DEFAULT", "DETAILED", ),
+					stringvalidator.OneOf("DEFAULT", "DETAILED"),
 				},
 			},
 			"ignore_lsa_mospf": schema.BoolAttribute{
@@ -142,7 +140,7 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Validators: []validator.Int64{
 					int64validator.Between(1, 254),
 				},
-				Default:             int64default.StaticInt64(110),
+				Default: int64default.StaticInt64(110),
 			},
 			"administrative_distance_intra_area": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Administrative distance for intra-area routes.").AddIntegerRangeDescription(1, 254).AddDefaultValueDescription("110").String,
@@ -151,7 +149,7 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Validators: []validator.Int64{
 					int64validator.Between(1, 254),
 				},
-				Default:             int64default.StaticInt64(110),
+				Default: int64default.StaticInt64(110),
 			},
 			"administrative_distance_external": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Administrative distance for external routes.").AddIntegerRangeDescription(1, 254).AddDefaultValueDescription("110").String,
@@ -160,7 +158,7 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Validators: []validator.Int64{
 					int64validator.Between(1, 254),
 				},
-				Default:             int64default.StaticInt64(110),
+				Default: int64default.StaticInt64(110),
 			},
 			"timer_lsa_group": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Interval in seconds at which LSAs are collected into a group and refreshed, check summed, or aged.").AddIntegerRangeDescription(10, 1800).AddDefaultValueDescription("240").String,
@@ -169,7 +167,7 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Validators: []validator.Int64{
 					int64validator.Between(10, 1800),
 				},
-				Default:             int64default.StaticInt64(240),
+				Default: int64default.StaticInt64(240),
 			},
 			"default_route_always_advertise": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Always advertise default route. Enables Default Information Originate when set.").String,
@@ -183,10 +181,10 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 				},
 			},
 			"default_route_metric_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Metric type for the default route.").AddStringEnumDescription("TYPE_1", "TYPE_2", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Metric type for the default route.").AddStringEnumDescription("TYPE_1", "TYPE_2").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("TYPE_1", "TYPE_2", ),
+					stringvalidator.OneOf("TYPE_1", "TYPE_2"),
 				},
 			},
 			"default_route_route_map_id": schema.StringAttribute{
@@ -198,10 +196,10 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Optional:            true,
 			},
 			"non_stop_forwarding_mechanism": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Non-Stop Forwarding mechanism.").AddStringEnumDescription("CISCO", "IETF", "NONE", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Non-Stop Forwarding mechanism.").AddStringEnumDescription("CISCO", "IETF", "NONE").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("CISCO", "IETF", "NONE", ),
+					stringvalidator.OneOf("CISCO", "IETF", "NONE"),
 				},
 			},
 			"non_stop_forwarding_helper_mode": schema.BoolAttribute{
@@ -233,10 +231,10 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 							Required:            true,
 						},
 						"type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Area type.").AddStringEnumDescription("normal", "stub", "nssa", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Area type.").AddStringEnumDescription("normal", "stub", "nssa").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("normal", "stub", "nssa", ),
+								stringvalidator.OneOf("normal", "stub", "nssa"),
 							},
 						},
 						"no_summary": schema.BoolAttribute{
@@ -248,10 +246,10 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 							Optional:            true,
 						},
 						"default_route_metric_type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Default route metric type for NSSA areas.").AddStringEnumDescription("TYPE_1", "TYPE_2", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Default route metric type for NSSA areas.").AddStringEnumDescription("TYPE_1", "TYPE_2").String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("TYPE_1", "TYPE_2", ),
+								stringvalidator.OneOf("TYPE_1", "TYPE_2"),
 							},
 						},
 						"default_route_metric": schema.Int64Attribute{
@@ -278,10 +276,10 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 							},
 						},
 						"authentication": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Authentication type.").AddStringEnumDescription("PASSWORD", "MESSAGE_DIGEST", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Authentication type.").AddStringEnumDescription("PASSWORD", "MESSAGE_DIGEST").String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("PASSWORD", "MESSAGE_DIGEST", ),
+								stringvalidator.OneOf("PASSWORD", "MESSAGE_DIGEST"),
 							},
 						},
 						"default_cost": schema.Int64Attribute{
@@ -323,7 +321,7 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 										Validators: []validator.Int64{
 											int64validator.Between(1, 8192),
 										},
-										Default:             int64default.StaticInt64(10),
+										Default: int64default.StaticInt64(10),
 									},
 									"transmit_delay": schema.Int64Attribute{
 										MarkdownDescription: helpers.NewAttributeDescription("Transmit delay in seconds.").AddIntegerRangeDescription(1, 8192).AddDefaultValueDescription("1").String,
@@ -332,7 +330,7 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 										Validators: []validator.Int64{
 											int64validator.Between(1, 8192),
 										},
-										Default:             int64default.StaticInt64(1),
+										Default: int64default.StaticInt64(1),
 									},
 									"retransmit_interval": schema.Int64Attribute{
 										MarkdownDescription: helpers.NewAttributeDescription("Retransmit interval in seconds.").AddIntegerRangeDescription(1, 8192).AddDefaultValueDescription("5").String,
@@ -341,7 +339,7 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 										Validators: []validator.Int64{
 											int64validator.Between(1, 8192),
 										},
-										Default:             int64default.StaticInt64(5),
+										Default: int64default.StaticInt64(5),
 									},
 									"dead_interval": schema.Int64Attribute{
 										MarkdownDescription: helpers.NewAttributeDescription("Dead interval in seconds.").AddIntegerRangeDescription(1, 8192).AddDefaultValueDescription("40").String,
@@ -350,7 +348,7 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 										Validators: []validator.Int64{
 											int64validator.Between(1, 8192),
 										},
-										Default:             int64default.StaticInt64(40),
+										Default: int64default.StaticInt64(40),
 									},
 									"authentication_password": schema.StringAttribute{
 										MarkdownDescription: helpers.NewAttributeDescription("Password for authentication.").String,
@@ -358,7 +356,7 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 										Validators: []validator.String{
 											stringvalidator.LengthBetween(0, 8),
 										},
-										Sensitive:           true,
+										Sensitive: true,
 									},
 									"authentication_area_password": schema.StringAttribute{
 										MarkdownDescription: helpers.NewAttributeDescription("Password for area authentication.").String,
@@ -366,7 +364,7 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 										Validators: []validator.String{
 											stringvalidator.LengthBetween(0, 8),
 										},
-										Sensitive:           true,
+										Sensitive: true,
 									},
 									"authentication_area_md5s": schema.ListNestedAttribute{
 										MarkdownDescription: helpers.NewAttributeDescription("Area MD5 authentication keys.").String,
@@ -423,10 +421,10 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 										Optional:            true,
 									},
 									"filter_direction": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Filter direction.").AddStringEnumDescription("IN", "OUT", ).String,
+										MarkdownDescription: helpers.NewAttributeDescription("Filter direction.").AddStringEnumDescription("IN", "OUT").String,
 										Required:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("IN", "OUT", ),
+											stringvalidator.OneOf("IN", "OUT"),
 										},
 									},
 								},
@@ -441,10 +439,10 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"redistribute_protocol": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Protocol to redistribute.").AddStringEnumDescription("RedistributeConnected", "RedistributeStatic", "RedistributeOSPF", "RedistributeBGP", "RedistributeRIP", "RedistributeEIGRP", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Protocol to redistribute.").AddStringEnumDescription("RedistributeConnected", "RedistributeStatic", "RedistributeOSPF", "RedistributeBGP", "RedistributeRIP", "RedistributeEIGRP").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("RedistributeConnected", "RedistributeStatic", "RedistributeOSPF", "RedistributeBGP", "RedistributeRIP", "RedistributeEIGRP", ),
+								stringvalidator.OneOf("RedistributeConnected", "RedistributeStatic", "RedistributeOSPF", "RedistributeBGP", "RedistributeRIP", "RedistributeEIGRP"),
 							},
 						},
 						"as_number": schema.Int64Attribute{
@@ -487,13 +485,13 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 							},
 						},
 						"metric_type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Metric type for the default route.").AddStringEnumDescription("TYPE_1", "TYPE_2", ).AddDefaultValueDescription("TYPE_2").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Metric type for the default route.").AddStringEnumDescription("TYPE_1", "TYPE_2").AddDefaultValueDescription("TYPE_2").String,
 							Optional:            true,
 							Computed:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("TYPE_1", "TYPE_2", ),
+								stringvalidator.OneOf("TYPE_1", "TYPE_2"),
 							},
-							Default:             stringdefault.StaticString("TYPE_2"),
+							Default: stringdefault.StaticString("TYPE_2"),
 						},
 						"tag": schema.Int64Attribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Tag number.").AddIntegerRangeDescription(0, 4294967295).String,
@@ -519,17 +517,17 @@ func (r *DeviceOSPFResource) Schema(ctx context.Context, req resource.SchemaRequ
 							Required:            true,
 						},
 						"traffic_direction": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Filter rule direction.").AddStringEnumDescription("incomingroutefilter", "outgoingroutefilter", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Filter rule direction.").AddStringEnumDescription("incomingroutefilter", "outgoingroutefilter").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("incomingroutefilter", "outgoingroutefilter", ),
+								stringvalidator.OneOf("incomingroutefilter", "outgoingroutefilter"),
 							},
 						},
 						"routing_process": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Protocol for the filter rule. Applicable only for `outgoingroutefilter` direction.").AddStringEnumDescription("CONNECTED", "STATIC", "RIP", "OSPF", "EIGRP", "NONE", "BGP", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Protocol for the filter rule. Applicable only for `outgoingroutefilter` direction.").AddStringEnumDescription("CONNECTED", "STATIC", "RIP", "OSPF", "EIGRP", "NONE", "BGP").String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("CONNECTED", "STATIC", "RIP", "OSPF", "EIGRP", "NONE", "BGP", ),
+								stringvalidator.OneOf("CONNECTED", "STATIC", "RIP", "OSPF", "EIGRP", "NONE", "BGP"),
 							},
 						},
 						"routing_process_id": schema.Int64Attribute{
@@ -674,14 +672,13 @@ func (r *DeviceOSPFResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-	
+
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else  if err != nil {
+	} else if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -735,7 +732,7 @@ func (r *DeviceOSPFResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	body := plan.toBody(ctx, state)
 	body = plan.adjustBody(ctx, body)
-	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -767,7 +764,7 @@ func (r *DeviceOSPFResource) Delete(ctx context.Context, req resource.DeleteRequ
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()), reqMods...)
+	res, err := r.client.Delete(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString()), reqMods...)
 	if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
@@ -782,40 +779,41 @@ func (r *DeviceOSPFResource) Delete(ctx context.Context, req resource.DeleteRequ
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *DeviceOSPFResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<device_id>,<vrf_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n<vrf_id> is optional.\n" + fmt.Sprintf("Got: %q", req.ID)
-		parts := strings.Split(req.ID, ",")
-		if len(parts) < 2 || len(parts) > 4 {
-			resp.Diagnostics.AddError("Import error", errMsg)
-			return
-		}
+	errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<device_id>,<vrf_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n<vrf_id> is optional.\n" + fmt.Sprintf("Got: %q", req.ID)
+	parts := strings.Split(req.ID, ",")
+	if len(parts) < 2 || len(parts) > 4 {
+		resp.Diagnostics.AddError("Import error", errMsg)
+		return
+	}
 
-		if slices.Contains(parts, "") {
-				resp.Diagnostics.AddError("Import error", errMsg)
-				return
-		}
+	if slices.Contains(parts, "") {
+		resp.Diagnostics.AddError("Import error", errMsg)
+		return
+	}
 
-		if len(parts) == 2 {
+	if len(parts) == 2 {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), parts[0])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), parts[1])...)
+	} else if len(parts) == 3 {
+		if err := uuid.Validate(parts[0]); err == nil {
+			// First part is UUID, so it's device_id
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), parts[0])...)
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), parts[1])...)
-		} else if len(parts) == 3 {
-			if err := uuid.Validate(parts[0]); err == nil {
-				// First part is UUID, so it's device_id
-				resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), parts[0])...)
-				resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vrf_id"), parts[1])...)
-			} else {
-				// First part is domain
-				resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), parts[0])...)
-				resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), parts[1])...)
-			}
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), parts[2])...)
-
-		} else if len(parts) == 4 {
+			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vrf_id"), parts[1])...)
+		} else {
+			// First part is domain
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), parts[0])...)
 			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), parts[1])...)
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vrf_id"), parts[2])...)
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), parts[3])...)
 		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), parts[2])...)
+
+	} else if len(parts) == 4 {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), parts[0])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), parts[1])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vrf_id"), parts[2])...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), parts[3])...)
+	}
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
+
 // End of section. //template:end import

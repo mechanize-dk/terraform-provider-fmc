@@ -77,7 +77,7 @@ func (r *HealthPolicyResource) Schema(ctx context.Context, req resource.SchemaRe
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -95,14 +95,13 @@ func (r *HealthPolicyResource) Schema(ctx context.Context, req resource.SchemaRe
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					
 				},
 			},
 			"policy_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Define, if the policy is for the device or for the management center.").AddStringEnumDescription("DevicePolicy", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Define, if the policy is for the device or for the management center.").AddStringEnumDescription("DevicePolicy").String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("DevicePolicy", ),
+					stringvalidator.OneOf("DevicePolicy"),
 				},
 			},
 			"is_default_policy": schema.BoolAttribute{
@@ -115,10 +114,10 @@ func (r *HealthPolicyResource) Schema(ctx context.Context, req resource.SchemaRe
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Name of the health module.").AddStringEnumDescription("hm_disk_status", "hm_asp_drop", "hm_tds", "hm_db", "hm_conn_status_sse", "hm_is5800_powersupply", "hm_card_reset", "hm_ntp_server", "hm_threat_grid_amp", "hm_ftd_ha", "hm_talosagent", "hm_conn_status_amp", "hm_snort_stats", "hm_critical_process", "hm_fsic", "hm_ftd_csdac_identity_services", "hm_deployed_configuration", "hm_ftd_config_resource", "hm_routing_stats", "hm_vpn_stats", "hm_snortstats", "hm_is5800_alarm", "hm_cluster", "hm_bypass", "hm_mu", "hm_reconfig_detection", "hm_xTLS", "hm_pathmonitoring", "hm_cpu", "hm_process", "hm_simu", "hm_fmcaccess_config_change", "hm_linkstate_propagation", "hm_adv_snort_stats", "hm_sdwan", "hm_static_analysis", "hm_chm", "hm_platform_faults", "hm_conn_stats", "hm_fxos_health", "hm_chassis_status_ftd", "hm_du", "hm_ifconfig", "hm_flow_offload", "hm_inlinelink_alarm", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Name of the health module.").AddStringEnumDescription("hm_disk_status", "hm_asp_drop", "hm_tds", "hm_db", "hm_conn_status_sse", "hm_is5800_powersupply", "hm_card_reset", "hm_ntp_server", "hm_threat_grid_amp", "hm_ftd_ha", "hm_talosagent", "hm_conn_status_amp", "hm_snort_stats", "hm_critical_process", "hm_fsic", "hm_ftd_csdac_identity_services", "hm_deployed_configuration", "hm_ftd_config_resource", "hm_routing_stats", "hm_vpn_stats", "hm_snortstats", "hm_is5800_alarm", "hm_cluster", "hm_bypass", "hm_mu", "hm_reconfig_detection", "hm_xTLS", "hm_pathmonitoring", "hm_cpu", "hm_process", "hm_simu", "hm_fmcaccess_config_change", "hm_linkstate_propagation", "hm_adv_snort_stats", "hm_sdwan", "hm_static_analysis", "hm_chm", "hm_platform_faults", "hm_conn_stats", "hm_fxos_health", "hm_chassis_status_ftd", "hm_du", "hm_ifconfig", "hm_flow_offload", "hm_inlinelink_alarm").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("hm_disk_status", "hm_asp_drop", "hm_tds", "hm_db", "hm_conn_status_sse", "hm_is5800_powersupply", "hm_card_reset", "hm_ntp_server", "hm_threat_grid_amp", "hm_ftd_ha", "hm_talosagent", "hm_conn_status_amp", "hm_snort_stats", "hm_critical_process", "hm_fsic", "hm_ftd_csdac_identity_services", "hm_deployed_configuration", "hm_ftd_config_resource", "hm_routing_stats", "hm_vpn_stats", "hm_snortstats", "hm_is5800_alarm", "hm_cluster", "hm_bypass", "hm_mu", "hm_reconfig_detection", "hm_xTLS", "hm_pathmonitoring", "hm_cpu", "hm_process", "hm_simu", "hm_fmcaccess_config_change", "hm_linkstate_propagation", "hm_adv_snort_stats", "hm_sdwan", "hm_static_analysis", "hm_chm", "hm_platform_faults", "hm_conn_stats", "hm_fxos_health", "hm_chassis_status_ftd", "hm_du", "hm_ifconfig", "hm_flow_offload", "hm_inlinelink_alarm", ),
+								stringvalidator.OneOf("hm_disk_status", "hm_asp_drop", "hm_tds", "hm_db", "hm_conn_status_sse", "hm_is5800_powersupply", "hm_card_reset", "hm_ntp_server", "hm_threat_grid_amp", "hm_ftd_ha", "hm_talosagent", "hm_conn_status_amp", "hm_snort_stats", "hm_critical_process", "hm_fsic", "hm_ftd_csdac_identity_services", "hm_deployed_configuration", "hm_ftd_config_resource", "hm_routing_stats", "hm_vpn_stats", "hm_snortstats", "hm_is5800_alarm", "hm_cluster", "hm_bypass", "hm_mu", "hm_reconfig_detection", "hm_xTLS", "hm_pathmonitoring", "hm_cpu", "hm_process", "hm_simu", "hm_fmcaccess_config_change", "hm_linkstate_propagation", "hm_adv_snort_stats", "hm_sdwan", "hm_static_analysis", "hm_chm", "hm_platform_faults", "hm_conn_stats", "hm_fxos_health", "hm_chassis_status_ftd", "hm_du", "hm_ifconfig", "hm_flow_offload", "hm_inlinelink_alarm"),
 							},
 						},
 						"enabled": schema.BoolAttribute{
@@ -126,17 +125,17 @@ func (r *HealthPolicyResource) Schema(ctx context.Context, req resource.SchemaRe
 							Optional:            true,
 						},
 						"type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Type of health module.").AddStringEnumDescription("FTD", "FMC_FTD", "SENSOR", "FMC", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Type of health module.").AddStringEnumDescription("FTD", "FMC_FTD", "SENSOR", "FMC").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("FTD", "FMC_FTD", "SENSOR", "FMC", ),
+								stringvalidator.OneOf("FTD", "FMC_FTD", "SENSOR", "FMC"),
 							},
 						},
 						"alert_severity": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Severity of health module alert.").AddStringEnumDescription("Critical", "Major", "Warning", "Minor", "Info", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Severity of health module alert.").AddStringEnumDescription("Critical", "Major", "Warning", "Minor", "Info").String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("Critical", "Major", "Warning", "Minor", "Info", ),
+								stringvalidator.OneOf("Critical", "Major", "Warning", "Minor", "Info"),
 							},
 						},
 						"critical_threshold": schema.Int64Attribute{
@@ -159,10 +158,10 @@ func (r *HealthPolicyResource) Schema(ctx context.Context, req resource.SchemaRe
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"type": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Type of custom threshold.").AddStringEnumDescription("Red-FC", "Yellow-FC", ).String,
+										MarkdownDescription: helpers.NewAttributeDescription("Type of custom threshold.").AddStringEnumDescription("Red-FC", "Yellow-FC").String,
 										Required:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("Red-FC", "Yellow-FC", ),
+											stringvalidator.OneOf("Red-FC", "Yellow-FC"),
 										},
 									},
 									"threshold": schema.Int64Attribute{
@@ -194,10 +193,10 @@ func (r *HealthPolicyResource) Schema(ctx context.Context, req resource.SchemaRe
 										NestedObject: schema.NestedAttributeObject{
 											Attributes: map[string]schema.Attribute{
 												"type": schema.StringAttribute{
-													MarkdownDescription: helpers.NewAttributeDescription("Type of threshold.").AddStringEnumDescription("red", "yellow", ).String,
+													MarkdownDescription: helpers.NewAttributeDescription("Type of threshold.").AddStringEnumDescription("red", "yellow").String,
 													Required:            true,
 													Validators: []validator.String{
-														stringvalidator.OneOf("red", "yellow", ),
+														stringvalidator.OneOf("red", "yellow"),
 													},
 												},
 												"threshold": schema.Int64Attribute{
@@ -223,7 +222,7 @@ func (r *HealthPolicyResource) Schema(ctx context.Context, req resource.SchemaRe
 				Validators: []validator.Int64{
 					int64validator.Between(5, 60),
 				},
-				Default:             int64default.StaticInt64(5),
+				Default: int64default.StaticInt64(5),
 			},
 			"metric_collection_interval": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Specify the frequency (in minutes) for collection of time series data.").AddIntegerRangeDescription(1, 60).AddDefaultValueDescription("1").String,
@@ -232,7 +231,7 @@ func (r *HealthPolicyResource) Schema(ctx context.Context, req resource.SchemaRe
 				Validators: []validator.Int64{
 					int64validator.Between(1, 60),
 				},
-				Default:             int64default.StaticInt64(1),
+				Default: int64default.StaticInt64(1),
 			},
 		},
 	}
@@ -290,7 +289,7 @@ func (r *HealthPolicyResource) Create(ctx context.Context, req resource.CreateRe
 					return
 				}
 				for _, v := range listRes.Get("items").Array() {
-					if plan.Name.ValueString()== v.Get("name").String(){
+					if plan.Name.ValueString() == v.Get("name").String() {
 						plan.Id = types.StringValue(v.Get("id").String())
 						tflog.Debug(ctx, fmt.Sprintf("%s: Found existing object with name '%v'", plan.Id.ValueString(), plan.Name.ValueString()))
 						break
@@ -354,14 +353,13 @@ func (r *HealthPolicyResource) Read(ctx context.Context, req resource.ReadReques
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-	
+
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else  if err != nil {
+	} else if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -414,7 +412,7 @@ func (r *HealthPolicyResource) Update(ctx context.Context, req resource.UpdateRe
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -446,7 +444,7 @@ func (r *HealthPolicyResource) Delete(ctx context.Context, req resource.DeleteRe
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()), reqMods...)
+	res, err := r.client.Delete(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString()), reqMods...)
 	if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
@@ -461,21 +459,22 @@ func (r *HealthPolicyResource) Delete(ctx context.Context, req resource.DeleteRe
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *HealthPolicyResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-		// Parse import ID
-		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
-		match := inputPattern.FindStringSubmatch(req.ID)
-		if match == nil {
-			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-			resp.Diagnostics.AddError("Import error", errMsg)
-			return
-		}
+	// Parse import ID
+	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
+	match := inputPattern.FindStringSubmatch(req.ID)
+	if match == nil {
+		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+		resp.Diagnostics.AddError("Import error", errMsg)
+		return
+	}
 
-		// Set domain, if provided
-		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-		}
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+	// Set domain, if provided
+	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
+
 // End of section. //template:end import

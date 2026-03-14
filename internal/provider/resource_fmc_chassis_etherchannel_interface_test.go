@@ -31,7 +31,7 @@ import (
 
 func TestAccFmcChassisEtherChannelInterface(t *testing.T) {
 	if os.Getenv("TF_VAR_chassis_id") == "" || os.Getenv("TF_VAR_chassis_interface_id") == "" || os.Getenv("FMC_CHASSIS_ETHERCHANNEL_INTERFACE") == "" {
-        t.Skip("skipping test, set environment variable TF_VAR_chassis_id and TF_VAR_chassis_interface_id and FMC_CHASSIS_ETHERCHANNEL_INTERFACE")
+		t.Skip("skipping test, set environment variable TF_VAR_chassis_id and TF_VAR_chassis_interface_id and FMC_CHASSIS_ETHERCHANNEL_INTERFACE")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("fmc_chassis_etherchannel_interface.test", "type"))
@@ -45,19 +45,19 @@ func TestAccFmcChassisEtherChannelInterface(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccFmcChassisEtherChannelInterfacePrerequisitesConfig+testAccFmcChassisEtherChannelInterfaceConfig_minimum(),
+			Config: testAccFmcChassisEtherChannelInterfacePrerequisitesConfig + testAccFmcChassisEtherChannelInterfaceConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcChassisEtherChannelInterfacePrerequisitesConfig+testAccFmcChassisEtherChannelInterfaceConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcChassisEtherChannelInterfacePrerequisitesConfig + testAccFmcChassisEtherChannelInterfaceConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -74,6 +74,7 @@ data "fmc_chassis_physical_interface" "test" {
   id = var.chassis_interface_id
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -87,6 +88,7 @@ func testAccFmcChassisEtherChannelInterfaceConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

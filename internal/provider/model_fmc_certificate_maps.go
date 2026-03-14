@@ -36,33 +36,23 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type CertificateMaps struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Items map[string]CertificateMapsItems `tfsdk:"items"`
+	Id     types.String                    `tfsdk:"id"`
+	Domain types.String                    `tfsdk:"domain"`
+	Items  map[string]CertificateMapsItems `tfsdk:"items"`
 }
 
-
 type CertificateMapsItems struct {
-	Id types.String `tfsdk:"id"`
-	Type types.String `tfsdk:"type"`
+	Id    types.String                `tfsdk:"id"`
+	Type  types.String                `tfsdk:"type"`
 	Rules []CertificateMapsItemsRules `tfsdk:"rules"`
 }
 
-
-
-
 type CertificateMapsItemsRules struct {
-	Field types.String `tfsdk:"field"`
+	Field     types.String `tfsdk:"field"`
 	Component types.String `tfsdk:"component"`
-	Operator types.String `tfsdk:"operator"`
-	Value types.String `tfsdk:"value"`
+	Operator  types.String `tfsdk:"operator"`
+	Value     types.String `tfsdk:"value"`
 }
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -75,7 +65,7 @@ var minFMCVersionBulkDeleteCertificateMaps = version.Must(version.NewVersion("99
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data CertificateMaps) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/certificatemaps"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/certificatemaps"
 }
 
 // End of section. //template:end getPath
@@ -91,7 +81,7 @@ func (data CertificateMaps) toBody(ctx context.Context, state CertificateMaps) s
 		body, _ = sjson.Set(body, "items", []any{})
 		for key, item := range data.Items {
 			itemBody, _ := sjson.Set("{}", "name", key)
-			if !item.Id.IsNull() && !item.Id.IsUnknown()  {
+			if !item.Id.IsNull() && !item.Id.IsUnknown() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			itemBody, _ = sjson.Set(itemBody, "type", "CertificateMap")
@@ -99,16 +89,16 @@ func (data CertificateMaps) toBody(ctx context.Context, state CertificateMaps) s
 				itemBody, _ = sjson.Set(itemBody, "rules", []any{})
 				for _, childItem := range item.Rules {
 					itemChildBody := ""
-					if !childItem.Field.IsNull()  {
+					if !childItem.Field.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "field", childItem.Field.ValueString())
 					}
-					if !childItem.Component.IsNull()  {
+					if !childItem.Component.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "component", childItem.Component.ValueString())
 					}
-					if !childItem.Operator.IsNull()  {
+					if !childItem.Operator.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "operator", childItem.Operator.ValueString())
 					}
-					if !childItem.Value.IsNull()  {
+					if !childItem.Value.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "value", childItem.Value.ValueString())
 					}
 					itemBody, _ = sjson.SetRaw(itemBody, "rules.-1", itemChildBody)
@@ -137,49 +127,50 @@ func (data *CertificateMaps) fromBody(ctx context.Context, res gjson.Result) {
 		parent := &data
 		data := (*parent).Items[k]
 		res, found := itemsByName[k]
-		if !found {tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
+		if !found {
+			tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
 			delete((*parent).Items, k)
 			continue
 		}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("rules"); value.Exists() {
-		data.Rules = make([]CertificateMapsItemsRules, 0)
-		value.ForEach(func(k, res gjson.Result) bool {
-			parent := &data
-			data := CertificateMapsItemsRules{}
-	if value := res.Get("field"); value.Exists() {
-		data.Field = types.StringValue(value.String())
-	} else {
-		data.Field = types.StringNull()
-	}
-	if value := res.Get("component"); value.Exists() {
-		data.Component = types.StringValue(value.String())
-	} else {
-		data.Component = types.StringNull()
-	}
-	if value := res.Get("operator"); value.Exists() {
-		data.Operator = types.StringValue(value.String())
-	} else {
-		data.Operator = types.StringNull()
-	}
-	if value := res.Get("value"); value.Exists() {
-		data.Value = types.StringValue(value.String())
-	} else {
-		data.Value = types.StringNull()
-	}
-			(*parent).Rules = append((*parent).Rules, data)
-			return true
-		})
-	}
+		if value := res.Get("id"); value.Exists() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("type"); value.Exists() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
+		}
+		if value := res.Get("rules"); value.Exists() {
+			data.Rules = make([]CertificateMapsItemsRules, 0)
+			value.ForEach(func(k, res gjson.Result) bool {
+				parent := &data
+				data := CertificateMapsItemsRules{}
+				if value := res.Get("field"); value.Exists() {
+					data.Field = types.StringValue(value.String())
+				} else {
+					data.Field = types.StringNull()
+				}
+				if value := res.Get("component"); value.Exists() {
+					data.Component = types.StringValue(value.String())
+				} else {
+					data.Component = types.StringNull()
+				}
+				if value := res.Get("operator"); value.Exists() {
+					data.Operator = types.StringValue(value.String())
+				} else {
+					data.Operator = types.StringNull()
+				}
+				if value := res.Get("value"); value.Exists() {
+					data.Value = types.StringValue(value.String())
+				} else {
+					data.Value = types.StringNull()
+				}
+				(*parent).Rules = append((*parent).Rules, data)
+				return true
+			})
+		}
 		(*parent).Items[k] = data
 	}
 }
@@ -187,7 +178,6 @@ func (data *CertificateMaps) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -209,74 +199,74 @@ func (data *CertificateMaps) fromBodyPartial(ctx context.Context, res gjson.Resu
 			continue
 		}
 		res, _ := itemsById[data.Id.ValueString()]
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	for i := 0; i < len(data.Rules); i++ {
-		keys := [...]string{ "field", "component", "operator", "value",  }
-		keyValues := [...]string{ data.Rules[i].Field.ValueString(), data.Rules[i].Component.ValueString(), data.Rules[i].Operator.ValueString(), data.Rules[i].Value.ValueString(),  }
-
-		parent := &data
-		data := (*parent).Rules[i]
-		parentRes := &res
-		var res gjson.Result
-
-		parentRes.Get("rules").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() != keyValues[ik] {
-						found = false
-						break
-					}
-					found = true
-				}
-				if found {
-					res = v
-					return false
-				}
-				return true
-			},
-		)
-		if !res.Exists() {
-			tflog.Debug(ctx, fmt.Sprintf("removing Rules[%d] = %+v",
-				i,
-				(*parent).Rules[i],
-			))
-			(*parent).Rules = slices.Delete((*parent).Rules, i, i+1)
-			i--
-
-			continue
+		if value := res.Get("id"); value.Exists() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
 		}
-	if value := res.Get("field"); value.Exists() && !data.Field.IsNull() {
-		data.Field = types.StringValue(value.String())
-	} else {
-		data.Field = types.StringNull()
-	}
-	if value := res.Get("component"); value.Exists() && !data.Component.IsNull() {
-		data.Component = types.StringValue(value.String())
-	} else {
-		data.Component = types.StringNull()
-	}
-	if value := res.Get("operator"); value.Exists() && !data.Operator.IsNull() {
-		data.Operator = types.StringValue(value.String())
-	} else {
-		data.Operator = types.StringNull()
-	}
-	if value := res.Get("value"); value.Exists() && !data.Value.IsNull() {
-		data.Value = types.StringValue(value.String())
-	} else {
-		data.Value = types.StringNull()
-	}
-		(*parent).Rules[i] = data
-	}
+		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
+		}
+		for i := 0; i < len(data.Rules); i++ {
+			keys := [...]string{"field", "component", "operator", "value"}
+			keyValues := [...]string{data.Rules[i].Field.ValueString(), data.Rules[i].Component.ValueString(), data.Rules[i].Operator.ValueString(), data.Rules[i].Value.ValueString()}
+
+			parent := &data
+			data := (*parent).Rules[i]
+			parentRes := &res
+			var res gjson.Result
+
+			parentRes.Get("rules").ForEach(
+				func(_, v gjson.Result) bool {
+					found := false
+					for ik := range keys {
+						if v.Get(keys[ik]).String() != keyValues[ik] {
+							found = false
+							break
+						}
+						found = true
+					}
+					if found {
+						res = v
+						return false
+					}
+					return true
+				},
+			)
+			if !res.Exists() {
+				tflog.Debug(ctx, fmt.Sprintf("removing Rules[%d] = %+v",
+					i,
+					(*parent).Rules[i],
+				))
+				(*parent).Rules = slices.Delete((*parent).Rules, i, i+1)
+				i--
+
+				continue
+			}
+			if value := res.Get("field"); value.Exists() && !data.Field.IsNull() {
+				data.Field = types.StringValue(value.String())
+			} else {
+				data.Field = types.StringNull()
+			}
+			if value := res.Get("component"); value.Exists() && !data.Component.IsNull() {
+				data.Component = types.StringValue(value.String())
+			} else {
+				data.Component = types.StringNull()
+			}
+			if value := res.Get("operator"); value.Exists() && !data.Operator.IsNull() {
+				data.Operator = types.StringValue(value.String())
+			} else {
+				data.Operator = types.StringNull()
+			}
+			if value := res.Get("value"); value.Exists() && !data.Value.IsNull() {
+				data.Value = types.StringValue(value.String())
+			} else {
+				data.Value = types.StringNull()
+			}
+			(*parent).Rules[i] = data
+		}
 		(*parent).Items[i] = data
 	}
 }
@@ -330,7 +320,6 @@ func (data *CertificateMaps) fromBodyUnknowns(ctx context.Context, res gjson.Res
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
 func (data *CertificateMaps) Clone() CertificateMaps {
 	ret := *data
 	ret.Items = maps.Clone(data.Items)
@@ -341,7 +330,6 @@ func (data *CertificateMaps) Clone() CertificateMaps {
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
 
 // Updates done one-by-one require different API body
 func (data CertificateMaps) toBodyNonBulk(ctx context.Context, state CertificateMaps) string {
@@ -361,12 +349,8 @@ func (data CertificateMaps) toBodyNonBulk(ctx context.Context, state Certificate
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
-
-
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
-
-
 
 // End of section. //template:end clearItemIds

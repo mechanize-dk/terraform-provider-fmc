@@ -41,8 +41,8 @@ func TestAccDataSourceFmcVLANTagGroups(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcVLANTagGroupsPrerequisitesConfig+testAccDataSourceFmcVLANTagGroupsConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcVLANTagGroupsPrerequisitesConfig + testAccDataSourceFmcVLANTagGroupsConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -61,6 +61,7 @@ resource "fmc_vlan_tag" "test" {
   end_tag     = 12
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -91,7 +92,5 @@ func testAccDataSourceFmcVLANTagGroupsConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

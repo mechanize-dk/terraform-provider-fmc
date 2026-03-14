@@ -31,7 +31,7 @@ import (
 
 func TestAccDataSourceFmcChassisEtherChannelInterface(t *testing.T) {
 	if os.Getenv("TF_VAR_chassis_id") == "" || os.Getenv("TF_VAR_chassis_interface_id") == "" || os.Getenv("FMC_CHASSIS_ETHERCHANNEL_INTERFACE") == "" {
-        t.Skip("skipping test, set environment variable TF_VAR_chassis_id and TF_VAR_chassis_interface_id and FMC_CHASSIS_ETHERCHANNEL_INTERFACE")
+		t.Skip("skipping test, set environment variable TF_VAR_chassis_id and TF_VAR_chassis_interface_id and FMC_CHASSIS_ETHERCHANNEL_INTERFACE")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("data.fmc_chassis_etherchannel_interface.test", "type"))
@@ -47,12 +47,12 @@ func TestAccDataSourceFmcChassisEtherChannelInterface(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcChassisEtherChannelInterfacePrerequisitesConfig+testAccDataSourceFmcChassisEtherChannelInterfaceConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcChassisEtherChannelInterfacePrerequisitesConfig + testAccDataSourceFmcChassisEtherChannelInterfaceConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcChassisEtherChannelInterfacePrerequisitesConfig+testAccNamedDataSourceFmcChassisEtherChannelInterfaceConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcChassisEtherChannelInterfacePrerequisitesConfig + testAccNamedDataSourceFmcChassisEtherChannelInterfaceConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -71,6 +71,7 @@ data "fmc_chassis_physical_interface" "test" {
   id = var.chassis_interface_id
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

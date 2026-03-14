@@ -67,12 +67,12 @@ func TestAccDataSourceFmcGroupPolicy(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcGroupPolicyPrerequisitesConfig+testAccDataSourceFmcGroupPolicyConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcGroupPolicyPrerequisitesConfig + testAccDataSourceFmcGroupPolicyConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcGroupPolicyPrerequisitesConfig+testAccNamedDataSourceFmcGroupPolicyConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcGroupPolicyPrerequisitesConfig + testAccNamedDataSourceFmcGroupPolicyConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -104,6 +104,7 @@ resource "fmc_networks" "test" {
   }
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

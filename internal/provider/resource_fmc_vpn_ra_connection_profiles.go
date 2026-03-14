@@ -81,7 +81,7 @@ func (r *VPNRAConnectionProfilesResource) Schema(ctx context.Context, req resour
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -91,7 +91,6 @@ func (r *VPNRAConnectionProfilesResource) Schema(ctx context.Context, req resour
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"items": schema.MapNestedAttribute{
@@ -154,10 +153,10 @@ func (r *VPNRAConnectionProfilesResource) Schema(ctx context.Context, req resour
 							},
 						},
 						"authentication_method": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("User authentication method.").AddStringEnumDescription("AAA_ONLY", "SAML", "CLIENT_CERTIFICATE_ONLY", "AAA_AND_CLIENT_CERTIFICATE", "SAML_AND_CLIENT_CERTIFICATE", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("User authentication method.").AddStringEnumDescription("AAA_ONLY", "SAML", "CLIENT_CERTIFICATE_ONLY", "AAA_AND_CLIENT_CERTIFICATE", "SAML_AND_CLIENT_CERTIFICATE").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("AAA_ONLY", "SAML", "CLIENT_CERTIFICATE_ONLY", "AAA_AND_CLIENT_CERTIFICATE", "SAML_AND_CLIENT_CERTIFICATE", ),
+								stringvalidator.OneOf("AAA_ONLY", "SAML", "CLIENT_CERTIFICATE_ONLY", "AAA_AND_CLIENT_CERTIFICATE", "SAML_AND_CLIENT_CERTIFICATE"),
 							},
 						},
 						"multiple_certificate_authentication": schema.BoolAttribute{
@@ -189,17 +188,17 @@ func (r *VPNRAConnectionProfilesResource) Schema(ctx context.Context, req resour
 							Optional:            true,
 						},
 						"primary_authentication_prefill_username_from_certificate_map_primary_field": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Map primary field for username.").AddStringEnumDescription("CN_COMMMON_NAME", "C_COUNTRY", "DNQ_DN_QUALIFIER", "EA_EMAIL_ADDRESS", "GENQ_GENERATIONAL_QUALIFIER", "GN_GIVEN_NAME", "I_INITIAL", "L_LOCALITY", "N_NAME", "O_ORGANISATION", "OU_ORGANISATIONAL_UNIT", "SER_SERIAL_NUMBER", "SN_SURNAME", "SP_STATE_PROVINCE", "T_TITLE", "UID_USER_ID", "UPN_USER_PRINCIPAL_NAME", "NONE", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Map primary field for username.").AddStringEnumDescription("CN_COMMMON_NAME", "C_COUNTRY", "DNQ_DN_QUALIFIER", "EA_EMAIL_ADDRESS", "GENQ_GENERATIONAL_QUALIFIER", "GN_GIVEN_NAME", "I_INITIAL", "L_LOCALITY", "N_NAME", "O_ORGANISATION", "OU_ORGANISATIONAL_UNIT", "SER_SERIAL_NUMBER", "SN_SURNAME", "SP_STATE_PROVINCE", "T_TITLE", "UID_USER_ID", "UPN_USER_PRINCIPAL_NAME", "NONE").String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("CN_COMMMON_NAME", "C_COUNTRY", "DNQ_DN_QUALIFIER", "EA_EMAIL_ADDRESS", "GENQ_GENERATIONAL_QUALIFIER", "GN_GIVEN_NAME", "I_INITIAL", "L_LOCALITY", "N_NAME", "O_ORGANISATION", "OU_ORGANISATIONAL_UNIT", "SER_SERIAL_NUMBER", "SN_SURNAME", "SP_STATE_PROVINCE", "T_TITLE", "UID_USER_ID", "UPN_USER_PRINCIPAL_NAME", "NONE", ),
+								stringvalidator.OneOf("CN_COMMMON_NAME", "C_COUNTRY", "DNQ_DN_QUALIFIER", "EA_EMAIL_ADDRESS", "GENQ_GENERATIONAL_QUALIFIER", "GN_GIVEN_NAME", "I_INITIAL", "L_LOCALITY", "N_NAME", "O_ORGANISATION", "OU_ORGANISATIONAL_UNIT", "SER_SERIAL_NUMBER", "SN_SURNAME", "SP_STATE_PROVINCE", "T_TITLE", "UID_USER_ID", "UPN_USER_PRINCIPAL_NAME", "NONE"),
 							},
 						},
 						"primary_authentication_prefill_username_from_certificate_map_secondary_field": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Map secondary field for username.").AddStringEnumDescription("CN_COMMMON_NAME", "C_COUNTRY", "DNQ_DN_QUALIFIER", "EA_EMAIL_ADDRESS", "GENQ_GENERATIONAL_QUALIFIER", "GN_GIVEN_NAME", "I_INITIAL", "L_LOCALITY", "N_NAME", "O_ORGANISATION", "OU_ORGANISATIONAL_UNIT", "SER_SERIAL_NUMBER", "SN_SURNAME", "SP_STATE_PROVINCE", "T_TITLE", "UID_USER_ID", "UPN_USER_PRINCIPAL_NAME", "NONE", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Map secondary field for username.").AddStringEnumDescription("CN_COMMMON_NAME", "C_COUNTRY", "DNQ_DN_QUALIFIER", "EA_EMAIL_ADDRESS", "GENQ_GENERATIONAL_QUALIFIER", "GN_GIVEN_NAME", "I_INITIAL", "L_LOCALITY", "N_NAME", "O_ORGANISATION", "OU_ORGANISATIONAL_UNIT", "SER_SERIAL_NUMBER", "SN_SURNAME", "SP_STATE_PROVINCE", "T_TITLE", "UID_USER_ID", "UPN_USER_PRINCIPAL_NAME", "NONE").String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("CN_COMMMON_NAME", "C_COUNTRY", "DNQ_DN_QUALIFIER", "EA_EMAIL_ADDRESS", "GENQ_GENERATIONAL_QUALIFIER", "GN_GIVEN_NAME", "I_INITIAL", "L_LOCALITY", "N_NAME", "O_ORGANISATION", "OU_ORGANISATIONAL_UNIT", "SER_SERIAL_NUMBER", "SN_SURNAME", "SP_STATE_PROVINCE", "T_TITLE", "UID_USER_ID", "UPN_USER_PRINCIPAL_NAME", "NONE", ),
+								stringvalidator.OneOf("CN_COMMMON_NAME", "C_COUNTRY", "DNQ_DN_QUALIFIER", "EA_EMAIL_ADDRESS", "GENQ_GENERATIONAL_QUALIFIER", "GN_GIVEN_NAME", "I_INITIAL", "L_LOCALITY", "N_NAME", "O_ORGANISATION", "OU_ORGANISATIONAL_UNIT", "SER_SERIAL_NUMBER", "SN_SURNAME", "SP_STATE_PROVINCE", "T_TITLE", "UID_USER_ID", "UPN_USER_PRINCIPAL_NAME", "NONE"),
 							},
 						},
 						"primary_authentication_prefill_username_from_certificate_map_entire_dn": schema.BoolAttribute{
@@ -413,24 +412,24 @@ func (r *VPNRAConnectionProfilesResource) Create(ctx context.Context, req resour
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
-	
+
 	//// Prepare state to track creation process. Create request is split to multiple requests, where just subset of them may be successful
-    // Copy fields, as those may contain domain information or other references
-    state := plan
-    // Create random ID to track bulk resource. This does not relate to FMC in any way
-    state.Id = types.StringValue(uuid.New().String())
+	// Copy fields, as those may contain domain information or other references
+	state := plan
+	// Create random ID to track bulk resource. This does not relate to FMC in any way
+	state.Id = types.StringValue(uuid.New().String())
 	// Erase all Items, those will be filled in after creation
-    state.Items = make(map[string]VPNRAConnectionProfilesItems, len(plan.Items))
-    // Creation process is put in a separate function, as that same proces will be needed with `Update`
-    plan, diags = r.createSubresources(ctx, state, plan, reqMods...)
-    resp.Diagnostics.Append(diags...)
-    if resp.Diagnostics.HasError() {
-        // Save state for whatever was already created
-        diags = resp.State.Set(ctx, &plan)
+	state.Items = make(map[string]VPNRAConnectionProfilesItems, len(plan.Items))
+	// Creation process is put in a separate function, as that same proces will be needed with `Update`
+	plan, diags = r.createSubresources(ctx, state, plan, reqMods...)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		// Save state for whatever was already created
+		diags = resp.State.Set(ctx, &plan)
 		tflog.Debug(ctx, fmt.Sprintf("%s: Create failed, some items might have been created", plan.Id.ValueString()))
-        resp.Diagnostics.Append(diags...)
-        return
-    }
+		resp.Diagnostics.Append(diags...)
+		return
+	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -585,7 +584,7 @@ func (r *VPNRAConnectionProfilesResource) Update(ctx context.Context, req resour
 	var notEqual bool
 	var toUpdate VPNRAConnectionProfiles
 	toUpdate.Items = make(map[string]VPNRAConnectionProfilesItems, len(plan.Items))
-	
+
 	for _, valueState := range state.Items {
 
 		// Check if the ID from plan exists on list of ID owned by state
@@ -668,33 +667,34 @@ func (r *VPNRAConnectionProfilesResource) Delete(ctx context.Context, req resour
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *VPNRAConnectionProfilesResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-		// Parse import ID
-		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<vpn_ra_id>[^\s,]+),\[(?P<names>.*?)\]$`)
-		match := inputPattern.FindStringSubmatch(req.ID)
-		if match == nil {
-			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<vpn_ra_id>,[<item1_name>,<item2_name>,...]\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-			resp.Diagnostics.AddError("Import error", errMsg)
-			return
-		}
+	// Parse import ID
+	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<vpn_ra_id>[^\s,]+),\[(?P<names>.*?)\]$`)
+	match := inputPattern.FindStringSubmatch(req.ID)
+	if match == nil {
+		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<vpn_ra_id>,[<item1_name>,<item2_name>,...]\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+		resp.Diagnostics.AddError("Import error", errMsg)
+		return
+	}
 
-		// Set domain, if provided
-		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-		}
-		// Generate new ID (random, does not relate to FMC in any way)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), uuid.New().String())...)
+	// Set domain, if provided
+	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+	}
+	// Generate new ID (random, does not relate to FMC in any way)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), uuid.New().String())...)
 
-		// Fill state with names of objects to import
-		names := strings.Split(match[inputPattern.SubexpIndex("names")], ",")
-		itemsMap := make(map[string]VPNRAConnectionProfilesItems, len(names))
-		for _, v := range names {
-			itemsMap[v] = VPNRAConnectionProfilesItems{}
-		}
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("items"), itemsMap)...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vpn_ra_id"), match[inputPattern.SubexpIndex("vpn_ra_id")])...)
+	// Fill state with names of objects to import
+	names := strings.Split(match[inputPattern.SubexpIndex("names")], ",")
+	itemsMap := make(map[string]VPNRAConnectionProfilesItems, len(names))
+	for _, v := range names {
+		itemsMap[v] = VPNRAConnectionProfilesItems{}
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("items"), itemsMap)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vpn_ra_id"), match[inputPattern.SubexpIndex("vpn_ra_id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
+
 // End of section. //template:end import
 
 // createSubresources takes list of objects, splits them into bulks and creates them

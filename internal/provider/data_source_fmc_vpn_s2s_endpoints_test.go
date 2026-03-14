@@ -31,7 +31,7 @@ import (
 
 func TestAccDataSourceFmcVPNS2SEndpoints(t *testing.T) {
 	if os.Getenv("TF_VAR_device_id") == "" || os.Getenv("TF_VAR_interface_name") == "" {
-        t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_interface_name")
+		t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_interface_name")
 	}
 	var checks []resource.TestCheckFunc
 	resource.Test(t, resource.TestCase{
@@ -40,8 +40,8 @@ func TestAccDataSourceFmcVPNS2SEndpoints(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcVPNS2SEndpointsPrerequisitesConfig+testAccDataSourceFmcVPNS2SEndpointsConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcVPNS2SEndpointsPrerequisitesConfig + testAccDataSourceFmcVPNS2SEndpointsConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -86,6 +86,7 @@ resource "fmc_vpn_s2s_ike_settings" "test" {
   ikev2_manual_pre_shared_key = "my_pre_shared_key123"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -120,7 +121,5 @@ func testAccDataSourceFmcVPNS2SEndpointsConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

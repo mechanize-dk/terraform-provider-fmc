@@ -40,12 +40,12 @@ func TestAccDataSourceFmcServiceAccess(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcServiceAccessPrerequisitesConfig+testAccDataSourceFmcServiceAccessConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcServiceAccessPrerequisitesConfig + testAccDataSourceFmcServiceAccessConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcServiceAccessPrerequisitesConfig+testAccNamedDataSourceFmcServiceAccessConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcServiceAccessPrerequisitesConfig + testAccNamedDataSourceFmcServiceAccessConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -62,6 +62,7 @@ data "fmc_countries" "test" {
   }
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

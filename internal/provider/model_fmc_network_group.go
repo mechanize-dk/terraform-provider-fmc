@@ -34,50 +34,24 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type NetworkGroup struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Type types.String `tfsdk:"type"`
-	Overridable types.Bool `tfsdk:"overridable"`
-	Objects []NetworkGroupObjects `tfsdk:"objects"`
-	Literals []NetworkGroupLiterals `tfsdk:"literals"`
+	Id          types.String           `tfsdk:"id"`
+	Domain      types.String           `tfsdk:"domain"`
+	Name        types.String           `tfsdk:"name"`
+	Description types.String           `tfsdk:"description"`
+	Type        types.String           `tfsdk:"type"`
+	Overridable types.Bool             `tfsdk:"overridable"`
+	Objects     []NetworkGroupObjects  `tfsdk:"objects"`
+	Literals    []NetworkGroupLiterals `tfsdk:"literals"`
 }
 
-
-
-
-
-
 type NetworkGroupObjects struct {
-	Id types.String `tfsdk:"id"`
+	Id   types.String `tfsdk:"id"`
 	Name types.String `tfsdk:"name"`
 }
 
 type NetworkGroupLiterals struct {
 	Value types.String `tfsdk:"value"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -88,7 +62,7 @@ type NetworkGroupLiterals struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data NetworkGroup) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/networkgroups"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/networkgroups"
 }
 
 // End of section. //template:end getPath
@@ -100,23 +74,23 @@ func (data NetworkGroup) toBody(ctx context.Context, state NetworkGroup) string 
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()   {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.Overridable.IsNull()   {
+	if !data.Overridable.IsNull() {
 		body, _ = sjson.Set(body, "overridable", data.Overridable.ValueBool())
 	}
 	if len(data.Objects) > 0 {
 		body, _ = sjson.Set(body, "objects", []any{})
 		for _, item := range data.Objects {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Name.IsNull()   {
+			if !item.Name.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "name", item.Name.ValueString())
 			}
 			itemBody, _ = sjson.Set(itemBody, "type", "AnyNonEmptyString")
@@ -127,7 +101,7 @@ func (data NetworkGroup) toBody(ctx context.Context, state NetworkGroup) string 
 		body, _ = sjson.Set(body, "literals", []any{})
 		for _, item := range data.Literals {
 			itemBody := ""
-			if !item.Value.IsNull()   {
+			if !item.Value.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "value", item.Value.ValueString())
 			}
 			itemBody, _ = sjson.Set(itemBody, "type", "AnyNonEmptyString")
@@ -167,16 +141,16 @@ func (data *NetworkGroup) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := NetworkGroupObjects{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("name"); value.Exists() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
+			if value := res.Get("id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
+			if value := res.Get("name"); value.Exists() {
+				data.Name = types.StringValue(value.String())
+			} else {
+				data.Name = types.StringNull()
+			}
 			(*parent).Objects = append((*parent).Objects, data)
 			return true
 		})
@@ -186,11 +160,11 @@ func (data *NetworkGroup) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := NetworkGroupLiterals{}
-	if value := res.Get("value"); value.Exists() {
-		data.Value = types.StringValue(value.String())
-	} else {
-		data.Value = types.StringNull()
-	}
+			if value := res.Get("value"); value.Exists() {
+				data.Value = types.StringValue(value.String())
+			} else {
+				data.Value = types.StringNull()
+			}
 			(*parent).Literals = append((*parent).Literals, data)
 			return true
 		})
@@ -200,7 +174,6 @@ func (data *NetworkGroup) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -232,8 +205,8 @@ func (data *NetworkGroup) fromBodyPartial(ctx context.Context, res gjson.Result)
 		data.Overridable = types.BoolNull()
 	}
 	for i := 0; i < len(data.Objects); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.Objects[i].Id.ValueString(),  }
+		keys := [...]string{"id"}
+		keyValues := [...]string{data.Objects[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).Objects[i]
@@ -267,21 +240,21 @@ func (data *NetworkGroup) fromBodyPartial(ctx context.Context, res gjson.Result)
 
 			continue
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
+		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
+			data.Name = types.StringValue(value.String())
+		} else {
+			data.Name = types.StringNull()
+		}
 		(*parent).Objects[i] = data
 	}
 	for i := 0; i < len(data.Literals); i++ {
-		keys := [...]string{ "value",  }
-		keyValues := [...]string{ data.Literals[i].Value.ValueString(),  }
+		keys := [...]string{"value"}
+		keyValues := [...]string{data.Literals[i].Value.ValueString()}
 
 		parent := &data
 		data := (*parent).Literals[i]
@@ -315,11 +288,11 @@ func (data *NetworkGroup) fromBodyPartial(ctx context.Context, res gjson.Result)
 
 			continue
 		}
-	if value := res.Get("value"); value.Exists() && !data.Value.IsNull() {
-		data.Value = types.StringValue(value.String())
-	} else {
-		data.Value = types.StringNull()
-	}
+		if value := res.Get("value"); value.Exists() && !data.Value.IsNull() {
+			data.Value = types.StringValue(value.String())
+		} else {
+			data.Value = types.StringNull()
+		}
 		(*parent).Literals[i] = data
 	}
 }
@@ -344,12 +317,8 @@ func (data *NetworkGroup) fromBodyUnknowns(ctx context.Context, res gjson.Result
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk

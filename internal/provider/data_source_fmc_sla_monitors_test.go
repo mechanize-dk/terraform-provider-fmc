@@ -47,8 +47,8 @@ func TestAccDataSourceFmcSLAMonitors(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcSLAMonitorsPrerequisitesConfig+testAccDataSourceFmcSLAMonitorsConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcSLAMonitorsPrerequisitesConfig + testAccDataSourceFmcSLAMonitorsConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -64,6 +64,7 @@ resource "fmc_interface_group" "test" {
   interface_type = "ROUTED"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -97,7 +98,5 @@ func testAccDataSourceFmcSLAMonitorsConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

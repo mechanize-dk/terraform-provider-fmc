@@ -31,7 +31,7 @@ import (
 
 func TestAccDataSourceFmcDeviceBGP(t *testing.T) {
 	if os.Getenv("TF_VAR_device_id") == "" {
-        t.Skip("skipping test, set environment variable TF_VAR_device_id")
+		t.Skip("skipping test, set environment variable TF_VAR_device_id")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("data.fmc_device_bgp.test", "name"))
@@ -77,12 +77,12 @@ func TestAccDataSourceFmcDeviceBGP(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcDeviceBGPPrerequisitesConfig+testAccDataSourceFmcDeviceBGPConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcDeviceBGPPrerequisitesConfig + testAccDataSourceFmcDeviceBGPConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcDeviceBGPPrerequisitesConfig+testAccNamedDataSourceFmcDeviceBGPConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcDeviceBGPPrerequisitesConfig + testAccNamedDataSourceFmcDeviceBGPConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -100,6 +100,7 @@ resource "fmc_device_bgp_general_settings" "test" {
   as_number                   = "6353"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

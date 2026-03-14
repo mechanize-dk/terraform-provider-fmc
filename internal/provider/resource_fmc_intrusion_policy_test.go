@@ -39,23 +39,23 @@ func TestAccFmcIntrusionPolicy(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccFmcIntrusionPolicyPrerequisitesConfig+testAccFmcIntrusionPolicyConfig_minimum(),
+			Config: testAccFmcIntrusionPolicyPrerequisitesConfig + testAccFmcIntrusionPolicyConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcIntrusionPolicyPrerequisitesConfig+testAccFmcIntrusionPolicyConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcIntrusionPolicyPrerequisitesConfig + testAccFmcIntrusionPolicyConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName:  "fmc_intrusion_policy.test",
-		ImportState:   true,
+		ResourceName: "fmc_intrusion_policy.test",
+		ImportState:  true,
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -68,6 +68,7 @@ data "fmc_intrusion_policy" "builtin" {
   name = "Balanced Security and Connectivity"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -79,6 +80,7 @@ func testAccFmcIntrusionPolicyConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

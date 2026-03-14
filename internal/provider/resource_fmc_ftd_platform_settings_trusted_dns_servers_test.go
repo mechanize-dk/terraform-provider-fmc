@@ -39,15 +39,15 @@ func TestAccFmcFTDPlatformSettingsTrustedDNSServers(t *testing.T) {
 
 	var steps []resource.TestStep
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcFTDPlatformSettingsTrustedDNSServersPrerequisitesConfig+testAccFmcFTDPlatformSettingsTrustedDNSServersConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcFTDPlatformSettingsTrustedDNSServersPrerequisitesConfig + testAccFmcFTDPlatformSettingsTrustedDNSServersConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -65,6 +65,7 @@ resource "fmc_host" "test" {
   ip   = "10.0.2.1"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal

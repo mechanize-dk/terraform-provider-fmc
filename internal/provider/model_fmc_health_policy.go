@@ -36,74 +36,43 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type HealthPolicy struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Type types.String `tfsdk:"type"`
-	PolicyType types.String `tfsdk:"policy_type"`
-	IsDefaultPolicy types.Bool `tfsdk:"is_default_policy"`
-	HealthModules []HealthPolicyHealthModules `tfsdk:"health_modules"`
-	HealthModuleRunTimeInterval types.Int64 `tfsdk:"health_module_run_time_interval"`
-	MetricCollectionInterval types.Int64 `tfsdk:"metric_collection_interval"`
+	Id                          types.String                `tfsdk:"id"`
+	Domain                      types.String                `tfsdk:"domain"`
+	Name                        types.String                `tfsdk:"name"`
+	Description                 types.String                `tfsdk:"description"`
+	Type                        types.String                `tfsdk:"type"`
+	PolicyType                  types.String                `tfsdk:"policy_type"`
+	IsDefaultPolicy             types.Bool                  `tfsdk:"is_default_policy"`
+	HealthModules               []HealthPolicyHealthModules `tfsdk:"health_modules"`
+	HealthModuleRunTimeInterval types.Int64                 `tfsdk:"health_module_run_time_interval"`
+	MetricCollectionInterval    types.Int64                 `tfsdk:"metric_collection_interval"`
 }
-
-
-
-
-
-
 
 type HealthPolicyHealthModules struct {
-	Name types.String `tfsdk:"name"`
-	Enabled types.Bool `tfsdk:"enabled"`
-	Type types.String `tfsdk:"type"`
-	AlertSeverity types.String `tfsdk:"alert_severity"`
-	CriticalThreshold types.Int64 `tfsdk:"critical_threshold"`
-	WarningThreshold types.Int64 `tfsdk:"warning_threshold"`
-	CustomThresholds []HealthPolicyHealthModulesCustomThresholds `tfsdk:"custom_thresholds"`
-	AlertConfigs []HealthPolicyHealthModulesAlertConfigs `tfsdk:"alert_configs"`
+	Name              types.String                                `tfsdk:"name"`
+	Enabled           types.Bool                                  `tfsdk:"enabled"`
+	Type              types.String                                `tfsdk:"type"`
+	AlertSeverity     types.String                                `tfsdk:"alert_severity"`
+	CriticalThreshold types.Int64                                 `tfsdk:"critical_threshold"`
+	WarningThreshold  types.Int64                                 `tfsdk:"warning_threshold"`
+	CustomThresholds  []HealthPolicyHealthModulesCustomThresholds `tfsdk:"custom_thresholds"`
+	AlertConfigs      []HealthPolicyHealthModulesAlertConfigs     `tfsdk:"alert_configs"`
 }
-
-
-
-
-
-
-
-
-
-
 
 type HealthPolicyHealthModulesCustomThresholds struct {
-	Type types.String `tfsdk:"type"`
-	Threshold types.Int64 `tfsdk:"threshold"`
+	Type      types.String `tfsdk:"type"`
+	Threshold types.Int64  `tfsdk:"threshold"`
 }
 type HealthPolicyHealthModulesAlertConfigs struct {
-	Name types.String `tfsdk:"name"`
-	Enabled types.Bool `tfsdk:"enabled"`
+	Name       types.String                                      `tfsdk:"name"`
+	Enabled    types.Bool                                        `tfsdk:"enabled"`
 	Thresholds []HealthPolicyHealthModulesAlertConfigsThresholds `tfsdk:"thresholds"`
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 type HealthPolicyHealthModulesAlertConfigsThresholds struct {
-	Type types.String `tfsdk:"type"`
-	Threshold types.Int64 `tfsdk:"threshold"`
+	Type      types.String `tfsdk:"type"`
+	Threshold types.Int64  `tfsdk:"threshold"`
 }
-
-
-
 
 // End of section. //template:end types
 
@@ -115,7 +84,7 @@ var minFMCVersionHealthPolicy = version.Must(version.NewVersion("7.7"))
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data HealthPolicy) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/healthpolicies"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/healthpolicies"
 }
 
 // End of section. //template:end getPath
@@ -127,48 +96,48 @@ func (data HealthPolicy) toBody(ctx context.Context, state HealthPolicy) string 
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()   {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.PolicyType.IsNull()   {
+	if !data.PolicyType.IsNull() {
 		body, _ = sjson.Set(body, "policyType", data.PolicyType.ValueString())
 	}
-	if !data.IsDefaultPolicy.IsNull()   {
+	if !data.IsDefaultPolicy.IsNull() {
 		body, _ = sjson.Set(body, "defaultPolicy", data.IsDefaultPolicy.ValueBool())
 	}
 	if len(data.HealthModules) > 0 {
 		body, _ = sjson.Set(body, "healthModules", []any{})
 		for _, item := range data.HealthModules {
 			itemBody := ""
-			if !item.Name.IsNull()   {
+			if !item.Name.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "moduleId", item.Name.ValueString())
 			}
-			if !item.Enabled.IsNull()   {
+			if !item.Enabled.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "enabled", item.Enabled.ValueBool())
 			}
-			if !item.Type.IsNull()   {
+			if !item.Type.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "type", item.Type.ValueString())
 			}
-			if !item.AlertSeverity.IsNull()   {
+			if !item.AlertSeverity.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "severity", item.AlertSeverity.ValueString())
 			}
-			if !item.CriticalThreshold.IsNull()   {
+			if !item.CriticalThreshold.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "criticalThreshold", item.CriticalThreshold.ValueInt64())
 			}
-			if !item.WarningThreshold.IsNull()   {
+			if !item.WarningThreshold.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "warningThreshold", item.WarningThreshold.ValueInt64())
 			}
 			if len(item.CustomThresholds) > 0 {
 				itemBody, _ = sjson.Set(itemBody, "customThresholds", []any{})
 				for _, childItem := range item.CustomThresholds {
 					itemChildBody := ""
-					if !childItem.Type.IsNull()  {
+					if !childItem.Type.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "type", childItem.Type.ValueString())
 					}
-					if !childItem.Threshold.IsNull()  {
+					if !childItem.Threshold.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "value", childItem.Threshold.ValueInt64())
 					}
 					itemBody, _ = sjson.SetRaw(itemBody, "customThresholds.-1", itemChildBody)
@@ -178,20 +147,20 @@ func (data HealthPolicy) toBody(ctx context.Context, state HealthPolicy) string 
 				itemBody, _ = sjson.Set(itemBody, "alertConfig", []any{})
 				for _, childItem := range item.AlertConfigs {
 					itemChildBody := ""
-					if !childItem.Name.IsNull()  {
+					if !childItem.Name.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "name", childItem.Name.ValueString())
 					}
-					if !childItem.Enabled.IsNull()  {
+					if !childItem.Enabled.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "enabled", childItem.Enabled.ValueBool())
 					}
 					if len(childItem.Thresholds) > 0 {
 						itemChildBody, _ = sjson.Set(itemChildBody, "thresholds", []any{})
 						for _, childChildItem := range childItem.Thresholds {
 							itemChildChildBody := ""
-							if !childChildItem.Type.IsNull()  {
+							if !childChildItem.Type.IsNull() {
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "type", childChildItem.Type.ValueString())
 							}
-							if !childChildItem.Threshold.IsNull()  {
+							if !childChildItem.Threshold.IsNull() {
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "value", childChildItem.Threshold.ValueInt64())
 							}
 							itemChildBody, _ = sjson.SetRaw(itemChildBody, "thresholds.-1", itemChildChildBody)
@@ -203,10 +172,10 @@ func (data HealthPolicy) toBody(ctx context.Context, state HealthPolicy) string 
 			body, _ = sjson.SetRaw(body, "healthModules.-1", itemBody)
 		}
 	}
-	if !data.HealthModuleRunTimeInterval.IsNull()   {
+	if !data.HealthModuleRunTimeInterval.IsNull() {
 		body, _ = sjson.Set(body, "setting.alertEvaluationInterval", data.HealthModuleRunTimeInterval.ValueInt64())
 	}
-	if !data.MetricCollectionInterval.IsNull()   {
+	if !data.MetricCollectionInterval.IsNull() {
 		body, _ = sjson.Set(body, "setting.dataCollectionInterval", data.MetricCollectionInterval.ValueInt64())
 	}
 	return body
@@ -247,93 +216,93 @@ func (data *HealthPolicy) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := HealthPolicyHealthModules{}
-	if value := res.Get("moduleId"); value.Exists() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
-	if value := res.Get("enabled"); value.Exists() {
-		data.Enabled = types.BoolValue(value.Bool())
-	} else {
-		data.Enabled = types.BoolNull()
-	}
-	if value := res.Get("type"); value.Exists() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("severity"); value.Exists() {
-		data.AlertSeverity = types.StringValue(value.String())
-	} else {
-		data.AlertSeverity = types.StringNull()
-	}
-	if value := res.Get("criticalThreshold"); value.Exists() {
-		data.CriticalThreshold = types.Int64Value(value.Int())
-	} else {
-		data.CriticalThreshold = types.Int64Null()
-	}
-	if value := res.Get("warningThreshold"); value.Exists() {
-		data.WarningThreshold = types.Int64Value(value.Int())
-	} else {
-		data.WarningThreshold = types.Int64Null()
-	}
-	if value := res.Get("customThresholds"); value.Exists() {
-		data.CustomThresholds = make([]HealthPolicyHealthModulesCustomThresholds, 0)
-		value.ForEach(func(k, res gjson.Result) bool {
-			parent := &data
-			data := HealthPolicyHealthModulesCustomThresholds{}
-	if value := res.Get("type"); value.Exists() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("value"); value.Exists() {
-		data.Threshold = types.Int64Value(value.Int())
-	} else {
-		data.Threshold = types.Int64Null()
-	}
-			(*parent).CustomThresholds = append((*parent).CustomThresholds, data)
-			return true
-		})
-	}
-	if value := res.Get("alertConfig"); value.Exists() {
-		data.AlertConfigs = make([]HealthPolicyHealthModulesAlertConfigs, 0)
-		value.ForEach(func(k, res gjson.Result) bool {
-			parent := &data
-			data := HealthPolicyHealthModulesAlertConfigs{}
-	if value := res.Get("name"); value.Exists() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
-	if value := res.Get("enabled"); value.Exists() {
-		data.Enabled = types.BoolValue(value.Bool())
-	} else {
-		data.Enabled = types.BoolNull()
-	}
-	if value := res.Get("thresholds"); value.Exists() {
-		data.Thresholds = make([]HealthPolicyHealthModulesAlertConfigsThresholds, 0)
-		value.ForEach(func(k, res gjson.Result) bool {
-			parent := &data
-			data := HealthPolicyHealthModulesAlertConfigsThresholds{}
-	if value := res.Get("type"); value.Exists() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("value"); value.Exists() {
-		data.Threshold = types.Int64Value(value.Int())
-	} else {
-		data.Threshold = types.Int64Null()
-	}
-			(*parent).Thresholds = append((*parent).Thresholds, data)
-			return true
-		})
-	}
-			(*parent).AlertConfigs = append((*parent).AlertConfigs, data)
-			return true
-		})
-	}
+			if value := res.Get("moduleId"); value.Exists() {
+				data.Name = types.StringValue(value.String())
+			} else {
+				data.Name = types.StringNull()
+			}
+			if value := res.Get("enabled"); value.Exists() {
+				data.Enabled = types.BoolValue(value.Bool())
+			} else {
+				data.Enabled = types.BoolNull()
+			}
+			if value := res.Get("type"); value.Exists() {
+				data.Type = types.StringValue(value.String())
+			} else {
+				data.Type = types.StringNull()
+			}
+			if value := res.Get("severity"); value.Exists() {
+				data.AlertSeverity = types.StringValue(value.String())
+			} else {
+				data.AlertSeverity = types.StringNull()
+			}
+			if value := res.Get("criticalThreshold"); value.Exists() {
+				data.CriticalThreshold = types.Int64Value(value.Int())
+			} else {
+				data.CriticalThreshold = types.Int64Null()
+			}
+			if value := res.Get("warningThreshold"); value.Exists() {
+				data.WarningThreshold = types.Int64Value(value.Int())
+			} else {
+				data.WarningThreshold = types.Int64Null()
+			}
+			if value := res.Get("customThresholds"); value.Exists() {
+				data.CustomThresholds = make([]HealthPolicyHealthModulesCustomThresholds, 0)
+				value.ForEach(func(k, res gjson.Result) bool {
+					parent := &data
+					data := HealthPolicyHealthModulesCustomThresholds{}
+					if value := res.Get("type"); value.Exists() {
+						data.Type = types.StringValue(value.String())
+					} else {
+						data.Type = types.StringNull()
+					}
+					if value := res.Get("value"); value.Exists() {
+						data.Threshold = types.Int64Value(value.Int())
+					} else {
+						data.Threshold = types.Int64Null()
+					}
+					(*parent).CustomThresholds = append((*parent).CustomThresholds, data)
+					return true
+				})
+			}
+			if value := res.Get("alertConfig"); value.Exists() {
+				data.AlertConfigs = make([]HealthPolicyHealthModulesAlertConfigs, 0)
+				value.ForEach(func(k, res gjson.Result) bool {
+					parent := &data
+					data := HealthPolicyHealthModulesAlertConfigs{}
+					if value := res.Get("name"); value.Exists() {
+						data.Name = types.StringValue(value.String())
+					} else {
+						data.Name = types.StringNull()
+					}
+					if value := res.Get("enabled"); value.Exists() {
+						data.Enabled = types.BoolValue(value.Bool())
+					} else {
+						data.Enabled = types.BoolNull()
+					}
+					if value := res.Get("thresholds"); value.Exists() {
+						data.Thresholds = make([]HealthPolicyHealthModulesAlertConfigsThresholds, 0)
+						value.ForEach(func(k, res gjson.Result) bool {
+							parent := &data
+							data := HealthPolicyHealthModulesAlertConfigsThresholds{}
+							if value := res.Get("type"); value.Exists() {
+								data.Type = types.StringValue(value.String())
+							} else {
+								data.Type = types.StringNull()
+							}
+							if value := res.Get("value"); value.Exists() {
+								data.Threshold = types.Int64Value(value.Int())
+							} else {
+								data.Threshold = types.Int64Null()
+							}
+							(*parent).Thresholds = append((*parent).Thresholds, data)
+							return true
+						})
+					}
+					(*parent).AlertConfigs = append((*parent).AlertConfigs, data)
+					return true
+				})
+			}
 			(*parent).HealthModules = append((*parent).HealthModules, data)
 			return true
 		})
@@ -353,7 +322,6 @@ func (data *HealthPolicy) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -386,8 +354,8 @@ func (data *HealthPolicy) fromBodyPartial(ctx context.Context, res gjson.Result)
 		data.IsDefaultPolicy = types.BoolNull()
 	}
 	for i := 0; i < len(data.HealthModules); i++ {
-		keys := [...]string{ "moduleId",  }
-		keyValues := [...]string{ data.HealthModules[i].Name.ValueString(),  }
+		keys := [...]string{"moduleId"}
+		keyValues := [...]string{data.HealthModules[i].Name.ValueString()}
 
 		parent := &data
 		data := (*parent).HealthModules[i]
@@ -421,180 +389,180 @@ func (data *HealthPolicy) fromBodyPartial(ctx context.Context, res gjson.Result)
 
 			continue
 		}
-	if value := res.Get("moduleId"); value.Exists() && !data.Name.IsNull() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
-	if value := res.Get("enabled"); value.Exists() && !data.Enabled.IsNull() {
-		data.Enabled = types.BoolValue(value.Bool())
-	} else {
-		data.Enabled = types.BoolNull()
-	}
-	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("severity"); value.Exists() && !data.AlertSeverity.IsNull() {
-		data.AlertSeverity = types.StringValue(value.String())
-	} else {
-		data.AlertSeverity = types.StringNull()
-	}
-	if value := res.Get("criticalThreshold"); value.Exists() && !data.CriticalThreshold.IsNull() {
-		data.CriticalThreshold = types.Int64Value(value.Int())
-	} else {
-		data.CriticalThreshold = types.Int64Null()
-	}
-	if value := res.Get("warningThreshold"); value.Exists() && !data.WarningThreshold.IsNull() {
-		data.WarningThreshold = types.Int64Value(value.Int())
-	} else {
-		data.WarningThreshold = types.Int64Null()
-	}
-	for i := 0; i < len(data.CustomThresholds); i++ {
-		keys := [...]string{ "type",  }
-		keyValues := [...]string{ data.CustomThresholds[i].Type.ValueString(),  }
-
-		parent := &data
-		data := (*parent).CustomThresholds[i]
-		parentRes := &res
-		var res gjson.Result
-
-		parentRes.Get("customThresholds").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() != keyValues[ik] {
-						found = false
-						break
-					}
-					found = true
-				}
-				if found {
-					res = v
-					return false
-				}
-				return true
-			},
-		)
-		if !res.Exists() {
-			tflog.Debug(ctx, fmt.Sprintf("removing CustomThresholds[%d] = %+v",
-				i,
-				(*parent).CustomThresholds[i],
-			))
-			(*parent).CustomThresholds = slices.Delete((*parent).CustomThresholds, i, i+1)
-			i--
-
-			continue
+		if value := res.Get("moduleId"); value.Exists() && !data.Name.IsNull() {
+			data.Name = types.StringValue(value.String())
+		} else {
+			data.Name = types.StringNull()
 		}
-	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("value"); value.Exists() && !data.Threshold.IsNull() {
-		data.Threshold = types.Int64Value(value.Int())
-	} else {
-		data.Threshold = types.Int64Null()
-	}
-		(*parent).CustomThresholds[i] = data
-	}
-	for i := 0; i < len(data.AlertConfigs); i++ {
-		keys := [...]string{ "name", "enabled",  }
-		keyValues := [...]string{ data.AlertConfigs[i].Name.ValueString(), strconv.FormatBool(data.AlertConfigs[i].Enabled.ValueBool()),  }
-
-		parent := &data
-		data := (*parent).AlertConfigs[i]
-		parentRes := &res
-		var res gjson.Result
-
-		parentRes.Get("alertConfig").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() != keyValues[ik] {
-						found = false
-						break
-					}
-					found = true
-				}
-				if found {
-					res = v
-					return false
-				}
-				return true
-			},
-		)
-		if !res.Exists() {
-			tflog.Debug(ctx, fmt.Sprintf("removing AlertConfigs[%d] = %+v",
-				i,
-				(*parent).AlertConfigs[i],
-			))
-			(*parent).AlertConfigs = slices.Delete((*parent).AlertConfigs, i, i+1)
-			i--
-
-			continue
+		if value := res.Get("enabled"); value.Exists() && !data.Enabled.IsNull() {
+			data.Enabled = types.BoolValue(value.Bool())
+		} else {
+			data.Enabled = types.BoolNull()
 		}
-	if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
-	if value := res.Get("enabled"); value.Exists() && !data.Enabled.IsNull() {
-		data.Enabled = types.BoolValue(value.Bool())
-	} else {
-		data.Enabled = types.BoolNull()
-	}
-	for i := 0; i < len(data.Thresholds); i++ {
-		keys := [...]string{ "type",  }
-		keyValues := [...]string{ data.Thresholds[i].Type.ValueString(),  }
-
-		parent := &data
-		data := (*parent).Thresholds[i]
-		parentRes := &res
-		var res gjson.Result
-
-		parentRes.Get("thresholds").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() != keyValues[ik] {
-						found = false
-						break
-					}
-					found = true
-				}
-				if found {
-					res = v
-					return false
-				}
-				return true
-			},
-		)
-		if !res.Exists() {
-			tflog.Debug(ctx, fmt.Sprintf("removing Thresholds[%d] = %+v",
-				i,
-				(*parent).Thresholds[i],
-			))
-			(*parent).Thresholds = slices.Delete((*parent).Thresholds, i, i+1)
-			i--
-
-			continue
+		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
 		}
-	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("value"); value.Exists() && !data.Threshold.IsNull() {
-		data.Threshold = types.Int64Value(value.Int())
-	} else {
-		data.Threshold = types.Int64Null()
-	}
-		(*parent).Thresholds[i] = data
-	}
-		(*parent).AlertConfigs[i] = data
-	}
+		if value := res.Get("severity"); value.Exists() && !data.AlertSeverity.IsNull() {
+			data.AlertSeverity = types.StringValue(value.String())
+		} else {
+			data.AlertSeverity = types.StringNull()
+		}
+		if value := res.Get("criticalThreshold"); value.Exists() && !data.CriticalThreshold.IsNull() {
+			data.CriticalThreshold = types.Int64Value(value.Int())
+		} else {
+			data.CriticalThreshold = types.Int64Null()
+		}
+		if value := res.Get("warningThreshold"); value.Exists() && !data.WarningThreshold.IsNull() {
+			data.WarningThreshold = types.Int64Value(value.Int())
+		} else {
+			data.WarningThreshold = types.Int64Null()
+		}
+		for i := 0; i < len(data.CustomThresholds); i++ {
+			keys := [...]string{"type"}
+			keyValues := [...]string{data.CustomThresholds[i].Type.ValueString()}
+
+			parent := &data
+			data := (*parent).CustomThresholds[i]
+			parentRes := &res
+			var res gjson.Result
+
+			parentRes.Get("customThresholds").ForEach(
+				func(_, v gjson.Result) bool {
+					found := false
+					for ik := range keys {
+						if v.Get(keys[ik]).String() != keyValues[ik] {
+							found = false
+							break
+						}
+						found = true
+					}
+					if found {
+						res = v
+						return false
+					}
+					return true
+				},
+			)
+			if !res.Exists() {
+				tflog.Debug(ctx, fmt.Sprintf("removing CustomThresholds[%d] = %+v",
+					i,
+					(*parent).CustomThresholds[i],
+				))
+				(*parent).CustomThresholds = slices.Delete((*parent).CustomThresholds, i, i+1)
+				i--
+
+				continue
+			}
+			if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+				data.Type = types.StringValue(value.String())
+			} else {
+				data.Type = types.StringNull()
+			}
+			if value := res.Get("value"); value.Exists() && !data.Threshold.IsNull() {
+				data.Threshold = types.Int64Value(value.Int())
+			} else {
+				data.Threshold = types.Int64Null()
+			}
+			(*parent).CustomThresholds[i] = data
+		}
+		for i := 0; i < len(data.AlertConfigs); i++ {
+			keys := [...]string{"name", "enabled"}
+			keyValues := [...]string{data.AlertConfigs[i].Name.ValueString(), strconv.FormatBool(data.AlertConfigs[i].Enabled.ValueBool())}
+
+			parent := &data
+			data := (*parent).AlertConfigs[i]
+			parentRes := &res
+			var res gjson.Result
+
+			parentRes.Get("alertConfig").ForEach(
+				func(_, v gjson.Result) bool {
+					found := false
+					for ik := range keys {
+						if v.Get(keys[ik]).String() != keyValues[ik] {
+							found = false
+							break
+						}
+						found = true
+					}
+					if found {
+						res = v
+						return false
+					}
+					return true
+				},
+			)
+			if !res.Exists() {
+				tflog.Debug(ctx, fmt.Sprintf("removing AlertConfigs[%d] = %+v",
+					i,
+					(*parent).AlertConfigs[i],
+				))
+				(*parent).AlertConfigs = slices.Delete((*parent).AlertConfigs, i, i+1)
+				i--
+
+				continue
+			}
+			if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
+				data.Name = types.StringValue(value.String())
+			} else {
+				data.Name = types.StringNull()
+			}
+			if value := res.Get("enabled"); value.Exists() && !data.Enabled.IsNull() {
+				data.Enabled = types.BoolValue(value.Bool())
+			} else {
+				data.Enabled = types.BoolNull()
+			}
+			for i := 0; i < len(data.Thresholds); i++ {
+				keys := [...]string{"type"}
+				keyValues := [...]string{data.Thresholds[i].Type.ValueString()}
+
+				parent := &data
+				data := (*parent).Thresholds[i]
+				parentRes := &res
+				var res gjson.Result
+
+				parentRes.Get("thresholds").ForEach(
+					func(_, v gjson.Result) bool {
+						found := false
+						for ik := range keys {
+							if v.Get(keys[ik]).String() != keyValues[ik] {
+								found = false
+								break
+							}
+							found = true
+						}
+						if found {
+							res = v
+							return false
+						}
+						return true
+					},
+				)
+				if !res.Exists() {
+					tflog.Debug(ctx, fmt.Sprintf("removing Thresholds[%d] = %+v",
+						i,
+						(*parent).Thresholds[i],
+					))
+					(*parent).Thresholds = slices.Delete((*parent).Thresholds, i, i+1)
+					i--
+
+					continue
+				}
+				if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+					data.Type = types.StringValue(value.String())
+				} else {
+					data.Type = types.StringNull()
+				}
+				if value := res.Get("value"); value.Exists() && !data.Threshold.IsNull() {
+					data.Threshold = types.Int64Value(value.Int())
+				} else {
+					data.Threshold = types.Int64Null()
+				}
+				(*parent).Thresholds[i] = data
+			}
+			(*parent).AlertConfigs[i] = data
+		}
 		(*parent).HealthModules[i] = data
 	}
 	if value := res.Get("setting.alertEvaluationInterval"); value.Exists() && !data.HealthModuleRunTimeInterval.IsNull() {

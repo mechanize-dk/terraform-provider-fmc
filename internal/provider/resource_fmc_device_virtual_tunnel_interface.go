@@ -78,7 +78,7 @@ func (r *DeviceVirtualTunnelInterfaceResource) Schema(ctx context.Context, req r
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -88,7 +88,6 @@ func (r *DeviceVirtualTunnelInterfaceResource) Schema(ctx context.Context, req r
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"type": schema.StringAttribute{
@@ -96,7 +95,6 @@ func (r *DeviceVirtualTunnelInterfaceResource) Schema(ctx context.Context, req r
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					
 				},
 			},
 			"name": schema.StringAttribute{
@@ -104,18 +102,16 @@ func (r *DeviceVirtualTunnelInterfaceResource) Schema(ctx context.Context, req r
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					
 				},
 			},
 			"tunnel_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Type of the VTI interface.").AddStringEnumDescription("STATIC", "DYNAMIC", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Type of the VTI interface.").AddStringEnumDescription("STATIC", "DYNAMIC").String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("STATIC", "DYNAMIC", ),
+					stringvalidator.OneOf("STATIC", "DYNAMIC"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"logical_name": schema.StringAttribute{
@@ -151,7 +147,6 @@ func (r *DeviceVirtualTunnelInterfaceResource) Schema(ctx context.Context, req r
 				},
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.RequiresReplace(),
-					
 				},
 			},
 			"tunnel_source_interface_id": schema.StringAttribute{
@@ -167,10 +162,10 @@ func (r *DeviceVirtualTunnelInterfaceResource) Schema(ctx context.Context, req r
 				Optional:            true,
 			},
 			"tunnel_mode": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("VTI interface IPSec mode").AddStringEnumDescription("ipv4", "ipv6", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("VTI interface IPSec mode").AddStringEnumDescription("ipv4", "ipv6").String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("ipv4", "ipv6", ),
+					stringvalidator.OneOf("ipv4", "ipv6"),
 				},
 			},
 			"ipv4_static_address": schema.StringAttribute{
@@ -202,10 +197,10 @@ func (r *DeviceVirtualTunnelInterfaceResource) Schema(ctx context.Context, req r
 				Optional:            true,
 			},
 			"ip_based_monitoring_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Peer IP address version.").AddStringEnumDescription("PEER_IPV4", "PEER_IPV6", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Peer IP address version.").AddStringEnumDescription("PEER_IPV4", "PEER_IPV6").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("PEER_IPV4", "PEER_IPV6", ),
+					stringvalidator.OneOf("PEER_IPV4", "PEER_IPV6"),
 				},
 			},
 			"ip_based_monitoring_peer_ip": schema.StringAttribute{
@@ -298,14 +293,13 @@ func (r *DeviceVirtualTunnelInterfaceResource) Read(ctx context.Context, req res
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-	
+
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else  if err != nil {
+	} else if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -358,7 +352,7 @@ func (r *DeviceVirtualTunnelInterfaceResource) Update(ctx context.Context, req r
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -390,7 +384,7 @@ func (r *DeviceVirtualTunnelInterfaceResource) Delete(ctx context.Context, req r
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()), reqMods...)
+	res, err := r.client.Delete(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString()), reqMods...)
 	if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
@@ -405,24 +399,25 @@ func (r *DeviceVirtualTunnelInterfaceResource) Delete(ctx context.Context, req r
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *DeviceVirtualTunnelInterfaceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-		// Parse import ID
-		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<device_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
-		match := inputPattern.FindStringSubmatch(req.ID)
-		if match == nil {
-			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<device_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-			resp.Diagnostics.AddError("Import error", errMsg)
-			return
-		}
+	// Parse import ID
+	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<device_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
+	match := inputPattern.FindStringSubmatch(req.ID)
+	if match == nil {
+		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<device_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+		resp.Diagnostics.AddError("Import error", errMsg)
+		return
+	}
 
-		// Set domain, if provided
-		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-		}
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), match[inputPattern.SubexpIndex("device_id")])...)
+	// Set domain, if provided
+	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_id"), match[inputPattern.SubexpIndex("device_id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
+
 // End of section. //template:end import
 
 // Section below is generated&owned by "gen/generator.go". //template:begin createSubresources

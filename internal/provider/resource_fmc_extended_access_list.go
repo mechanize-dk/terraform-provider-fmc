@@ -78,7 +78,7 @@ func (r *ExtendedAccessListResource) Schema(ctx context.Context, req resource.Sc
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -92,7 +92,6 @@ func (r *ExtendedAccessListResource) Schema(ctx context.Context, req resource.Sc
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					
 				},
 			},
 			"entries": schema.ListNestedAttribute{
@@ -101,26 +100,26 @@ func (r *ExtendedAccessListResource) Schema(ctx context.Context, req resource.Sc
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"action": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Rule action.").AddStringEnumDescription("PERMIT", "DENY", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Rule action.").AddStringEnumDescription("PERMIT", "DENY").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("PERMIT", "DENY", ),
+								stringvalidator.OneOf("PERMIT", "DENY"),
 							},
 						},
 						"log_level": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Logging level.").AddStringEnumDescription("EMERGENCY", "ALERT", "CRITICAL", "ERROR", "WARNING", "NOTIFICATION", "INFORMATIONAL", "DEBUGGING", ).AddDefaultValueDescription("INFORMATIONAL").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Logging level.").AddStringEnumDescription("EMERGENCY", "ALERT", "CRITICAL", "ERROR", "WARNING", "NOTIFICATION", "INFORMATIONAL", "DEBUGGING").AddDefaultValueDescription("INFORMATIONAL").String,
 							Optional:            true,
 							Computed:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("EMERGENCY", "ALERT", "CRITICAL", "ERROR", "WARNING", "NOTIFICATION", "INFORMATIONAL", "DEBUGGING", ),
+								stringvalidator.OneOf("EMERGENCY", "ALERT", "CRITICAL", "ERROR", "WARNING", "NOTIFICATION", "INFORMATIONAL", "DEBUGGING"),
 							},
-							Default:             stringdefault.StaticString("INFORMATIONAL"),
+							Default: stringdefault.StaticString("INFORMATIONAL"),
 						},
 						"logging": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Logging mode.").AddStringEnumDescription("PER_ACCESS_LIST_ENTRY", "DEFAULT", "DISABLED", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Logging mode.").AddStringEnumDescription("PER_ACCESS_LIST_ENTRY", "DEFAULT", "DISABLED").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("PER_ACCESS_LIST_ENTRY", "DEFAULT", "DISABLED", ),
+								stringvalidator.OneOf("PER_ACCESS_LIST_ENTRY", "DEFAULT", "DISABLED"),
 							},
 						},
 						"log_interval": schema.Int64Attribute{
@@ -227,10 +226,10 @@ func (r *ExtendedAccessListResource) Schema(ctx context.Context, req resource.Sc
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"type": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Type of the object.").AddStringEnumDescription("PortLiteral", "ICMPv4PortLiteral", ).String,
+										MarkdownDescription: helpers.NewAttributeDescription("Type of the object.").AddStringEnumDescription("PortLiteral", "ICMPv4PortLiteral").String,
 										Required:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("PortLiteral", "ICMPv4PortLiteral", ),
+											stringvalidator.OneOf("PortLiteral", "ICMPv4PortLiteral"),
 										},
 									},
 									"port": schema.StringAttribute{
@@ -258,10 +257,10 @@ func (r *ExtendedAccessListResource) Schema(ctx context.Context, req resource.Sc
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"protocol": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("IANA protocol number.").AddStringEnumDescription("6", "17", ).String,
+										MarkdownDescription: helpers.NewAttributeDescription("IANA protocol number.").AddStringEnumDescription("6", "17").String,
 										Required:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("6", "17", ),
+											stringvalidator.OneOf("6", "17"),
 										},
 									},
 									"port": schema.StringAttribute{
@@ -334,7 +333,7 @@ func (r *ExtendedAccessListResource) Create(ctx context.Context, req resource.Cr
 					return
 				}
 				for _, v := range listRes.Get("items").Array() {
-					if plan.Name.ValueString()== v.Get("name").String(){
+					if plan.Name.ValueString() == v.Get("name").String() {
 						plan.Id = types.StringValue(v.Get("id").String())
 						tflog.Debug(ctx, fmt.Sprintf("%s: Found existing object with name '%v'", plan.Id.ValueString(), plan.Name.ValueString()))
 						break
@@ -393,14 +392,13 @@ func (r *ExtendedAccessListResource) Read(ctx context.Context, req resource.Read
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-	
+
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else  if err != nil {
+	} else if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -453,7 +451,7 @@ func (r *ExtendedAccessListResource) Update(ctx context.Context, req resource.Up
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -485,7 +483,7 @@ func (r *ExtendedAccessListResource) Delete(ctx context.Context, req resource.De
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()), reqMods...)
+	res, err := r.client.Delete(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString()), reqMods...)
 	if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
@@ -500,23 +498,24 @@ func (r *ExtendedAccessListResource) Delete(ctx context.Context, req resource.De
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *ExtendedAccessListResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-		// Parse import ID
-		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
-		match := inputPattern.FindStringSubmatch(req.ID)
-		if match == nil {
-			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-			resp.Diagnostics.AddError("Import error", errMsg)
-			return
-		}
+	// Parse import ID
+	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
+	match := inputPattern.FindStringSubmatch(req.ID)
+	if match == nil {
+		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+		resp.Diagnostics.AddError("Import error", errMsg)
+		return
+	}
 
-		// Set domain, if provided
-		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-		}
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+	// Set domain, if provided
+	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
+
 // End of section. //template:end import
 
 // Section below is generated&owned by "gen/generator.go". //template:begin createSubresources

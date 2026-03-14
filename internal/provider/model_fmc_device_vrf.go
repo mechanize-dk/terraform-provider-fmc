@@ -35,42 +35,20 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type DeviceVRF struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	DeviceId types.String `tfsdk:"device_id"`
-	Name types.String `tfsdk:"name"`
-	Type types.String `tfsdk:"type"`
-	Description types.String `tfsdk:"description"`
-	Interfaces []DeviceVRFInterfaces `tfsdk:"interfaces"`
+	Id          types.String          `tfsdk:"id"`
+	Domain      types.String          `tfsdk:"domain"`
+	DeviceId    types.String          `tfsdk:"device_id"`
+	Name        types.String          `tfsdk:"name"`
+	Type        types.String          `tfsdk:"type"`
+	Description types.String          `tfsdk:"description"`
+	Interfaces  []DeviceVRFInterfaces `tfsdk:"interfaces"`
 }
-
-
-
-
-
 
 type DeviceVRFInterfaces struct {
-	Id types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
+	Id          types.String `tfsdk:"id"`
+	Name        types.String `tfsdk:"name"`
 	LogicalName types.String `tfsdk:"logical_name"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -81,7 +59,7 @@ type DeviceVRFInterfaces struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data DeviceVRF) getPath() string {
-		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/devices/devicerecords/%v/routing/virtualrouters", url.QueryEscape(data.DeviceId.ValueString()))
+	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/devices/devicerecords/%v/routing/virtualrouters", url.QueryEscape(data.DeviceId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -93,23 +71,23 @@ func (data DeviceVRF) toBody(ctx context.Context, state DeviceVRF) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()   {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
 	if len(data.Interfaces) > 0 {
 		body, _ = sjson.Set(body, "interfaces", []any{})
 		for _, item := range data.Interfaces {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Name.IsNull()   {
+			if !item.Name.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "name", item.Name.ValueString())
 			}
-			if !item.LogicalName.IsNull()   {
+			if !item.LogicalName.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "ifname", item.LogicalName.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "interfaces.-1", itemBody)
@@ -143,21 +121,21 @@ func (data *DeviceVRF) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := DeviceVRFInterfaces{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("name"); value.Exists() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
-	if value := res.Get("ifname"); value.Exists() {
-		data.LogicalName = types.StringValue(value.String())
-	} else {
-		data.LogicalName = types.StringNull()
-	}
+			if value := res.Get("id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
+			if value := res.Get("name"); value.Exists() {
+				data.Name = types.StringValue(value.String())
+			} else {
+				data.Name = types.StringNull()
+			}
+			if value := res.Get("ifname"); value.Exists() {
+				data.LogicalName = types.StringValue(value.String())
+			} else {
+				data.LogicalName = types.StringNull()
+			}
 			(*parent).Interfaces = append((*parent).Interfaces, data)
 			return true
 		})
@@ -167,7 +145,6 @@ func (data *DeviceVRF) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -190,8 +167,8 @@ func (data *DeviceVRF) fromBodyPartial(ctx context.Context, res gjson.Result) {
 		data.Description = types.StringNull()
 	}
 	for i := 0; i < len(data.Interfaces); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.Interfaces[i].Id.ValueString(),  }
+		keys := [...]string{"id"}
+		keyValues := [...]string{data.Interfaces[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).Interfaces[i]
@@ -225,21 +202,21 @@ func (data *DeviceVRF) fromBodyPartial(ctx context.Context, res gjson.Result) {
 
 			continue
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
-	if value := res.Get("ifname"); value.Exists() && !data.LogicalName.IsNull() {
-		data.LogicalName = types.StringValue(value.String())
-	} else {
-		data.LogicalName = types.StringNull()
-	}
+		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
+			data.Name = types.StringValue(value.String())
+		} else {
+			data.Name = types.StringNull()
+		}
+		if value := res.Get("ifname"); value.Exists() && !data.LogicalName.IsNull() {
+			data.LogicalName = types.StringValue(value.String())
+		} else {
+			data.LogicalName = types.StringNull()
+		}
 		(*parent).Interfaces[i] = data
 	}
 }
@@ -264,12 +241,8 @@ func (data *DeviceVRF) fromBodyUnknowns(ctx context.Context, res gjson.Result) {
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk

@@ -40,7 +40,7 @@ import (
 
 // Ensure provider defined types fully satisfy framework interfaces
 var (
-	_ resource.Resource                = &DeviceDeployResource{}
+	_ resource.Resource = &DeviceDeployResource{}
 )
 
 func NewDeviceDeployResource() resource.Resource {
@@ -70,7 +70,7 @@ func (r *DeviceDeployResource) Schema(ctx context.Context, req resource.SchemaRe
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},

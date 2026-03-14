@@ -35,19 +35,19 @@ func TestAccFmcApplicationFilter(t *testing.T) {
 
 	var steps []resource.TestStep
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcApplicationFilterPrerequisitesConfig+testAccFmcApplicationFilterConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcApplicationFilterPrerequisitesConfig + testAccFmcApplicationFilterConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName:  "fmc_application_filter.test",
-		ImportState:   true,
+		ResourceName: "fmc_application_filter.test",
+		ImportState:  true,
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -80,6 +80,7 @@ data "fmc_application_tag" "test" {
   name = "SSL protocol"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal

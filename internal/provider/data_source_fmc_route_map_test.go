@@ -65,12 +65,12 @@ func TestAccDataSourceFmcRouteMap(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcRouteMapPrerequisitesConfig+testAccDataSourceFmcRouteMapConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcRouteMapPrerequisitesConfig + testAccDataSourceFmcRouteMapConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcRouteMapPrerequisitesConfig+testAccNamedDataSourceFmcRouteMapConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcRouteMapPrerequisitesConfig + testAccNamedDataSourceFmcRouteMapConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -131,6 +131,7 @@ resource "fmc_policy_list" "test" {
   tag                     = 200
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

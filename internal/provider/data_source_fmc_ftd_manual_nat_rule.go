@@ -64,7 +64,7 @@ func (d *FTDManualNATRuleDataSource) Schema(ctx context.Context, req datasource.
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 			},
 			"ftd_nat_policy_id": schema.StringAttribute{
 				MarkdownDescription: "Id of the FTD NAT Policy.",
@@ -199,7 +199,7 @@ func (d *FTDManualNATRuleDataSource) Read(ctx context.Context, req datasource.Re
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
-	urlPath := config.getPath()+"/"+url.QueryEscape(config.Id.ValueString())
+	urlPath := config.getPath() + "/" + url.QueryEscape(config.Id.ValueString())
 	res, err := d.client.Get(urlPath, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object, got error: %s", err))

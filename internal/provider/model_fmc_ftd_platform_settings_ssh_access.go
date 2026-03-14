@@ -37,42 +37,20 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type FTDPlatformSettingsSSHAccess struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	FtdPlatformSettingsId types.String `tfsdk:"ftd_platform_settings_id"`
-	Type types.String `tfsdk:"type"`
-	SourceNetworkObjectId types.String `tfsdk:"source_network_object_id"`
-	InterfaceLiterals types.Set `tfsdk:"interface_literals"`
-	InterfaceObjects []FTDPlatformSettingsSSHAccessInterfaceObjects `tfsdk:"interface_objects"`
+	Id                    types.String                                   `tfsdk:"id"`
+	Domain                types.String                                   `tfsdk:"domain"`
+	FtdPlatformSettingsId types.String                                   `tfsdk:"ftd_platform_settings_id"`
+	Type                  types.String                                   `tfsdk:"type"`
+	SourceNetworkObjectId types.String                                   `tfsdk:"source_network_object_id"`
+	InterfaceLiterals     types.Set                                      `tfsdk:"interface_literals"`
+	InterfaceObjects      []FTDPlatformSettingsSSHAccessInterfaceObjects `tfsdk:"interface_objects"`
 }
 
-
-
-
-
-
 type FTDPlatformSettingsSSHAccessInterfaceObjects struct {
-	Id types.String `tfsdk:"id"`
+	Id   types.String `tfsdk:"id"`
 	Type types.String `tfsdk:"type"`
 	Name types.String `tfsdk:"name"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -84,7 +62,7 @@ var minFMCVersionFTDPlatformSettingsSSHAccess = version.Must(version.NewVersion(
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data FTDPlatformSettingsSSHAccess) getPath() string {
-		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/sshaccesssettings", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
+	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/sshaccesssettings", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -96,7 +74,7 @@ func (data FTDPlatformSettingsSSHAccess) toBody(ctx context.Context, state FTDPl
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.SourceNetworkObjectId.IsNull()   {
+	if !data.SourceNetworkObjectId.IsNull() {
 		body, _ = sjson.Set(body, "ipAddress.object.id", data.SourceNetworkObjectId.ValueString())
 	}
 	if !data.InterfaceLiterals.IsNull() {
@@ -108,13 +86,13 @@ func (data FTDPlatformSettingsSSHAccess) toBody(ctx context.Context, state FTDPl
 		body, _ = sjson.Set(body, "interfaces.objects", []any{})
 		for _, item := range data.InterfaceObjects {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Type.IsNull()   {
+			if !item.Type.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "type", item.Type.ValueString())
 			}
-			if !item.Name.IsNull()   {
+			if !item.Name.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "name", item.Name.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "interfaces.objects.-1", itemBody)
@@ -148,21 +126,21 @@ func (data *FTDPlatformSettingsSSHAccess) fromBody(ctx context.Context, res gjso
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := FTDPlatformSettingsSSHAccessInterfaceObjects{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("name"); value.Exists() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
+			if value := res.Get("id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
+			if value := res.Get("type"); value.Exists() {
+				data.Type = types.StringValue(value.String())
+			} else {
+				data.Type = types.StringNull()
+			}
+			if value := res.Get("name"); value.Exists() {
+				data.Name = types.StringValue(value.String())
+			} else {
+				data.Name = types.StringNull()
+			}
 			(*parent).InterfaceObjects = append((*parent).InterfaceObjects, data)
 			return true
 		})
@@ -172,7 +150,6 @@ func (data *FTDPlatformSettingsSSHAccess) fromBody(ctx context.Context, res gjso
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -195,8 +172,8 @@ func (data *FTDPlatformSettingsSSHAccess) fromBodyPartial(ctx context.Context, r
 		data.InterfaceLiterals = types.SetNull(types.StringType)
 	}
 	for i := 0; i < len(data.InterfaceObjects); i++ {
-		keys := [...]string{ "id", "type", "name",  }
-		keyValues := [...]string{ data.InterfaceObjects[i].Id.ValueString(), data.InterfaceObjects[i].Type.ValueString(), data.InterfaceObjects[i].Name.ValueString(),  }
+		keys := [...]string{"id", "type", "name"}
+		keyValues := [...]string{data.InterfaceObjects[i].Id.ValueString(), data.InterfaceObjects[i].Type.ValueString(), data.InterfaceObjects[i].Name.ValueString()}
 
 		parent := &data
 		data := (*parent).InterfaceObjects[i]
@@ -230,21 +207,21 @@ func (data *FTDPlatformSettingsSSHAccess) fromBodyPartial(ctx context.Context, r
 
 			continue
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
+		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
+		}
+		if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
+			data.Name = types.StringValue(value.String())
+		} else {
+			data.Name = types.StringNull()
+		}
 		(*parent).InterfaceObjects[i] = data
 	}
 }

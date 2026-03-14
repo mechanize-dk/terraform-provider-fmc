@@ -31,7 +31,7 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSource
 
 func TestAccDataSourceFmcFilePolicy(t *testing.T) {
-	if v := os.Getenv("FMC_VERSION"); v != "" && slices.Contains([]string{"7.7" }, v) {
+	if v := os.Getenv("FMC_VERSION"); v != "" && slices.Contains([]string{"7.7"}, v) {
 		t.Skip("skipping test for FMC version " + v)
 	}
 	var checks []resource.TestCheckFunc
@@ -60,11 +60,11 @@ func TestAccDataSourceFmcFilePolicy(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcFilePolicyConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
 				Config: testAccNamedDataSourceFmcFilePolicyConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})

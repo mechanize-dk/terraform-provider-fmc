@@ -30,30 +30,18 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type ApplicationBusinessRelevance struct {
-	Id types.String `tfsdk:"id"`
+	Id     types.String `tfsdk:"id"`
 	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Type types.String `tfsdk:"type"`
+	Name   types.String `tfsdk:"name"`
+	Type   types.String `tfsdk:"type"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data ApplicationBusinessRelevance) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/applicationproductivities"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/applicationproductivities"
 }
 
 // End of section. //template:end getPath
@@ -81,7 +69,6 @@ func (data *ApplicationBusinessRelevance) fromBody(ctx context.Context, res gjso
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
 
-
 // End of section. //template:end fromBodyPartial
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyUnknowns
@@ -90,12 +77,8 @@ func (data *ApplicationBusinessRelevance) fromBody(ctx context.Context, res gjso
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk

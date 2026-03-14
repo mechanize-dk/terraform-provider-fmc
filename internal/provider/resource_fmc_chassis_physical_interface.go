@@ -77,7 +77,7 @@ func (r *ChassisPhysicalInterfaceResource) Schema(ctx context.Context, req resou
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -87,7 +87,6 @@ func (r *ChassisPhysicalInterfaceResource) Schema(ctx context.Context, req resou
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"type": schema.StringAttribute{
@@ -95,7 +94,6 @@ func (r *ChassisPhysicalInterfaceResource) Schema(ctx context.Context, req resou
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					
 				},
 			},
 			"name": schema.StringAttribute{
@@ -103,44 +101,44 @@ func (r *ChassisPhysicalInterfaceResource) Schema(ctx context.Context, req resou
 				Required:            true,
 			},
 			"port_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Type of the port.").AddStringEnumDescription("DATA", "DATA_SHARING", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Type of the port.").AddStringEnumDescription("DATA", "DATA_SHARING").String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("DATA", "DATA_SHARING", ),
+					stringvalidator.OneOf("DATA", "DATA_SHARING"),
 				},
 			},
 			"admin_state": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Administrative state of the interface.").AddStringEnumDescription("ENABLED", "DISABLED", ).AddDefaultValueDescription("ENABLED").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Administrative state of the interface.").AddStringEnumDescription("ENABLED", "DISABLED").AddDefaultValueDescription("ENABLED").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("ENABLED", "DISABLED", ),
+					stringvalidator.OneOf("ENABLED", "DISABLED"),
 				},
-				Default:             stringdefault.StaticString("ENABLED"),
+				Default: stringdefault.StaticString("ENABLED"),
 			},
 			"auto_negotiation": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Enables auto negotiation of duplex and speed.").String,
 				Optional:            true,
 			},
 			"duplex": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Interface duplex mode.").AddStringEnumDescription("AUTO", "FULL", "HALF", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Interface duplex mode.").AddStringEnumDescription("AUTO", "FULL", "HALF").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("AUTO", "FULL", "HALF", ),
+					stringvalidator.OneOf("AUTO", "FULL", "HALF"),
 				},
 			},
 			"speed": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Interface speed.").AddStringEnumDescription("AUTO", "TEN_MBPS", "HUNDRED_MBPS", "ONE_GBPS", "TEN_GBPS", "TWENTY_FIVE_GBPS", "FORTY_GBPS", "HUNDRED_GBPS", "TWO_HUNDRED_GBPS", "FOUR_HUNDRED_GBPS", "DETECT_SFP", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Interface speed.").AddStringEnumDescription("AUTO", "TEN_MBPS", "HUNDRED_MBPS", "ONE_GBPS", "TEN_GBPS", "TWENTY_FIVE_GBPS", "FORTY_GBPS", "HUNDRED_GBPS", "TWO_HUNDRED_GBPS", "FOUR_HUNDRED_GBPS", "DETECT_SFP").String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("AUTO", "TEN_MBPS", "HUNDRED_MBPS", "ONE_GBPS", "TEN_GBPS", "TWENTY_FIVE_GBPS", "FORTY_GBPS", "HUNDRED_GBPS", "TWO_HUNDRED_GBPS", "FOUR_HUNDRED_GBPS", "DETECT_SFP", ),
+					stringvalidator.OneOf("AUTO", "TEN_MBPS", "HUNDRED_MBPS", "ONE_GBPS", "TEN_GBPS", "TWENTY_FIVE_GBPS", "FORTY_GBPS", "HUNDRED_GBPS", "TWO_HUNDRED_GBPS", "FOUR_HUNDRED_GBPS", "DETECT_SFP"),
 				},
 			},
 			"fec_mode": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Forward Error Correction (FEC) mode.").AddStringEnumDescription("AUTO", "CL108RS", "CL74FC", "CL91RS", "DISABLE", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Forward Error Correction (FEC) mode.").AddStringEnumDescription("AUTO", "CL108RS", "CL74FC", "CL91RS", "DISABLE").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("AUTO", "CL108RS", "CL74FC", "CL91RS", "DISABLE", ),
+					stringvalidator.OneOf("AUTO", "CL108RS", "CL74FC", "CL91RS", "DISABLE"),
 				},
 			},
 		},
@@ -173,7 +171,7 @@ func (r *ChassisPhysicalInterfaceResource) Create(ctx context.Context, req resou
 	if !plan.Domain.IsNull() && plan.Domain.ValueString() != "" {
 		reqMods = append(reqMods, fmc.DomainName(plan.Domain.ValueString()))
 	}
-	
+
 	tflog.Debug(ctx, fmt.Sprintf("%s: considering object name %s", plan.Id, plan.Name))
 	if plan.Id.ValueString() == "" && plan.Name.ValueString() != "" {
 		offset := 0
@@ -187,7 +185,7 @@ func (r *ChassisPhysicalInterfaceResource) Create(ctx context.Context, req resou
 			}
 			if value := res.Get("items"); len(value.Array()) > 0 {
 				value.ForEach(func(k, v gjson.Result) bool {
-					if plan.Name.ValueString()== v.Get("name").String(){
+					if plan.Name.ValueString() == v.Get("name").String() {
 						plan.Id = types.StringValue(v.Get("id").String())
 						tflog.Debug(ctx, fmt.Sprintf("%s: Found object with name '%v', id: %s", plan.Id.ValueString(), plan.Name.ValueString(), plan.Id.ValueString()))
 						return false
@@ -248,14 +246,13 @@ func (r *ChassisPhysicalInterfaceResource) Read(ctx context.Context, req resourc
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-	
+
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else  if err != nil {
+	} else if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -308,7 +305,7 @@ func (r *ChassisPhysicalInterfaceResource) Update(ctx context.Context, req resou
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -350,22 +347,23 @@ func (r *ChassisPhysicalInterfaceResource) Delete(ctx context.Context, req resou
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *ChassisPhysicalInterfaceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-		// Parse import ID
-		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<chassis_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
-		match := inputPattern.FindStringSubmatch(req.ID)
-		if match == nil {
-			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<chassis_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-			resp.Diagnostics.AddError("Import error", errMsg)
-			return
-		}
+	// Parse import ID
+	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<chassis_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
+	match := inputPattern.FindStringSubmatch(req.ID)
+	if match == nil {
+		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<chassis_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+		resp.Diagnostics.AddError("Import error", errMsg)
+		return
+	}
 
-		// Set domain, if provided
-		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-		}
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("chassis_id"), match[inputPattern.SubexpIndex("chassis_id")])...)
+	// Set domain, if provided
+	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("chassis_id"), match[inputPattern.SubexpIndex("chassis_id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
+
 // End of section. //template:end import

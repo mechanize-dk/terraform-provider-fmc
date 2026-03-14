@@ -40,8 +40,8 @@ func TestAccDataSourceFmcFTDPlatformSettingsICMPAccess(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcFTDPlatformSettingsICMPAccessPrerequisitesConfig+testAccDataSourceFmcFTDPlatformSettingsICMPAccessConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcFTDPlatformSettingsICMPAccessPrerequisitesConfig + testAccDataSourceFmcFTDPlatformSettingsICMPAccessConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -72,6 +72,7 @@ resource "fmc_icmpv4" "test" {
   name        = "ftd_platform_settings_icmp_access_icmp1"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -101,7 +102,5 @@ func testAccDataSourceFmcFTDPlatformSettingsICMPAccessConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

@@ -45,23 +45,23 @@ func TestAccFmcSingleSignOnServer(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccFmcSingleSignOnServerPrerequisitesConfig+testAccFmcSingleSignOnServerConfig_minimum(),
+			Config: testAccFmcSingleSignOnServerPrerequisitesConfig + testAccFmcSingleSignOnServerConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcSingleSignOnServerPrerequisitesConfig+testAccFmcSingleSignOnServerConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcSingleSignOnServerPrerequisitesConfig + testAccFmcSingleSignOnServerConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName:  "fmc_single_sign_on_server.test",
-		ImportState:   true,
+		ResourceName: "fmc_single_sign_on_server.test",
+		ImportState:  true,
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -353,6 +353,7 @@ resource "fmc_certificate_enrollment" "test" {
   pkcs12_certificate_passphrase = "cisco123"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -367,6 +368,7 @@ func testAccFmcSingleSignOnServerConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

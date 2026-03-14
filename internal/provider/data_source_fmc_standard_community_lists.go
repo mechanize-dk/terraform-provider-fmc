@@ -63,7 +63,7 @@ func (d *StandardCommunityListsDataSource) Schema(ctx context.Context, req datas
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 			},
 			"items": schema.MapNestedAttribute{
 				MarkdownDescription: "Map of Standard Community Lists. The key of the map is the name of the individual Standard Community List.",
@@ -143,7 +143,7 @@ func (d *StandardCommunityListsDataSource) Read(ctx context.Context, req datasou
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
-	
+
 	// Get all objects from FMC
 	urlPath := config.getPath() + "?expanded=true"
 	res, err := d.client.Get(urlPath, reqMods...)

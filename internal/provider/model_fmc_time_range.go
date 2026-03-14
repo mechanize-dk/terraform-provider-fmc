@@ -34,51 +34,26 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type TimeRange struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Type types.String `tfsdk:"type"`
-	Description types.String `tfsdk:"description"`
-	StartTime types.String `tfsdk:"start_time"`
-	EndTime types.String `tfsdk:"end_time"`
+	Id             types.String              `tfsdk:"id"`
+	Domain         types.String              `tfsdk:"domain"`
+	Name           types.String              `tfsdk:"name"`
+	Type           types.String              `tfsdk:"type"`
+	Description    types.String              `tfsdk:"description"`
+	StartTime      types.String              `tfsdk:"start_time"`
+	EndTime        types.String              `tfsdk:"end_time"`
 	RecurrenceList []TimeRangeRecurrenceList `tfsdk:"recurrence_list"`
 }
-
-
-
-
-
-
 
 type TimeRangeRecurrenceList struct {
 	RecurrenceType types.String `tfsdk:"recurrence_type"`
 	RangeStartTime types.String `tfsdk:"range_start_time"`
-	RangeEndTime types.String `tfsdk:"range_end_time"`
-	RangeStartDay types.String `tfsdk:"range_start_day"`
-	RangeEndDay types.String `tfsdk:"range_end_day"`
+	RangeEndTime   types.String `tfsdk:"range_end_time"`
+	RangeStartDay  types.String `tfsdk:"range_start_day"`
+	RangeEndDay    types.String `tfsdk:"range_end_day"`
 	DailyStartTime types.String `tfsdk:"daily_start_time"`
-	DailyEndTime types.String `tfsdk:"daily_end_time"`
-	DailyDays types.Set `tfsdk:"daily_days"`
+	DailyEndTime   types.String `tfsdk:"daily_end_time"`
+	DailyDays      types.Set    `tfsdk:"daily_days"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -89,7 +64,7 @@ type TimeRangeRecurrenceList struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data TimeRange) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/timeranges"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/timeranges"
 }
 
 // End of section. //template:end getPath
@@ -101,41 +76,41 @@ func (data TimeRange) toBody(ctx context.Context, state TimeRange) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()   {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.StartTime.IsNull()   {
+	if !data.StartTime.IsNull() {
 		body, _ = sjson.Set(body, "effectiveStartDateTime", data.StartTime.ValueString())
 	}
-	if !data.EndTime.IsNull()   {
+	if !data.EndTime.IsNull() {
 		body, _ = sjson.Set(body, "effectiveEndDateTime", data.EndTime.ValueString())
 	}
 	if len(data.RecurrenceList) > 0 {
 		body, _ = sjson.Set(body, "recurrenceList", []any{})
 		for _, item := range data.RecurrenceList {
 			itemBody := ""
-			if !item.RecurrenceType.IsNull()   {
+			if !item.RecurrenceType.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "recurrenceType", item.RecurrenceType.ValueString())
 			}
-			if !item.RangeStartTime.IsNull()   {
+			if !item.RangeStartTime.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "rangeStartTime", item.RangeStartTime.ValueString())
 			}
-			if !item.RangeEndTime.IsNull()   {
+			if !item.RangeEndTime.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "rangeEndTime", item.RangeEndTime.ValueString())
 			}
-			if !item.RangeStartDay.IsNull()   {
+			if !item.RangeStartDay.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "rangeStartDay", item.RangeStartDay.ValueString())
 			}
-			if !item.RangeEndDay.IsNull()   {
+			if !item.RangeEndDay.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "rangeEndDay", item.RangeEndDay.ValueString())
 			}
-			if !item.DailyStartTime.IsNull()   {
+			if !item.DailyStartTime.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "dailyStartTime", item.DailyStartTime.ValueString())
 			}
-			if !item.DailyEndTime.IsNull()   {
+			if !item.DailyEndTime.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "dailyEndTime", item.DailyEndTime.ValueString())
 			}
 			if !item.DailyDays.IsNull() {
@@ -184,46 +159,46 @@ func (data *TimeRange) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := TimeRangeRecurrenceList{}
-	if value := res.Get("recurrenceType"); value.Exists() {
-		data.RecurrenceType = types.StringValue(value.String())
-	} else {
-		data.RecurrenceType = types.StringNull()
-	}
-	if value := res.Get("rangeStartTime"); value.Exists() {
-		data.RangeStartTime = types.StringValue(value.String())
-	} else {
-		data.RangeStartTime = types.StringNull()
-	}
-	if value := res.Get("rangeEndTime"); value.Exists() {
-		data.RangeEndTime = types.StringValue(value.String())
-	} else {
-		data.RangeEndTime = types.StringNull()
-	}
-	if value := res.Get("rangeStartDay"); value.Exists() {
-		data.RangeStartDay = types.StringValue(value.String())
-	} else {
-		data.RangeStartDay = types.StringNull()
-	}
-	if value := res.Get("rangeEndDay"); value.Exists() {
-		data.RangeEndDay = types.StringValue(value.String())
-	} else {
-		data.RangeEndDay = types.StringNull()
-	}
-	if value := res.Get("dailyStartTime"); value.Exists() {
-		data.DailyStartTime = types.StringValue(value.String())
-	} else {
-		data.DailyStartTime = types.StringNull()
-	}
-	if value := res.Get("dailyEndTime"); value.Exists() {
-		data.DailyEndTime = types.StringValue(value.String())
-	} else {
-		data.DailyEndTime = types.StringNull()
-	}
-	if value := res.Get("days"); value.Exists() {
-		data.DailyDays = helpers.GetStringSet(value.Array())
-	} else {
-		data.DailyDays = types.SetNull(types.StringType)
-	}
+			if value := res.Get("recurrenceType"); value.Exists() {
+				data.RecurrenceType = types.StringValue(value.String())
+			} else {
+				data.RecurrenceType = types.StringNull()
+			}
+			if value := res.Get("rangeStartTime"); value.Exists() {
+				data.RangeStartTime = types.StringValue(value.String())
+			} else {
+				data.RangeStartTime = types.StringNull()
+			}
+			if value := res.Get("rangeEndTime"); value.Exists() {
+				data.RangeEndTime = types.StringValue(value.String())
+			} else {
+				data.RangeEndTime = types.StringNull()
+			}
+			if value := res.Get("rangeStartDay"); value.Exists() {
+				data.RangeStartDay = types.StringValue(value.String())
+			} else {
+				data.RangeStartDay = types.StringNull()
+			}
+			if value := res.Get("rangeEndDay"); value.Exists() {
+				data.RangeEndDay = types.StringValue(value.String())
+			} else {
+				data.RangeEndDay = types.StringNull()
+			}
+			if value := res.Get("dailyStartTime"); value.Exists() {
+				data.DailyStartTime = types.StringValue(value.String())
+			} else {
+				data.DailyStartTime = types.StringNull()
+			}
+			if value := res.Get("dailyEndTime"); value.Exists() {
+				data.DailyEndTime = types.StringValue(value.String())
+			} else {
+				data.DailyEndTime = types.StringNull()
+			}
+			if value := res.Get("days"); value.Exists() {
+				data.DailyDays = helpers.GetStringSet(value.Array())
+			} else {
+				data.DailyDays = types.SetNull(types.StringType)
+			}
 			(*parent).RecurrenceList = append((*parent).RecurrenceList, data)
 			return true
 		})
@@ -233,7 +208,6 @@ func (data *TimeRange) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -284,46 +258,46 @@ func (data *TimeRange) fromBodyPartial(ctx context.Context, res gjson.Result) {
 		data := (*parent).RecurrenceList[i]
 		parentRes := &res
 		res := parentRes.Get(fmt.Sprintf("recurrenceList.%d", i))
-	if value := res.Get("recurrenceType"); value.Exists() && !data.RecurrenceType.IsNull() {
-		data.RecurrenceType = types.StringValue(value.String())
-	} else {
-		data.RecurrenceType = types.StringNull()
-	}
-	if value := res.Get("rangeStartTime"); value.Exists() && !data.RangeStartTime.IsNull() {
-		data.RangeStartTime = types.StringValue(value.String())
-	} else {
-		data.RangeStartTime = types.StringNull()
-	}
-	if value := res.Get("rangeEndTime"); value.Exists() && !data.RangeEndTime.IsNull() {
-		data.RangeEndTime = types.StringValue(value.String())
-	} else {
-		data.RangeEndTime = types.StringNull()
-	}
-	if value := res.Get("rangeStartDay"); value.Exists() && !data.RangeStartDay.IsNull() {
-		data.RangeStartDay = types.StringValue(value.String())
-	} else {
-		data.RangeStartDay = types.StringNull()
-	}
-	if value := res.Get("rangeEndDay"); value.Exists() && !data.RangeEndDay.IsNull() {
-		data.RangeEndDay = types.StringValue(value.String())
-	} else {
-		data.RangeEndDay = types.StringNull()
-	}
-	if value := res.Get("dailyStartTime"); value.Exists() && !data.DailyStartTime.IsNull() {
-		data.DailyStartTime = types.StringValue(value.String())
-	} else {
-		data.DailyStartTime = types.StringNull()
-	}
-	if value := res.Get("dailyEndTime"); value.Exists() && !data.DailyEndTime.IsNull() {
-		data.DailyEndTime = types.StringValue(value.String())
-	} else {
-		data.DailyEndTime = types.StringNull()
-	}
-	if value := res.Get("days"); value.Exists() && !data.DailyDays.IsNull() {
-		data.DailyDays = helpers.GetStringSet(value.Array())
-	} else {
-		data.DailyDays = types.SetNull(types.StringType)
-	}
+		if value := res.Get("recurrenceType"); value.Exists() && !data.RecurrenceType.IsNull() {
+			data.RecurrenceType = types.StringValue(value.String())
+		} else {
+			data.RecurrenceType = types.StringNull()
+		}
+		if value := res.Get("rangeStartTime"); value.Exists() && !data.RangeStartTime.IsNull() {
+			data.RangeStartTime = types.StringValue(value.String())
+		} else {
+			data.RangeStartTime = types.StringNull()
+		}
+		if value := res.Get("rangeEndTime"); value.Exists() && !data.RangeEndTime.IsNull() {
+			data.RangeEndTime = types.StringValue(value.String())
+		} else {
+			data.RangeEndTime = types.StringNull()
+		}
+		if value := res.Get("rangeStartDay"); value.Exists() && !data.RangeStartDay.IsNull() {
+			data.RangeStartDay = types.StringValue(value.String())
+		} else {
+			data.RangeStartDay = types.StringNull()
+		}
+		if value := res.Get("rangeEndDay"); value.Exists() && !data.RangeEndDay.IsNull() {
+			data.RangeEndDay = types.StringValue(value.String())
+		} else {
+			data.RangeEndDay = types.StringNull()
+		}
+		if value := res.Get("dailyStartTime"); value.Exists() && !data.DailyStartTime.IsNull() {
+			data.DailyStartTime = types.StringValue(value.String())
+		} else {
+			data.DailyStartTime = types.StringNull()
+		}
+		if value := res.Get("dailyEndTime"); value.Exists() && !data.DailyEndTime.IsNull() {
+			data.DailyEndTime = types.StringValue(value.String())
+		} else {
+			data.DailyEndTime = types.StringNull()
+		}
+		if value := res.Get("days"); value.Exists() && !data.DailyDays.IsNull() {
+			data.DailyDays = helpers.GetStringSet(value.Array())
+		} else {
+			data.DailyDays = types.SetNull(types.StringType)
+		}
 		(*parent).RecurrenceList[i] = data
 	}
 }
@@ -348,12 +322,8 @@ func (data *TimeRange) fromBodyUnknowns(ctx context.Context, res gjson.Result) {
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk

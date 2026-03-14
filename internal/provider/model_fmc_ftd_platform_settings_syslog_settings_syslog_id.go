@@ -34,39 +34,15 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type FTDPlatformSettingsSyslogSettingsSyslogID struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	FtdPlatformSettingsId types.String `tfsdk:"ftd_platform_settings_id"`
+	Id                                  types.String `tfsdk:"id"`
+	Domain                              types.String `tfsdk:"domain"`
+	FtdPlatformSettingsId               types.String `tfsdk:"ftd_platform_settings_id"`
 	FtdPlatformSettingsSyslogSettingsId types.String `tfsdk:"ftd_platform_settings_syslog_settings_id"`
-	Type types.String `tfsdk:"type"`
-	SyslogId types.Int64 `tfsdk:"syslog_id"`
-	LoggingLevel types.String `tfsdk:"logging_level"`
-	Enabled types.Bool `tfsdk:"enabled"`
+	Type                                types.String `tfsdk:"type"`
+	SyslogId                            types.Int64  `tfsdk:"syslog_id"`
+	LoggingLevel                        types.String `tfsdk:"logging_level"`
+	Enabled                             types.Bool   `tfsdk:"enabled"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -78,7 +54,7 @@ var minFMCVersionFTDPlatformSettingsSyslogSettingsSyslogID = version.Must(versio
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data FTDPlatformSettingsSyslogSettingsSyslogID) getPath() string {
-		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/syslog/syslogsettings/%v/syslogids", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()), url.QueryEscape(data.FtdPlatformSettingsSyslogSettingsId.ValueString()))
+	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/syslog/syslogsettings/%v/syslogids", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()), url.QueryEscape(data.FtdPlatformSettingsSyslogSettingsId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -90,13 +66,13 @@ func (data FTDPlatformSettingsSyslogSettingsSyslogID) toBody(ctx context.Context
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.SyslogId.IsNull()   {
+	if !data.SyslogId.IsNull() {
 		body, _ = sjson.Set(body, "syslogId", data.SyslogId.ValueInt64())
 	}
-	if !data.LoggingLevel.IsNull()   {
+	if !data.LoggingLevel.IsNull() {
 		body, _ = sjson.Set(body, "logLevel", data.LoggingLevel.ValueString())
 	}
-	if !data.Enabled.IsNull()   {
+	if !data.Enabled.IsNull() {
 		body, _ = sjson.Set(body, "enabled", data.Enabled.ValueBool())
 	}
 	return body
@@ -132,7 +108,6 @@ func (data *FTDPlatformSettingsSyslogSettingsSyslogID) fromBody(ctx context.Cont
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might

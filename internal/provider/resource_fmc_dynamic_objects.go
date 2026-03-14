@@ -77,7 +77,7 @@ func (r *DynamicObjectsResource) Schema(ctx context.Context, req resource.Schema
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -106,10 +106,10 @@ func (r *DynamicObjectsResource) Schema(ctx context.Context, req resource.Schema
 							Optional:            true,
 						},
 						"object_type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Type of dynamic object mappings.").AddStringEnumDescription("IP", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Type of dynamic object mappings.").AddStringEnumDescription("IP").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("IP", ),
+								stringvalidator.OneOf("IP"),
 							},
 						},
 						"mappings": schema.SetAttribute{
@@ -152,24 +152,24 @@ func (r *DynamicObjectsResource) Create(ctx context.Context, req resource.Create
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
-	
+
 	//// Prepare state to track creation process. Create request is split to multiple requests, where just subset of them may be successful
-    // Copy fields, as those may contain domain information or other references
-    state := plan
-    // Create random ID to track bulk resource. This does not relate to FMC in any way
-    state.Id = types.StringValue(uuid.New().String())
+	// Copy fields, as those may contain domain information or other references
+	state := plan
+	// Create random ID to track bulk resource. This does not relate to FMC in any way
+	state.Id = types.StringValue(uuid.New().String())
 	// Erase all Items, those will be filled in after creation
-    state.Items = make(map[string]DynamicObjectsItems, len(plan.Items))
-    // Creation process is put in a separate function, as that same proces will be needed with `Update`
-    plan, diags = r.createSubresources(ctx, state, plan, reqMods...)
-    resp.Diagnostics.Append(diags...)
-    if resp.Diagnostics.HasError() {
-        // Save state for whatever was already created
-        diags = resp.State.Set(ctx, &plan)
+	state.Items = make(map[string]DynamicObjectsItems, len(plan.Items))
+	// Creation process is put in a separate function, as that same proces will be needed with `Update`
+	plan, diags = r.createSubresources(ctx, state, plan, reqMods...)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		// Save state for whatever was already created
+		diags = resp.State.Set(ctx, &plan)
 		tflog.Debug(ctx, fmt.Sprintf("%s: Create failed, some items might have been created", plan.Id.ValueString()))
-        resp.Diagnostics.Append(diags...)
-        return
-    }
+		resp.Diagnostics.Append(diags...)
+		return
+	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -456,32 +456,33 @@ func (r *DynamicObjectsResource) Delete(ctx context.Context, req resource.Delete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *DynamicObjectsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-		// Parse import ID
-		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?\[(?P<names>.*?)\]$`)
-		match := inputPattern.FindStringSubmatch(req.ID)
-		if match == nil {
-			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,[<item1_name>,<item2_name>,...]\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-			resp.Diagnostics.AddError("Import error", errMsg)
-			return
-		}
+	// Parse import ID
+	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?\[(?P<names>.*?)\]$`)
+	match := inputPattern.FindStringSubmatch(req.ID)
+	if match == nil {
+		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,[<item1_name>,<item2_name>,...]\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+		resp.Diagnostics.AddError("Import error", errMsg)
+		return
+	}
 
-		// Set domain, if provided
-		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-		}
-		// Generate new ID (random, does not relate to FMC in any way)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), uuid.New().String())...)
+	// Set domain, if provided
+	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+	}
+	// Generate new ID (random, does not relate to FMC in any way)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), uuid.New().String())...)
 
-		// Fill state with names of objects to import
-		names := strings.Split(match[inputPattern.SubexpIndex("names")], ",")
-		itemsMap := make(map[string]DynamicObjectsItems, len(names))
-		for _, v := range names {
-			itemsMap[v] = DynamicObjectsItems{}
-		}
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("items"), itemsMap)...)
+	// Fill state with names of objects to import
+	names := strings.Split(match[inputPattern.SubexpIndex("names")], ",")
+	itemsMap := make(map[string]DynamicObjectsItems, len(names))
+	for _, v := range names {
+		itemsMap[v] = DynamicObjectsItems{}
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("items"), itemsMap)...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
+
 // End of section. //template:end import
 
 // createSubresources takes list of objects, splits them into bulks and creates them
@@ -556,49 +557,49 @@ func (r *DynamicObjectsResource) createSubresources(ctx context.Context, state, 
 // deleteSubresources takes list of objects and deletes them either in bulk, or one-by-one, depending on FMC version
 func (r *DynamicObjectsResource) deleteSubresources(ctx context.Context, state, plan DynamicObjects, reqMods ...func(*fmc.Req)) (DynamicObjects, diag.Diagnostics) {
 	objectsToRemove := plan.Clone()
-		tflog.Debug(ctx, fmt.Sprintf("%s: Bulk deletion mode (Dynamic Objects)", state.Id.ValueString()))
+	tflog.Debug(ctx, fmt.Sprintf("%s: Bulk deletion mode (Dynamic Objects)", state.Id.ValueString()))
 
-		var idx = 0
+	var idx = 0
 
-		estimatedIDLength := 37 // UUID length + comma
-		estimatedCapacity := min(len(objectsToRemove.Items)*estimatedIDLength, maxUrlParamLength)
-		var idsToRemove strings.Builder
-		idsToRemove.Grow(estimatedCapacity)
+	estimatedIDLength := 37 // UUID length + comma
+	estimatedCapacity := min(len(objectsToRemove.Items)*estimatedIDLength, maxUrlParamLength)
+	var idsToRemove strings.Builder
+	idsToRemove.Grow(estimatedCapacity)
 
-		for k, v := range objectsToRemove.Items {
-			// Counter
-			idx++
+	for k, v := range objectsToRemove.Items {
+		// Counter
+		idx++
 
-			// Check if the object was not already deleted
-			if v.Id.IsNull() {
-				delete(state.Items, k)
-				continue
-			}
-
-			// Create list of IDs of items to delete
-			idsToRemove.WriteString(v.Id.ValueString())
-			idsToRemove.WriteString(",")
-
-			// If bulk size was reached or all entries have been processed
-			if idsToRemove.Len() >= maxUrlParamLength || idx == len(objectsToRemove.Items) {
-				urlPath := state.getPath() + "?bulk=true&filter=ids:" + url.QueryEscape(idsToRemove.String())
-				res, err := r.client.Delete(urlPath, reqMods...)
-				if err != nil {
-					return state, diag.Diagnostics{
-						diag.NewErrorDiagnostic("Client Error", fmt.Sprintf("%s: Failed to delete subobject(s) (DELETE), got error: %s, %s", state.Id.ValueString(), err, res.String())),
-					}
-				}
-
-				// Read result and remove deleted items from state
-				deletedItems := res.Get("items.#.name").Array()
-				for _, name := range deletedItems {
-					delete(state.Items, name.String())
-				}
-
-				// Reset ID string
-				idsToRemove.Reset()
-			}
+		// Check if the object was not already deleted
+		if v.Id.IsNull() {
+			delete(state.Items, k)
+			continue
 		}
+
+		// Create list of IDs of items to delete
+		idsToRemove.WriteString(v.Id.ValueString())
+		idsToRemove.WriteString(",")
+
+		// If bulk size was reached or all entries have been processed
+		if idsToRemove.Len() >= maxUrlParamLength || idx == len(objectsToRemove.Items) {
+			urlPath := state.getPath() + "?bulk=true&filter=ids:" + url.QueryEscape(idsToRemove.String())
+			res, err := r.client.Delete(urlPath, reqMods...)
+			if err != nil {
+				return state, diag.Diagnostics{
+					diag.NewErrorDiagnostic("Client Error", fmt.Sprintf("%s: Failed to delete subobject(s) (DELETE), got error: %s, %s", state.Id.ValueString(), err, res.String())),
+				}
+			}
+
+			// Read result and remove deleted items from state
+			deletedItems := res.Get("items.#.name").Array()
+			for _, name := range deletedItems {
+				delete(state.Items, name.String())
+			}
+
+			// Reset ID string
+			idsToRemove.Reset()
+		}
+	}
 
 	return state, nil
 }

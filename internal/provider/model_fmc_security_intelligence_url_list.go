@@ -30,23 +30,11 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type SecurityIntelligenceUrlList struct {
-	Id types.String `tfsdk:"id"`
+	Id     types.String `tfsdk:"id"`
 	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Type types.String `tfsdk:"type"`
+	Name   types.String `tfsdk:"name"`
+	Type   types.String `tfsdk:"type"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -57,7 +45,7 @@ type SecurityIntelligenceUrlList struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data SecurityIntelligenceUrlList) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/siurllists"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/siurllists"
 }
 
 // End of section. //template:end getPath
@@ -85,7 +73,6 @@ func (data *SecurityIntelligenceUrlList) fromBody(ctx context.Context, res gjson
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
 
-
 // End of section. //template:end fromBodyPartial
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyUnknowns
@@ -94,42 +81,28 @@ func (data *SecurityIntelligenceUrlList) fromBody(ctx context.Context, res gjson
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
-
-
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
-
-
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
-
-
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
-
-
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
-
-
 
 // End of section. //template:end adjustBodyBulk

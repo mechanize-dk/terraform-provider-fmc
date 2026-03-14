@@ -36,38 +36,29 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type ApplicationFilters struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Items map[string]ApplicationFiltersItems `tfsdk:"items"`
+	Id     types.String                       `tfsdk:"id"`
+	Domain types.String                       `tfsdk:"domain"`
+	Items  map[string]ApplicationFiltersItems `tfsdk:"items"`
 }
-
 
 type ApplicationFiltersItems struct {
-	Id types.String `tfsdk:"id"`
-	Type types.String `tfsdk:"type"`
+	Id           types.String                          `tfsdk:"id"`
+	Type         types.String                          `tfsdk:"type"`
 	Applications []ApplicationFiltersItemsApplications `tfsdk:"applications"`
-	Filters []ApplicationFiltersItemsFilters `tfsdk:"filters"`
+	Filters      []ApplicationFiltersItemsFilters      `tfsdk:"filters"`
 }
 
-
-
-
 type ApplicationFiltersItemsApplications struct {
-	Id types.String `tfsdk:"id"`
+	Id   types.String `tfsdk:"id"`
 	Name types.String `tfsdk:"name"`
 }
 type ApplicationFiltersItemsFilters struct {
-	Types []ApplicationFiltersItemsFiltersTypes `tfsdk:"types"`
-	Risks []ApplicationFiltersItemsFiltersRisks `tfsdk:"risks"`
+	Types              []ApplicationFiltersItemsFiltersTypes              `tfsdk:"types"`
+	Risks              []ApplicationFiltersItemsFiltersRisks              `tfsdk:"risks"`
 	BusinessRelevances []ApplicationFiltersItemsFiltersBusinessRelevances `tfsdk:"business_relevances"`
-	Categories []ApplicationFiltersItemsFiltersCategories `tfsdk:"categories"`
-	Tags []ApplicationFiltersItemsFiltersTags `tfsdk:"tags"`
+	Categories         []ApplicationFiltersItemsFiltersCategories         `tfsdk:"categories"`
+	Tags               []ApplicationFiltersItemsFiltersTags               `tfsdk:"tags"`
 }
-
-
-
-
-
 
 type ApplicationFiltersItemsFiltersTypes struct {
 	Id types.String `tfsdk:"id"`
@@ -85,7 +76,6 @@ type ApplicationFiltersItemsFiltersTags struct {
 	Id types.String `tfsdk:"id"`
 }
 
-
 // End of section. //template:end types
 
 // Section below is generated&owned by "gen/generator.go". //template:begin minimumVersions
@@ -97,7 +87,7 @@ var minFMCVersionBulkDeleteApplicationFilters = version.Must(version.NewVersion(
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data ApplicationFilters) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/applicationfilters"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/applicationfilters"
 }
 
 // End of section. //template:end getPath
@@ -113,17 +103,17 @@ func (data ApplicationFilters) toBody(ctx context.Context, state ApplicationFilt
 		body, _ = sjson.Set(body, "items", []any{})
 		for key, item := range data.Items {
 			itemBody, _ := sjson.Set("{}", "name", key)
-			if !item.Id.IsNull() && !item.Id.IsUnknown()  {
+			if !item.Id.IsNull() && !item.Id.IsUnknown() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			if len(item.Applications) > 0 {
 				itemBody, _ = sjson.Set(itemBody, "applications", []any{})
 				for _, childItem := range item.Applications {
 					itemChildBody := ""
-					if !childItem.Id.IsNull()  {
+					if !childItem.Id.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "id", childItem.Id.ValueString())
 					}
-					if !childItem.Name.IsNull()  {
+					if !childItem.Name.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "name", childItem.Name.ValueString())
 					}
 					itemBody, _ = sjson.SetRaw(itemBody, "applications.-1", itemChildBody)
@@ -137,7 +127,7 @@ func (data ApplicationFilters) toBody(ctx context.Context, state ApplicationFilt
 						itemChildBody, _ = sjson.Set(itemChildBody, "applicationTypes", []any{})
 						for _, childChildItem := range childItem.Types {
 							itemChildChildBody := ""
-							if !childChildItem.Id.IsNull()  {
+							if !childChildItem.Id.IsNull() {
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "id", childChildItem.Id.ValueString())
 							}
 							itemChildBody, _ = sjson.SetRaw(itemChildBody, "applicationTypes.-1", itemChildChildBody)
@@ -147,7 +137,7 @@ func (data ApplicationFilters) toBody(ctx context.Context, state ApplicationFilt
 						itemChildBody, _ = sjson.Set(itemChildBody, "risks", []any{})
 						for _, childChildItem := range childItem.Risks {
 							itemChildChildBody := ""
-							if !childChildItem.Id.IsNull()  {
+							if !childChildItem.Id.IsNull() {
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "id", childChildItem.Id.ValueString())
 							}
 							itemChildBody, _ = sjson.SetRaw(itemChildBody, "risks.-1", itemChildChildBody)
@@ -157,7 +147,7 @@ func (data ApplicationFilters) toBody(ctx context.Context, state ApplicationFilt
 						itemChildBody, _ = sjson.Set(itemChildBody, "productivities", []any{})
 						for _, childChildItem := range childItem.BusinessRelevances {
 							itemChildChildBody := ""
-							if !childChildItem.Id.IsNull()  {
+							if !childChildItem.Id.IsNull() {
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "id", childChildItem.Id.ValueString())
 							}
 							itemChildBody, _ = sjson.SetRaw(itemChildBody, "productivities.-1", itemChildChildBody)
@@ -167,7 +157,7 @@ func (data ApplicationFilters) toBody(ctx context.Context, state ApplicationFilt
 						itemChildBody, _ = sjson.Set(itemChildBody, "categories", []any{})
 						for _, childChildItem := range childItem.Categories {
 							itemChildChildBody := ""
-							if !childChildItem.Id.IsNull()  {
+							if !childChildItem.Id.IsNull() {
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "id", childChildItem.Id.ValueString())
 							}
 							itemChildBody, _ = sjson.SetRaw(itemChildBody, "categories.-1", itemChildChildBody)
@@ -177,7 +167,7 @@ func (data ApplicationFilters) toBody(ctx context.Context, state ApplicationFilt
 						itemChildBody, _ = sjson.Set(itemChildBody, "tags", []any{})
 						for _, childChildItem := range childItem.Tags {
 							itemChildChildBody := ""
-							if !childChildItem.Id.IsNull()  {
+							if !childChildItem.Id.IsNull() {
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "id", childChildItem.Id.ValueString())
 							}
 							itemChildBody, _ = sjson.SetRaw(itemChildBody, "tags.-1", itemChildChildBody)
@@ -209,113 +199,114 @@ func (data *ApplicationFilters) fromBody(ctx context.Context, res gjson.Result) 
 		parent := &data
 		data := (*parent).Items[k]
 		res, found := itemsByName[k]
-		if !found {tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
+		if !found {
+			tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
 			delete((*parent).Items, k)
 			continue
 		}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("applications"); value.Exists() {
-		data.Applications = make([]ApplicationFiltersItemsApplications, 0)
-		value.ForEach(func(k, res gjson.Result) bool {
-			parent := &data
-			data := ApplicationFiltersItemsApplications{}
-	if value := res.Get("name"); value.Exists() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
-			(*parent).Applications = append((*parent).Applications, data)
-			return true
-		})
-	}
-	if value := res.Get("appConditions"); value.Exists() {
-		data.Filters = make([]ApplicationFiltersItemsFilters, 0)
-		value.ForEach(func(k, res gjson.Result) bool {
-			parent := &data
-			data := ApplicationFiltersItemsFilters{}
-	if value := res.Get("applicationTypes"); value.Exists() {
-		data.Types = make([]ApplicationFiltersItemsFiltersTypes, 0)
-		value.ForEach(func(k, res gjson.Result) bool {
-			parent := &data
-			data := ApplicationFiltersItemsFiltersTypes{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-			(*parent).Types = append((*parent).Types, data)
-			return true
-		})
-	}
-	if value := res.Get("risks"); value.Exists() {
-		data.Risks = make([]ApplicationFiltersItemsFiltersRisks, 0)
-		value.ForEach(func(k, res gjson.Result) bool {
-			parent := &data
-			data := ApplicationFiltersItemsFiltersRisks{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-			(*parent).Risks = append((*parent).Risks, data)
-			return true
-		})
-	}
-	if value := res.Get("productivities"); value.Exists() {
-		data.BusinessRelevances = make([]ApplicationFiltersItemsFiltersBusinessRelevances, 0)
-		value.ForEach(func(k, res gjson.Result) bool {
-			parent := &data
-			data := ApplicationFiltersItemsFiltersBusinessRelevances{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-			(*parent).BusinessRelevances = append((*parent).BusinessRelevances, data)
-			return true
-		})
-	}
-	if value := res.Get("categories"); value.Exists() {
-		data.Categories = make([]ApplicationFiltersItemsFiltersCategories, 0)
-		value.ForEach(func(k, res gjson.Result) bool {
-			parent := &data
-			data := ApplicationFiltersItemsFiltersCategories{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-			(*parent).Categories = append((*parent).Categories, data)
-			return true
-		})
-	}
-	if value := res.Get("tags"); value.Exists() {
-		data.Tags = make([]ApplicationFiltersItemsFiltersTags, 0)
-		value.ForEach(func(k, res gjson.Result) bool {
-			parent := &data
-			data := ApplicationFiltersItemsFiltersTags{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-			(*parent).Tags = append((*parent).Tags, data)
-			return true
-		})
-	}
-			(*parent).Filters = append((*parent).Filters, data)
-			return true
-		})
-	}
+		if value := res.Get("id"); value.Exists() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("type"); value.Exists() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
+		}
+		if value := res.Get("applications"); value.Exists() {
+			data.Applications = make([]ApplicationFiltersItemsApplications, 0)
+			value.ForEach(func(k, res gjson.Result) bool {
+				parent := &data
+				data := ApplicationFiltersItemsApplications{}
+				if value := res.Get("name"); value.Exists() {
+					data.Name = types.StringValue(value.String())
+				} else {
+					data.Name = types.StringNull()
+				}
+				(*parent).Applications = append((*parent).Applications, data)
+				return true
+			})
+		}
+		if value := res.Get("appConditions"); value.Exists() {
+			data.Filters = make([]ApplicationFiltersItemsFilters, 0)
+			value.ForEach(func(k, res gjson.Result) bool {
+				parent := &data
+				data := ApplicationFiltersItemsFilters{}
+				if value := res.Get("applicationTypes"); value.Exists() {
+					data.Types = make([]ApplicationFiltersItemsFiltersTypes, 0)
+					value.ForEach(func(k, res gjson.Result) bool {
+						parent := &data
+						data := ApplicationFiltersItemsFiltersTypes{}
+						if value := res.Get("id"); value.Exists() {
+							data.Id = types.StringValue(value.String())
+						} else {
+							data.Id = types.StringNull()
+						}
+						(*parent).Types = append((*parent).Types, data)
+						return true
+					})
+				}
+				if value := res.Get("risks"); value.Exists() {
+					data.Risks = make([]ApplicationFiltersItemsFiltersRisks, 0)
+					value.ForEach(func(k, res gjson.Result) bool {
+						parent := &data
+						data := ApplicationFiltersItemsFiltersRisks{}
+						if value := res.Get("id"); value.Exists() {
+							data.Id = types.StringValue(value.String())
+						} else {
+							data.Id = types.StringNull()
+						}
+						(*parent).Risks = append((*parent).Risks, data)
+						return true
+					})
+				}
+				if value := res.Get("productivities"); value.Exists() {
+					data.BusinessRelevances = make([]ApplicationFiltersItemsFiltersBusinessRelevances, 0)
+					value.ForEach(func(k, res gjson.Result) bool {
+						parent := &data
+						data := ApplicationFiltersItemsFiltersBusinessRelevances{}
+						if value := res.Get("id"); value.Exists() {
+							data.Id = types.StringValue(value.String())
+						} else {
+							data.Id = types.StringNull()
+						}
+						(*parent).BusinessRelevances = append((*parent).BusinessRelevances, data)
+						return true
+					})
+				}
+				if value := res.Get("categories"); value.Exists() {
+					data.Categories = make([]ApplicationFiltersItemsFiltersCategories, 0)
+					value.ForEach(func(k, res gjson.Result) bool {
+						parent := &data
+						data := ApplicationFiltersItemsFiltersCategories{}
+						if value := res.Get("id"); value.Exists() {
+							data.Id = types.StringValue(value.String())
+						} else {
+							data.Id = types.StringNull()
+						}
+						(*parent).Categories = append((*parent).Categories, data)
+						return true
+					})
+				}
+				if value := res.Get("tags"); value.Exists() {
+					data.Tags = make([]ApplicationFiltersItemsFiltersTags, 0)
+					value.ForEach(func(k, res gjson.Result) bool {
+						parent := &data
+						data := ApplicationFiltersItemsFiltersTags{}
+						if value := res.Get("id"); value.Exists() {
+							data.Id = types.StringValue(value.String())
+						} else {
+							data.Id = types.StringNull()
+						}
+						(*parent).Tags = append((*parent).Tags, data)
+						return true
+					})
+				}
+				(*parent).Filters = append((*parent).Filters, data)
+				return true
+			})
+		}
 		(*parent).Items[k] = data
 	}
 }
@@ -323,7 +314,6 @@ func (data *ApplicationFilters) fromBody(ctx context.Context, res gjson.Result) 
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -345,291 +335,291 @@ func (data *ApplicationFilters) fromBodyPartial(ctx context.Context, res gjson.R
 			continue
 		}
 		res, _ := itemsById[data.Id.ValueString()]
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	for i := 0; i < len(data.Applications); i++ {
-		keys := [...]string{ "name",  }
-		keyValues := [...]string{ data.Applications[i].Name.ValueString(),  }
+		if value := res.Get("id"); value.Exists() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
+		}
+		for i := 0; i < len(data.Applications); i++ {
+			keys := [...]string{"name"}
+			keyValues := [...]string{data.Applications[i].Name.ValueString()}
 
-		parent := &data
-		data := (*parent).Applications[i]
-		parentRes := &res
-		var res gjson.Result
+			parent := &data
+			data := (*parent).Applications[i]
+			parentRes := &res
+			var res gjson.Result
 
-		parentRes.Get("applications").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() != keyValues[ik] {
-						found = false
-						break
+			parentRes.Get("applications").ForEach(
+				func(_, v gjson.Result) bool {
+					found := false
+					for ik := range keys {
+						if v.Get(keys[ik]).String() != keyValues[ik] {
+							found = false
+							break
+						}
+						found = true
 					}
-					found = true
-				}
-				if found {
-					res = v
-					return false
-				}
-				return true
-			},
-		)
-		if !res.Exists() {
-			tflog.Debug(ctx, fmt.Sprintf("removing Applications[%d] = %+v",
-				i,
-				(*parent).Applications[i],
-			))
-			(*parent).Applications = slices.Delete((*parent).Applications, i, i+1)
-			i--
-
-			continue
-		}
-	if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
-		(*parent).Applications[i] = data
-	}
-	{
-		l := len(res.Get("appConditions").Array())
-		tflog.Debug(ctx, fmt.Sprintf("appConditions array resizing from %d to %d", len(data.Filters), l))
-		for i := len(data.Filters); i < l; i++ {
-			data.Filters = append(data.Filters, ApplicationFiltersItemsFilters{})
-		}
-		if len(data.Filters) > l {
-			data.Filters = data.Filters[:l]
-		}
-	}
-	for i := range data.Filters {
-		parent := &data
-		data := (*parent).Filters[i]
-		parentRes := &res
-		res := parentRes.Get(fmt.Sprintf("appConditions.%d", i))
-	for i := 0; i < len(data.Types); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.Types[i].Id.ValueString(),  }
-
-		parent := &data
-		data := (*parent).Types[i]
-		parentRes := &res
-		var res gjson.Result
-
-		parentRes.Get("applicationTypes").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() != keyValues[ik] {
-						found = false
-						break
+					if found {
+						res = v
+						return false
 					}
-					found = true
-				}
-				if found {
-					res = v
-					return false
-				}
-				return true
-			},
-		)
-		if !res.Exists() {
-			tflog.Debug(ctx, fmt.Sprintf("removing Types[%d] = %+v",
-				i,
-				(*parent).Types[i],
-			))
-			(*parent).Types = slices.Delete((*parent).Types, i, i+1)
-			i--
+					return true
+				},
+			)
+			if !res.Exists() {
+				tflog.Debug(ctx, fmt.Sprintf("removing Applications[%d] = %+v",
+					i,
+					(*parent).Applications[i],
+				))
+				(*parent).Applications = slices.Delete((*parent).Applications, i, i+1)
+				i--
 
-			continue
+				continue
+			}
+			if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
+				data.Name = types.StringValue(value.String())
+			} else {
+				data.Name = types.StringNull()
+			}
+			(*parent).Applications[i] = data
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-		(*parent).Types[i] = data
-	}
-	for i := 0; i < len(data.Risks); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.Risks[i].Id.ValueString(),  }
-
-		parent := &data
-		data := (*parent).Risks[i]
-		parentRes := &res
-		var res gjson.Result
-
-		parentRes.Get("risks").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() != keyValues[ik] {
-						found = false
-						break
-					}
-					found = true
-				}
-				if found {
-					res = v
-					return false
-				}
-				return true
-			},
-		)
-		if !res.Exists() {
-			tflog.Debug(ctx, fmt.Sprintf("removing Risks[%d] = %+v",
-				i,
-				(*parent).Risks[i],
-			))
-			(*parent).Risks = slices.Delete((*parent).Risks, i, i+1)
-			i--
-
-			continue
+		{
+			l := len(res.Get("appConditions").Array())
+			tflog.Debug(ctx, fmt.Sprintf("appConditions array resizing from %d to %d", len(data.Filters), l))
+			for i := len(data.Filters); i < l; i++ {
+				data.Filters = append(data.Filters, ApplicationFiltersItemsFilters{})
+			}
+			if len(data.Filters) > l {
+				data.Filters = data.Filters[:l]
+			}
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-		(*parent).Risks[i] = data
-	}
-	for i := 0; i < len(data.BusinessRelevances); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.BusinessRelevances[i].Id.ValueString(),  }
+		for i := range data.Filters {
+			parent := &data
+			data := (*parent).Filters[i]
+			parentRes := &res
+			res := parentRes.Get(fmt.Sprintf("appConditions.%d", i))
+			for i := 0; i < len(data.Types); i++ {
+				keys := [...]string{"id"}
+				keyValues := [...]string{data.Types[i].Id.ValueString()}
 
-		parent := &data
-		data := (*parent).BusinessRelevances[i]
-		parentRes := &res
-		var res gjson.Result
+				parent := &data
+				data := (*parent).Types[i]
+				parentRes := &res
+				var res gjson.Result
 
-		parentRes.Get("productivities").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() != keyValues[ik] {
-						found = false
-						break
-					}
-					found = true
+				parentRes.Get("applicationTypes").ForEach(
+					func(_, v gjson.Result) bool {
+						found := false
+						for ik := range keys {
+							if v.Get(keys[ik]).String() != keyValues[ik] {
+								found = false
+								break
+							}
+							found = true
+						}
+						if found {
+							res = v
+							return false
+						}
+						return true
+					},
+				)
+				if !res.Exists() {
+					tflog.Debug(ctx, fmt.Sprintf("removing Types[%d] = %+v",
+						i,
+						(*parent).Types[i],
+					))
+					(*parent).Types = slices.Delete((*parent).Types, i, i+1)
+					i--
+
+					continue
 				}
-				if found {
-					res = v
-					return false
+				if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+					data.Id = types.StringValue(value.String())
+				} else {
+					data.Id = types.StringNull()
 				}
-				return true
-			},
-		)
-		if !res.Exists() {
-			tflog.Debug(ctx, fmt.Sprintf("removing BusinessRelevances[%d] = %+v",
-				i,
-				(*parent).BusinessRelevances[i],
-			))
-			(*parent).BusinessRelevances = slices.Delete((*parent).BusinessRelevances, i, i+1)
-			i--
+				(*parent).Types[i] = data
+			}
+			for i := 0; i < len(data.Risks); i++ {
+				keys := [...]string{"id"}
+				keyValues := [...]string{data.Risks[i].Id.ValueString()}
 
-			continue
+				parent := &data
+				data := (*parent).Risks[i]
+				parentRes := &res
+				var res gjson.Result
+
+				parentRes.Get("risks").ForEach(
+					func(_, v gjson.Result) bool {
+						found := false
+						for ik := range keys {
+							if v.Get(keys[ik]).String() != keyValues[ik] {
+								found = false
+								break
+							}
+							found = true
+						}
+						if found {
+							res = v
+							return false
+						}
+						return true
+					},
+				)
+				if !res.Exists() {
+					tflog.Debug(ctx, fmt.Sprintf("removing Risks[%d] = %+v",
+						i,
+						(*parent).Risks[i],
+					))
+					(*parent).Risks = slices.Delete((*parent).Risks, i, i+1)
+					i--
+
+					continue
+				}
+				if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+					data.Id = types.StringValue(value.String())
+				} else {
+					data.Id = types.StringNull()
+				}
+				(*parent).Risks[i] = data
+			}
+			for i := 0; i < len(data.BusinessRelevances); i++ {
+				keys := [...]string{"id"}
+				keyValues := [...]string{data.BusinessRelevances[i].Id.ValueString()}
+
+				parent := &data
+				data := (*parent).BusinessRelevances[i]
+				parentRes := &res
+				var res gjson.Result
+
+				parentRes.Get("productivities").ForEach(
+					func(_, v gjson.Result) bool {
+						found := false
+						for ik := range keys {
+							if v.Get(keys[ik]).String() != keyValues[ik] {
+								found = false
+								break
+							}
+							found = true
+						}
+						if found {
+							res = v
+							return false
+						}
+						return true
+					},
+				)
+				if !res.Exists() {
+					tflog.Debug(ctx, fmt.Sprintf("removing BusinessRelevances[%d] = %+v",
+						i,
+						(*parent).BusinessRelevances[i],
+					))
+					(*parent).BusinessRelevances = slices.Delete((*parent).BusinessRelevances, i, i+1)
+					i--
+
+					continue
+				}
+				if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+					data.Id = types.StringValue(value.String())
+				} else {
+					data.Id = types.StringNull()
+				}
+				(*parent).BusinessRelevances[i] = data
+			}
+			for i := 0; i < len(data.Categories); i++ {
+				keys := [...]string{"id"}
+				keyValues := [...]string{data.Categories[i].Id.ValueString()}
+
+				parent := &data
+				data := (*parent).Categories[i]
+				parentRes := &res
+				var res gjson.Result
+
+				parentRes.Get("categories").ForEach(
+					func(_, v gjson.Result) bool {
+						found := false
+						for ik := range keys {
+							if v.Get(keys[ik]).String() != keyValues[ik] {
+								found = false
+								break
+							}
+							found = true
+						}
+						if found {
+							res = v
+							return false
+						}
+						return true
+					},
+				)
+				if !res.Exists() {
+					tflog.Debug(ctx, fmt.Sprintf("removing Categories[%d] = %+v",
+						i,
+						(*parent).Categories[i],
+					))
+					(*parent).Categories = slices.Delete((*parent).Categories, i, i+1)
+					i--
+
+					continue
+				}
+				if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+					data.Id = types.StringValue(value.String())
+				} else {
+					data.Id = types.StringNull()
+				}
+				(*parent).Categories[i] = data
+			}
+			for i := 0; i < len(data.Tags); i++ {
+				keys := [...]string{"id"}
+				keyValues := [...]string{data.Tags[i].Id.ValueString()}
+
+				parent := &data
+				data := (*parent).Tags[i]
+				parentRes := &res
+				var res gjson.Result
+
+				parentRes.Get("tags").ForEach(
+					func(_, v gjson.Result) bool {
+						found := false
+						for ik := range keys {
+							if v.Get(keys[ik]).String() != keyValues[ik] {
+								found = false
+								break
+							}
+							found = true
+						}
+						if found {
+							res = v
+							return false
+						}
+						return true
+					},
+				)
+				if !res.Exists() {
+					tflog.Debug(ctx, fmt.Sprintf("removing Tags[%d] = %+v",
+						i,
+						(*parent).Tags[i],
+					))
+					(*parent).Tags = slices.Delete((*parent).Tags, i, i+1)
+					i--
+
+					continue
+				}
+				if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+					data.Id = types.StringValue(value.String())
+				} else {
+					data.Id = types.StringNull()
+				}
+				(*parent).Tags[i] = data
+			}
+			(*parent).Filters[i] = data
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-		(*parent).BusinessRelevances[i] = data
-	}
-	for i := 0; i < len(data.Categories); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.Categories[i].Id.ValueString(),  }
-
-		parent := &data
-		data := (*parent).Categories[i]
-		parentRes := &res
-		var res gjson.Result
-
-		parentRes.Get("categories").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() != keyValues[ik] {
-						found = false
-						break
-					}
-					found = true
-				}
-				if found {
-					res = v
-					return false
-				}
-				return true
-			},
-		)
-		if !res.Exists() {
-			tflog.Debug(ctx, fmt.Sprintf("removing Categories[%d] = %+v",
-				i,
-				(*parent).Categories[i],
-			))
-			(*parent).Categories = slices.Delete((*parent).Categories, i, i+1)
-			i--
-
-			continue
-		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-		(*parent).Categories[i] = data
-	}
-	for i := 0; i < len(data.Tags); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.Tags[i].Id.ValueString(),  }
-
-		parent := &data
-		data := (*parent).Tags[i]
-		parentRes := &res
-		var res gjson.Result
-
-		parentRes.Get("tags").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() != keyValues[ik] {
-						found = false
-						break
-					}
-					found = true
-				}
-				if found {
-					res = v
-					return false
-				}
-				return true
-			},
-		)
-		if !res.Exists() {
-			tflog.Debug(ctx, fmt.Sprintf("removing Tags[%d] = %+v",
-				i,
-				(*parent).Tags[i],
-			))
-			(*parent).Tags = slices.Delete((*parent).Tags, i, i+1)
-			i--
-
-			continue
-		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-		(*parent).Tags[i] = data
-	}
-		(*parent).Filters[i] = data
-	}
 		(*parent).Items[i] = data
 	}
 }
@@ -683,7 +673,6 @@ func (data *ApplicationFilters) fromBodyUnknowns(ctx context.Context, res gjson.
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
 func (data *ApplicationFilters) Clone() ApplicationFilters {
 	ret := *data
 	ret.Items = maps.Clone(data.Items)
@@ -694,7 +683,6 @@ func (data *ApplicationFilters) Clone() ApplicationFilters {
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
 
 // Updates done one-by-one require different API body
 func (data ApplicationFilters) toBodyNonBulk(ctx context.Context, state ApplicationFilters) string {

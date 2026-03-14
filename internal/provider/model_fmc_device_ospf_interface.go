@@ -37,100 +37,38 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type DeviceOSPFInterface struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-VrfId                types.String                               `tfsdk:"vrf_id"`
-	DeviceId types.String `tfsdk:"device_id"`
-	Type types.String `tfsdk:"type"`
-	InterfaceId types.String `tfsdk:"interface_id"`
-	DefaultCost types.Int64 `tfsdk:"default_cost"`
-	Priority types.Int64 `tfsdk:"priority"`
-	MtuMissmatchIgnore types.Bool `tfsdk:"mtu_missmatch_ignore"`
-	HelloInterval types.Int64 `tfsdk:"hello_interval"`
-	TransmitDelay types.Int64 `tfsdk:"transmit_delay"`
-	RetransmitInterval types.Int64 `tfsdk:"retransmit_interval"`
-	DeadInterval types.Int64 `tfsdk:"dead_interval"`
-	HelloMultiplier types.Int64 `tfsdk:"hello_multiplier"`
-	PointToPoint types.Bool `tfsdk:"point_to_point"`
-	Bfd types.Bool `tfsdk:"bfd"`
-	AuthenticationPassword types.String `tfsdk:"authentication_password"`
-	AuthenticationAreaPassword types.String `tfsdk:"authentication_area_password"`
-	AuthenticationAreaMd5s []DeviceOSPFInterfaceAuthenticationAreaMd5s `tfsdk:"authentication_area_md5s"`
-	AuthenticationMd5s []DeviceOSPFInterfaceAuthenticationMd5s `tfsdk:"authentication_md5s"`
-	AuthenticationKeyChainId types.String `tfsdk:"authentication_key_chain_id"`
+	Id                         types.String                                `tfsdk:"id"`
+	Domain                     types.String                                `tfsdk:"domain"`
+	VrfId                      types.String                                `tfsdk:"vrf_id"`
+	DeviceId                   types.String                                `tfsdk:"device_id"`
+	Type                       types.String                                `tfsdk:"type"`
+	InterfaceId                types.String                                `tfsdk:"interface_id"`
+	DefaultCost                types.Int64                                 `tfsdk:"default_cost"`
+	Priority                   types.Int64                                 `tfsdk:"priority"`
+	MtuMissmatchIgnore         types.Bool                                  `tfsdk:"mtu_missmatch_ignore"`
+	HelloInterval              types.Int64                                 `tfsdk:"hello_interval"`
+	TransmitDelay              types.Int64                                 `tfsdk:"transmit_delay"`
+	RetransmitInterval         types.Int64                                 `tfsdk:"retransmit_interval"`
+	DeadInterval               types.Int64                                 `tfsdk:"dead_interval"`
+	HelloMultiplier            types.Int64                                 `tfsdk:"hello_multiplier"`
+	PointToPoint               types.Bool                                  `tfsdk:"point_to_point"`
+	Bfd                        types.Bool                                  `tfsdk:"bfd"`
+	AuthenticationPassword     types.String                                `tfsdk:"authentication_password"`
+	AuthenticationAreaPassword types.String                                `tfsdk:"authentication_area_password"`
+	AuthenticationAreaMd5s     []DeviceOSPFInterfaceAuthenticationAreaMd5s `tfsdk:"authentication_area_md5s"`
+	AuthenticationMd5s         []DeviceOSPFInterfaceAuthenticationMd5s     `tfsdk:"authentication_md5s"`
+	AuthenticationKeyChainId   types.String                                `tfsdk:"authentication_key_chain_id"`
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 type DeviceOSPFInterfaceAuthenticationAreaMd5s struct {
-	Id types.Int64 `tfsdk:"id"`
+	Id  types.Int64  `tfsdk:"id"`
 	Key types.String `tfsdk:"key"`
 }
 
 type DeviceOSPFInterfaceAuthenticationMd5s struct {
-	Id types.Int64 `tfsdk:"id"`
+	Id  types.Int64  `tfsdk:"id"`
 	Key types.String `tfsdk:"key"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -158,53 +96,53 @@ func (data DeviceOSPFInterface) toBody(ctx context.Context, state DeviceOSPFInte
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.InterfaceId.IsNull()   {
+	if !data.InterfaceId.IsNull() {
 		body, _ = sjson.Set(body, "deviceInterface.id", data.InterfaceId.ValueString())
 	}
-	if !data.DefaultCost.IsNull()   {
+	if !data.DefaultCost.IsNull() {
 		body, _ = sjson.Set(body, "ospfProtocolConfiguration.packetCost", data.DefaultCost.ValueInt64())
 	}
-	if !data.Priority.IsNull()   {
+	if !data.Priority.IsNull() {
 		body, _ = sjson.Set(body, "ospfProtocolConfiguration.priority", data.Priority.ValueInt64())
 	}
-	if !data.MtuMissmatchIgnore.IsNull()   {
+	if !data.MtuMissmatchIgnore.IsNull() {
 		body, _ = sjson.Set(body, "ospfProtocolConfiguration.ignoreMtuMismatch", data.MtuMissmatchIgnore.ValueBool())
 	}
-	if !data.HelloInterval.IsNull()   {
+	if !data.HelloInterval.IsNull() {
 		body, _ = sjson.Set(body, "ospfProtocolConfiguration.ospfInterval.helloInterval.helloInterval", data.HelloInterval.ValueInt64())
 	}
-	if !data.TransmitDelay.IsNull()   {
+	if !data.TransmitDelay.IsNull() {
 		body, _ = sjson.Set(body, "ospfProtocolConfiguration.transmitDelay", data.TransmitDelay.ValueInt64())
 	}
-	if !data.RetransmitInterval.IsNull()   {
+	if !data.RetransmitInterval.IsNull() {
 		body, _ = sjson.Set(body, "ospfProtocolConfiguration.retransmitInterval", data.RetransmitInterval.ValueInt64())
 	}
-	if !data.DeadInterval.IsNull()   {
+	if !data.DeadInterval.IsNull() {
 		body, _ = sjson.Set(body, "ospfProtocolConfiguration.ospfInterval.helloInterval.deadInterval", data.DeadInterval.ValueInt64())
 	}
-	if !data.HelloMultiplier.IsNull()   {
+	if !data.HelloMultiplier.IsNull() {
 		body, _ = sjson.Set(body, "ospfProtocolConfiguration.ospfInterval.helloMultiplier.helloMultiplier", data.HelloMultiplier.ValueInt64())
 	}
-	if !data.PointToPoint.IsNull()   {
+	if !data.PointToPoint.IsNull() {
 		body, _ = sjson.Set(body, "ospfProtocolConfiguration.ptpNonBroadcast", data.PointToPoint.ValueBool())
 	}
-	if !data.Bfd.IsNull()   {
+	if !data.Bfd.IsNull() {
 		body, _ = sjson.Set(body, "ospfProtocolConfiguration.enableBFD", data.Bfd.ValueBool())
 	}
-	if !data.AuthenticationPassword.IsNull()   {
+	if !data.AuthenticationPassword.IsNull() {
 		body, _ = sjson.Set(body, "ospfProtocolConfiguration.ospfAuthentication.passwdAuth.authKey", data.AuthenticationPassword.ValueString())
 	}
-	if !data.AuthenticationAreaPassword.IsNull()   {
+	if !data.AuthenticationAreaPassword.IsNull() {
 		body, _ = sjson.Set(body, "ospfProtocolConfiguration.ospfAuthentication.areaAuth.passwdAuth.authKey", data.AuthenticationAreaPassword.ValueString())
 	}
 	if len(data.AuthenticationAreaMd5s) > 0 {
 		body, _ = sjson.Set(body, "ospfProtocolConfiguration.ospfAuthentication.areaAuth.md5AuthList", []any{})
 		for _, item := range data.AuthenticationAreaMd5s {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "md5KeyId", item.Id.ValueInt64())
 			}
-			if !item.Key.IsNull()   {
+			if !item.Key.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "md5Key", item.Key.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "ospfProtocolConfiguration.ospfAuthentication.areaAuth.md5AuthList.-1", itemBody)
@@ -214,16 +152,16 @@ func (data DeviceOSPFInterface) toBody(ctx context.Context, state DeviceOSPFInte
 		body, _ = sjson.Set(body, "ospfProtocolConfiguration.ospfAuthentication.md5AuthList", []any{})
 		for _, item := range data.AuthenticationMd5s {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "md5KeyId", item.Id.ValueInt64())
 			}
-			if !item.Key.IsNull()   {
+			if !item.Key.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "md5Key", item.Key.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "ospfProtocolConfiguration.ospfAuthentication.md5AuthList.-1", itemBody)
 		}
 	}
-	if !data.AuthenticationKeyChainId.IsNull()   {
+	if !data.AuthenticationKeyChainId.IsNull() {
 		body, _ = sjson.Set(body, "ospfProtocolConfiguration.ospfAuthentication.keyChain.authKey.id", data.AuthenticationKeyChainId.ValueString())
 	}
 	return body
@@ -309,16 +247,16 @@ func (data *DeviceOSPFInterface) fromBody(ctx context.Context, res gjson.Result)
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := DeviceOSPFInterfaceAuthenticationAreaMd5s{}
-	if value := res.Get("md5KeyId"); value.Exists() {
-		data.Id = types.Int64Value(value.Int())
-	} else {
-		data.Id = types.Int64Null()
-	}
-	if value := res.Get("md5Key"); value.Exists() {
-		data.Key = types.StringValue(value.String())
-	} else {
-		data.Key = types.StringNull()
-	}
+			if value := res.Get("md5KeyId"); value.Exists() {
+				data.Id = types.Int64Value(value.Int())
+			} else {
+				data.Id = types.Int64Null()
+			}
+			if value := res.Get("md5Key"); value.Exists() {
+				data.Key = types.StringValue(value.String())
+			} else {
+				data.Key = types.StringNull()
+			}
 			(*parent).AuthenticationAreaMd5s = append((*parent).AuthenticationAreaMd5s, data)
 			return true
 		})
@@ -328,16 +266,16 @@ func (data *DeviceOSPFInterface) fromBody(ctx context.Context, res gjson.Result)
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := DeviceOSPFInterfaceAuthenticationMd5s{}
-	if value := res.Get("md5KeyId"); value.Exists() {
-		data.Id = types.Int64Value(value.Int())
-	} else {
-		data.Id = types.Int64Null()
-	}
-	if value := res.Get("md5Key"); value.Exists() {
-		data.Key = types.StringValue(value.String())
-	} else {
-		data.Key = types.StringNull()
-	}
+			if value := res.Get("md5KeyId"); value.Exists() {
+				data.Id = types.Int64Value(value.Int())
+			} else {
+				data.Id = types.Int64Null()
+			}
+			if value := res.Get("md5Key"); value.Exists() {
+				data.Key = types.StringValue(value.String())
+			} else {
+				data.Key = types.StringNull()
+			}
 			(*parent).AuthenticationMd5s = append((*parent).AuthenticationMd5s, data)
 			return true
 		})
@@ -352,7 +290,6 @@ func (data *DeviceOSPFInterface) fromBody(ctx context.Context, res gjson.Result)
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -430,8 +367,8 @@ func (data *DeviceOSPFInterface) fromBodyPartial(ctx context.Context, res gjson.
 		data.AuthenticationAreaPassword = types.StringNull()
 	}
 	for i := 0; i < len(data.AuthenticationAreaMd5s); i++ {
-		keys := [...]string{ "md5KeyId",  }
-		keyValues := [...]string{ strconv.FormatInt(data.AuthenticationAreaMd5s[i].Id.ValueInt64(), 10),  }
+		keys := [...]string{"md5KeyId"}
+		keyValues := [...]string{strconv.FormatInt(data.AuthenticationAreaMd5s[i].Id.ValueInt64(), 10)}
 
 		parent := &data
 		data := (*parent).AuthenticationAreaMd5s[i]
@@ -465,21 +402,21 @@ func (data *DeviceOSPFInterface) fromBodyPartial(ctx context.Context, res gjson.
 
 			continue
 		}
-	if value := res.Get("md5KeyId"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.Int64Value(value.Int())
-	} else {
-		data.Id = types.Int64Null()
-	}
-	if value := res.Get("md5Key"); value.Exists() && !data.Key.IsNull() {
-		data.Key = types.StringValue(value.String())
-	} else {
-		data.Key = types.StringNull()
-	}
+		if value := res.Get("md5KeyId"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.Int64Value(value.Int())
+		} else {
+			data.Id = types.Int64Null()
+		}
+		if value := res.Get("md5Key"); value.Exists() && !data.Key.IsNull() {
+			data.Key = types.StringValue(value.String())
+		} else {
+			data.Key = types.StringNull()
+		}
 		(*parent).AuthenticationAreaMd5s[i] = data
 	}
 	for i := 0; i < len(data.AuthenticationMd5s); i++ {
-		keys := [...]string{ "md5KeyId",  }
-		keyValues := [...]string{ strconv.FormatInt(data.AuthenticationMd5s[i].Id.ValueInt64(), 10),  }
+		keys := [...]string{"md5KeyId"}
+		keyValues := [...]string{strconv.FormatInt(data.AuthenticationMd5s[i].Id.ValueInt64(), 10)}
 
 		parent := &data
 		data := (*parent).AuthenticationMd5s[i]
@@ -513,16 +450,16 @@ func (data *DeviceOSPFInterface) fromBodyPartial(ctx context.Context, res gjson.
 
 			continue
 		}
-	if value := res.Get("md5KeyId"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.Int64Value(value.Int())
-	} else {
-		data.Id = types.Int64Null()
-	}
-	if value := res.Get("md5Key"); value.Exists() && !data.Key.IsNull() {
-		data.Key = types.StringValue(value.String())
-	} else {
-		data.Key = types.StringNull()
-	}
+		if value := res.Get("md5KeyId"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.Int64Value(value.Int())
+		} else {
+			data.Id = types.Int64Null()
+		}
+		if value := res.Get("md5Key"); value.Exists() && !data.Key.IsNull() {
+			data.Key = types.StringValue(value.String())
+		} else {
+			data.Key = types.StringNull()
+		}
 		(*parent).AuthenticationMd5s[i] = data
 	}
 	if value := res.Get("ospfProtocolConfiguration.ospfAuthentication.keyChain.authKey.id"); value.Exists() && !data.AuthenticationKeyChainId.IsNull() {
@@ -552,42 +489,28 @@ func (data *DeviceOSPFInterface) fromBodyUnknowns(ctx context.Context, res gjson
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
-
-
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
-
-
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
-
-
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
-
-
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
-
-
 
 // End of section. //template:end adjustBodyBulk

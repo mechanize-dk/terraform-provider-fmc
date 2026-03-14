@@ -31,11 +31,11 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin testAcc
 
 func TestAccFmcDeviceBridgeGroupInterface(t *testing.T) {
-	if v := os.Getenv("FMC_VERSION"); v != "" && slices.Contains([]string{"7.7" }, v) {
+	if v := os.Getenv("FMC_VERSION"); v != "" && slices.Contains([]string{"7.7"}, v) {
 		t.Skip("skipping test for FMC version " + v)
 	}
 	if os.Getenv("TF_VAR_device_id") == "" || os.Getenv("TF_VAR_interface_name") == "" {
-        t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_interface_name")
+		t.Skip("skipping test, set environment variable TF_VAR_device_id and TF_VAR_interface_name")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttrSet("fmc_device_bridge_group_interface.test", "type"))
@@ -54,19 +54,19 @@ func TestAccFmcDeviceBridgeGroupInterface(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccFmcDeviceBridgeGroupInterfacePrerequisitesConfig+testAccFmcDeviceBridgeGroupInterfaceConfig_minimum(),
+			Config: testAccFmcDeviceBridgeGroupInterfacePrerequisitesConfig + testAccFmcDeviceBridgeGroupInterfaceConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcDeviceBridgeGroupInterfacePrerequisitesConfig+testAccFmcDeviceBridgeGroupInterfaceConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcDeviceBridgeGroupInterfacePrerequisitesConfig + testAccFmcDeviceBridgeGroupInterfaceConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -83,6 +83,7 @@ data "fmc_device_physical_interface" "test" {
 variable "device_id" { default = null } // tests will set $TF_VAR_device_ha_id
 variable "interface_name" {default = null} // tests will set $TF_VAR_interface_name
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -94,6 +95,7 @@ func testAccFmcDeviceBridgeGroupInterfaceConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

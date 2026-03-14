@@ -37,48 +37,26 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type FTDPlatformSettingsHTTPAccess struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	FtdPlatformSettingsId types.String `tfsdk:"ftd_platform_settings_id"`
-	Type types.String `tfsdk:"type"`
-	ServerEnabled types.Bool `tfsdk:"server_enabled"`
-	ServerPort types.Int64 `tfsdk:"server_port"`
-	Configurations []FTDPlatformSettingsHTTPAccessConfigurations `tfsdk:"configurations"`
+	Id                    types.String                                  `tfsdk:"id"`
+	Domain                types.String                                  `tfsdk:"domain"`
+	FtdPlatformSettingsId types.String                                  `tfsdk:"ftd_platform_settings_id"`
+	Type                  types.String                                  `tfsdk:"type"`
+	ServerEnabled         types.Bool                                    `tfsdk:"server_enabled"`
+	ServerPort            types.Int64                                   `tfsdk:"server_port"`
+	Configurations        []FTDPlatformSettingsHTTPAccessConfigurations `tfsdk:"configurations"`
 }
-
-
-
-
-
 
 type FTDPlatformSettingsHTTPAccessConfigurations struct {
-	SourceNetworkObjectId types.String `tfsdk:"source_network_object_id"`
-	InterfaceLiterals types.Set `tfsdk:"interface_literals"`
-	InterfaceObjects []FTDPlatformSettingsHTTPAccessConfigurationsInterfaceObjects `tfsdk:"interface_objects"`
+	SourceNetworkObjectId types.String                                                  `tfsdk:"source_network_object_id"`
+	InterfaceLiterals     types.Set                                                     `tfsdk:"interface_literals"`
+	InterfaceObjects      []FTDPlatformSettingsHTTPAccessConfigurationsInterfaceObjects `tfsdk:"interface_objects"`
 }
 
-
-
-
-
-
-
-
 type FTDPlatformSettingsHTTPAccessConfigurationsInterfaceObjects struct {
-	Id types.String `tfsdk:"id"`
+	Id   types.String `tfsdk:"id"`
 	Type types.String `tfsdk:"type"`
 	Name types.String `tfsdk:"name"`
 }
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -90,7 +68,7 @@ var minFMCVersionFTDPlatformSettingsHTTPAccess = version.Must(version.NewVersion
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data FTDPlatformSettingsHTTPAccess) getPath() string {
-		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/httpaccesssettings", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
+	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/httpaccesssettings", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -102,17 +80,17 @@ func (data FTDPlatformSettingsHTTPAccess) toBody(ctx context.Context, state FTDP
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.ServerEnabled.IsNull()   {
+	if !data.ServerEnabled.IsNull() {
 		body, _ = sjson.Set(body, "enableHttpServer", data.ServerEnabled.ValueBool())
 	}
-	if !data.ServerPort.IsNull()   {
+	if !data.ServerPort.IsNull() {
 		body, _ = sjson.Set(body, "port", data.ServerPort.ValueInt64())
 	}
 	if len(data.Configurations) > 0 {
 		body, _ = sjson.Set(body, "httpConfiguration", []any{})
 		for _, item := range data.Configurations {
 			itemBody := ""
-			if !item.SourceNetworkObjectId.IsNull()   {
+			if !item.SourceNetworkObjectId.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "ipAddress.id", item.SourceNetworkObjectId.ValueString())
 			}
 			if !item.InterfaceLiterals.IsNull() {
@@ -124,13 +102,13 @@ func (data FTDPlatformSettingsHTTPAccess) toBody(ctx context.Context, state FTDP
 				itemBody, _ = sjson.Set(itemBody, "interfaces.objects", []any{})
 				for _, childItem := range item.InterfaceObjects {
 					itemChildBody := ""
-					if !childItem.Id.IsNull()  {
+					if !childItem.Id.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "id", childItem.Id.ValueString())
 					}
-					if !childItem.Type.IsNull()  {
+					if !childItem.Type.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "type", childItem.Type.ValueString())
 					}
-					if !childItem.Name.IsNull()  {
+					if !childItem.Name.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "name", childItem.Name.ValueString())
 					}
 					itemBody, _ = sjson.SetRaw(itemBody, "interfaces.objects.-1", itemChildBody)
@@ -167,40 +145,40 @@ func (data *FTDPlatformSettingsHTTPAccess) fromBody(ctx context.Context, res gjs
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := FTDPlatformSettingsHTTPAccessConfigurations{}
-	if value := res.Get("ipAddress.id"); value.Exists() {
-		data.SourceNetworkObjectId = types.StringValue(value.String())
-	} else {
-		data.SourceNetworkObjectId = types.StringNull()
-	}
-	if value := res.Get("interfaces.literals"); value.Exists() {
-		data.InterfaceLiterals = helpers.GetStringSet(value.Array())
-	} else {
-		data.InterfaceLiterals = types.SetNull(types.StringType)
-	}
-	if value := res.Get("interfaces.objects"); value.Exists() {
-		data.InterfaceObjects = make([]FTDPlatformSettingsHTTPAccessConfigurationsInterfaceObjects, 0)
-		value.ForEach(func(k, res gjson.Result) bool {
-			parent := &data
-			data := FTDPlatformSettingsHTTPAccessConfigurationsInterfaceObjects{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("name"); value.Exists() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
-			(*parent).InterfaceObjects = append((*parent).InterfaceObjects, data)
-			return true
-		})
-	}
+			if value := res.Get("ipAddress.id"); value.Exists() {
+				data.SourceNetworkObjectId = types.StringValue(value.String())
+			} else {
+				data.SourceNetworkObjectId = types.StringNull()
+			}
+			if value := res.Get("interfaces.literals"); value.Exists() {
+				data.InterfaceLiterals = helpers.GetStringSet(value.Array())
+			} else {
+				data.InterfaceLiterals = types.SetNull(types.StringType)
+			}
+			if value := res.Get("interfaces.objects"); value.Exists() {
+				data.InterfaceObjects = make([]FTDPlatformSettingsHTTPAccessConfigurationsInterfaceObjects, 0)
+				value.ForEach(func(k, res gjson.Result) bool {
+					parent := &data
+					data := FTDPlatformSettingsHTTPAccessConfigurationsInterfaceObjects{}
+					if value := res.Get("id"); value.Exists() {
+						data.Id = types.StringValue(value.String())
+					} else {
+						data.Id = types.StringNull()
+					}
+					if value := res.Get("type"); value.Exists() {
+						data.Type = types.StringValue(value.String())
+					} else {
+						data.Type = types.StringNull()
+					}
+					if value := res.Get("name"); value.Exists() {
+						data.Name = types.StringValue(value.String())
+					} else {
+						data.Name = types.StringNull()
+					}
+					(*parent).InterfaceObjects = append((*parent).InterfaceObjects, data)
+					return true
+				})
+			}
 			(*parent).Configurations = append((*parent).Configurations, data)
 			return true
 		})
@@ -210,7 +188,6 @@ func (data *FTDPlatformSettingsHTTPAccess) fromBody(ctx context.Context, res gjs
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -233,8 +210,8 @@ func (data *FTDPlatformSettingsHTTPAccess) fromBodyPartial(ctx context.Context, 
 		data.ServerPort = types.Int64Null()
 	}
 	for i := 0; i < len(data.Configurations); i++ {
-		keys := [...]string{ "ipAddress.id",  }
-		keyValues := [...]string{ data.Configurations[i].SourceNetworkObjectId.ValueString(),  }
+		keys := [...]string{"ipAddress.id"}
+		keyValues := [...]string{data.Configurations[i].SourceNetworkObjectId.ValueString()}
 
 		parent := &data
 		data := (*parent).Configurations[i]
@@ -268,69 +245,69 @@ func (data *FTDPlatformSettingsHTTPAccess) fromBodyPartial(ctx context.Context, 
 
 			continue
 		}
-	if value := res.Get("ipAddress.id"); value.Exists() && !data.SourceNetworkObjectId.IsNull() {
-		data.SourceNetworkObjectId = types.StringValue(value.String())
-	} else {
-		data.SourceNetworkObjectId = types.StringNull()
-	}
-	if value := res.Get("interfaces.literals"); value.Exists() && !data.InterfaceLiterals.IsNull() {
-		data.InterfaceLiterals = helpers.GetStringSet(value.Array())
-	} else {
-		data.InterfaceLiterals = types.SetNull(types.StringType)
-	}
-	for i := 0; i < len(data.InterfaceObjects); i++ {
-		keys := [...]string{ "id", "type", "name",  }
-		keyValues := [...]string{ data.InterfaceObjects[i].Id.ValueString(), data.InterfaceObjects[i].Type.ValueString(), data.InterfaceObjects[i].Name.ValueString(),  }
-
-		parent := &data
-		data := (*parent).InterfaceObjects[i]
-		parentRes := &res
-		var res gjson.Result
-
-		parentRes.Get("interfaces.objects").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() != keyValues[ik] {
-						found = false
-						break
-					}
-					found = true
-				}
-				if found {
-					res = v
-					return false
-				}
-				return true
-			},
-		)
-		if !res.Exists() {
-			tflog.Debug(ctx, fmt.Sprintf("removing InterfaceObjects[%d] = %+v",
-				i,
-				(*parent).InterfaceObjects[i],
-			))
-			(*parent).InterfaceObjects = slices.Delete((*parent).InterfaceObjects, i, i+1)
-			i--
-
-			continue
+		if value := res.Get("ipAddress.id"); value.Exists() && !data.SourceNetworkObjectId.IsNull() {
+			data.SourceNetworkObjectId = types.StringValue(value.String())
+		} else {
+			data.SourceNetworkObjectId = types.StringNull()
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
-		(*parent).InterfaceObjects[i] = data
-	}
+		if value := res.Get("interfaces.literals"); value.Exists() && !data.InterfaceLiterals.IsNull() {
+			data.InterfaceLiterals = helpers.GetStringSet(value.Array())
+		} else {
+			data.InterfaceLiterals = types.SetNull(types.StringType)
+		}
+		for i := 0; i < len(data.InterfaceObjects); i++ {
+			keys := [...]string{"id", "type", "name"}
+			keyValues := [...]string{data.InterfaceObjects[i].Id.ValueString(), data.InterfaceObjects[i].Type.ValueString(), data.InterfaceObjects[i].Name.ValueString()}
+
+			parent := &data
+			data := (*parent).InterfaceObjects[i]
+			parentRes := &res
+			var res gjson.Result
+
+			parentRes.Get("interfaces.objects").ForEach(
+				func(_, v gjson.Result) bool {
+					found := false
+					for ik := range keys {
+						if v.Get(keys[ik]).String() != keyValues[ik] {
+							found = false
+							break
+						}
+						found = true
+					}
+					if found {
+						res = v
+						return false
+					}
+					return true
+				},
+			)
+			if !res.Exists() {
+				tflog.Debug(ctx, fmt.Sprintf("removing InterfaceObjects[%d] = %+v",
+					i,
+					(*parent).InterfaceObjects[i],
+				))
+				(*parent).InterfaceObjects = slices.Delete((*parent).InterfaceObjects, i, i+1)
+				i--
+
+				continue
+			}
+			if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
+			if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+				data.Type = types.StringValue(value.String())
+			} else {
+				data.Type = types.StringNull()
+			}
+			if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
+				data.Name = types.StringValue(value.String())
+			} else {
+				data.Name = types.StringNull()
+			}
+			(*parent).InterfaceObjects[i] = data
+		}
 		(*parent).Configurations[i] = data
 	}
 }
@@ -354,7 +331,6 @@ func (data *FTDPlatformSettingsHTTPAccess) fromBodyUnknowns(ctx context.Context,
 // End of section. //template:end fromBodyUnknowns
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
-
 
 // toBodyPutDelete is used to create the body for PUT requests to clear the resource state
 func (data FTDPlatformSettingsHTTPAccess) toBodyPutDelete(ctx context.Context) string {

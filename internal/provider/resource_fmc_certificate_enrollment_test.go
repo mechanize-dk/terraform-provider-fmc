@@ -38,23 +38,23 @@ func TestAccFmcCertificateEnrollment(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccFmcCertificateEnrollmentPrerequisitesConfig+testAccFmcCertificateEnrollmentConfig_minimum(),
+			Config: testAccFmcCertificateEnrollmentPrerequisitesConfig + testAccFmcCertificateEnrollmentConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcCertificateEnrollmentPrerequisitesConfig+testAccFmcCertificateEnrollmentConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcCertificateEnrollmentPrerequisitesConfig + testAccFmcCertificateEnrollmentConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName:  "fmc_certificate_enrollment.test",
-		ImportState:   true,
+		ResourceName: "fmc_certificate_enrollment.test",
+		ImportState:  true,
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -339,6 +339,7 @@ locals {
     EOT
   }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -352,6 +353,7 @@ func testAccFmcCertificateEnrollmentConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

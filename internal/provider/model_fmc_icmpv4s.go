@@ -35,29 +35,19 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type ICMPv4s struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Items map[string]ICMPv4sItems `tfsdk:"items"`
+	Id     types.String            `tfsdk:"id"`
+	Domain types.String            `tfsdk:"domain"`
+	Items  map[string]ICMPv4sItems `tfsdk:"items"`
 }
-
 
 type ICMPv4sItems struct {
-	Id types.String `tfsdk:"id"`
-	Type types.String `tfsdk:"type"`
+	Id          types.String `tfsdk:"id"`
+	Type        types.String `tfsdk:"type"`
 	Description types.String `tfsdk:"description"`
-	IcmpType types.String `tfsdk:"icmp_type"`
-	Code types.Int64 `tfsdk:"code"`
-	Overridable types.Bool `tfsdk:"overridable"`
+	IcmpType    types.String `tfsdk:"icmp_type"`
+	Code        types.Int64  `tfsdk:"code"`
+	Overridable types.Bool   `tfsdk:"overridable"`
 }
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -69,7 +59,7 @@ var minFMCVersionBulkDeleteICMPv4s = version.Must(version.NewVersion("7.4"))
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data ICMPv4s) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/icmpv4objects"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/icmpv4objects"
 }
 
 // End of section. //template:end getPath
@@ -85,19 +75,19 @@ func (data ICMPv4s) toBody(ctx context.Context, state ICMPv4s) string {
 		body, _ = sjson.Set(body, "items", []any{})
 		for key, item := range data.Items {
 			itemBody, _ := sjson.Set("{}", "name", key)
-			if !item.Id.IsNull() && !item.Id.IsUnknown()  {
+			if !item.Id.IsNull() && !item.Id.IsUnknown() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Description.IsNull()   {
+			if !item.Description.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "description", item.Description.ValueString())
 			}
-			if !item.IcmpType.IsNull()   {
+			if !item.IcmpType.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "icmpType", item.IcmpType.ValueString())
 			}
-			if !item.Code.IsNull()   {
+			if !item.Code.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "code", item.Code.ValueInt64())
 			}
-			if !item.Overridable.IsNull()   {
+			if !item.Overridable.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "overridable", item.Overridable.ValueBool())
 			}
 			body, _ = sjson.SetRaw(body, "items.-1", itemBody)
@@ -123,40 +113,41 @@ func (data *ICMPv4s) fromBody(ctx context.Context, res gjson.Result) {
 		parent := &data
 		data := (*parent).Items[k]
 		res, found := itemsByName[k]
-		if !found {tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
+		if !found {
+			tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
 			delete((*parent).Items, k)
 			continue
 		}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("description"); value.Exists() {
-		data.Description = types.StringValue(value.String())
-	} else {
-		data.Description = types.StringNull()
-	}
-	if value := res.Get("icmpType"); value.Exists() {
-		data.IcmpType = types.StringValue(value.String())
-	} else {
-		data.IcmpType = types.StringNull()
-	}
-	if value := res.Get("code"); value.Exists() {
-		data.Code = types.Int64Value(value.Int())
-	} else {
-		data.Code = types.Int64Null()
-	}
-	if value := res.Get("overridable"); value.Exists() {
-		data.Overridable = types.BoolValue(value.Bool())
-	} else {
-		data.Overridable = types.BoolNull()
-	}
+		if value := res.Get("id"); value.Exists() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("type"); value.Exists() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
+		}
+		if value := res.Get("description"); value.Exists() {
+			data.Description = types.StringValue(value.String())
+		} else {
+			data.Description = types.StringNull()
+		}
+		if value := res.Get("icmpType"); value.Exists() {
+			data.IcmpType = types.StringValue(value.String())
+		} else {
+			data.IcmpType = types.StringNull()
+		}
+		if value := res.Get("code"); value.Exists() {
+			data.Code = types.Int64Value(value.Int())
+		} else {
+			data.Code = types.Int64Null()
+		}
+		if value := res.Get("overridable"); value.Exists() {
+			data.Overridable = types.BoolValue(value.Bool())
+		} else {
+			data.Overridable = types.BoolNull()
+		}
 		(*parent).Items[k] = data
 	}
 }
@@ -164,7 +155,6 @@ func (data *ICMPv4s) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -186,40 +176,40 @@ func (data *ICMPv4s) fromBodyPartial(ctx context.Context, res gjson.Result) {
 			continue
 		}
 		res, _ := itemsById[data.Id.ValueString()]
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("description"); value.Exists() && !data.Description.IsNull() {
-		data.Description = types.StringValue(value.String())
-	} else {
-		if !data.Description.IsNull() && data.Description.ValueString() == "" {
-			data.Description = types.StringValue("")
+		if value := res.Get("id"); value.Exists() {
+			data.Id = types.StringValue(value.String())
 		} else {
-			data.Description = types.StringNull()
+			data.Id = types.StringNull()
 		}
-	}
-	if value := res.Get("icmpType"); value.Exists() && !data.IcmpType.IsNull() {
-		data.IcmpType = types.StringValue(value.String())
-	} else {
-		data.IcmpType = types.StringNull()
-	}
-	if value := res.Get("code"); value.Exists() && !data.Code.IsNull() {
-		data.Code = types.Int64Value(value.Int())
-	} else {
-		data.Code = types.Int64Null()
-	}
-	if value := res.Get("overridable"); value.Exists() && !data.Overridable.IsNull() {
-		data.Overridable = types.BoolValue(value.Bool())
-	} else {
-		data.Overridable = types.BoolNull()
-	}
+		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
+		}
+		if value := res.Get("description"); value.Exists() && !data.Description.IsNull() {
+			data.Description = types.StringValue(value.String())
+		} else {
+			if !data.Description.IsNull() && data.Description.ValueString() == "" {
+				data.Description = types.StringValue("")
+			} else {
+				data.Description = types.StringNull()
+			}
+		}
+		if value := res.Get("icmpType"); value.Exists() && !data.IcmpType.IsNull() {
+			data.IcmpType = types.StringValue(value.String())
+		} else {
+			data.IcmpType = types.StringNull()
+		}
+		if value := res.Get("code"); value.Exists() && !data.Code.IsNull() {
+			data.Code = types.Int64Value(value.Int())
+		} else {
+			data.Code = types.Int64Null()
+		}
+		if value := res.Get("overridable"); value.Exists() && !data.Overridable.IsNull() {
+			data.Overridable = types.BoolValue(value.Bool())
+		} else {
+			data.Overridable = types.BoolNull()
+		}
 		(*parent).Items[i] = data
 	}
 }
@@ -273,7 +263,6 @@ func (data *ICMPv4s) fromBodyUnknowns(ctx context.Context, res gjson.Result) {
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
 func (data *ICMPv4s) Clone() ICMPv4s {
 	ret := *data
 	ret.Items = maps.Clone(data.Items)
@@ -284,7 +273,6 @@ func (data *ICMPv4s) Clone() ICMPv4s {
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
 
 // Updates done one-by-one require different API body
 func (data ICMPv4s) toBodyNonBulk(ctx context.Context, state ICMPv4s) string {
@@ -304,30 +292,20 @@ func (data ICMPv4s) toBodyNonBulk(ctx context.Context, state ICMPv4s) string {
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
-
-
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
-
-
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
-
-
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
-
-
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
-
-
 
 // End of section. //template:end adjustBodyBulk

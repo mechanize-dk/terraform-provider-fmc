@@ -35,28 +35,18 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type SecurityIntelligenceNetworkFeeds struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Items map[string]SecurityIntelligenceNetworkFeedsItems `tfsdk:"items"`
+	Id     types.String                                     `tfsdk:"id"`
+	Domain types.String                                     `tfsdk:"domain"`
+	Items  map[string]SecurityIntelligenceNetworkFeedsItems `tfsdk:"items"`
 }
-
 
 type SecurityIntelligenceNetworkFeedsItems struct {
-	Id types.String `tfsdk:"id"`
-	Type types.String `tfsdk:"type"`
-	FeedUrl types.String `tfsdk:"feed_url"`
-	ChecksumUrl types.String `tfsdk:"checksum_url"`
-	UpdateFrequency types.Int64 `tfsdk:"update_frequency"`
+	Id              types.String `tfsdk:"id"`
+	Type            types.String `tfsdk:"type"`
+	FeedUrl         types.String `tfsdk:"feed_url"`
+	ChecksumUrl     types.String `tfsdk:"checksum_url"`
+	UpdateFrequency types.Int64  `tfsdk:"update_frequency"`
 }
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -70,7 +60,7 @@ var minFMCVersionBulkDeleteSecurityIntelligenceNetworkFeeds = version.Must(versi
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data SecurityIntelligenceNetworkFeeds) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/sinetworkfeeds"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/sinetworkfeeds"
 }
 
 // End of section. //template:end getPath
@@ -86,16 +76,16 @@ func (data SecurityIntelligenceNetworkFeeds) toBody(ctx context.Context, state S
 		body, _ = sjson.Set(body, "items", []any{})
 		for key, item := range data.Items {
 			itemBody, _ := sjson.Set("{}", "name", key)
-			if !item.Id.IsNull() && !item.Id.IsUnknown()  {
+			if !item.Id.IsNull() && !item.Id.IsUnknown() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.FeedUrl.IsNull()   {
+			if !item.FeedUrl.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "feedURL", item.FeedUrl.ValueString())
 			}
-			if !item.ChecksumUrl.IsNull()   {
+			if !item.ChecksumUrl.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "checksumURL", item.ChecksumUrl.ValueString())
 			}
-			if !item.UpdateFrequency.IsNull()   {
+			if !item.UpdateFrequency.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "updateFrequency", item.UpdateFrequency.ValueInt64())
 			}
 			body, _ = sjson.SetRaw(body, "items.-1", itemBody)
@@ -121,35 +111,36 @@ func (data *SecurityIntelligenceNetworkFeeds) fromBody(ctx context.Context, res 
 		parent := &data
 		data := (*parent).Items[k]
 		res, found := itemsByName[k]
-		if !found {tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
+		if !found {
+			tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
 			delete((*parent).Items, k)
 			continue
 		}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("feedURL"); value.Exists() {
-		data.FeedUrl = types.StringValue(value.String())
-	} else {
-		data.FeedUrl = types.StringNull()
-	}
-	if value := res.Get("checksumURL"); value.Exists() {
-		data.ChecksumUrl = types.StringValue(value.String())
-	} else {
-		data.ChecksumUrl = types.StringNull()
-	}
-	if value := res.Get("updateFrequency"); value.Exists() {
-		data.UpdateFrequency = types.Int64Value(value.Int())
-	} else {
-		data.UpdateFrequency = types.Int64Null()
-	}
+		if value := res.Get("id"); value.Exists() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("type"); value.Exists() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
+		}
+		if value := res.Get("feedURL"); value.Exists() {
+			data.FeedUrl = types.StringValue(value.String())
+		} else {
+			data.FeedUrl = types.StringNull()
+		}
+		if value := res.Get("checksumURL"); value.Exists() {
+			data.ChecksumUrl = types.StringValue(value.String())
+		} else {
+			data.ChecksumUrl = types.StringNull()
+		}
+		if value := res.Get("updateFrequency"); value.Exists() {
+			data.UpdateFrequency = types.Int64Value(value.Int())
+		} else {
+			data.UpdateFrequency = types.Int64Null()
+		}
 		(*parent).Items[k] = data
 	}
 }
@@ -157,7 +148,6 @@ func (data *SecurityIntelligenceNetworkFeeds) fromBody(ctx context.Context, res 
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -179,31 +169,31 @@ func (data *SecurityIntelligenceNetworkFeeds) fromBodyPartial(ctx context.Contex
 			continue
 		}
 		res, _ := itemsById[data.Id.ValueString()]
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("feedURL"); value.Exists() && !data.FeedUrl.IsNull() {
-		data.FeedUrl = types.StringValue(value.String())
-	} else {
-		data.FeedUrl = types.StringNull()
-	}
-	if value := res.Get("checksumURL"); value.Exists() && !data.ChecksumUrl.IsNull() {
-		data.ChecksumUrl = types.StringValue(value.String())
-	} else {
-		data.ChecksumUrl = types.StringNull()
-	}
-	if value := res.Get("updateFrequency"); value.Exists() && !data.UpdateFrequency.IsNull() {
-		data.UpdateFrequency = types.Int64Value(value.Int())
-	} else {
-		data.UpdateFrequency = types.Int64Null()
-	}
+		if value := res.Get("id"); value.Exists() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
+		}
+		if value := res.Get("feedURL"); value.Exists() && !data.FeedUrl.IsNull() {
+			data.FeedUrl = types.StringValue(value.String())
+		} else {
+			data.FeedUrl = types.StringNull()
+		}
+		if value := res.Get("checksumURL"); value.Exists() && !data.ChecksumUrl.IsNull() {
+			data.ChecksumUrl = types.StringValue(value.String())
+		} else {
+			data.ChecksumUrl = types.StringNull()
+		}
+		if value := res.Get("updateFrequency"); value.Exists() && !data.UpdateFrequency.IsNull() {
+			data.UpdateFrequency = types.Int64Value(value.Int())
+		} else {
+			data.UpdateFrequency = types.Int64Null()
+		}
 		(*parent).Items[i] = data
 	}
 }
@@ -257,7 +247,6 @@ func (data *SecurityIntelligenceNetworkFeeds) fromBodyUnknowns(ctx context.Conte
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
 func (data *SecurityIntelligenceNetworkFeeds) Clone() SecurityIntelligenceNetworkFeeds {
 	ret := *data
 	ret.Items = maps.Clone(data.Items)
@@ -268,7 +257,6 @@ func (data *SecurityIntelligenceNetworkFeeds) Clone() SecurityIntelligenceNetwor
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
 
 // Updates done one-by-one require different API body
 func (data SecurityIntelligenceNetworkFeeds) toBodyNonBulk(ctx context.Context, state SecurityIntelligenceNetworkFeeds) string {
@@ -288,30 +276,20 @@ func (data SecurityIntelligenceNetworkFeeds) toBodyNonBulk(ctx context.Context, 
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
-
-
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
-
-
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
-
-
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
-
-
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
-
-
 
 // End of section. //template:end adjustBodyBulk

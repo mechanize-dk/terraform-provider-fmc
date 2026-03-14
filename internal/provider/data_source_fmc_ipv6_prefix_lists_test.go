@@ -43,7 +43,7 @@ func TestAccDataSourceFmcIPv6PrefixLists(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcIPv6PrefixListsConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -79,7 +79,5 @@ func testAccDataSourceFmcIPv6PrefixListsConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

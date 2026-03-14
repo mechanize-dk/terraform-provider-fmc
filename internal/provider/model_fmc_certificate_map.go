@@ -34,38 +34,19 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type CertificateMap struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Type types.String `tfsdk:"type"`
-	Rules []CertificateMapRules `tfsdk:"rules"`
+	Id     types.String          `tfsdk:"id"`
+	Domain types.String          `tfsdk:"domain"`
+	Name   types.String          `tfsdk:"name"`
+	Type   types.String          `tfsdk:"type"`
+	Rules  []CertificateMapRules `tfsdk:"rules"`
 }
-
-
-
-
 
 type CertificateMapRules struct {
-	Field types.String `tfsdk:"field"`
+	Field     types.String `tfsdk:"field"`
 	Component types.String `tfsdk:"component"`
-	Operator types.String `tfsdk:"operator"`
-	Value types.String `tfsdk:"value"`
+	Operator  types.String `tfsdk:"operator"`
+	Value     types.String `tfsdk:"value"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -76,7 +57,7 @@ type CertificateMapRules struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data CertificateMap) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/certificatemaps"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/certificatemaps"
 }
 
 // End of section. //template:end getPath
@@ -88,7 +69,7 @@ func (data CertificateMap) toBody(ctx context.Context, state CertificateMap) str
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "CertificateMap")
@@ -96,16 +77,16 @@ func (data CertificateMap) toBody(ctx context.Context, state CertificateMap) str
 		body, _ = sjson.Set(body, "rules", []any{})
 		for _, item := range data.Rules {
 			itemBody := ""
-			if !item.Field.IsNull()   {
+			if !item.Field.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "field", item.Field.ValueString())
 			}
-			if !item.Component.IsNull()   {
+			if !item.Component.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "component", item.Component.ValueString())
 			}
-			if !item.Operator.IsNull()   {
+			if !item.Operator.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "operator", item.Operator.ValueString())
 			}
-			if !item.Value.IsNull()   {
+			if !item.Value.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "value", item.Value.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "rules.-1", itemBody)
@@ -134,26 +115,26 @@ func (data *CertificateMap) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := CertificateMapRules{}
-	if value := res.Get("field"); value.Exists() {
-		data.Field = types.StringValue(value.String())
-	} else {
-		data.Field = types.StringNull()
-	}
-	if value := res.Get("component"); value.Exists() {
-		data.Component = types.StringValue(value.String())
-	} else {
-		data.Component = types.StringNull()
-	}
-	if value := res.Get("operator"); value.Exists() {
-		data.Operator = types.StringValue(value.String())
-	} else {
-		data.Operator = types.StringNull()
-	}
-	if value := res.Get("value"); value.Exists() {
-		data.Value = types.StringValue(value.String())
-	} else {
-		data.Value = types.StringNull()
-	}
+			if value := res.Get("field"); value.Exists() {
+				data.Field = types.StringValue(value.String())
+			} else {
+				data.Field = types.StringNull()
+			}
+			if value := res.Get("component"); value.Exists() {
+				data.Component = types.StringValue(value.String())
+			} else {
+				data.Component = types.StringNull()
+			}
+			if value := res.Get("operator"); value.Exists() {
+				data.Operator = types.StringValue(value.String())
+			} else {
+				data.Operator = types.StringNull()
+			}
+			if value := res.Get("value"); value.Exists() {
+				data.Value = types.StringValue(value.String())
+			} else {
+				data.Value = types.StringNull()
+			}
 			(*parent).Rules = append((*parent).Rules, data)
 			return true
 		})
@@ -163,7 +144,6 @@ func (data *CertificateMap) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -181,8 +161,8 @@ func (data *CertificateMap) fromBodyPartial(ctx context.Context, res gjson.Resul
 		data.Type = types.StringNull()
 	}
 	for i := 0; i < len(data.Rules); i++ {
-		keys := [...]string{ "field", "component", "operator", "value",  }
-		keyValues := [...]string{ data.Rules[i].Field.ValueString(), data.Rules[i].Component.ValueString(), data.Rules[i].Operator.ValueString(), data.Rules[i].Value.ValueString(),  }
+		keys := [...]string{"field", "component", "operator", "value"}
+		keyValues := [...]string{data.Rules[i].Field.ValueString(), data.Rules[i].Component.ValueString(), data.Rules[i].Operator.ValueString(), data.Rules[i].Value.ValueString()}
 
 		parent := &data
 		data := (*parent).Rules[i]
@@ -216,26 +196,26 @@ func (data *CertificateMap) fromBodyPartial(ctx context.Context, res gjson.Resul
 
 			continue
 		}
-	if value := res.Get("field"); value.Exists() && !data.Field.IsNull() {
-		data.Field = types.StringValue(value.String())
-	} else {
-		data.Field = types.StringNull()
-	}
-	if value := res.Get("component"); value.Exists() && !data.Component.IsNull() {
-		data.Component = types.StringValue(value.String())
-	} else {
-		data.Component = types.StringNull()
-	}
-	if value := res.Get("operator"); value.Exists() && !data.Operator.IsNull() {
-		data.Operator = types.StringValue(value.String())
-	} else {
-		data.Operator = types.StringNull()
-	}
-	if value := res.Get("value"); value.Exists() && !data.Value.IsNull() {
-		data.Value = types.StringValue(value.String())
-	} else {
-		data.Value = types.StringNull()
-	}
+		if value := res.Get("field"); value.Exists() && !data.Field.IsNull() {
+			data.Field = types.StringValue(value.String())
+		} else {
+			data.Field = types.StringNull()
+		}
+		if value := res.Get("component"); value.Exists() && !data.Component.IsNull() {
+			data.Component = types.StringValue(value.String())
+		} else {
+			data.Component = types.StringNull()
+		}
+		if value := res.Get("operator"); value.Exists() && !data.Operator.IsNull() {
+			data.Operator = types.StringValue(value.String())
+		} else {
+			data.Operator = types.StringNull()
+		}
+		if value := res.Get("value"); value.Exists() && !data.Value.IsNull() {
+			data.Value = types.StringValue(value.String())
+		} else {
+			data.Value = types.StringNull()
+		}
 		(*parent).Rules[i] = data
 	}
 }
@@ -260,24 +240,16 @@ func (data *CertificateMap) fromBodyUnknowns(ctx context.Context, res gjson.Resu
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
-
-
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
-
-
 
 // End of section. //template:end clearItemIds

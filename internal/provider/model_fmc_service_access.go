@@ -35,45 +35,23 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type ServiceAccess struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Type types.String `tfsdk:"type"`
-	DefaultAction types.String `tfsdk:"default_action"`
-	Rules []ServiceAccessRules `tfsdk:"rules"`
+	Id            types.String         `tfsdk:"id"`
+	Domain        types.String         `tfsdk:"domain"`
+	Name          types.String         `tfsdk:"name"`
+	Type          types.String         `tfsdk:"type"`
+	DefaultAction types.String         `tfsdk:"default_action"`
+	Rules         []ServiceAccessRules `tfsdk:"rules"`
 }
 
-
-
-
-
-
 type ServiceAccessRules struct {
-	Action types.String `tfsdk:"action"`
+	Action             types.String                           `tfsdk:"action"`
 	GeolocationSources []ServiceAccessRulesGeolocationSources `tfsdk:"geolocation_sources"`
 }
 
-
-
-
-
-
-
-
 type ServiceAccessRulesGeolocationSources struct {
-	Id types.String `tfsdk:"id"`
+	Id   types.String `tfsdk:"id"`
 	Type types.String `tfsdk:"type"`
 }
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -85,7 +63,7 @@ var minFMCVersionServiceAccess = version.Must(version.NewVersion("7.7"))
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data ServiceAccess) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/serviceaccessobjects"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/serviceaccessobjects"
 }
 
 // End of section. //template:end getPath
@@ -97,28 +75,28 @@ func (data ServiceAccess) toBody(ctx context.Context, state ServiceAccess) strin
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
 	body, _ = sjson.Set(body, "type", "ServiceAccessObject")
-	if !data.DefaultAction.IsNull()   {
+	if !data.DefaultAction.IsNull() {
 		body, _ = sjson.Set(body, "defaultAction", data.DefaultAction.ValueString())
 	}
 	if len(data.Rules) > 0 {
 		body, _ = sjson.Set(body, "rules", []any{})
 		for _, item := range data.Rules {
 			itemBody := ""
-			if !item.Action.IsNull()   {
+			if !item.Action.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "action", item.Action.ValueString())
 			}
 			if len(item.GeolocationSources) > 0 {
 				itemBody, _ = sjson.Set(itemBody, "geoSources", []any{})
 				for _, childItem := range item.GeolocationSources {
 					itemChildBody := ""
-					if !childItem.Id.IsNull()  {
+					if !childItem.Id.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "id", childItem.Id.ValueString())
 					}
-					if !childItem.Type.IsNull()  {
+					if !childItem.Type.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "type", childItem.Type.ValueString())
 					}
 					itemBody, _ = sjson.SetRaw(itemBody, "geoSources.-1", itemChildBody)
@@ -155,30 +133,30 @@ func (data *ServiceAccess) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := ServiceAccessRules{}
-	if value := res.Get("action"); value.Exists() {
-		data.Action = types.StringValue(value.String())
-	} else {
-		data.Action = types.StringNull()
-	}
-	if value := res.Get("geoSources"); value.Exists() {
-		data.GeolocationSources = make([]ServiceAccessRulesGeolocationSources, 0)
-		value.ForEach(func(k, res gjson.Result) bool {
-			parent := &data
-			data := ServiceAccessRulesGeolocationSources{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-			(*parent).GeolocationSources = append((*parent).GeolocationSources, data)
-			return true
-		})
-	}
+			if value := res.Get("action"); value.Exists() {
+				data.Action = types.StringValue(value.String())
+			} else {
+				data.Action = types.StringNull()
+			}
+			if value := res.Get("geoSources"); value.Exists() {
+				data.GeolocationSources = make([]ServiceAccessRulesGeolocationSources, 0)
+				value.ForEach(func(k, res gjson.Result) bool {
+					parent := &data
+					data := ServiceAccessRulesGeolocationSources{}
+					if value := res.Get("id"); value.Exists() {
+						data.Id = types.StringValue(value.String())
+					} else {
+						data.Id = types.StringNull()
+					}
+					if value := res.Get("type"); value.Exists() {
+						data.Type = types.StringValue(value.String())
+					} else {
+						data.Type = types.StringNull()
+					}
+					(*parent).GeolocationSources = append((*parent).GeolocationSources, data)
+					return true
+				})
+			}
 			(*parent).Rules = append((*parent).Rules, data)
 			return true
 		})
@@ -188,7 +166,6 @@ func (data *ServiceAccess) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -225,59 +202,59 @@ func (data *ServiceAccess) fromBodyPartial(ctx context.Context, res gjson.Result
 		data := (*parent).Rules[i]
 		parentRes := &res
 		res := parentRes.Get(fmt.Sprintf("rules.%d", i))
-	if value := res.Get("action"); value.Exists() && !data.Action.IsNull() {
-		data.Action = types.StringValue(value.String())
-	} else {
-		data.Action = types.StringNull()
-	}
-	for i := 0; i < len(data.GeolocationSources); i++ {
-		keys := [...]string{ "id", "type",  }
-		keyValues := [...]string{ data.GeolocationSources[i].Id.ValueString(), data.GeolocationSources[i].Type.ValueString(),  }
-
-		parent := &data
-		data := (*parent).GeolocationSources[i]
-		parentRes := &res
-		var res gjson.Result
-
-		parentRes.Get("geoSources").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() != keyValues[ik] {
-						found = false
-						break
-					}
-					found = true
-				}
-				if found {
-					res = v
-					return false
-				}
-				return true
-			},
-		)
-		if !res.Exists() {
-			tflog.Debug(ctx, fmt.Sprintf("removing GeolocationSources[%d] = %+v",
-				i,
-				(*parent).GeolocationSources[i],
-			))
-			(*parent).GeolocationSources = slices.Delete((*parent).GeolocationSources, i, i+1)
-			i--
-
-			continue
+		if value := res.Get("action"); value.Exists() && !data.Action.IsNull() {
+			data.Action = types.StringValue(value.String())
+		} else {
+			data.Action = types.StringNull()
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-		(*parent).GeolocationSources[i] = data
-	}
+		for i := 0; i < len(data.GeolocationSources); i++ {
+			keys := [...]string{"id", "type"}
+			keyValues := [...]string{data.GeolocationSources[i].Id.ValueString(), data.GeolocationSources[i].Type.ValueString()}
+
+			parent := &data
+			data := (*parent).GeolocationSources[i]
+			parentRes := &res
+			var res gjson.Result
+
+			parentRes.Get("geoSources").ForEach(
+				func(_, v gjson.Result) bool {
+					found := false
+					for ik := range keys {
+						if v.Get(keys[ik]).String() != keyValues[ik] {
+							found = false
+							break
+						}
+						found = true
+					}
+					if found {
+						res = v
+						return false
+					}
+					return true
+				},
+			)
+			if !res.Exists() {
+				tflog.Debug(ctx, fmt.Sprintf("removing GeolocationSources[%d] = %+v",
+					i,
+					(*parent).GeolocationSources[i],
+				))
+				(*parent).GeolocationSources = slices.Delete((*parent).GeolocationSources, i, i+1)
+				i--
+
+				continue
+			}
+			if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
+			if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+				data.Type = types.StringValue(value.String())
+			} else {
+				data.Type = types.StringNull()
+			}
+			(*parent).GeolocationSources[i] = data
+		}
 		(*parent).Rules[i] = data
 	}
 }

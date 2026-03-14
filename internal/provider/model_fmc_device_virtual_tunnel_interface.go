@@ -33,114 +33,33 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type DeviceVirtualTunnelInterface struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	DeviceId types.String `tfsdk:"device_id"`
-	Type types.String `tfsdk:"type"`
-	Name types.String `tfsdk:"name"`
-	TunnelType types.String `tfsdk:"tunnel_type"`
-	LogicalName types.String `tfsdk:"logical_name"`
-	Enabled types.Bool `tfsdk:"enabled"`
-	Description types.String `tfsdk:"description"`
-	SecurityZoneId types.String `tfsdk:"security_zone_id"`
-	Priority types.Int64 `tfsdk:"priority"`
-	TunnelId types.Int64 `tfsdk:"tunnel_id"`
-	TunnelSourceInterfaceId types.String `tfsdk:"tunnel_source_interface_id"`
-	TunnelSourceInterfaceName types.String `tfsdk:"tunnel_source_interface_name"`
+	Id                               types.String `tfsdk:"id"`
+	Domain                           types.String `tfsdk:"domain"`
+	DeviceId                         types.String `tfsdk:"device_id"`
+	Type                             types.String `tfsdk:"type"`
+	Name                             types.String `tfsdk:"name"`
+	TunnelType                       types.String `tfsdk:"tunnel_type"`
+	LogicalName                      types.String `tfsdk:"logical_name"`
+	Enabled                          types.Bool   `tfsdk:"enabled"`
+	Description                      types.String `tfsdk:"description"`
+	SecurityZoneId                   types.String `tfsdk:"security_zone_id"`
+	Priority                         types.Int64  `tfsdk:"priority"`
+	TunnelId                         types.Int64  `tfsdk:"tunnel_id"`
+	TunnelSourceInterfaceId          types.String `tfsdk:"tunnel_source_interface_id"`
+	TunnelSourceInterfaceName        types.String `tfsdk:"tunnel_source_interface_name"`
 	TunnelSourceInterfaceIpv6Address types.String `tfsdk:"tunnel_source_interface_ipv6_address"`
-	TunnelMode types.String `tfsdk:"tunnel_mode"`
-	Ipv4StaticAddress types.String `tfsdk:"ipv4_static_address"`
-	Ipv4StaticNetmask types.String `tfsdk:"ipv4_static_netmask"`
-	Ipv6Address types.String `tfsdk:"ipv6_address"`
-	Ipv6Prefix types.String `tfsdk:"ipv6_prefix"`
-	BorrowIpInterfaceId types.String `tfsdk:"borrow_ip_interface_id"`
-	BorrowIpInterfaceName types.String `tfsdk:"borrow_ip_interface_name"`
-	IpBasedMonitoring types.Bool `tfsdk:"ip_based_monitoring"`
-	IpBasedMonitoringType types.String `tfsdk:"ip_based_monitoring_type"`
-	IpBasedMonitoringPeerIp types.String `tfsdk:"ip_based_monitoring_peer_ip"`
-	HttpBasedApplicationMonitoring types.Bool `tfsdk:"http_based_application_monitoring"`
+	TunnelMode                       types.String `tfsdk:"tunnel_mode"`
+	Ipv4StaticAddress                types.String `tfsdk:"ipv4_static_address"`
+	Ipv4StaticNetmask                types.String `tfsdk:"ipv4_static_netmask"`
+	Ipv6Address                      types.String `tfsdk:"ipv6_address"`
+	Ipv6Prefix                       types.String `tfsdk:"ipv6_prefix"`
+	BorrowIpInterfaceId              types.String `tfsdk:"borrow_ip_interface_id"`
+	BorrowIpInterfaceName            types.String `tfsdk:"borrow_ip_interface_name"`
+	IpBasedMonitoring                types.Bool   `tfsdk:"ip_based_monitoring"`
+	IpBasedMonitoringType            types.String `tfsdk:"ip_based_monitoring_type"`
+	IpBasedMonitoringPeerIp          types.String `tfsdk:"ip_based_monitoring_peer_ip"`
+	HttpBasedApplicationMonitoring   types.Bool   `tfsdk:"http_based_application_monitoring"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -151,7 +70,7 @@ type DeviceVirtualTunnelInterface struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data DeviceVirtualTunnelInterface) getPath() string {
-		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/devices/devicerecords/%v/virtualtunnelinterfaces", url.QueryEscape(data.DeviceId.ValueString()))
+	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/devices/devicerecords/%v/virtualtunnelinterfaces", url.QueryEscape(data.DeviceId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -163,71 +82,71 @@ func (data DeviceVirtualTunnelInterface) toBody(ctx context.Context, state Devic
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   && !data.Name.IsUnknown() {
+	if !data.Name.IsNull() && !data.Name.IsUnknown() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.TunnelType.IsNull()   {
+	if !data.TunnelType.IsNull() {
 		body, _ = sjson.Set(body, "tunnelType", data.TunnelType.ValueString())
 	}
-	if !data.LogicalName.IsNull()   {
+	if !data.LogicalName.IsNull() {
 		body, _ = sjson.Set(body, "ifname", data.LogicalName.ValueString())
 	}
-	if !data.Enabled.IsNull()   {
+	if !data.Enabled.IsNull() {
 		body, _ = sjson.Set(body, "enabled", data.Enabled.ValueBool())
 	}
-	if !data.Description.IsNull()   {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.SecurityZoneId.IsNull()   {
+	if !data.SecurityZoneId.IsNull() {
 		body, _ = sjson.Set(body, "securityZone.id", data.SecurityZoneId.ValueString())
 	}
 	body, _ = sjson.Set(body, "securityZone.type", "SecurityZone")
-	if !data.Priority.IsNull()   {
+	if !data.Priority.IsNull() {
 		body, _ = sjson.Set(body, "priority", data.Priority.ValueInt64())
 	}
-	if !data.TunnelId.IsNull()   {
+	if !data.TunnelId.IsNull() {
 		body, _ = sjson.Set(body, "tunnelId", data.TunnelId.ValueInt64())
 	}
-	if !data.TunnelSourceInterfaceId.IsNull()   {
+	if !data.TunnelSourceInterfaceId.IsNull() {
 		body, _ = sjson.Set(body, "tunnelSource.id", data.TunnelSourceInterfaceId.ValueString())
 	}
-	if !data.TunnelSourceInterfaceName.IsNull()   {
+	if !data.TunnelSourceInterfaceName.IsNull() {
 		body, _ = sjson.Set(body, "tunnelSource.name", data.TunnelSourceInterfaceName.ValueString())
 	}
-	if !data.TunnelSourceInterfaceIpv6Address.IsNull()   {
+	if !data.TunnelSourceInterfaceIpv6Address.IsNull() {
 		body, _ = sjson.Set(body, "tunnelSrcIPv6IntfAddr", data.TunnelSourceInterfaceIpv6Address.ValueString())
 	}
-	if !data.TunnelMode.IsNull()   {
+	if !data.TunnelMode.IsNull() {
 		body, _ = sjson.Set(body, "ipsecMode", data.TunnelMode.ValueString())
 	}
-	if !data.Ipv4StaticAddress.IsNull()   {
+	if !data.Ipv4StaticAddress.IsNull() {
 		body, _ = sjson.Set(body, "ipv4.static.address", data.Ipv4StaticAddress.ValueString())
 	}
-	if !data.Ipv4StaticNetmask.IsNull()   {
+	if !data.Ipv4StaticNetmask.IsNull() {
 		body, _ = sjson.Set(body, "ipv4.static.netmask", data.Ipv4StaticNetmask.ValueString())
 	}
-	if !data.Ipv6Address.IsNull()   {
+	if !data.Ipv6Address.IsNull() {
 		body, _ = sjson.Set(body, "ipv6.addresses.0.address", data.Ipv6Address.ValueString())
 	}
-	if !data.Ipv6Prefix.IsNull()   {
+	if !data.Ipv6Prefix.IsNull() {
 		body, _ = sjson.Set(body, "ipv6.addresses.0.prefix", data.Ipv6Prefix.ValueString())
 	}
-	if !data.BorrowIpInterfaceId.IsNull()   {
+	if !data.BorrowIpInterfaceId.IsNull() {
 		body, _ = sjson.Set(body, "borrowIPfrom.id", data.BorrowIpInterfaceId.ValueString())
 	}
-	if !data.BorrowIpInterfaceName.IsNull()   {
+	if !data.BorrowIpInterfaceName.IsNull() {
 		body, _ = sjson.Set(body, "borrowIPfrom.name", data.BorrowIpInterfaceName.ValueString())
 	}
-	if !data.IpBasedMonitoring.IsNull()   {
+	if !data.IpBasedMonitoring.IsNull() {
 		body, _ = sjson.Set(body, "pathMonitoring.enable", data.IpBasedMonitoring.ValueBool())
 	}
-	if !data.IpBasedMonitoringType.IsNull()   {
+	if !data.IpBasedMonitoringType.IsNull() {
 		body, _ = sjson.Set(body, "pathMonitoring.type", data.IpBasedMonitoringType.ValueString())
 	}
-	if !data.IpBasedMonitoringPeerIp.IsNull()   {
+	if !data.IpBasedMonitoringPeerIp.IsNull() {
 		body, _ = sjson.Set(body, "pathMonitoring.monitoredIp", data.IpBasedMonitoringPeerIp.ValueString())
 	}
-	if !data.HttpBasedApplicationMonitoring.IsNull()   {
+	if !data.HttpBasedApplicationMonitoring.IsNull() {
 		body, _ = sjson.Set(body, "applicationMonitoring.enable", data.HttpBasedApplicationMonitoring.ValueBool())
 	}
 	return body
@@ -358,7 +277,6 @@ func (data *DeviceVirtualTunnelInterface) fromBody(ctx context.Context, res gjso
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might

@@ -42,8 +42,8 @@ func TestAccDataSourceFmcNetworkGroups(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcNetworkGroupsPrerequisitesConfig+testAccDataSourceFmcNetworkGroupsConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcNetworkGroupsPrerequisitesConfig + testAccDataSourceFmcNetworkGroupsConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -59,6 +59,7 @@ resource "fmc_range" "test" {
   ip_range  = "2005::10-2005::12"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -89,7 +90,5 @@ func testAccDataSourceFmcNetworkGroupsConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

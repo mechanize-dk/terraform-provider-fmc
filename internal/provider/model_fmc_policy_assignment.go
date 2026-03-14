@@ -34,46 +34,21 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type PolicyAssignment struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Type types.String `tfsdk:"type"`
-	PolicyName types.String `tfsdk:"policy_name"`
-	PolicyId types.String `tfsdk:"policy_id"`
-	PolicyType types.String `tfsdk:"policy_type"`
-	AfterDestroyPolicyId types.String `tfsdk:"after_destroy_policy_id"`
-	Targets []PolicyAssignmentTargets `tfsdk:"targets"`
+	Id                   types.String              `tfsdk:"id"`
+	Domain               types.String              `tfsdk:"domain"`
+	Type                 types.String              `tfsdk:"type"`
+	PolicyName           types.String              `tfsdk:"policy_name"`
+	PolicyId             types.String              `tfsdk:"policy_id"`
+	PolicyType           types.String              `tfsdk:"policy_type"`
+	AfterDestroyPolicyId types.String              `tfsdk:"after_destroy_policy_id"`
+	Targets              []PolicyAssignmentTargets `tfsdk:"targets"`
 }
 
-
-
-
-
-
-
 type PolicyAssignmentTargets struct {
-	Id types.String `tfsdk:"id"`
+	Id   types.String `tfsdk:"id"`
 	Type types.String `tfsdk:"type"`
 	Name types.String `tfsdk:"name"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -84,7 +59,7 @@ type PolicyAssignmentTargets struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data PolicyAssignment) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/assignment/policyassignments"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/assignment/policyassignments"
 }
 
 // End of section. //template:end getPath
@@ -96,26 +71,26 @@ func (data PolicyAssignment) toBody(ctx context.Context, state PolicyAssignment)
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.PolicyId.IsNull()   {
+	if !data.PolicyId.IsNull() {
 		body, _ = sjson.Set(body, "policy.id", data.PolicyId.ValueString())
 	}
-	if !data.PolicyType.IsNull()   {
+	if !data.PolicyType.IsNull() {
 		body, _ = sjson.Set(body, "policy.type", data.PolicyType.ValueString())
 	}
-	if !data.AfterDestroyPolicyId.IsNull()   {
+	if !data.AfterDestroyPolicyId.IsNull() {
 		body, _ = sjson.Set(body, "dummy_after_destroy_policy_id", data.AfterDestroyPolicyId.ValueString())
 	}
 	if len(data.Targets) > 0 {
 		body, _ = sjson.Set(body, "targets", []any{})
 		for _, item := range data.Targets {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Type.IsNull()   {
+			if !item.Type.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "type", item.Type.ValueString())
 			}
-			if !item.Name.IsNull()   {
+			if !item.Name.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "name", item.Name.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "targets.-1", itemBody)
@@ -154,21 +129,21 @@ func (data *PolicyAssignment) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := PolicyAssignmentTargets{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("name"); value.Exists() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
+			if value := res.Get("id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
+			if value := res.Get("type"); value.Exists() {
+				data.Type = types.StringValue(value.String())
+			} else {
+				data.Type = types.StringNull()
+			}
+			if value := res.Get("name"); value.Exists() {
+				data.Name = types.StringValue(value.String())
+			} else {
+				data.Name = types.StringNull()
+			}
 			(*parent).Targets = append((*parent).Targets, data)
 			return true
 		})
@@ -178,7 +153,6 @@ func (data *PolicyAssignment) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -206,8 +180,8 @@ func (data *PolicyAssignment) fromBodyPartial(ctx context.Context, res gjson.Res
 		data.PolicyType = types.StringNull()
 	}
 	for i := 0; i < len(data.Targets); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.Targets[i].Id.ValueString(),  }
+		keys := [...]string{"id"}
+		keyValues := [...]string{data.Targets[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).Targets[i]
@@ -241,21 +215,21 @@ func (data *PolicyAssignment) fromBodyPartial(ctx context.Context, res gjson.Res
 
 			continue
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
+		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
+		}
+		if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
+			data.Name = types.StringValue(value.String())
+		} else {
+			data.Name = types.StringNull()
+		}
 		(*parent).Targets[i] = data
 	}
 }
@@ -287,12 +261,8 @@ func (data *PolicyAssignment) fromBodyUnknowns(ctx context.Context, res gjson.Re
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk

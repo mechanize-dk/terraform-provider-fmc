@@ -79,7 +79,7 @@ func (r *VPNRAIPSecCryptoMapResource) Schema(ctx context.Context, req resource.S
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -89,7 +89,6 @@ func (r *VPNRAIPSecCryptoMapResource) Schema(ctx context.Context, req resource.S
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"type": schema.StringAttribute{
@@ -97,7 +96,6 @@ func (r *VPNRAIPSecCryptoMapResource) Schema(ctx context.Context, req resource.S
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					
 				},
 			},
 			"interface_id": schema.StringAttribute{
@@ -136,10 +134,10 @@ func (r *VPNRAIPSecCryptoMapResource) Schema(ctx context.Context, req resource.S
 				Optional:            true,
 			},
 			"perfect_forward_secrecy_modulus_group": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Modulus group for IPSEC Perfect Forward Secrecy (PFS).").AddStringEnumDescription("1", "2", "5", "14", "15", "16", "19", "20", "21", "24", "31", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Modulus group for IPSEC Perfect Forward Secrecy (PFS).").AddStringEnumDescription("1", "2", "5", "14", "15", "16", "19", "20", "21", "24", "31").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("1", "2", "5", "14", "15", "16", "19", "20", "21", "24", "31", ),
+					stringvalidator.OneOf("1", "2", "5", "14", "15", "16", "19", "20", "21", "24", "31"),
 				},
 			},
 			"lifetime_duration": schema.Int64Attribute{
@@ -149,7 +147,7 @@ func (r *VPNRAIPSecCryptoMapResource) Schema(ctx context.Context, req resource.S
 				Validators: []validator.Int64{
 					int64validator.Between(120, 2147483647),
 				},
-				Default:             int64default.StaticInt64(28800),
+				Default: int64default.StaticInt64(28800),
 			},
 			"lifetime_size": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Volume of traffic (in kilobytes) that can pass between IPsec peers using a given security association before it expires.").AddIntegerRangeDescription(10, 2147483647).String,
@@ -163,10 +161,10 @@ func (r *VPNRAIPSecCryptoMapResource) Schema(ctx context.Context, req resource.S
 				Optional:            true,
 			},
 			"do_not_fragment_policy": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Policy for handling Do Not Fragment (DNF) packets.").AddStringEnumDescription("SET", "COPY", "CLEAR", "NONE", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Policy for handling Do Not Fragment (DNF) packets.").AddStringEnumDescription("SET", "COPY", "CLEAR", "NONE").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("SET", "COPY", "CLEAR", "NONE", ),
+					stringvalidator.OneOf("SET", "COPY", "CLEAR", "NONE"),
 				},
 			},
 			"tfc": schema.BoolAttribute{
@@ -434,22 +432,23 @@ func (r *VPNRAIPSecCryptoMapResource) Delete(ctx context.Context, req resource.D
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *VPNRAIPSecCryptoMapResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-		// Parse import ID
-		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<vpn_ra_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
-		match := inputPattern.FindStringSubmatch(req.ID)
-		if match == nil {
-			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<vpn_ra_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-			resp.Diagnostics.AddError("Import error", errMsg)
-			return
-		}
+	// Parse import ID
+	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<vpn_ra_id>[^\s,]+),(?P<id>[^\s,]+?)$`)
+	match := inputPattern.FindStringSubmatch(req.ID)
+	if match == nil {
+		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<vpn_ra_id>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+		resp.Diagnostics.AddError("Import error", errMsg)
+		return
+	}
 
-		// Set domain, if provided
-		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-		}
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vpn_ra_id"), match[inputPattern.SubexpIndex("vpn_ra_id")])...)
+	// Set domain, if provided
+	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("vpn_ra_id"), match[inputPattern.SubexpIndex("vpn_ra_id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
+
 // End of section. //template:end import

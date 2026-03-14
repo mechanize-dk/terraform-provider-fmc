@@ -43,7 +43,7 @@ func TestAccDataSourceFmcCertificateMaps(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcCertificateMapsConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -79,7 +79,5 @@ func testAccDataSourceFmcCertificateMapsConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

@@ -57,8 +57,8 @@ func TestAccDataSourceFmcVPNS2SAdvancedSettings(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcVPNS2SAdvancedSettingsPrerequisitesConfig+testAccDataSourceFmcVPNS2SAdvancedSettingsConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcVPNS2SAdvancedSettingsPrerequisitesConfig + testAccDataSourceFmcVPNS2SAdvancedSettingsConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -77,6 +77,7 @@ resource "fmc_vpn_s2s" "test" {
   ikev2            = true
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -115,7 +116,5 @@ func testAccDataSourceFmcVPNS2SAdvancedSettingsConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

@@ -76,7 +76,7 @@ func (r *BFDTemplateResource) Schema(ctx context.Context, req resource.SchemaReq
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -90,32 +90,30 @@ func (r *BFDTemplateResource) Schema(ctx context.Context, req resource.SchemaReq
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
-					
 				},
 			},
 			"hop_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Hop type.").AddStringEnumDescription("SINGLE_HOP", "MULTI_HOP", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Hop type.").AddStringEnumDescription("SINGLE_HOP", "MULTI_HOP").String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("SINGLE_HOP", "MULTI_HOP", ),
+					stringvalidator.OneOf("SINGLE_HOP", "MULTI_HOP"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
-					
 				},
 			},
 			"echo": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("BFD echo status.").AddStringEnumDescription("ENABLED", "DISABLED", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("BFD echo status.").AddStringEnumDescription("ENABLED", "DISABLED").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("ENABLED", "DISABLED", ),
+					stringvalidator.OneOf("ENABLED", "DISABLED"),
 				},
 			},
 			"interval_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Interval unit of measurement of time.").AddStringEnumDescription("MILLISECONDS", "MICROSECONDS", "NONE", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Interval unit of measurement of time.").AddStringEnumDescription("MILLISECONDS", "MICROSECONDS", "NONE").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("MILLISECONDS", "MICROSECONDS", "NONE", ),
+					stringvalidator.OneOf("MILLISECONDS", "MICROSECONDS", "NONE"),
 				},
 			},
 			"multiplier": schema.Int64Attribute{
@@ -140,10 +138,10 @@ func (r *BFDTemplateResource) Schema(ctx context.Context, req resource.SchemaReq
 				},
 			},
 			"authentication_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Authentication type.").AddStringEnumDescription("MD5", "METICULOUSMD5", "METICULOUSSHA1", "SHA1", "NONE", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Authentication type.").AddStringEnumDescription("MD5", "METICULOUSMD5", "METICULOUSSHA1", "SHA1", "NONE").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("MD5", "METICULOUSMD5", "METICULOUSSHA1", "SHA1", "NONE", ),
+					stringvalidator.OneOf("MD5", "METICULOUSMD5", "METICULOUSSHA1", "SHA1", "NONE"),
 				},
 			},
 			"authentication_password": schema.StringAttribute{
@@ -155,10 +153,10 @@ func (r *BFDTemplateResource) Schema(ctx context.Context, req resource.SchemaReq
 				},
 			},
 			"authentication_password_encryption": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Determines if `authentication_password` is encrypted").AddStringEnumDescription("UN_ENCRYPTED", "ENCRYPTED", "NONE", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Determines if `authentication_password` is encrypted").AddStringEnumDescription("UN_ENCRYPTED", "ENCRYPTED", "NONE").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("UN_ENCRYPTED", "ENCRYPTED", "NONE", ),
+					stringvalidator.OneOf("UN_ENCRYPTED", "ENCRYPTED", "NONE"),
 				},
 			},
 			"authentication_key_id": schema.Int64Attribute{
@@ -224,7 +222,7 @@ func (r *BFDTemplateResource) Create(ctx context.Context, req resource.CreateReq
 					return
 				}
 				for _, v := range listRes.Get("items").Array() {
-					if plan.Name.ValueString()== v.Get("name").String(){
+					if plan.Name.ValueString() == v.Get("name").String() {
 						plan.Id = types.StringValue(v.Get("id").String())
 						tflog.Debug(ctx, fmt.Sprintf("%s: Found existing object with name '%v'", plan.Id.ValueString(), plan.Name.ValueString()))
 						break
@@ -288,14 +286,13 @@ func (r *BFDTemplateResource) Read(ctx context.Context, req resource.ReadRequest
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	
 	urlPath := state.getPath() + "/" + url.QueryEscape(state.Id.ValueString())
 	res, err := r.client.Get(urlPath, reqMods...)
-	
+
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
-	} else  if err != nil {
+	} else if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -348,7 +345,7 @@ func (r *BFDTemplateResource) Update(ctx context.Context, req resource.UpdateReq
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
+	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -380,7 +377,7 @@ func (r *BFDTemplateResource) Delete(ctx context.Context, req resource.DeleteReq
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()), reqMods...)
+	res, err := r.client.Delete(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString()), reqMods...)
 	if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
@@ -395,21 +392,22 @@ func (r *BFDTemplateResource) Delete(ctx context.Context, req resource.DeleteReq
 
 // Section below is generated&owned by "gen/generator.go". //template:begin import
 func (r *BFDTemplateResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-		// Parse import ID
-		var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
-		match := inputPattern.FindStringSubmatch(req.ID)
-		if match == nil {
-			errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
-			resp.Diagnostics.AddError("Import error", errMsg)
-			return
-		}
+	// Parse import ID
+	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?(?P<id>[^\s,]+?)$`)
+	match := inputPattern.FindStringSubmatch(req.ID)
+	if match == nil {
+		errMsg := "Failed to parse import parameters.\nPlease provide import string in the following format: <domain>,<id>\n<domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.\n" + fmt.Sprintf("Got: %q", req.ID)
+		resp.Diagnostics.AddError("Import error", errMsg)
+		return
+	}
 
-		// Set domain, if provided
-		if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
-		}
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
+	// Set domain, if provided
+	if tmpDomain := match[inputPattern.SubexpIndex("domain")]; tmpDomain != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("domain"), tmpDomain)...)
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), match[inputPattern.SubexpIndex("id")])...)
 
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
+
 // End of section. //template:end import

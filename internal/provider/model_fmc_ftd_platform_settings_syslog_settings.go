@@ -34,51 +34,18 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type FTDPlatformSettingsSyslogSettings struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	FtdPlatformSettingsId types.String `tfsdk:"ftd_platform_settings_id"`
-	Type types.String `tfsdk:"type"`
-	Facility types.String `tfsdk:"facility"`
-	TimestampFormat types.String `tfsdk:"timestamp_format"`
-	DeviceIdSource types.String `tfsdk:"device_id_source"`
-	DeviceIdUserDefined types.String `tfsdk:"device_id_user_defined"`
-	DeviceIdInterfaceId types.String `tfsdk:"device_id_interface_id"`
-	AllSyslogMessagesEnabled types.Bool `tfsdk:"all_syslog_messages_enabled"`
+	Id                            types.String `tfsdk:"id"`
+	Domain                        types.String `tfsdk:"domain"`
+	FtdPlatformSettingsId         types.String `tfsdk:"ftd_platform_settings_id"`
+	Type                          types.String `tfsdk:"type"`
+	Facility                      types.String `tfsdk:"facility"`
+	TimestampFormat               types.String `tfsdk:"timestamp_format"`
+	DeviceIdSource                types.String `tfsdk:"device_id_source"`
+	DeviceIdUserDefined           types.String `tfsdk:"device_id_user_defined"`
+	DeviceIdInterfaceId           types.String `tfsdk:"device_id_interface_id"`
+	AllSyslogMessagesEnabled      types.Bool   `tfsdk:"all_syslog_messages_enabled"`
 	AllSyslogMessagesLoggingLevel types.String `tfsdk:"all_syslog_messages_logging_level"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -90,7 +57,7 @@ var minFMCVersionFTDPlatformSettingsSyslogSettings = version.Must(version.NewVer
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data FTDPlatformSettingsSyslogSettings) getPath() string {
-		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/syslog/syslogsettings", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
+	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/syslog/syslogsettings", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -102,25 +69,25 @@ func (data FTDPlatformSettingsSyslogSettings) toBody(ctx context.Context, state 
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Facility.IsNull()   {
+	if !data.Facility.IsNull() {
 		body, _ = sjson.Set(body, "facility", data.Facility.ValueString())
 	}
-	if !data.TimestampFormat.IsNull()   {
+	if !data.TimestampFormat.IsNull() {
 		body, _ = sjson.Set(body, "timeStampFormat", data.TimestampFormat.ValueString())
 	}
-	if !data.DeviceIdSource.IsNull()   {
+	if !data.DeviceIdSource.IsNull() {
 		body, _ = sjson.Set(body, "syslogDeviceIdConfig.deviceIdConfigType", data.DeviceIdSource.ValueString())
 	}
-	if !data.DeviceIdUserDefined.IsNull()   {
+	if !data.DeviceIdUserDefined.IsNull() {
 		body, _ = sjson.Set(body, "syslogDeviceIdConfig.userDefinedId", data.DeviceIdUserDefined.ValueString())
 	}
-	if !data.DeviceIdInterfaceId.IsNull()   {
+	if !data.DeviceIdInterfaceId.IsNull() {
 		body, _ = sjson.Set(body, "syslogDeviceIdConfig.interface.id", data.DeviceIdInterfaceId.ValueString())
 	}
-	if !data.AllSyslogMessagesEnabled.IsNull()   {
+	if !data.AllSyslogMessagesEnabled.IsNull() {
 		body, _ = sjson.Set(body, "syslogEnableAll.enable", data.AllSyslogMessagesEnabled.ValueBool())
 	}
-	if !data.AllSyslogMessagesLoggingLevel.IsNull()   {
+	if !data.AllSyslogMessagesLoggingLevel.IsNull() {
 		body, _ = sjson.Set(body, "syslogEnableAll.loggingLevel", data.AllSyslogMessagesLoggingLevel.ValueString())
 	}
 	return body
@@ -176,7 +143,6 @@ func (data *FTDPlatformSettingsSyslogSettings) fromBody(ctx context.Context, res
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -244,7 +210,6 @@ func (data *FTDPlatformSettingsSyslogSettings) fromBodyUnknowns(ctx context.Cont
 // End of section. //template:end fromBodyUnknowns
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
-
 
 // toBodyPutDelete is used to create the body for PUT requests to clear the resource state
 func (data FTDPlatformSettingsSyslogSettings) toBodyPutDelete(ctx context.Context) string {

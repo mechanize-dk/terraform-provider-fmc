@@ -32,35 +32,14 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type SecurityIntelligenceNetworkFeed struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Type types.String `tfsdk:"type"`
-	FeedUrl types.String `tfsdk:"feed_url"`
-	ChecksumUrl types.String `tfsdk:"checksum_url"`
-	UpdateFrequency types.Int64 `tfsdk:"update_frequency"`
+	Id              types.String `tfsdk:"id"`
+	Domain          types.String `tfsdk:"domain"`
+	Name            types.String `tfsdk:"name"`
+	Type            types.String `tfsdk:"type"`
+	FeedUrl         types.String `tfsdk:"feed_url"`
+	ChecksumUrl     types.String `tfsdk:"checksum_url"`
+	UpdateFrequency types.Int64  `tfsdk:"update_frequency"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -72,7 +51,7 @@ var minFMCVersionCreateSecurityIntelligenceNetworkFeed = version.Must(version.Ne
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data SecurityIntelligenceNetworkFeed) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/sinetworkfeeds"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/sinetworkfeeds"
 }
 
 // End of section. //template:end getPath
@@ -84,16 +63,16 @@ func (data SecurityIntelligenceNetworkFeed) toBody(ctx context.Context, state Se
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.FeedUrl.IsNull()   {
+	if !data.FeedUrl.IsNull() {
 		body, _ = sjson.Set(body, "feedURL", data.FeedUrl.ValueString())
 	}
-	if !data.ChecksumUrl.IsNull()   {
+	if !data.ChecksumUrl.IsNull() {
 		body, _ = sjson.Set(body, "checksumURL", data.ChecksumUrl.ValueString())
 	}
-	if !data.UpdateFrequency.IsNull()   {
+	if !data.UpdateFrequency.IsNull() {
 		body, _ = sjson.Set(body, "updateFrequency", data.UpdateFrequency.ValueInt64())
 	}
 	return body
@@ -134,7 +113,6 @@ func (data *SecurityIntelligenceNetworkFeed) fromBody(ctx context.Context, res g
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -188,42 +166,28 @@ func (data *SecurityIntelligenceNetworkFeed) fromBodyUnknowns(ctx context.Contex
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
-
-
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
-
-
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
-
-
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
-
-
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
-
-
 
 // End of section. //template:end adjustBodyBulk

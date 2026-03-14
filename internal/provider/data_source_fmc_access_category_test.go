@@ -38,12 +38,12 @@ func TestAccDataSourceFmcAccessCategory(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcAccessCategoryPrerequisitesConfig+testAccDataSourceFmcAccessCategoryConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcAccessCategoryPrerequisitesConfig + testAccDataSourceFmcAccessCategoryConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcAccessCategoryPrerequisitesConfig+testAccNamedDataSourceFmcAccessCategoryConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcAccessCategoryPrerequisitesConfig + testAccNamedDataSourceFmcAccessCategoryConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -61,6 +61,7 @@ resource "fmc_access_control_policy" "test" {
   manage_categories = false
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

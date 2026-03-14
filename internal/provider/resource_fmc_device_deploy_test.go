@@ -59,6 +59,7 @@ func TestAccFmcDeviceDeploy(t *testing.T) {
 const testAccFmcDeviceDeployPrerequisitesConfig = `
 variable "device_id" { default = null } // tests will set $TF_VAR_device_id
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -70,6 +71,7 @@ func testAccFmcDeviceDeployConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

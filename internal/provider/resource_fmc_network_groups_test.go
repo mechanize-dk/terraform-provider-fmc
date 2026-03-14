@@ -40,19 +40,19 @@ func TestAccFmcNetworkGroups(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccFmcNetworkGroupsPrerequisitesConfig+testAccFmcNetworkGroupsConfig_minimum(),
+			Config: testAccFmcNetworkGroupsPrerequisitesConfig + testAccFmcNetworkGroupsConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcNetworkGroupsPrerequisitesConfig+testAccFmcNetworkGroupsConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcNetworkGroupsPrerequisitesConfig + testAccFmcNetworkGroupsConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -66,6 +66,7 @@ resource "fmc_range" "test" {
   ip_range  = "2005::10-2005::12"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -75,6 +76,7 @@ func testAccFmcNetworkGroupsConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

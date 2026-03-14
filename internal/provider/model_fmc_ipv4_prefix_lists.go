@@ -35,33 +35,23 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type IPv4PrefixLists struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Items map[string]IPv4PrefixListsItems `tfsdk:"items"`
+	Id     types.String                    `tfsdk:"id"`
+	Domain types.String                    `tfsdk:"domain"`
+	Items  map[string]IPv4PrefixListsItems `tfsdk:"items"`
 }
 
-
 type IPv4PrefixListsItems struct {
-	Id types.String `tfsdk:"id"`
-	Type types.String `tfsdk:"type"`
+	Id      types.String                  `tfsdk:"id"`
+	Type    types.String                  `tfsdk:"type"`
 	Entries []IPv4PrefixListsItemsEntries `tfsdk:"entries"`
 }
 
-
-
-
 type IPv4PrefixListsItemsEntries struct {
-	Action types.String `tfsdk:"action"`
-	Prefix types.String `tfsdk:"prefix"`
-	MinPrefixLength types.Int64 `tfsdk:"min_prefix_length"`
-	MaxPrefixLength types.Int64 `tfsdk:"max_prefix_length"`
+	Action          types.String `tfsdk:"action"`
+	Prefix          types.String `tfsdk:"prefix"`
+	MinPrefixLength types.Int64  `tfsdk:"min_prefix_length"`
+	MaxPrefixLength types.Int64  `tfsdk:"max_prefix_length"`
 }
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -74,7 +64,7 @@ var minFMCVersionBulkDeleteIPv4PrefixLists = version.Must(version.NewVersion("99
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data IPv4PrefixLists) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/ipv4prefixlists"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/ipv4prefixlists"
 }
 
 // End of section. //template:end getPath
@@ -90,23 +80,23 @@ func (data IPv4PrefixLists) toBody(ctx context.Context, state IPv4PrefixLists) s
 		body, _ = sjson.Set(body, "items", []any{})
 		for key, item := range data.Items {
 			itemBody, _ := sjson.Set("{}", "name", key)
-			if !item.Id.IsNull() && !item.Id.IsUnknown()  {
+			if !item.Id.IsNull() && !item.Id.IsUnknown() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			if len(item.Entries) > 0 {
 				itemBody, _ = sjson.Set(itemBody, "entries", []any{})
 				for _, childItem := range item.Entries {
 					itemChildBody := ""
-					if !childItem.Action.IsNull()  {
+					if !childItem.Action.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "action", childItem.Action.ValueString())
 					}
-					if !childItem.Prefix.IsNull()  {
+					if !childItem.Prefix.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "ipAddress", childItem.Prefix.ValueString())
 					}
-					if !childItem.MinPrefixLength.IsNull()  {
+					if !childItem.MinPrefixLength.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "minPrefixLenth", childItem.MinPrefixLength.ValueInt64())
 					}
-					if !childItem.MaxPrefixLength.IsNull()  {
+					if !childItem.MaxPrefixLength.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "maxPrefixLength", childItem.MaxPrefixLength.ValueInt64())
 					}
 					itemBody, _ = sjson.SetRaw(itemBody, "entries.-1", itemChildBody)
@@ -135,49 +125,50 @@ func (data *IPv4PrefixLists) fromBody(ctx context.Context, res gjson.Result) {
 		parent := &data
 		data := (*parent).Items[k]
 		res, found := itemsByName[k]
-		if !found {tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
+		if !found {
+			tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
 			delete((*parent).Items, k)
 			continue
 		}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	if value := res.Get("entries"); value.Exists() {
-		data.Entries = make([]IPv4PrefixListsItemsEntries, 0)
-		value.ForEach(func(k, res gjson.Result) bool {
-			parent := &data
-			data := IPv4PrefixListsItemsEntries{}
-	if value := res.Get("action"); value.Exists() {
-		data.Action = types.StringValue(value.String())
-	} else {
-		data.Action = types.StringNull()
-	}
-	if value := res.Get("ipAddress"); value.Exists() {
-		data.Prefix = types.StringValue(value.String())
-	} else {
-		data.Prefix = types.StringNull()
-	}
-	if value := res.Get("minPrefixLenth"); value.Exists() {
-		data.MinPrefixLength = types.Int64Value(value.Int())
-	} else {
-		data.MinPrefixLength = types.Int64Null()
-	}
-	if value := res.Get("maxPrefixLength"); value.Exists() {
-		data.MaxPrefixLength = types.Int64Value(value.Int())
-	} else {
-		data.MaxPrefixLength = types.Int64Null()
-	}
-			(*parent).Entries = append((*parent).Entries, data)
-			return true
-		})
-	}
+		if value := res.Get("id"); value.Exists() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("type"); value.Exists() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
+		}
+		if value := res.Get("entries"); value.Exists() {
+			data.Entries = make([]IPv4PrefixListsItemsEntries, 0)
+			value.ForEach(func(k, res gjson.Result) bool {
+				parent := &data
+				data := IPv4PrefixListsItemsEntries{}
+				if value := res.Get("action"); value.Exists() {
+					data.Action = types.StringValue(value.String())
+				} else {
+					data.Action = types.StringNull()
+				}
+				if value := res.Get("ipAddress"); value.Exists() {
+					data.Prefix = types.StringValue(value.String())
+				} else {
+					data.Prefix = types.StringNull()
+				}
+				if value := res.Get("minPrefixLenth"); value.Exists() {
+					data.MinPrefixLength = types.Int64Value(value.Int())
+				} else {
+					data.MinPrefixLength = types.Int64Null()
+				}
+				if value := res.Get("maxPrefixLength"); value.Exists() {
+					data.MaxPrefixLength = types.Int64Value(value.Int())
+				} else {
+					data.MaxPrefixLength = types.Int64Null()
+				}
+				(*parent).Entries = append((*parent).Entries, data)
+				return true
+			})
+		}
 		(*parent).Items[k] = data
 	}
 }
@@ -185,7 +176,6 @@ func (data *IPv4PrefixLists) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -207,53 +197,53 @@ func (data *IPv4PrefixLists) fromBodyPartial(ctx context.Context, res gjson.Resu
 			continue
 		}
 		res, _ := itemsById[data.Id.ValueString()]
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
-	{
-		l := len(res.Get("entries").Array())
-		tflog.Debug(ctx, fmt.Sprintf("entries array resizing from %d to %d", len(data.Entries), l))
-		for i := len(data.Entries); i < l; i++ {
-			data.Entries = append(data.Entries, IPv4PrefixListsItemsEntries{})
+		if value := res.Get("id"); value.Exists() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
 		}
-		if len(data.Entries) > l {
-			data.Entries = data.Entries[:l]
+		if value := res.Get("type"); value.Exists() && !data.Type.IsNull() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
 		}
-	}
-	for i := range data.Entries {
-		parent := &data
-		data := (*parent).Entries[i]
-		parentRes := &res
-		res := parentRes.Get(fmt.Sprintf("entries.%d", i))
-	if value := res.Get("action"); value.Exists() && !data.Action.IsNull() {
-		data.Action = types.StringValue(value.String())
-	} else {
-		data.Action = types.StringNull()
-	}
-	if value := res.Get("ipAddress"); value.Exists() && !data.Prefix.IsNull() {
-		data.Prefix = types.StringValue(value.String())
-	} else {
-		data.Prefix = types.StringNull()
-	}
-	if value := res.Get("minPrefixLenth"); value.Exists() && !data.MinPrefixLength.IsNull() {
-		data.MinPrefixLength = types.Int64Value(value.Int())
-	} else {
-		data.MinPrefixLength = types.Int64Null()
-	}
-	if value := res.Get("maxPrefixLength"); value.Exists() && !data.MaxPrefixLength.IsNull() {
-		data.MaxPrefixLength = types.Int64Value(value.Int())
-	} else {
-		data.MaxPrefixLength = types.Int64Null()
-	}
-		(*parent).Entries[i] = data
-	}
+		{
+			l := len(res.Get("entries").Array())
+			tflog.Debug(ctx, fmt.Sprintf("entries array resizing from %d to %d", len(data.Entries), l))
+			for i := len(data.Entries); i < l; i++ {
+				data.Entries = append(data.Entries, IPv4PrefixListsItemsEntries{})
+			}
+			if len(data.Entries) > l {
+				data.Entries = data.Entries[:l]
+			}
+		}
+		for i := range data.Entries {
+			parent := &data
+			data := (*parent).Entries[i]
+			parentRes := &res
+			res := parentRes.Get(fmt.Sprintf("entries.%d", i))
+			if value := res.Get("action"); value.Exists() && !data.Action.IsNull() {
+				data.Action = types.StringValue(value.String())
+			} else {
+				data.Action = types.StringNull()
+			}
+			if value := res.Get("ipAddress"); value.Exists() && !data.Prefix.IsNull() {
+				data.Prefix = types.StringValue(value.String())
+			} else {
+				data.Prefix = types.StringNull()
+			}
+			if value := res.Get("minPrefixLenth"); value.Exists() && !data.MinPrefixLength.IsNull() {
+				data.MinPrefixLength = types.Int64Value(value.Int())
+			} else {
+				data.MinPrefixLength = types.Int64Null()
+			}
+			if value := res.Get("maxPrefixLength"); value.Exists() && !data.MaxPrefixLength.IsNull() {
+				data.MaxPrefixLength = types.Int64Value(value.Int())
+			} else {
+				data.MaxPrefixLength = types.Int64Null()
+			}
+			(*parent).Entries[i] = data
+		}
 		(*parent).Items[i] = data
 	}
 }
@@ -307,7 +297,6 @@ func (data *IPv4PrefixLists) fromBodyUnknowns(ctx context.Context, res gjson.Res
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
 func (data *IPv4PrefixLists) Clone() IPv4PrefixLists {
 	ret := *data
 	ret.Items = maps.Clone(data.Items)
@@ -318,7 +307,6 @@ func (data *IPv4PrefixLists) Clone() IPv4PrefixLists {
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
 
 // Updates done one-by-one require different API body
 func (data IPv4PrefixLists) toBodyNonBulk(ctx context.Context, state IPv4PrefixLists) string {
@@ -338,19 +326,13 @@ func (data IPv4PrefixLists) toBodyNonBulk(ctx context.Context, state IPv4PrefixL
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
-
-
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
 
-
-
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
-
-
 
 // End of section. //template:end toBodyPutDelete
 

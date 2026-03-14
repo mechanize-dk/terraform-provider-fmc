@@ -35,79 +35,32 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type VPNS2SIKESettings struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	VpnS2sId types.String `tfsdk:"vpn_s2s_id"`
-	Type types.String `tfsdk:"type"`
-	Ikev1AuthenticationType types.String `tfsdk:"ikev1_authentication_type"`
-	Ikev1AutomaticPreSharedKeyLength types.Int64 `tfsdk:"ikev1_automatic_pre_shared_key_length"`
-	Ikev1ManualPreSharedKey types.String `tfsdk:"ikev1_manual_pre_shared_key"`
-	Ikev1CertificateId types.String `tfsdk:"ikev1_certificate_id"`
-	Ikev1Policies []VPNS2SIKESettingsIkev1Policies `tfsdk:"ikev1_policies"`
-	Ikev2AuthenticationType types.String `tfsdk:"ikev2_authentication_type"`
-	Ikev2AutomaticPreSharedKeyLength types.Int64 `tfsdk:"ikev2_automatic_pre_shared_key_length"`
-	Ikev2ManualPreSharedKey types.String `tfsdk:"ikev2_manual_pre_shared_key"`
-	Ikev2EnforceHexBasedPreSharedKey types.Bool `tfsdk:"ikev2_enforce_hex_based_pre_shared_key"`
-	Ikev2CertificateId types.String `tfsdk:"ikev2_certificate_id"`
-	Ikev2Policies []VPNS2SIKESettingsIkev2Policies `tfsdk:"ikev2_policies"`
+	Id                               types.String                     `tfsdk:"id"`
+	Domain                           types.String                     `tfsdk:"domain"`
+	VpnS2sId                         types.String                     `tfsdk:"vpn_s2s_id"`
+	Type                             types.String                     `tfsdk:"type"`
+	Ikev1AuthenticationType          types.String                     `tfsdk:"ikev1_authentication_type"`
+	Ikev1AutomaticPreSharedKeyLength types.Int64                      `tfsdk:"ikev1_automatic_pre_shared_key_length"`
+	Ikev1ManualPreSharedKey          types.String                     `tfsdk:"ikev1_manual_pre_shared_key"`
+	Ikev1CertificateId               types.String                     `tfsdk:"ikev1_certificate_id"`
+	Ikev1Policies                    []VPNS2SIKESettingsIkev1Policies `tfsdk:"ikev1_policies"`
+	Ikev2AuthenticationType          types.String                     `tfsdk:"ikev2_authentication_type"`
+	Ikev2AutomaticPreSharedKeyLength types.Int64                      `tfsdk:"ikev2_automatic_pre_shared_key_length"`
+	Ikev2ManualPreSharedKey          types.String                     `tfsdk:"ikev2_manual_pre_shared_key"`
+	Ikev2EnforceHexBasedPreSharedKey types.Bool                       `tfsdk:"ikev2_enforce_hex_based_pre_shared_key"`
+	Ikev2CertificateId               types.String                     `tfsdk:"ikev2_certificate_id"`
+	Ikev2Policies                    []VPNS2SIKESettingsIkev2Policies `tfsdk:"ikev2_policies"`
 }
-
-
-
-
-
-
-
 
 type VPNS2SIKESettingsIkev1Policies struct {
-	Id types.String `tfsdk:"id"`
+	Id   types.String `tfsdk:"id"`
 	Name types.String `tfsdk:"name"`
 }
-
-
-
-
-
 
 type VPNS2SIKESettingsIkev2Policies struct {
-	Id types.String `tfsdk:"id"`
+	Id   types.String `tfsdk:"id"`
 	Name types.String `tfsdk:"name"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -118,7 +71,7 @@ type VPNS2SIKESettingsIkev2Policies struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data VPNS2SIKESettings) getPath() string {
-		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftds2svpns/%v/ikesettings", url.QueryEscape(data.VpnS2sId.ValueString()))
+	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftds2svpns/%v/ikesettings", url.QueryEscape(data.VpnS2sId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -130,54 +83,54 @@ func (data VPNS2SIKESettings) toBody(ctx context.Context, state VPNS2SIKESetting
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Ikev1AuthenticationType.IsNull()   {
+	if !data.Ikev1AuthenticationType.IsNull() {
 		body, _ = sjson.Set(body, "ikeV1Settings.authenticationType", data.Ikev1AuthenticationType.ValueString())
 	}
-	if !data.Ikev1AutomaticPreSharedKeyLength.IsNull()   {
+	if !data.Ikev1AutomaticPreSharedKeyLength.IsNull() {
 		body, _ = sjson.Set(body, "ikeV1Settings.automaticPreSharedKeyLength", data.Ikev1AutomaticPreSharedKeyLength.ValueInt64())
 	}
-	if !data.Ikev1ManualPreSharedKey.IsNull()   {
+	if !data.Ikev1ManualPreSharedKey.IsNull() {
 		body, _ = sjson.Set(body, "ikeV1Settings.manualPreSharedKey", data.Ikev1ManualPreSharedKey.ValueString())
 	}
-	if !data.Ikev1CertificateId.IsNull()   {
+	if !data.Ikev1CertificateId.IsNull() {
 		body, _ = sjson.Set(body, "ikeV1Settings.certificateAuth.id", data.Ikev1CertificateId.ValueString())
 	}
 	if len(data.Ikev1Policies) > 0 {
 		body, _ = sjson.Set(body, "ikeV1Settings.policies", []any{})
 		for _, item := range data.Ikev1Policies {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Name.IsNull()   {
+			if !item.Name.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "name", item.Name.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "ikeV1Settings.policies.-1", itemBody)
 		}
 	}
-	if !data.Ikev2AuthenticationType.IsNull()   {
+	if !data.Ikev2AuthenticationType.IsNull() {
 		body, _ = sjson.Set(body, "ikeV2Settings.authenticationType", data.Ikev2AuthenticationType.ValueString())
 	}
-	if !data.Ikev2AutomaticPreSharedKeyLength.IsNull()   {
+	if !data.Ikev2AutomaticPreSharedKeyLength.IsNull() {
 		body, _ = sjson.Set(body, "ikeV2Settings.automaticPreSharedKeyLength", data.Ikev2AutomaticPreSharedKeyLength.ValueInt64())
 	}
-	if !data.Ikev2ManualPreSharedKey.IsNull()   {
+	if !data.Ikev2ManualPreSharedKey.IsNull() {
 		body, _ = sjson.Set(body, "ikeV2Settings.manualPreSharedKey", data.Ikev2ManualPreSharedKey.ValueString())
 	}
-	if !data.Ikev2EnforceHexBasedPreSharedKey.IsNull()   {
+	if !data.Ikev2EnforceHexBasedPreSharedKey.IsNull() {
 		body, _ = sjson.Set(body, "ikeV2Settings.enforceHexBasedPreSharedKeyOnly", data.Ikev2EnforceHexBasedPreSharedKey.ValueBool())
 	}
-	if !data.Ikev2CertificateId.IsNull()   {
+	if !data.Ikev2CertificateId.IsNull() {
 		body, _ = sjson.Set(body, "ikeV2Settings.certificateAuth.id", data.Ikev2CertificateId.ValueString())
 	}
 	if len(data.Ikev2Policies) > 0 {
 		body, _ = sjson.Set(body, "ikeV2Settings.policies", []any{})
 		for _, item := range data.Ikev2Policies {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.Name.IsNull()   {
+			if !item.Name.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "name", item.Name.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "ikeV2Settings.policies.-1", itemBody)
@@ -216,16 +169,16 @@ func (data *VPNS2SIKESettings) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VPNS2SIKESettingsIkev1Policies{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("name"); value.Exists() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
+			if value := res.Get("id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
+			if value := res.Get("name"); value.Exists() {
+				data.Name = types.StringValue(value.String())
+			} else {
+				data.Name = types.StringNull()
+			}
 			(*parent).Ikev1Policies = append((*parent).Ikev1Policies, data)
 			return true
 		})
@@ -255,16 +208,16 @@ func (data *VPNS2SIKESettings) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := VPNS2SIKESettingsIkev2Policies{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("name"); value.Exists() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
+			if value := res.Get("id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
+			if value := res.Get("name"); value.Exists() {
+				data.Name = types.StringValue(value.String())
+			} else {
+				data.Name = types.StringNull()
+			}
 			(*parent).Ikev2Policies = append((*parent).Ikev2Policies, data)
 			return true
 		})
@@ -274,7 +227,6 @@ func (data *VPNS2SIKESettings) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -302,8 +254,8 @@ func (data *VPNS2SIKESettings) fromBodyPartial(ctx context.Context, res gjson.Re
 		data.Ikev1CertificateId = types.StringNull()
 	}
 	for i := 0; i < len(data.Ikev1Policies); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.Ikev1Policies[i].Id.ValueString(),  }
+		keys := [...]string{"id"}
+		keyValues := [...]string{data.Ikev1Policies[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).Ikev1Policies[i]
@@ -337,16 +289,16 @@ func (data *VPNS2SIKESettings) fromBodyPartial(ctx context.Context, res gjson.Re
 
 			continue
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
+		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
+			data.Name = types.StringValue(value.String())
+		} else {
+			data.Name = types.StringNull()
+		}
 		(*parent).Ikev1Policies[i] = data
 	}
 	if value := res.Get("ikeV2Settings.authenticationType"); value.Exists() && !data.Ikev2AuthenticationType.IsNull() {
@@ -370,8 +322,8 @@ func (data *VPNS2SIKESettings) fromBodyPartial(ctx context.Context, res gjson.Re
 		data.Ikev2CertificateId = types.StringNull()
 	}
 	for i := 0; i < len(data.Ikev2Policies); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.Ikev2Policies[i].Id.ValueString(),  }
+		keys := [...]string{"id"}
+		keyValues := [...]string{data.Ikev2Policies[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).Ikev2Policies[i]
@@ -405,16 +357,16 @@ func (data *VPNS2SIKESettings) fromBodyPartial(ctx context.Context, res gjson.Re
 
 			continue
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
-		data.Name = types.StringValue(value.String())
-	} else {
-		data.Name = types.StringNull()
-	}
+		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("name"); value.Exists() && !data.Name.IsNull() {
+			data.Name = types.StringValue(value.String())
+		} else {
+			data.Name = types.StringNull()
+		}
 		(*parent).Ikev2Policies[i] = data
 	}
 }
@@ -439,25 +391,17 @@ func (data *VPNS2SIKESettings) fromBodyUnknowns(ctx context.Context, res gjson.R
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
-
-
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
-
-
 
 // End of section. //template:end clearItemIds
 

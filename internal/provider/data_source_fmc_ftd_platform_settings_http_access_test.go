@@ -39,8 +39,8 @@ func TestAccDataSourceFmcFTDPlatformSettingsHTTPAccess(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcFTDPlatformSettingsHTTPAccessPrerequisitesConfig+testAccDataSourceFmcFTDPlatformSettingsHTTPAccessConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcFTDPlatformSettingsHTTPAccessPrerequisitesConfig + testAccDataSourceFmcFTDPlatformSettingsHTTPAccessConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -65,6 +65,7 @@ resource "fmc_security_zone" "test" {
   interface_type = "ROUTED"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig
@@ -92,7 +93,5 @@ func testAccDataSourceFmcFTDPlatformSettingsHTTPAccessConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

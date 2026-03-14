@@ -34,70 +34,27 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type DeviceCluster struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Type types.String `tfsdk:"type"`
-	ClusterKey types.String `tfsdk:"cluster_key"`
-	ControlNodeVniPrefix types.String `tfsdk:"control_node_vni_prefix"`
-	ControlNodeCclPrefix types.String `tfsdk:"control_node_ccl_prefix"`
-	ControlNodeInterfaceId types.String `tfsdk:"control_node_interface_id"`
-	ControlNodeInterfaceName types.String `tfsdk:"control_node_interface_name"`
-	ControlNodeInterfaceType types.String `tfsdk:"control_node_interface_type"`
-	ControlNodeDeviceId types.String `tfsdk:"control_node_device_id"`
-	ControlNodeCclIpv4Address types.String `tfsdk:"control_node_ccl_ipv4_address"`
-	ControlNodePriority types.Int64 `tfsdk:"control_node_priority"`
-	DataNodes []DeviceClusterDataNodes `tfsdk:"data_nodes"`
+	Id                        types.String             `tfsdk:"id"`
+	Domain                    types.String             `tfsdk:"domain"`
+	Name                      types.String             `tfsdk:"name"`
+	Type                      types.String             `tfsdk:"type"`
+	ClusterKey                types.String             `tfsdk:"cluster_key"`
+	ControlNodeVniPrefix      types.String             `tfsdk:"control_node_vni_prefix"`
+	ControlNodeCclPrefix      types.String             `tfsdk:"control_node_ccl_prefix"`
+	ControlNodeInterfaceId    types.String             `tfsdk:"control_node_interface_id"`
+	ControlNodeInterfaceName  types.String             `tfsdk:"control_node_interface_name"`
+	ControlNodeInterfaceType  types.String             `tfsdk:"control_node_interface_type"`
+	ControlNodeDeviceId       types.String             `tfsdk:"control_node_device_id"`
+	ControlNodeCclIpv4Address types.String             `tfsdk:"control_node_ccl_ipv4_address"`
+	ControlNodePriority       types.Int64              `tfsdk:"control_node_priority"`
+	DataNodes                 []DeviceClusterDataNodes `tfsdk:"data_nodes"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 type DeviceClusterDataNodes struct {
-	DeviceId types.String `tfsdk:"device_id"`
+	DeviceId       types.String `tfsdk:"device_id"`
 	CclIpv4Address types.String `tfsdk:"ccl_ipv4_address"`
-	Priority types.Int64 `tfsdk:"priority"`
+	Priority       types.Int64  `tfsdk:"priority"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -108,7 +65,7 @@ type DeviceClusterDataNodes struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data DeviceCluster) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/deviceclusters/ftddevicecluster"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/deviceclusters/ftddevicecluster"
 }
 
 // End of section. //template:end getPath
@@ -120,47 +77,47 @@ func (data DeviceCluster) toBody(ctx context.Context, state DeviceCluster) strin
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.ClusterKey.IsNull()   {
+	if !data.ClusterKey.IsNull() {
 		body, _ = sjson.Set(body, "commonBootstrap.clusterKey", data.ClusterKey.ValueString())
 	}
-	if !data.ControlNodeVniPrefix.IsNull()   {
+	if !data.ControlNodeVniPrefix.IsNull() {
 		body, _ = sjson.Set(body, "commonBootstrap.vniNetwork", data.ControlNodeVniPrefix.ValueString())
 	}
-	if !data.ControlNodeCclPrefix.IsNull()   {
+	if !data.ControlNodeCclPrefix.IsNull() {
 		body, _ = sjson.Set(body, "commonBootstrap.cclNetwork", data.ControlNodeCclPrefix.ValueString())
 	}
-	if !data.ControlNodeInterfaceId.IsNull()   {
+	if !data.ControlNodeInterfaceId.IsNull() {
 		body, _ = sjson.Set(body, "commonBootstrap.cclInterface.id", data.ControlNodeInterfaceId.ValueString())
 	}
-	if !data.ControlNodeInterfaceName.IsNull()   {
+	if !data.ControlNodeInterfaceName.IsNull() {
 		body, _ = sjson.Set(body, "commonBootstrap.cclInterface.name", data.ControlNodeInterfaceName.ValueString())
 	}
-	if !data.ControlNodeInterfaceType.IsNull()   {
+	if !data.ControlNodeInterfaceType.IsNull() {
 		body, _ = sjson.Set(body, "commonBootstrap.cclInterface.type", data.ControlNodeInterfaceType.ValueString())
 	}
-	if !data.ControlNodeDeviceId.IsNull()   {
+	if !data.ControlNodeDeviceId.IsNull() {
 		body, _ = sjson.Set(body, "controlDevice.deviceDetails.id", data.ControlNodeDeviceId.ValueString())
 	}
-	if !data.ControlNodeCclIpv4Address.IsNull()   {
+	if !data.ControlNodeCclIpv4Address.IsNull() {
 		body, _ = sjson.Set(body, "controlDevice.clusterNodeBootstrap.cclIp", data.ControlNodeCclIpv4Address.ValueString())
 	}
-	if !data.ControlNodePriority.IsNull()   {
+	if !data.ControlNodePriority.IsNull() {
 		body, _ = sjson.Set(body, "controlDevice.clusterNodeBootstrap.priority", data.ControlNodePriority.ValueInt64())
 	}
 	if len(data.DataNodes) > 0 {
 		body, _ = sjson.Set(body, "dataDevices", []any{})
 		for _, item := range data.DataNodes {
 			itemBody := ""
-			if !item.DeviceId.IsNull()   {
+			if !item.DeviceId.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "deviceDetails.id", item.DeviceId.ValueString())
 			}
-			if !item.CclIpv4Address.IsNull()   {
+			if !item.CclIpv4Address.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "clusterNodeBootstrap.cclIp", item.CclIpv4Address.ValueString())
 			}
-			if !item.Priority.IsNull()   {
+			if !item.Priority.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "clusterNodeBootstrap.priority", item.Priority.ValueInt64())
 			}
 			body, _ = sjson.SetRaw(body, "dataDevices.-1", itemBody)
@@ -229,21 +186,21 @@ func (data *DeviceCluster) fromBody(ctx context.Context, res gjson.Result) {
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := DeviceClusterDataNodes{}
-	if value := res.Get("deviceDetails.id"); value.Exists() {
-		data.DeviceId = types.StringValue(value.String())
-	} else {
-		data.DeviceId = types.StringNull()
-	}
-	if value := res.Get("clusterNodeBootstrap.cclIp"); value.Exists() {
-		data.CclIpv4Address = types.StringValue(value.String())
-	} else {
-		data.CclIpv4Address = types.StringNull()
-	}
-	if value := res.Get("clusterNodeBootstrap.priority"); value.Exists() {
-		data.Priority = types.Int64Value(value.Int())
-	} else {
-		data.Priority = types.Int64Null()
-	}
+			if value := res.Get("deviceDetails.id"); value.Exists() {
+				data.DeviceId = types.StringValue(value.String())
+			} else {
+				data.DeviceId = types.StringNull()
+			}
+			if value := res.Get("clusterNodeBootstrap.cclIp"); value.Exists() {
+				data.CclIpv4Address = types.StringValue(value.String())
+			} else {
+				data.CclIpv4Address = types.StringNull()
+			}
+			if value := res.Get("clusterNodeBootstrap.priority"); value.Exists() {
+				data.Priority = types.Int64Value(value.Int())
+			} else {
+				data.Priority = types.Int64Null()
+			}
 			(*parent).DataNodes = append((*parent).DataNodes, data)
 			return true
 		})
@@ -253,7 +210,6 @@ func (data *DeviceCluster) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -311,8 +267,8 @@ func (data *DeviceCluster) fromBodyPartial(ctx context.Context, res gjson.Result
 		data.ControlNodePriority = types.Int64Null()
 	}
 	for i := 0; i < len(data.DataNodes); i++ {
-		keys := [...]string{ "deviceDetails.id",  }
-		keyValues := [...]string{ data.DataNodes[i].DeviceId.ValueString(),  }
+		keys := [...]string{"deviceDetails.id"}
+		keyValues := [...]string{data.DataNodes[i].DeviceId.ValueString()}
 
 		parent := &data
 		data := (*parent).DataNodes[i]
@@ -346,21 +302,21 @@ func (data *DeviceCluster) fromBodyPartial(ctx context.Context, res gjson.Result
 
 			continue
 		}
-	if value := res.Get("deviceDetails.id"); value.Exists() && !data.DeviceId.IsNull() {
-		data.DeviceId = types.StringValue(value.String())
-	} else {
-		data.DeviceId = types.StringNull()
-	}
-	if value := res.Get("clusterNodeBootstrap.cclIp"); value.Exists() && !data.CclIpv4Address.IsNull() {
-		data.CclIpv4Address = types.StringValue(value.String())
-	} else {
-		data.CclIpv4Address = types.StringNull()
-	}
-	if value := res.Get("clusterNodeBootstrap.priority"); value.Exists() && !data.Priority.IsNull() {
-		data.Priority = types.Int64Value(value.Int())
-	} else {
-		data.Priority = types.Int64Null()
-	}
+		if value := res.Get("deviceDetails.id"); value.Exists() && !data.DeviceId.IsNull() {
+			data.DeviceId = types.StringValue(value.String())
+		} else {
+			data.DeviceId = types.StringNull()
+		}
+		if value := res.Get("clusterNodeBootstrap.cclIp"); value.Exists() && !data.CclIpv4Address.IsNull() {
+			data.CclIpv4Address = types.StringValue(value.String())
+		} else {
+			data.CclIpv4Address = types.StringNull()
+		}
+		if value := res.Get("clusterNodeBootstrap.priority"); value.Exists() && !data.Priority.IsNull() {
+			data.Priority = types.Int64Value(value.Int())
+		} else {
+			data.Priority = types.Int64Null()
+		}
 		(*parent).DataNodes[i] = data
 	}
 }
@@ -385,13 +341,9 @@ func (data *DeviceCluster) fromBodyUnknowns(ctx context.Context, res gjson.Resul
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk
 

@@ -63,7 +63,7 @@ func (d *SecurityIntelligenceNetworkFeedsDataSource) Schema(ctx context.Context,
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 			},
 			"items": schema.MapNestedAttribute{
 				MarkdownDescription: "Map of Security Intelligence Network Feeds. The key of the map is the name of the individual Security Intelligence Network Feed.",
@@ -127,7 +127,7 @@ func (d *SecurityIntelligenceNetworkFeedsDataSource) Read(ctx context.Context, r
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
-	
+
 	// Get all objects from FMC
 	urlPath := config.getPath() + "?expanded=true"
 	res, err := d.client.Get(urlPath, reqMods...)

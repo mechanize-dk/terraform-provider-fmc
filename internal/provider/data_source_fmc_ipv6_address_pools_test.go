@@ -43,7 +43,7 @@ func TestAccDataSourceFmcIPv6AddressPools(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcIPv6AddressPoolsConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -77,7 +77,5 @@ func testAccDataSourceFmcIPv6AddressPoolsConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

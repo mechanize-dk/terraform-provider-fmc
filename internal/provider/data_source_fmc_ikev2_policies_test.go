@@ -42,7 +42,7 @@ func TestAccDataSourceFmcIKEv2Policies(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcIKEv2PoliciesConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -79,7 +79,5 @@ func testAccDataSourceFmcIKEv2PoliciesConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

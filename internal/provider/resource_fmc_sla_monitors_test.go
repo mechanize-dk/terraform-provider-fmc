@@ -46,19 +46,19 @@ func TestAccFmcSLAMonitors(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccFmcSLAMonitorsPrerequisitesConfig+testAccFmcSLAMonitorsConfig_minimum(),
+			Config: testAccFmcSLAMonitorsPrerequisitesConfig + testAccFmcSLAMonitorsConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcSLAMonitorsPrerequisitesConfig+testAccFmcSLAMonitorsConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcSLAMonitorsPrerequisitesConfig + testAccFmcSLAMonitorsConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -72,6 +72,7 @@ resource "fmc_interface_group" "test" {
   interface_type = "ROUTED"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal
@@ -88,6 +89,7 @@ func testAccFmcSLAMonitorsConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll

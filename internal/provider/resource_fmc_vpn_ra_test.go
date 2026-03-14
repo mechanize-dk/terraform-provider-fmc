@@ -49,19 +49,19 @@ func TestAccFmcVPNRA(t *testing.T) {
 
 	var steps []resource.TestStep
 	steps = append(steps, resource.TestStep{
-		Config: testAccFmcVPNRAPrerequisitesConfig+testAccFmcVPNRAConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccFmcVPNRAPrerequisitesConfig + testAccFmcVPNRAConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName:  "fmc_vpn_ra.test",
-		ImportState:   true,
+		ResourceName: "fmc_vpn_ra.test",
+		ImportState:  true,
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -377,6 +377,7 @@ locals {
     EOT
   }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigMinimal

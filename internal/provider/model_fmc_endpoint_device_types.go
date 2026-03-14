@@ -32,25 +32,15 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type EndpointDeviceTypes struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Items map[string]EndpointDeviceTypesItems `tfsdk:"items"`
+	Id     types.String                        `tfsdk:"id"`
+	Domain types.String                        `tfsdk:"domain"`
+	Items  map[string]EndpointDeviceTypesItems `tfsdk:"items"`
 }
-
 
 type EndpointDeviceTypesItems struct {
-	Id types.String `tfsdk:"id"`
+	Id   types.String `tfsdk:"id"`
 	Type types.String `tfsdk:"type"`
 }
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -61,7 +51,7 @@ type EndpointDeviceTypesItems struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data EndpointDeviceTypes) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/endpointdevicetypes"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/endpointdevicetypes"
 }
 
 // End of section. //template:end getPath
@@ -85,20 +75,21 @@ func (data *EndpointDeviceTypes) fromBody(ctx context.Context, res gjson.Result)
 		parent := &data
 		data := (*parent).Items[k]
 		res, found := itemsByName[k]
-		if !found {tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
+		if !found {
+			tflog.Debug(ctx, fmt.Sprintf("subresource not found, removing: name=%v", k))
 			delete((*parent).Items, k)
 			continue
 		}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
-	if value := res.Get("type"); value.Exists() {
-		data.Type = types.StringValue(value.String())
-	} else {
-		data.Type = types.StringNull()
-	}
+		if value := res.Get("id"); value.Exists() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
+		if value := res.Get("type"); value.Exists() {
+			data.Type = types.StringValue(value.String())
+		} else {
+			data.Type = types.StringNull()
+		}
 		(*parent).Items[k] = data
 	}
 }
@@ -106,7 +97,6 @@ func (data *EndpointDeviceTypes) fromBody(ctx context.Context, res gjson.Result)
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // End of section. //template:end fromBodyPartial
 
@@ -116,12 +106,8 @@ func (data *EndpointDeviceTypes) fromBody(ctx context.Context, res gjson.Result)
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk

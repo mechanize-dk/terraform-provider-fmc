@@ -66,12 +66,12 @@ func TestAccDataSourceFmcAccessControlPolicy(t *testing.T) {
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceFmcAccessControlPolicyPrerequisitesConfig+testAccDataSourceFmcAccessControlPolicyConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcAccessControlPolicyPrerequisitesConfig + testAccDataSourceFmcAccessControlPolicyConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: testAccDataSourceFmcAccessControlPolicyPrerequisitesConfig+testAccNamedDataSourceFmcAccessControlPolicyConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceFmcAccessControlPolicyPrerequisitesConfig + testAccNamedDataSourceFmcAccessControlPolicyConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -109,6 +109,7 @@ resource "fmc_prefilter_policy" "test" {
   default_action                    = "BLOCK_TUNNELS"
 }
 `
+
 // End of section. //template:end testPrerequisites
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSourceConfig

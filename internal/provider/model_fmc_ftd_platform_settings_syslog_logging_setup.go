@@ -36,88 +36,30 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type FTDPlatformSettingsSyslogLoggingSetup struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	FtdPlatformSettingsId types.String `tfsdk:"ftd_platform_settings_id"`
-	Type types.String `tfsdk:"type"`
-	LoggingEnabled types.Bool `tfsdk:"logging_enabled"`
-	LoggingOnFailoverStandbyUnitEnabled types.Bool `tfsdk:"logging_on_failover_standby_unit_enabled"`
-	EmblemFormat types.Bool `tfsdk:"emblem_format"`
-	SendDebugMessagesAsSyslog types.Bool `tfsdk:"send_debug_messages_as_syslog"`
-	InternalBufferMemorySize types.Int64 `tfsdk:"internal_buffer_memory_size"`
-	FmcLoggingMode types.String `tfsdk:"fmc_logging_mode"`
-	FmcLoggingLevel types.String `tfsdk:"fmc_logging_level"`
-	FtpServerHostId types.String `tfsdk:"ftp_server_host_id"`
-	FtpServerUsername types.String `tfsdk:"ftp_server_username"`
-	FtpServerPassword types.String `tfsdk:"ftp_server_password"`
-	FtpServerPath types.String `tfsdk:"ftp_server_path"`
-	FtpServerInterfaceGroups []FTDPlatformSettingsSyslogLoggingSetupFtpServerInterfaceGroups `tfsdk:"ftp_server_interface_groups"`
-	FlashEnabled types.Bool `tfsdk:"flash_enabled"`
-	FlashMaximumSpace types.Int64 `tfsdk:"flash_maximum_space"`
-	FlashMinimumFreeSpace types.Int64 `tfsdk:"flash_minimum_free_space"`
+	Id                                  types.String                                                    `tfsdk:"id"`
+	Domain                              types.String                                                    `tfsdk:"domain"`
+	FtdPlatformSettingsId               types.String                                                    `tfsdk:"ftd_platform_settings_id"`
+	Type                                types.String                                                    `tfsdk:"type"`
+	LoggingEnabled                      types.Bool                                                      `tfsdk:"logging_enabled"`
+	LoggingOnFailoverStandbyUnitEnabled types.Bool                                                      `tfsdk:"logging_on_failover_standby_unit_enabled"`
+	EmblemFormat                        types.Bool                                                      `tfsdk:"emblem_format"`
+	SendDebugMessagesAsSyslog           types.Bool                                                      `tfsdk:"send_debug_messages_as_syslog"`
+	InternalBufferMemorySize            types.Int64                                                     `tfsdk:"internal_buffer_memory_size"`
+	FmcLoggingMode                      types.String                                                    `tfsdk:"fmc_logging_mode"`
+	FmcLoggingLevel                     types.String                                                    `tfsdk:"fmc_logging_level"`
+	FtpServerHostId                     types.String                                                    `tfsdk:"ftp_server_host_id"`
+	FtpServerUsername                   types.String                                                    `tfsdk:"ftp_server_username"`
+	FtpServerPassword                   types.String                                                    `tfsdk:"ftp_server_password"`
+	FtpServerPath                       types.String                                                    `tfsdk:"ftp_server_path"`
+	FtpServerInterfaceGroups            []FTDPlatformSettingsSyslogLoggingSetupFtpServerInterfaceGroups `tfsdk:"ftp_server_interface_groups"`
+	FlashEnabled                        types.Bool                                                      `tfsdk:"flash_enabled"`
+	FlashMaximumSpace                   types.Int64                                                     `tfsdk:"flash_maximum_space"`
+	FlashMinimumFreeSpace               types.Int64                                                     `tfsdk:"flash_minimum_free_space"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 type FTDPlatformSettingsSyslogLoggingSetupFtpServerInterfaceGroups struct {
 	Id types.String `tfsdk:"id"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -129,7 +71,7 @@ var minFMCVersionFTDPlatformSettingsSyslogLoggingSetup = version.Must(version.Ne
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data FTDPlatformSettingsSyslogLoggingSetup) getPath() string {
-		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/syslog/basicloggingsetups", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
+	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdplatformsettingspolicies/%v/syslog/basicloggingsetups", url.QueryEscape(data.FtdPlatformSettingsId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -141,56 +83,56 @@ func (data FTDPlatformSettingsSyslogLoggingSetup) toBody(ctx context.Context, st
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.LoggingEnabled.IsNull()   {
+	if !data.LoggingEnabled.IsNull() {
 		body, _ = sjson.Set(body, "enableLogging", data.LoggingEnabled.ValueBool())
 	}
-	if !data.LoggingOnFailoverStandbyUnitEnabled.IsNull()   {
+	if !data.LoggingOnFailoverStandbyUnitEnabled.IsNull() {
 		body, _ = sjson.Set(body, "enableLoggingFailover", data.LoggingOnFailoverStandbyUnitEnabled.ValueBool())
 	}
-	if !data.EmblemFormat.IsNull()   {
+	if !data.EmblemFormat.IsNull() {
 		body, _ = sjson.Set(body, "enableEMBLEMFormat", data.EmblemFormat.ValueBool())
 	}
-	if !data.SendDebugMessagesAsSyslog.IsNull()   {
+	if !data.SendDebugMessagesAsSyslog.IsNull() {
 		body, _ = sjson.Set(body, "enableDebugMesgAsSyslog", data.SendDebugMessagesAsSyslog.ValueBool())
 	}
-	if !data.InternalBufferMemorySize.IsNull()   {
+	if !data.InternalBufferMemorySize.IsNull() {
 		body, _ = sjson.Set(body, "internalBuffMemSizeInBytes", data.InternalBufferMemorySize.ValueInt64())
 	}
-	if !data.FmcLoggingMode.IsNull()   {
+	if !data.FmcLoggingMode.IsNull() {
 		body, _ = sjson.Set(body, "loggingToFMCType", data.FmcLoggingMode.ValueString())
 	}
-	if !data.FmcLoggingLevel.IsNull()   {
+	if !data.FmcLoggingLevel.IsNull() {
 		body, _ = sjson.Set(body, "loggingToFMCLogLevel", data.FmcLoggingLevel.ValueString())
 	}
-	if !data.FtpServerHostId.IsNull()   {
+	if !data.FtpServerHostId.IsNull() {
 		body, _ = sjson.Set(body, "ftpServerInfo.ipAddress.id", data.FtpServerHostId.ValueString())
 	}
-	if !data.FtpServerUsername.IsNull()   {
+	if !data.FtpServerUsername.IsNull() {
 		body, _ = sjson.Set(body, "ftpServerInfo.userName", data.FtpServerUsername.ValueString())
 	}
-	if !data.FtpServerPassword.IsNull()   {
+	if !data.FtpServerPassword.IsNull() {
 		body, _ = sjson.Set(body, "ftpServerInfo.password", data.FtpServerPassword.ValueString())
 	}
-	if !data.FtpServerPath.IsNull()   {
+	if !data.FtpServerPath.IsNull() {
 		body, _ = sjson.Set(body, "ftpServerInfo.path", data.FtpServerPath.ValueString())
 	}
 	if len(data.FtpServerInterfaceGroups) > 0 {
 		body, _ = sjson.Set(body, "ftpServerInfo.interfaceGroups", []any{})
 		for _, item := range data.FtpServerInterfaceGroups {
 			itemBody := ""
-			if !item.Id.IsNull()   {
+			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "ftpServerInfo.interfaceGroups.-1", itemBody)
 		}
 	}
-	if !data.FlashEnabled.IsNull()   {
+	if !data.FlashEnabled.IsNull() {
 		body, _ = sjson.Set(body, "enableFlash", data.FlashEnabled.ValueBool())
 	}
-	if !data.FlashMaximumSpace.IsNull()   {
+	if !data.FlashMaximumSpace.IsNull() {
 		body, _ = sjson.Set(body, "maxFlashForLoggingInKB", data.FlashMaximumSpace.ValueInt64())
 	}
-	if !data.FlashMinimumFreeSpace.IsNull()   {
+	if !data.FlashMinimumFreeSpace.IsNull() {
 		body, _ = sjson.Set(body, "minFreePreservedSpaceInKB", data.FlashMinimumFreeSpace.ValueInt64())
 	}
 	return body
@@ -261,11 +203,11 @@ func (data *FTDPlatformSettingsSyslogLoggingSetup) fromBody(ctx context.Context,
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := FTDPlatformSettingsSyslogLoggingSetupFtpServerInterfaceGroups{}
-	if value := res.Get("id"); value.Exists() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+			if value := res.Get("id"); value.Exists() {
+				data.Id = types.StringValue(value.String())
+			} else {
+				data.Id = types.StringNull()
+			}
 			(*parent).FtpServerInterfaceGroups = append((*parent).FtpServerInterfaceGroups, data)
 			return true
 		})
@@ -290,7 +232,6 @@ func (data *FTDPlatformSettingsSyslogLoggingSetup) fromBody(ctx context.Context,
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -353,8 +294,8 @@ func (data *FTDPlatformSettingsSyslogLoggingSetup) fromBodyPartial(ctx context.C
 		data.FtpServerPath = types.StringNull()
 	}
 	for i := 0; i < len(data.FtpServerInterfaceGroups); i++ {
-		keys := [...]string{ "id",  }
-		keyValues := [...]string{ data.FtpServerInterfaceGroups[i].Id.ValueString(),  }
+		keys := [...]string{"id"}
+		keyValues := [...]string{data.FtpServerInterfaceGroups[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).FtpServerInterfaceGroups[i]
@@ -388,11 +329,11 @@ func (data *FTDPlatformSettingsSyslogLoggingSetup) fromBodyPartial(ctx context.C
 
 			continue
 		}
-	if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
-		data.Id = types.StringValue(value.String())
-	} else {
-		data.Id = types.StringNull()
-	}
+		if value := res.Get("id"); value.Exists() && !data.Id.IsNull() {
+			data.Id = types.StringValue(value.String())
+		} else {
+			data.Id = types.StringNull()
+		}
 		(*parent).FtpServerInterfaceGroups[i] = data
 	}
 	if value := res.Get("enableFlash"); value.Exists() && !data.FlashEnabled.IsNull() {

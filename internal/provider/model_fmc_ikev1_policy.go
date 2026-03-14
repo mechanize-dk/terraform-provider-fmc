@@ -31,51 +31,18 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type IKEv1Policy struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	Name types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Type types.String `tfsdk:"type"`
-	Priority types.Int64 `tfsdk:"priority"`
-	EncryptionAlgorithm types.String `tfsdk:"encryption_algorithm"`
-	Hash types.String `tfsdk:"hash"`
-	DhGroup types.String `tfsdk:"dh_group"`
-	Lifetime types.Int64 `tfsdk:"lifetime"`
+	Id                   types.String `tfsdk:"id"`
+	Domain               types.String `tfsdk:"domain"`
+	Name                 types.String `tfsdk:"name"`
+	Description          types.String `tfsdk:"description"`
+	Type                 types.String `tfsdk:"type"`
+	Priority             types.Int64  `tfsdk:"priority"`
+	EncryptionAlgorithm  types.String `tfsdk:"encryption_algorithm"`
+	Hash                 types.String `tfsdk:"hash"`
+	DhGroup              types.String `tfsdk:"dh_group"`
+	Lifetime             types.Int64  `tfsdk:"lifetime"`
 	AuthenticationMethod types.String `tfsdk:"authentication_method"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -86,7 +53,7 @@ type IKEv1Policy struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data IKEv1Policy) getPath() string {
-		return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/ikev1policies"
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/object/ikev1policies"
 }
 
 // End of section. //template:end getPath
@@ -98,28 +65,28 @@ func (data IKEv1Policy) toBody(ctx context.Context, state IKEv1Policy) string {
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()   {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()   {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.Priority.IsNull()   {
+	if !data.Priority.IsNull() {
 		body, _ = sjson.Set(body, "priority", data.Priority.ValueInt64())
 	}
-	if !data.EncryptionAlgorithm.IsNull()   {
+	if !data.EncryptionAlgorithm.IsNull() {
 		body, _ = sjson.Set(body, "encryption", data.EncryptionAlgorithm.ValueString())
 	}
-	if !data.Hash.IsNull()   {
+	if !data.Hash.IsNull() {
 		body, _ = sjson.Set(body, "hash", data.Hash.ValueString())
 	}
-	if !data.DhGroup.IsNull()   {
+	if !data.DhGroup.IsNull() {
 		body, _ = sjson.Set(body, "diffieHellmanGroup", data.DhGroup.ValueString())
 	}
-	if !data.Lifetime.IsNull()   {
+	if !data.Lifetime.IsNull() {
 		body, _ = sjson.Set(body, "lifetimeInSeconds", data.Lifetime.ValueInt64())
 	}
-	if !data.AuthenticationMethod.IsNull()   {
+	if !data.AuthenticationMethod.IsNull() {
 		body, _ = sjson.Set(body, "authenticationMethod", data.AuthenticationMethod.ValueString())
 	}
 	return body
@@ -180,7 +147,6 @@ func (data *IKEv1Policy) fromBody(ctx context.Context, res gjson.Result) {
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -254,42 +220,28 @@ func (data *IKEv1Policy) fromBodyUnknowns(ctx context.Context, res gjson.Result)
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
-
-
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
-
-
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
-
-
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
-
-
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
-
-
 
 // End of section. //template:end adjustBodyBulk

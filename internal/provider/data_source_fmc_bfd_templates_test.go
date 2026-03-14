@@ -48,7 +48,7 @@ func TestAccDataSourceFmcBFDTemplates(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceFmcBFDTemplatesConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -88,7 +88,5 @@ func testAccDataSourceFmcBFDTemplatesConfig() string {
 	`
 	return config
 }
-
-
 
 // End of section. //template:end testAccDataSourceConfig

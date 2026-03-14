@@ -63,7 +63,7 @@ func (d *EndpointDeviceTypesDataSource) Schema(ctx context.Context, req datasour
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 			},
 			"items": schema.MapNestedAttribute{
 				MarkdownDescription: "Map of Endpoint Device Types. The key of the map is the name of the individual Endpoint Device Type.",
@@ -115,7 +115,7 @@ func (d *EndpointDeviceTypesDataSource) Read(ctx context.Context, req datasource
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
-	
+
 	// Get all objects from FMC
 	urlPath := config.getPath() + "?expanded=true"
 	res, err := d.client.Get(urlPath, reqMods...)

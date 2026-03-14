@@ -69,7 +69,7 @@ func (d *DeviceBGPDataSource) Schema(ctx context.Context, req datasource.SchemaR
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
-				Optional:			true,
+				Optional:            true,
 			},
 			"vrf_id": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Id of the parent VRF.").String,
@@ -535,12 +535,12 @@ func (d *DeviceBGPDataSource) Schema(ctx context.Context, req datasource.SchemaR
 	}
 }
 func (d *DeviceBGPDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
-    return []datasource.ConfigValidator{
-        datasourcevalidator.ExactlyOneOf(
-            path.MatchRoot("id"),
+	return []datasource.ConfigValidator{
+		datasourcevalidator.ExactlyOneOf(
+			path.MatchRoot("id"),
 			path.MatchRoot("as_number"),
-        ),
-    }
+		),
+	}
 }
 
 func (d *DeviceBGPDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
@@ -577,14 +577,14 @@ func (d *DeviceBGPDataSource) Read(ctx context.Context, req datasource.ReadReque
 		limit := 1000
 		for page := 1; ; page++ {
 			queryString := fmt.Sprintf("?limit=%d&offset=%d&expanded=true", limit, offset)
-			res, err := d.client.Get(config.getPath() + queryString, reqMods...)
+			res, err := d.client.Get(config.getPath()+queryString, reqMods...)
 			if err != nil {
 				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve objects, got error: %s", err))
 				return
 			}
 			if value := res.Get("items"); len(value.Array()) > 0 {
 				value.ForEach(func(k, v gjson.Result) bool {
-					if config.AsNumber.ValueString()== v.Get("asNumber").String(){
+					if config.AsNumber.ValueString() == v.Get("asNumber").String() {
 						config.Id = types.StringValue(v.Get("id").String())
 						tflog.Debug(ctx, fmt.Sprintf("%s: Found object with as_number '%v', id: %v", config.Id.ValueString(), config.AsNumber.ValueString(), config.Id.ValueString()))
 						return false
@@ -603,7 +603,7 @@ func (d *DeviceBGPDataSource) Read(ctx context.Context, req datasource.ReadReque
 			return
 		}
 	}
-	urlPath := config.getPath()+"/"+url.QueryEscape(config.Id.ValueString())
+	urlPath := config.getPath() + "/" + url.QueryEscape(config.Id.ValueString())
 	res, err := d.client.Get(urlPath, reqMods...)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object, got error: %s", err))

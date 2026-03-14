@@ -33,43 +33,16 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type DeviceHAPairFailoverInterfaceMACAddress struct {
-	Id types.String `tfsdk:"id"`
-	Domain types.String `tfsdk:"domain"`
-	HaPairId types.String `tfsdk:"ha_pair_id"`
-	Type types.String `tfsdk:"type"`
-	InterfaceName types.String `tfsdk:"interface_name"`
-	InterfaceId types.String `tfsdk:"interface_id"`
-	InterfaceType types.String `tfsdk:"interface_type"`
-	ActiveMacAddress types.String `tfsdk:"active_mac_address"`
+	Id                types.String `tfsdk:"id"`
+	Domain            types.String `tfsdk:"domain"`
+	HaPairId          types.String `tfsdk:"ha_pair_id"`
+	Type              types.String `tfsdk:"type"`
+	InterfaceName     types.String `tfsdk:"interface_name"`
+	InterfaceId       types.String `tfsdk:"interface_id"`
+	InterfaceType     types.String `tfsdk:"interface_type"`
+	ActiveMacAddress  types.String `tfsdk:"active_mac_address"`
 	StandbyMacAddress types.String `tfsdk:"standby_mac_address"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // End of section. //template:end types
 
@@ -80,7 +53,7 @@ type DeviceHAPairFailoverInterfaceMACAddress struct {
 // Section below is generated&owned by "gen/generator.go". //template:begin getPath
 
 func (data DeviceHAPairFailoverInterfaceMACAddress) getPath() string {
-		return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/devicehapairs/ftddevicehapairs/%v/failoverinterfacemacaddressconfigs", url.QueryEscape(data.HaPairId.ValueString()))
+	return fmt.Sprintf("/api/fmc_config/v1/domain/{DOMAIN_UUID}/devicehapairs/ftddevicehapairs/%v/failoverinterfacemacaddressconfigs", url.QueryEscape(data.HaPairId.ValueString()))
 }
 
 // End of section. //template:end getPath
@@ -92,19 +65,19 @@ func (data DeviceHAPairFailoverInterfaceMACAddress) toBody(ctx context.Context, 
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
-	if !data.InterfaceName.IsNull()   {
+	if !data.InterfaceName.IsNull() {
 		body, _ = sjson.Set(body, "physicalInterface.name", data.InterfaceName.ValueString())
 	}
-	if !data.InterfaceId.IsNull()   {
+	if !data.InterfaceId.IsNull() {
 		body, _ = sjson.Set(body, "physicalInterface.id", data.InterfaceId.ValueString())
 	}
-	if !data.InterfaceType.IsNull()   {
+	if !data.InterfaceType.IsNull() {
 		body, _ = sjson.Set(body, "physicalInterface.type", data.InterfaceType.ValueString())
 	}
-	if !data.ActiveMacAddress.IsNull()   {
+	if !data.ActiveMacAddress.IsNull() {
 		body, _ = sjson.Set(body, "failoverActiveMac", data.ActiveMacAddress.ValueString())
 	}
-	if !data.StandbyMacAddress.IsNull()   {
+	if !data.StandbyMacAddress.IsNull() {
 		body, _ = sjson.Set(body, "failoverStandbyMac", data.StandbyMacAddress.ValueString())
 	}
 	return body
@@ -150,7 +123,6 @@ func (data *DeviceHAPairFailoverInterfaceMACAddress) fromBody(ctx context.Contex
 // End of section. //template:end fromBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin fromBodyPartial
-
 
 // fromBodyPartial reads values from a gjson.Result into a tfstate model. It ignores null attributes in order to
 // uncouple the provider from the exact values that the backend API might summon to replace nulls. (Such behavior might
@@ -209,42 +181,28 @@ func (data *DeviceHAPairFailoverInterfaceMACAddress) fromBodyUnknowns(ctx contex
 
 // Section below is generated&owned by "gen/generator.go". //template:begin Clone
 
-
-
 // End of section. //template:end Clone
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyNonBulk
-
-
 
 // End of section. //template:end toBodyNonBulk
 
 // Section below is generated&owned by "gen/generator.go". //template:begin findObjectsToBeReplaced
 
-
-
 // End of section. //template:end findObjectsToBeReplaced
 
 // Section below is generated&owned by "gen/generator.go". //template:begin clearItemIds
-
-
 
 // End of section. //template:end clearItemIds
 
 // Section below is generated&owned by "gen/generator.go". //template:begin toBodyPutDelete
 
-
-
 // End of section. //template:end toBodyPutDelete
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBody
 
-
-
 // End of section. //template:end adjustBody
 
 // Section below is generated&owned by "gen/generator.go". //template:begin adjustBodyBulk
-
-
 
 // End of section. //template:end adjustBodyBulk

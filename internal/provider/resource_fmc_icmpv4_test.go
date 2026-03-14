@@ -45,18 +45,18 @@ func TestAccFmcICMPv4(t *testing.T) {
 	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccFmcICMPv4Config_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName:  "fmc_icmpv4.test",
-		ImportState:   true,
+		ResourceName: "fmc_icmpv4.test",
+		ImportState:  true,
 	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		ErrorCheck:               func(err error) error { return testAccErrorCheck(t, err) },
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
 
@@ -73,6 +73,7 @@ func testAccFmcICMPv4Config_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 // End of section. //template:end testAccConfigMinimal
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccConfigAll
