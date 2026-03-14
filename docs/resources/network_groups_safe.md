@@ -3,21 +3,14 @@
 page_title: "fmc_network_groups_safe Resource - terraform-provider-fmc"
 subcategory: "Objects"
 description: |-
-  This resource manages Network Groups through bulk operations, with safe (soft) deletion.
-  When a network group cannot be deleted because it is still referenced by an access rule or another group, it is renamed to __gc_<id> and its content is replaced with a single loopback literal (127.6.6.6) so that any rule pointing at it becomes harmless.
-  The group is fully removed from FMC the next time this resource is read (during terraform plan or terraform apply) once it is no longer referenced.
-  Note: Do not use names starting with __gc_ for your own network groups — they will be treated as GC candidates.
+  This resource manages Network Groups through bulk operations, with safe (soft) deletion. When a network group cannot be deleted because it is still referenced by an access rule or another group, it is renamed to __gc_<id> and its content is replaced with a single loopback literal (127.6.6.6) so that any rule pointing at it becomes harmless. The group is fully removed from FMC the next time this resource is read (during terraform plan or terraform apply) once it is no longer referenced. Note: Do not use names starting with __gc_ for your own network groups — they will be treated as GC candidates.
   The following restrictions apply:
   Minimum FMC version for bulk object deletion: 7.4If FMC version does not meet the minimum version requirement for bulk operations, this resource will automatically fall back to processing operations one-by-one.Updates are always done one-by-one.
 ---
 
 # fmc_network_groups_safe (Resource)
 
-This resource manages Network Groups through bulk operations, with safe (soft) deletion.
-
-When a network group cannot be deleted because it is still referenced by an access rule or another group, it is renamed to `__gc_<id>` and its content is replaced with a single loopback literal (`127.6.6.6`) so that any rule pointing at it becomes harmless. The group is fully removed from FMC the next time this resource is read (during `terraform plan` or `terraform apply`) once it is no longer referenced.
-
-> **Note:** Do not use names starting with `__gc_` for your own network groups — they will be treated as GC candidates.
+This resource manages Network Groups through bulk operations, with safe (soft) deletion. When a network group cannot be deleted because it is still referenced by an access rule or another group, it is renamed to `__gc_<id>` and its content is replaced with a single loopback literal (`127.6.6.6`) so that any rule pointing at it becomes harmless. The group is fully removed from FMC the next time this resource is read (during `terraform plan` or `terraform apply`) once it is no longer referenced. **Note:** Do not use names starting with `__gc_` for your own network groups — they will be treated as GC candidates.
 
 The following restrictions apply:
   - Minimum FMC version for bulk object deletion: `7.4`
@@ -91,14 +84,3 @@ Optional:
 
 - `id` (String) Id of the network object.
 - `name` (String) Name of the network object.
-
-## Import
-
-Import is supported using the following syntax:
-
-The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
-
-```shell
-# <domain> is optional. If not provided, `Global` is used implicitly and resource's `domain` attribute is not set.
-terraform import fmc_network_groups_safe.example "<domain>,[<item1_name>,<item2_name>,...]"
-```

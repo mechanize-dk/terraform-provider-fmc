@@ -438,7 +438,6 @@ func (p *FmcProvider) Resources(ctx context.Context) []func() resource.Resource 
 		NewNetworkGroupResource,
 		NewNetworkGroupOverridesResource,
 		NewNetworkGroupsResource,
-		NewNetworkGroupsSafeResource,
 		NewNetworkOverridesResource,
 		NewNetworksResource,
 		NewPolicyAssignmentResource,
@@ -507,6 +506,8 @@ func (p *FmcProvider) Resources(ctx context.Context) []func() resource.Resource 
 		NewVPNS2SEndpointsResource,
 		NewVPNS2SIKESettingsResource,
 		NewVPNS2SIPSECSettingsResource,
+		// Fork additions — manually implemented, not code-generated:
+		NewNetworkGroupsSafeResource,
 	}
 }
 

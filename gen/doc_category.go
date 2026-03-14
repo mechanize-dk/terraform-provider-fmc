@@ -41,7 +41,10 @@ type YamlConfig struct {
 
 var docPaths = []string{"./docs/data-sources/", "./docs/resources/"}
 
-var extraDocs = map[string]string{}
+var extraDocs = map[string]string{
+	// Fork additions — manually implemented resources:
+	"network_groups_safe": "Objects",
+}
 
 func SnakeCase(s string) string {
 	var g []string
