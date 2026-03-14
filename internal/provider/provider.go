@@ -438,6 +438,7 @@ func (p *FmcProvider) Resources(ctx context.Context) []func() resource.Resource 
 		NewNetworkGroupResource,
 		NewNetworkGroupOverridesResource,
 		NewNetworkGroupsResource,
+		NewNetworkGroupsSafeResource,
 		NewNetworkOverridesResource,
 		NewNetworksResource,
 		NewPolicyAssignmentResource,
