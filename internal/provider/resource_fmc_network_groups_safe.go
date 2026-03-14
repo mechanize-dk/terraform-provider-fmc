@@ -516,6 +516,7 @@ func (r *NetworkGroupsSafeResource) softDelete(ctx context.Context, state Networ
 	gcBody := "{}"
 	gcBody, _ = sjson.Set(gcBody, "id", id)
 	gcBody, _ = sjson.Set(gcBody, "name", gcName)
+	gcBody, _ = sjson.Set(gcBody, "description", "GC: was "+name)
 	gcBody, _ = sjson.SetRaw(gcBody, "objects", "[]")
 	gcBody, _ = sjson.SetRaw(gcBody, "literals", `[{"value":"`+gcMarkerIP+`","type":"Host"}]`)
 

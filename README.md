@@ -21,6 +21,16 @@ The following objects are unchanged by this fix (and are therefore **not** idemp
 - resource.fmc_policy_assignment
 - resource.fmc_device_cluster
 
+At current the following resources has been added:
+- **fmc_network_groups_safe**
+  <br>Is a drop-in replacement for `fmc_network_groups` that handles a dependency problem the FMC has with network group deletion.
+  When Terraform destroys or replaces a network group that is still referenced by an access-rule (or another group), the FMC rejects the DELETE with HTTP 400. The standard `fmc_network_groups` resource fails with an error, and the network group is left behind in the FMC — requiring manual cleanup.
+  This happens in a common Terraform pattern: `fmc_network_groups` has `depends_on = [fmc_access_rules]` to ensure rules are created before groups. The dependency also controls the destroy order — but destroy order is the reverse of create order, so Terraform destroys (or updates) `fmc_network_groups` *before* it updates `fmc_access_rules`. If a rule still holds a reference to a group being deleted, the FMC rejects it.
+  Instead of failing, `fmc_network_groups_safe` performs a **soft delete**:
+    1. The group is renamed to `__gc_<original-fmc-id>` and its description is set to `GC: was <original-name>` so it remains identifiable in the FMC UI.
+    2. Its content is replaced with a single harmless literal (`127.6.6.6`) as the FMC requires at least one member, and a loopback address ensures any access-rule still pointing at it becomes effectively inactive.
+    3. Terraform state is updated as if the group was deleted — the apply succeeds.
+    4. The renamed group is cleaned up automatically. Every time `fmc_network_groups_safe` is read (during `terraform plan` or `terraform apply`), it scans all network groups in the FMC for names starting with `__gc_` and attempts to delete them. By that point Terraform has already updated the access-rules, so the reference is gone and the FMC accepts the delete.
 
 ## The original provider
 
