@@ -5,10 +5,22 @@
 
 This is a fork of [CiscoDevNet/terraform-provider-fmc](https://github.com/CiscoDevNet/terraform-provider-fmc). The primary addition in this fork is **idempotent resource creation**: when Terraform attempts to create an object that already exists in FMC (e.g. because it was created manually or by a previous run whose state was lost), the provider detects the conflict (HTTP 409, or HTTP 400 with an "already exists" body), looks up the existing object by name, and imports it into state — instead of failing with an error. It solves the following issues:
 
-- Current FMC objects without terraform state
+- **Current FMC objects without terraform state**
   <br>Would normally break the "terraform apply". Now, these objects will trigger a conflict which is handled and imported.
-- FMC rule moves (GUI or API) that assigns a **new Id** to the rule
-  <br>Would normally break as the old Id would become stale in Terraform state (and the new unknown). This idempotency fix handles this gracefully by letting terraform destroy its current state, then creating. The create triggers a conflict which is handled and imported.
+- **FMC rule moves (GUI or API) that assigns a new Id to the rule**
+  <br>Would normally break as the old Id would become stale in Terraform state (and the new unknown). This idempotency fix handles this gracefully by letting terraform destroy its current state, then creating without issue. The create triggers a conflict which is handled and imported.
+- **Import statements in terraform**
+  <br>As conflicts are handled by code, there is no need for import statements. This also fixes objects with no `import` function (like `fmc_access_rules`)
+
+Other than the standard objects, the following bulk objects has also been fixed:
+- fmc_network_groups
+- fmc_access_rules
+
+The following objects are unchanged by this fix (and are therefore **not** idempotent) mainly due to the fact that they were coded manually in the original provider:
+- resource.fmc_device_vtep_policy
+- resource.fmc_policy_assignment
+- resource.fmc_device_cluster
+
 
 ## The original provider
 
