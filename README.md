@@ -1,9 +1,16 @@
-> **This is a fork of [CiscoDevNet/terraform-provider-fmc](https://github.com/CiscoDevNet/terraform-provider-fmc).**
-> The primary addition in this fork is **idempotent resource creation**: when Terraform attempts to create an object that already exists in FMC (e.g. because it was created manually or by a previous run whose state was lost), the provider detects the conflict (HTTP 409, or HTTP 400 with an "already exists" body), looks up the existing object by name, and imports it into state — instead of failing with an error. This makes the provider safe to use in environments where FMC objects may pre-exist outside of Terraform.
+[![Tests](https://github.com/mechanize-dk/terraform-provider-fmc/actions/workflows/test.yml/badge.svg)](https://github.com/mechanize-dk/terraform-provider-fmc/actions/workflows/test.yml)
 
-[![Tests](https://github.com/CiscoDevNet/terraform-provider-fmc/actions/workflows/test.yml/badge.svg)](https://github.com/CiscoDevNet/terraform-provider-fmc/actions/workflows/test.yml)
 
-# Terraform Provider FMC
+# Terraform FMC Idempotent Provider
+
+This is a fork of [CiscoDevNet/terraform-provider-fmc](https://github.com/CiscoDevNet/terraform-provider-fmc). The primary addition in this fork is **idempotent resource creation**: when Terraform attempts to create an object that already exists in FMC (e.g. because it was created manually or by a previous run whose state was lost), the provider detects the conflict (HTTP 409, or HTTP 400 with an "already exists" body), looks up the existing object by name, and imports it into state — instead of failing with an error. It solves the following issues:
+
+- Current FMC objects without terraform state
+  <br>Would normally break the "terraform apply". Now, these objects will trigger a conflict which is handled and imported.
+- FMC rule moves (GUI or API) that assigns a **new Id** to the rule
+  <br>Would normally break as the old Id would become stale in Terraform state (and the new unknown). This idempotency fix handles this gracefully by letting terraform destroy its current state, then creating. The create triggers a conflict which is handled and imported.
+
+## The original provider
 
 The FMC provider provides resources to interact with a Cisco Secure Firewall Management Center (FMC) and Cloud-Delivered FMC (cdFMC) instances. It communicates with FMC via the REST API.
 
