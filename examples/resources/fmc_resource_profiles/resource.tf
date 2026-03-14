@@ -1,7 +1,7 @@
 resource "fmc_resource_profiles" "example" {
-  items ={
+  items = {
     my_resource_profiles = {
-      description = "My Resource Profile object"
+      description    = "My Resource Profile object"
       number_of_cpus = 10
     }
   }

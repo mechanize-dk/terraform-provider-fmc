@@ -1,38 +1,38 @@
 resource "fmc_application_filter" "example" {
   name = "my_application_filter"
-  applications =[
+  applications = [
     {
-      id = "535"
+      id   = "535"
       name = "1-800-Flowers"
     }
   ]
-  filters =[
+  filters = [
     {
-        types = [
-          {
+      types = [
+        {
           id = "WEBAPP"
-          }
-        ]
-        risks = [
-          {
+        }
+      ]
+      risks = [
+        {
           id = "VERY_LOW"
-          }
-        ]
-        business_relevances = [
-          {
+        }
+      ]
+      business_relevances = [
+        {
           id = "LOW"
-          }
-        ]
-        categories = [
-          {
+        }
+      ]
+      categories = [
+        {
           id = "118"
-          }
-        ]
-        tags = [
-          {
+        }
+      ]
+      tags = [
+        {
           id = "24"
-          }
-        ]
+        }
+      ]
     }
   ]
 }

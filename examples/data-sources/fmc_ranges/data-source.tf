@@ -1,6 +1,6 @@
 data "fmc_ranges" "example" {
   items = {
-  "my_ranges" = {
-  }
+    "my_ranges" = {
+    }
   }
 }

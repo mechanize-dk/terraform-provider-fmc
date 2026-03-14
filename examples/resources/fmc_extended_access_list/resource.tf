@@ -1,61 +1,61 @@
 resource "fmc_extended_access_list" "example" {
   name = "my_extended_acl"
-  entries =[
+  entries = [
     {
-      action = "DENY"
-      log_level = "WARNING"
-      logging = "PER_ACCESS_LIST_ENTRY"
+      action       = "DENY"
+      log_level    = "WARNING"
+      logging      = "PER_ACCESS_LIST_ENTRY"
       log_interval = 120
-        source_network_literals = [
-          {
+      source_network_literals = [
+        {
           value = "10.1.1.0/24"
-          type = "Network"
-          }
-        ]
-        destination_network_literals = [
-          {
+          type  = "Network"
+        }
+      ]
+      destination_network_literals = [
+        {
           value = "10.2.2.2"
-          type = "Host"
-          }
-        ]
-        source_network_objects = [
-          {
+          type  = "Host"
+        }
+      ]
+      source_network_objects = [
+        {
           id = "76d24097-41c4-4558-a4d0-a8c07ac08470"
-          }
-        ]
-        destination_network_objects = [
-          {
+        }
+      ]
+      destination_network_objects = [
+        {
           id = "76d24097-41c4-4558-a4d0-a8c07ac08470"
-          }
-        ]
-        source_sgt_objects = [
-          {
+        }
+      ]
+      source_sgt_objects = [
+        {
           id = "76d24097-41c4-4558-a4d0-a8c07ac08470"
-          }
-        ]
-        source_port_objects = [
-          {
+        }
+      ]
+      source_port_objects = [
+        {
           id = "76d24097-41c4-4558-a4d0-a8c07ac08470"
-          }
-        ]
-        destination_port_objects = [
-          {
+        }
+      ]
+      destination_port_objects = [
+        {
           id = "76d24097-41c4-4558-a4d0-a8c07ac08470"
-          }
-        ]
-        destination_port_literals = [
-          {
-          type = "PortLiteral"
-          port = "80"
+        }
+      ]
+      destination_port_literals = [
+        {
+          type     = "PortLiteral"
+          port     = "80"
           protocol = "6"
-          }
-        ]
-        source_port_literals = [
-          {
+        }
+      ]
+      source_port_literals = [
+        {
           protocol = "6"
-          port = "80"
-          }
-        ]
+          port     = "80"
+        }
+      ]
     }
   ]
 }

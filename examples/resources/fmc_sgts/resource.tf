@@ -1,8 +1,8 @@
 resource "fmc_sgts" "example" {
-  items ={
+  items = {
     my_sgts = {
       description = "My SGT object"
-      tag = "11"
+      tag         = "11"
     }
   }
 }
