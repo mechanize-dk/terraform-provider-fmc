@@ -26,10 +26,10 @@ header() { echo -e "\n${BOLD}══ $* ══${NC}"; }
 OVERALL_FAIL=0
 
 # ── Argument parsing ───────────────────────────────────────────────────────────
-FMC_USERNAME=""; FMC_PASSWORD=""; FMC_URL=""; TERRAFORM_BIN=""
+FMC_USERNAME=""; FMC_PASSWORD=""; FMC_URL=""; TERRAFORM_BIN=""; GROUP_COUNT=1000; RUN_TESTS="1,2,3,4,5"; TF_DEBUG=0
 
 usage() {
-  echo "Usage: $0 -u <username> -p <password> --url <fmc_url> [--terraform /path/to/terraform]"
+  echo "Usage: $0 -u <username> -p <password> --url <fmc_url> [--terraform /path/to/terraform] [--count N] [--tests 1,2,3,4,5] [--debug]"
   exit 1
 }
 
@@ -39,10 +39,16 @@ while [[ $# -gt 0 ]]; do
     -p|--password)  FMC_PASSWORD="$2";  shift 2 ;;
     --url)          FMC_URL="$2";       shift 2 ;;
     --terraform)    TERRAFORM_BIN="$2"; shift 2 ;;
+    --count)        GROUP_COUNT="$2";   shift 2 ;;
+    --tests)        RUN_TESTS="$2";     shift 2 ;;
+    --debug)        TF_DEBUG=1;         shift 1 ;;
     -h|--help)      usage ;;
     *) echo "Unknown option: $1"; usage ;;
   esac
 done
+
+# Helper: returns 0 if test number $1 is in RUN_TESTS
+run_test() { echo ",$RUN_TESTS," | grep -q ",$1,"; }
 
 [[ -z "$FMC_USERNAME" || -z "$FMC_PASSWORD" || -z "$FMC_URL" ]] && {
   echo -e "${RED}Error: --username, --password and --url are all required.${NC}"
@@ -72,7 +78,15 @@ done
 [[ ! -x "$TERRAFORM_BIN" ]] && { echo -e "${RED}✗ terraform not executable: $TERRAFORM_BIN${NC}"; exit 1; }
 pass "terraform found ($TERRAFORM_BIN)"
 
-terraform() { "$TERRAFORM_BIN" "$@"; }
+_TF_LOG_SEQ=0
+terraform() {
+  if [[ "$TF_DEBUG" -eq 1 ]]; then
+    _TF_LOG_SEQ=$(( _TF_LOG_SEQ + 1 ))
+    TF_LOG=DEBUG TF_LOG_PATH="/tmp/tf_debug_${_TF_LOG_SEQ}.log" "$TERRAFORM_BIN" "$@"
+  else
+    "$TERRAFORM_BIN" "$@"
+  fi
+}
 
 # ── Build provider ─────────────────────────────────────────────────────────────
 header "Building provider"
@@ -106,18 +120,25 @@ fmc_auth() {
     python3 -c "import json,sys; d=json.load(sys.stdin); \
       print([x for x in d['items'] if x['name']=='Global'][0]['uuid'])")
   [[ -z "$DOMAIN_UUID" ]] && { fail "Could not determine FMC Global domain UUID"; return 1; }
+  return 0
 }
 
-# Print names of all network groups whose name starts with __gc_
+# Print names of all network groups whose name starts with __gc_ (paginated, filtered).
 fmc_list_gc_groups() {
-  curl -sk "$FMC_URL/api/fmc_config/v1/domain/$DOMAIN_UUID/object/networkgroups?limit=1000&expanded=false" \
-    -H "X-auth-access-token: $TOKEN" | \
-    python3 -c "
-import json, sys
-d = json.load(sys.stdin)
-gc = [x['name'] for x in d.get('items', []) if x['name'].startswith('__gc_')]
-print('\n'.join(gc))
-"
+  local offset=0
+  while true; do
+    local page page_count
+    page=$(curl -sk "$FMC_URL/api/fmc_config/v1/domain/$DOMAIN_UUID/object/networkgroups?limit=1000&offset=${offset}&expanded=false&filter=nameOrValue%3A__gc_" \
+      -H "X-auth-access-token: $TOKEN")
+    page_count=$(echo "$page" | python3 -c "import json,sys; print(len(json.load(sys.stdin).get('items',[])))" 2>/dev/null || echo 0)
+    echo "$page" | python3 -c "
+import json,sys
+d=json.load(sys.stdin)
+print('\n'.join(x['name'] for x in d.get('items',[]) if x['name'].startswith('__gc_')))
+" 2>/dev/null
+    [[ "${page_count}" -lt 1000 ]] && break
+    offset=$(( offset + 1000 ))
+  done
 }
 
 # ── State cleanup helper ───────────────────────────────────────────────────────
@@ -137,10 +158,153 @@ reset_state() {
   rm -rf "$SCRIPT_DIR/.terraform"
 }
 
-# full_cleanup: destroy resources then wipe local state.
+# List IDs of all tf-ng-safe-test network groups (including __gc_ soft-deleted ones),
+# using the API filter and pagination. Prints one comma-separated batch of 50 per line.
+fmc_list_test_group_ids() {
+  local offset=0
+  local all_ids=""
+  while true; do
+    local page page_count
+    page=$(curl -sk "$FMC_URL/api/fmc_config/v1/domain/$DOMAIN_UUID/object/networkgroups?limit=1000&offset=${offset}&expanded=false&filter=nameOrValue%3Atf-ng-safe-test" \
+      -H "X-auth-access-token: $TOKEN")
+    page_count=$(echo "$page" | python3 -c "import json,sys; print(len(json.load(sys.stdin).get('items',[])))" 2>/dev/null || echo 0)
+    local page_ids
+    page_ids=$(echo "$page" | python3 -c "
+import json,sys
+d=json.load(sys.stdin)
+print('\n'.join(x['id'] for x in d.get('items',[])))
+" 2>/dev/null)
+    [[ -n "$page_ids" ]] && all_ids="${all_ids:+$all_ids
+}$page_ids"
+    [[ "${page_count}" -lt 1000 ]] && break
+    offset=$(( offset + 1000 ))
+  done
+  # Print as batches of 50
+  echo "$all_ids" | grep -v '^$' | python3 -c "
+import sys
+ids=[l.strip() for l in sys.stdin if l.strip()]
+for i in range(0,len(ids),50): print(','.join(ids[i:i+50]))
+" 2>/dev/null
+}
+
+# fmc_hard_cleanup: directly delete all tf-ng-safe-test-* ACPs, rules, and
+# network groups from FMC via API — used as a safety net when terraform destroy
+# leaves debris (e.g. after a failed apply).
+fmc_hard_cleanup() {
+  info "FMC hard cleanup: removing any leftover test objects..."
+  fmc_auth || return 0  # best-effort; don't fail the test if auth fails
+
+  # Delete test ACPs (and their rules) first
+  local acp_ids
+  acp_ids=$(curl -sk "$FMC_URL/api/fmc_config/v1/domain/$DOMAIN_UUID/policy/accesspolicies?limit=25" \
+    -H "X-auth-access-token: $TOKEN" | python3 -c "
+import json,sys
+d=json.load(sys.stdin)
+for x in d.get('items',[]): print(x['id']) if 'tf-ng-safe-test' in x['name'] else None
+" 2>/dev/null)
+  # FMC deletes the ACP and all its rules in one call — no need to delete rules first.
+  for acp_id in $acp_ids; do
+    local acp_deadline=$(( $(date +%s) + 120 ))
+    while [[ $(date +%s) -lt $acp_deadline ]]; do
+      local http_status
+      http_status=$(curl -sk -o /dev/null -w "%{http_code}" -X DELETE \
+        "$FMC_URL/api/fmc_config/v1/domain/$DOMAIN_UUID/policy/accesspolicies/$acp_id" \
+        -H "X-auth-access-token: $TOKEN")
+      if [[ "$http_status" == "200" || "$http_status" == "204" || "$http_status" == "404" ]]; then
+        break
+      fi
+      sleep 5
+    done
+  done
+  # Give FMC a moment to commit ACP deletions before we delete groups
+  [[ -n "$acp_ids" ]] && sleep 3
+
+  # Delete by tf-ng-safe-test filter (covers normal test groups)
+  local batches batch_count
+  batches=$(fmc_list_test_group_ids)
+  batch_count=$(echo "$batches" | grep -c . 2>/dev/null) || true
+  info "FMC hard cleanup: found $batch_count tf-ng-safe-test group batches to delete"
+  while [[ -n "$batches" ]]; do
+    while IFS= read -r batch; do
+      [[ -z "$batch" ]] && continue
+      local grp_status
+      grp_status=$(curl -sk -o /dev/null -w "%{http_code}" -X DELETE \
+        "$FMC_URL/api/fmc_config/v1/domain/$DOMAIN_UUID/object/networkgroups?bulk=true&filter=ids:$batch" \
+        -H "X-auth-access-token: $TOKEN")
+      info "  group batch delete HTTP $grp_status"
+      sleep 1
+    done <<< "$batches"
+    sleep 5
+    batches=$(fmc_list_test_group_ids)
+    batch_count=$(echo "$batches" | grep -c . 2>/dev/null) || true
+    [[ -n "$batches" ]] && info "FMC hard cleanup: $batch_count batches still remain, retrying..."
+  done
+
+  # Second pass: delete any remaining __gc_ groups (from any source, not just test runs)
+  local gc_offset=0 gc_all_ids=""
+  while true; do
+    local gc_page gc_page_count gc_page_ids
+    gc_page=$(curl -sk "$FMC_URL/api/fmc_config/v1/domain/$DOMAIN_UUID/object/networkgroups?limit=1000&offset=${gc_offset}&expanded=false&filter=nameOrValue%3A__gc_" \
+      -H "X-auth-access-token: $TOKEN")
+    gc_page_count=$(echo "$gc_page" | python3 -c "import json,sys; print(len(json.load(sys.stdin).get('items',[])))" 2>/dev/null || echo 0)
+    gc_page_ids=$(echo "$gc_page" | python3 -c "
+import json,sys
+d=json.load(sys.stdin)
+print('\n'.join(x['id'] for x in d.get('items',[]) if x['name'].startswith('__gc_')))
+" 2>/dev/null)
+    [[ -n "$gc_page_ids" ]] && gc_all_ids="${gc_all_ids:+$gc_all_ids
+}$gc_page_ids"
+    [[ "${gc_page_count}" -lt 1000 ]] && break
+    gc_offset=$(( gc_offset + 1000 ))
+  done
+  local gc_batches
+  gc_batches=$(echo "$gc_all_ids" | grep -v '^$' | python3 -c "
+import sys
+ids=[l.strip() for l in sys.stdin if l.strip()]
+for i in range(0,len(ids),50): print(','.join(ids[i:i+50]))
+" 2>/dev/null)
+  local gc_batch_count
+  gc_batch_count=$(echo "$gc_batches" | grep -c . 2>/dev/null) || true
+  info "FMC hard cleanup: found $gc_batch_count __gc_ group batches to delete"
+  while IFS= read -r batch; do
+    [[ -z "$batch" ]] && continue
+    local gc_status
+    gc_status=$(curl -sk -o /dev/null -w "%{http_code}" -X DELETE \
+      "$FMC_URL/api/fmc_config/v1/domain/$DOMAIN_UUID/object/networkgroups?bulk=true&filter=ids:$batch" \
+      -H "X-auth-access-token: $TOKEN")
+    info "  __gc_ batch delete HTTP $gc_status"
+    sleep 1
+  done <<< "$gc_batches"
+
+  # Wait for any test ACPs to be fully gone before returning
+  local deadline=$(( $(date +%s) + 60 ))
+  while [[ $(date +%s) -lt $deadline ]]; do
+    local remaining
+    remaining=$(curl -sk "$FMC_URL/api/fmc_config/v1/domain/$DOMAIN_UUID/policy/accesspolicies?limit=25" \
+      -H "X-auth-access-token: $TOKEN" | python3 -c "
+import json,sys; d=json.load(sys.stdin)
+print(sum(1 for x in d.get('items',[]) if 'tf-ng-safe-test' in x['name']))
+" 2>/dev/null)
+    [[ "$remaining" == "0" ]] && break
+    sleep 3
+  done
+
+  # Report what's left so we can see if cleanup was complete
+  local leftover_groups leftover_acps
+  leftover_groups=$(fmc_list_test_group_ids | tr ',' '\n' | grep -c . 2>/dev/null) || leftover_groups=0
+  leftover_acps=${remaining:-0}
+  if [[ "$leftover_groups" -eq 0 && "$leftover_acps" -eq 0 ]]; then
+    info "FMC hard cleanup done — FMC is clean"
+  else
+    info "FMC hard cleanup done — WARNING: $leftover_groups group IDs and $leftover_acps ACPs still present on FMC"
+  fi
+}
+
+# full_cleanup: destroy resources then wipe local state, followed by FMC hard cleanup.
 full_cleanup() {
   destroy_state
   reset_state
+  fmc_hard_cleanup
 }
 
 # ── Global cleanup on exit ─────────────────────────────────────────────────────
@@ -149,6 +313,7 @@ trap_cleanup() {
   cd "$SCRIPT_DIR"
   [[ -f terraform.tfstate ]] && destroy_state || true
   reset_state
+  fmc_hard_cleanup
   rm -f "$PROVIDER_BIN" "$TFRC"
 }
 trap trap_cleanup EXIT
@@ -156,114 +321,91 @@ trap trap_cleanup EXIT
 cd "$SCRIPT_DIR"
 terraform -chdir="$SCRIPT_DIR" init -upgrade > /dev/null 2>&1 || true
 
+# Pre-run hard cleanup: ensure FMC is clean before starting tests
+fmc_hard_cleanup
+
+# Verify FMC is actually clean — abort if not
+_preflight_groups=$(fmc_list_test_group_ids | tr ',' '\n' | grep -c . 2>/dev/null) || _preflight_groups=0
+_preflight_acps=$(curl -sk "$FMC_URL/api/fmc_config/v1/domain/$DOMAIN_UUID/policy/accesspolicies?limit=25" \
+  -H "X-auth-access-token: $TOKEN" | python3 -c "
+import json,sys; d=json.load(sys.stdin)
+print(sum(1 for x in d.get('items',[]) if 'tf-ng-safe-test' in x['name']))
+" 2>/dev/null || echo 0)
+if [[ "$_preflight_groups" -gt 0 || "$_preflight_acps" -gt 0 ]]; then
+  echo -e "${RED}✗ FMC is not clean after hard cleanup: $_preflight_groups test groups, $_preflight_acps test ACPs still present. Aborting.${NC}"
+  exit 1
+fi
+pass "FMC is clean — starting tests"
+
 # ══════════════════════════════════════════════════════════════════════════════
 # Shared test data
 # ══════════════════════════════════════════════════════════════════════════════
 
-# Full config: three groups, three rules each referencing their own group.
-FULL_UNSAFE_TFVARS=$(cat <<'EOF'
-use_safe = false
+# Generate HCL lines for network_groups entries [start..end].
+# IP: 10.<(i-1)/256>.<(i-1)%256>.0/24  (supports up to 65536 groups)
+gen_groups() {
+  local start=$1 end=$2
+  for i in $(seq "$start" "$end"); do
+    local oct2=$(( (i - 1) / 256 ))
+    local oct3=$(( (i - 1) % 256 ))
+    printf '  "tf-ng-safe-test-group-%d" = { literal = "10.%d.%d.0/24" }\n' \
+      "$i" "$oct2" "$oct3"
+  done
+}
+
+# Generate HCL lines for access_rule_groups entries [start..end].
+gen_rules() {
+  local start=$1 end=$2
+  for i in $(seq "$start" "$end"); do
+    printf '  "tf-ng-safe-test-rule-%d" = "tf-ng-safe-test-group-%d"\n' "$i" "$i"
+  done
+}
+
+# Build the six tfvars strings used by tests 1-4.
+FULL_UNSAFE_TFVARS="use_safe = false
 network_groups = {
-  "tf-ng-safe-test-group-a" = { literal = "10.11.1.0/24" }
-  "tf-ng-safe-test-group-b" = { literal = "10.11.2.0/24" }
-  "tf-ng-safe-test-group-c" = { literal = "10.11.3.0/24" }
-}
+$(gen_groups 1 "$GROUP_COUNT")}
 access_rule_groups = {
-  "tf-ng-safe-test-rule-a" = "tf-ng-safe-test-group-a"
-  "tf-ng-safe-test-rule-b" = "tf-ng-safe-test-group-b"
-  "tf-ng-safe-test-rule-c" = "tf-ng-safe-test-group-c"
-}
-EOF
-)
+$(gen_rules 1 "$GROUP_COUNT")}"
 
-# Partial config (unsafe): remove group-a and rule-a.
-PARTIAL_UNSAFE_TFVARS=$(cat <<'EOF'
-use_safe = false
+PARTIAL_UNSAFE_TFVARS="use_safe = false
 network_groups = {
-  "tf-ng-safe-test-group-b" = { literal = "10.11.2.0/24" }
-  "tf-ng-safe-test-group-c" = { literal = "10.11.3.0/24" }
-}
+$(gen_groups 2 "$GROUP_COUNT")}
 access_rule_groups = {
-  "tf-ng-safe-test-rule-b" = "tf-ng-safe-test-group-b"
-  "tf-ng-safe-test-rule-c" = "tf-ng-safe-test-group-c"
-}
-EOF
-)
+$(gen_rules 2 "$GROUP_COUNT")}"
 
-# Empty config (unsafe): no groups, no rules.
-EMPTY_UNSAFE_TFVARS=$(cat <<'EOF'
-use_safe = false
-network_groups    = {}
-access_rule_groups = {}
-EOF
-)
+EMPTY_UNSAFE_TFVARS='use_safe = false
+network_groups     = {}
+access_rule_groups = {}'
 
-# Full config (safe): same three groups + three rules, using fmc_network_groups_safe.
-FULL_SAFE_TFVARS=$(cat <<'EOF'
-use_safe = true
+FULL_SAFE_TFVARS="use_safe = true
 network_groups = {
-  "tf-ng-safe-test-group-a" = { literal = "10.11.1.0/24" }
-  "tf-ng-safe-test-group-b" = { literal = "10.11.2.0/24" }
-  "tf-ng-safe-test-group-c" = { literal = "10.11.3.0/24" }
-}
+$(gen_groups 1 "$GROUP_COUNT")}
 access_rule_groups = {
-  "tf-ng-safe-test-rule-a" = "tf-ng-safe-test-group-a"
-  "tf-ng-safe-test-rule-b" = "tf-ng-safe-test-group-b"
-  "tf-ng-safe-test-rule-c" = "tf-ng-safe-test-group-c"
-}
-EOF
-)
+$(gen_rules 1 "$GROUP_COUNT")}"
 
-# Partial config (safe): remove group-a and rule-a.
-PARTIAL_SAFE_TFVARS=$(cat <<'EOF'
-use_safe = true
+PARTIAL_SAFE_TFVARS="use_safe = true
 network_groups = {
-  "tf-ng-safe-test-group-b" = { literal = "10.11.2.0/24" }
-  "tf-ng-safe-test-group-c" = { literal = "10.11.3.0/24" }
-}
+$(gen_groups 2 "$GROUP_COUNT")}
 access_rule_groups = {
-  "tf-ng-safe-test-rule-b" = "tf-ng-safe-test-group-b"
-  "tf-ng-safe-test-rule-c" = "tf-ng-safe-test-group-c"
-}
-EOF
-)
+$(gen_rules 2 "$GROUP_COUNT")}"
 
-# Empty config (safe): no groups, no rules.
-EMPTY_SAFE_TFVARS=$(cat <<'EOF'
-use_safe = true
-network_groups    = {}
-access_rule_groups = {}
-EOF
-)
-
-# Nested groups config (safe): group-a is a child of group-b.
-# group-b and group-c are referenced by rules. group-a is only referenced by group-b.
-NESTED_SAFE_TFVARS=$(cat <<'EOF'
-use_safe = true
-network_groups = {
-  "tf-ng-safe-test-group-a" = { literal = "10.11.1.0/24" }
-  "tf-ng-safe-test-group-b" = { literal = "10.11.2.0/24" }
-  "tf-ng-safe-test-group-c" = { literal = "10.11.3.0/24" }
-}
-access_rule_groups = {
-  "tf-ng-safe-test-rule-b" = "tf-ng-safe-test-group-b"
-  "tf-ng-safe-test-rule-c" = "tf-ng-safe-test-group-c"
-}
-EOF
-)
+EMPTY_SAFE_TFVARS='use_safe = true
+network_groups     = {}
+access_rule_groups = {}'
 
 # Note: the nested relationship (group-a inside group-b) is set via network_groups attribute
-# in fmc_network_groups_safe. We override main.tf for test 5 via a separate tfvars approach.
-# Since main.tf does not expose network_groups children via variables, test 5 uses its own
-# terraform config written inline by the script.
+# in fmc_network_groups_safe. Test 5 uses its own terraform config written inline by the script
+# and is not affected by GROUP_COUNT.
 
 # ══════════════════════════════════════════════════════════════════════════════
+if run_test 1; then
 header "TEST 1 — fmc_network_groups: remove one group (expect BREAK)"
 # ══════════════════════════════════════════════════════════════════════════════
 
 echo "$FULL_UNSAFE_TFVARS" > "$TFVARS"
-info "Applying full config (3 groups, 3 rules)..."
-if ! terraform apply -auto-approve > /dev/null 2>&1; then
+info "Applying full config ($GROUP_COUNT groups, $GROUP_COUNT rules)..."
+if ! terraform apply -auto-approve > /tmp/tf_init_1.txt 2>&1; then
   fail "TEST 1: Initial full apply failed — cannot proceed"
 else
   pass "Full config applied"
@@ -280,19 +422,20 @@ else
       fail "TEST 1: apply failed but not with an expected HTTP 4xx error — check output: /tmp/tf_test1.txt"
     fi
   fi
-
-  info "Cleaning up test 1..."
-  echo "$FULL_UNSAFE_TFVARS" > "$TFVARS"
-  full_cleanup
 fi
+info "Cleaning up test 1..."
+echo "$FULL_UNSAFE_TFVARS" > "$TFVARS"
+full_cleanup
+fi # run_test 1
 
 # ══════════════════════════════════════════════════════════════════════════════
+if run_test 2; then
 header "TEST 2 — fmc_network_groups: remove all groups (expect BREAK)"
 # ══════════════════════════════════════════════════════════════════════════════
 
 echo "$FULL_UNSAFE_TFVARS" > "$TFVARS"
-info "Applying full config (3 groups, 3 rules)..."
-if ! terraform apply -auto-approve > /dev/null 2>&1; then
+info "Applying full config ($GROUP_COUNT groups, $GROUP_COUNT rules)..."
+if ! terraform apply -auto-approve > /tmp/tf_init_2.txt 2>&1; then
   fail "TEST 2: Initial full apply failed — cannot proceed"
 else
   pass "Full config applied"
@@ -309,19 +452,20 @@ else
       fail "TEST 2: apply failed but not with an expected HTTP 4xx error — check output: /tmp/tf_test2.txt"
     fi
   fi
-
-  info "Cleaning up test 2..."
-  echo "$FULL_UNSAFE_TFVARS" > "$TFVARS"
-  full_cleanup
 fi
+info "Cleaning up test 2..."
+echo "$FULL_UNSAFE_TFVARS" > "$TFVARS"
+full_cleanup
+fi # run_test 2
 
 # ══════════════════════════════════════════════════════════════════════════════
+if run_test 3; then
 header "TEST 3 — fmc_network_groups_safe: remove one group (expect SUCCESS + GC)"
 # ══════════════════════════════════════════════════════════════════════════════
 
 echo "$FULL_SAFE_TFVARS" > "$TFVARS"
-info "Applying full config (3 groups, 3 rules)..."
-if ! terraform apply -auto-approve > /dev/null 2>&1; then
+info "Applying full config ($GROUP_COUNT groups, $GROUP_COUNT rules)..."
+if ! terraform apply -auto-approve > /tmp/tf_init_3.txt 2>&1; then
   fail "TEST 3: Initial full apply failed — cannot proceed"
 else
   pass "Full config applied"
@@ -361,18 +505,19 @@ else
       fi
     fi
   fi
-
-  info "Cleaning up test 3..."
-  full_cleanup
 fi
+info "Cleaning up test 3..."
+full_cleanup
+fi # run_test 3
 
 # ══════════════════════════════════════════════════════════════════════════════
+if run_test 4; then
 header "TEST 4 — fmc_network_groups_safe: remove all groups (expect SUCCESS + GC)"
 # ══════════════════════════════════════════════════════════════════════════════
 
 echo "$FULL_SAFE_TFVARS" > "$TFVARS"
-info "Applying full config (3 groups, 3 rules)..."
-if ! terraform apply -auto-approve > /dev/null 2>&1; then
+info "Applying full config ($GROUP_COUNT groups, $GROUP_COUNT rules)..."
+if ! terraform apply -auto-approve > /tmp/tf_init_4.txt 2>&1; then
   fail "TEST 4: Initial full apply failed — cannot proceed"
 else
   pass "Full config applied"
@@ -388,11 +533,11 @@ else
     fmc_auth
     GC_GROUPS=$(fmc_list_gc_groups)
     GC_COUNT=$(echo "$GC_GROUPS" | grep -c "__gc_" || true)
-    if [[ "$GC_COUNT" -eq 3 ]]; then
-      pass "All 3 groups soft-deleted in FMC:"
+    if [[ "$GC_COUNT" -eq "$GROUP_COUNT" ]]; then
+      pass "All $GROUP_COUNT groups soft-deleted in FMC:"
       echo "$GC_GROUPS" | while IFS= read -r g; do info "  $g"; done
     else
-      fail "TEST 4: Expected 3 __gc_ groups in FMC, found $GC_COUNT"
+      fail "TEST 4: Expected $GROUP_COUNT __gc_ groups in FMC, found $GC_COUNT"
       echo "$GC_GROUPS"
     fi
 
@@ -413,12 +558,13 @@ else
       fi
     fi
   fi
-
-  info "Cleaning up test 4..."
-  full_cleanup
 fi
+info "Cleaning up test 4..."
+full_cleanup
+fi # run_test 4
 
 # ══════════════════════════════════════════════════════════════════════════════
+if run_test 5; then
 header "TEST 5 — fmc_network_groups_safe: nested groups (group-a child of group-b, expect SUCCESS)"
 # ══════════════════════════════════════════════════════════════════════════════
 #
@@ -573,6 +719,7 @@ else
 
   t5_cleanup
 fi
+fi # run_test 5
 
 # ══════════════════════════════════════════════════════════════════════════════
 header "Summary"
