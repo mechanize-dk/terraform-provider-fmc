@@ -468,7 +468,9 @@ func (r *NetworkGroupsSafeResource) updateSubresources(ctx context.Context, tfsd
 
 		for _, group := range deleteGroups {
 			urlPath := state.getPath() + "?bulk=true&filter=ids:" + url.QueryEscape(group.ids)
-			_, err := r.client.Delete(urlPath, reqMods...)
+			_, err := helpers.RetryOnParallelLock(ctx, func() (gjson.Result, error) {
+				return r.client.Delete(urlPath, reqMods...)
+			})
 			if err != nil {
 				if !strings.Contains(err.Error(), "StatusCode 409") && !strings.Contains(err.Error(), "StatusCode 400") {
 					return state, diag.Diagnostics{

@@ -37,6 +37,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-fmc"
+	"github.com/tidwall/gjson"
 )
 
 // End of section. //template:end imports
@@ -468,7 +469,9 @@ func (r *URLGroupsResource) createSubresources(ctx context.Context, state, plan 
 
 			// Execute request
 			urlPath := state.getPath() + "?bulk=true"
-			res, err := r.client.Post(urlPath, body, reqMods...)
+			res, err := helpers.RetryOnParallelLock(ctx, func() (gjson.Result, error) {
+				return r.client.Post(urlPath, body, reqMods...)
+			})
 			if err != nil {
 				return state, diag.Diagnostics{
 					diag.NewErrorDiagnostic("Client Error", fmt.Sprintf("Failed to create a bulk (POST) id: %s, got error: %s, %s", state.Id.ValueString(), err, res.String())),
@@ -542,7 +545,9 @@ func (r *URLGroupsResource) deleteSubresources(ctx context.Context, state, plan 
 			// If bulk size was reached or all entries have been processed
 			if idsToRemove.Len() >= maxUrlParamLength || idx == len(objectsToRemove.Items) {
 				urlPath := state.getPath() + "?bulk=true&filter=ids:" + url.QueryEscape(idsToRemove.String())
-				res, err := r.client.Delete(urlPath, reqMods...)
+				res, err := helpers.RetryOnParallelLock(ctx, func() (gjson.Result, error) {
+					return r.client.Delete(urlPath, reqMods...)
+				})
 				if err != nil {
 					return state, diag.Diagnostics{
 						diag.NewErrorDiagnostic("Client Error", fmt.Sprintf("%s: Failed to delete subobject(s) (DELETE), got error: %s, %s", state.Id.ValueString(), err, res.String())),

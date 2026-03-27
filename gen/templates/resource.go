@@ -37,6 +37,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-fmc"
+	"github.com/tidwall/gjson"
 	"github.com/CiscoDevNet/terraform-provider-fmc/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -678,49 +679,22 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	{{- end}}
 	{{- if and (not .PutCreate) (hasDataSourceQuery .Attributes)}}
 	{{- $dataSourceAttribute := getDataSourceQueryAttribute .}}
+	var ingestID string
 	if err != nil {
-		if strings.Contains(err.Error(), "StatusCode 409") || (strings.Contains(err.Error(), "StatusCode 400") && strings.Contains(res.String(), "already exists")) {
-			// Object already exists in FMC - search for existing object and ingest it
-			tflog.Debug(ctx, fmt.Sprintf("%s: Object already exists (409/400), searching for existing object by {{$dataSourceAttribute.TfName}}", plan.Id.ValueString()))
-			offset := 0
-			limit := 1000
-			for page := 1; ; page++ {
-				queryString := fmt.Sprintf("?limit=%d&offset=%d&expanded=true", limit, offset)
-				listRes, listErr := r.client.Get(plan.getPath()+queryString, reqMods...)
-				if listErr != nil {
-					resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists but failed to retrieve objects (GET), got error: %s, %s", listErr, listRes.String()))
-					return
-				}
-				for _, v := range listRes.Get("items").Array() {
-					if plan.{{toGoName $dataSourceAttribute.TfName}}.
-						{{- if eq $dataSourceAttribute.Type "Int64" -}}ValueInt64()
-						{{- else -}}ValueString(){{- end -}} == v.Get("{{range $dataSourceAttribute.DataPath}}{{.}}.{{end}}{{$dataSourceAttribute.ModelName}}").
-						{{- if eq $dataSourceAttribute.Type "Int64" -}}Int()
-						{{- else -}}String(){{- end -}} {
-						plan.Id = types.StringValue(v.Get("id").String())
-						tflog.Debug(ctx, fmt.Sprintf("%s: Found existing object with {{$dataSourceAttribute.TfName}} '%v'", plan.Id.ValueString(), plan.{{toGoName $dataSourceAttribute.TfName}}.{{if eq $dataSourceAttribute.Type "Int64"}}ValueInt64(){{else}}ValueString(){{end}}))
-						break
-					}
-				}
-				if plan.Id.ValueString() != "" || !listRes.Get("paging.next.0").Exists() {
-					break
-				}
-				offset += limit
-			}
-			if plan.Id.ValueString() == "" {
-				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists (conflict) but failed to find existing object with {{$dataSourceAttribute.TfName}} '%v': %s", plan.{{toGoName $dataSourceAttribute.TfName}}.{{if eq $dataSourceAttribute.Type "Int64"}}ValueInt64(){{else}}ValueString(){{end}}, err))
-				return
-			}
-			res, err = r.client.Get(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), reqMods...)
-			if err != nil {
-				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists (conflict) but failed to retrieve existing object (GET), got error: %s, %s", err, res.String()))
-				return
-			}
-			plan.fromBodyUnknowns(ctx, res)
-		} else {
+		ingestID, res, err = helpers.IngestOnConflict(ctx, r.client, plan.getPath(), err, res,
+			"{{$dataSourceAttribute.TfName}}",
+			func(v gjson.Result) bool {
+				return plan.{{toGoName $dataSourceAttribute.TfName}}.
+					{{- if eq $dataSourceAttribute.Type "Int64" -}}ValueInt64() == v.Get("{{range $dataSourceAttribute.DataPath}}{{.}}.{{end}}{{$dataSourceAttribute.ModelName}}").Int()
+					{{- else -}}ValueString() == v.Get("{{range $dataSourceAttribute.DataPath}}{{.}}.{{end}}{{$dataSourceAttribute.ModelName}}").String(){{- end -}}
+			},
+			reqMods...)
+		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
 			return
 		}
+		plan.Id = types.StringValue(ingestID)
+		plan.fromBodyUnknowns(ctx, res)
 	} else {
 		plan.Id = types.StringValue(res.Get("id").String())
 		plan.fromBodyUnknowns(ctx, res)
@@ -1389,7 +1363,9 @@ func (r *{{camelCase .Name}}Resource) createSubresources(ctx context.Context, st
 
 				// Execute request
 				urlPath := state.getPath() + "?bulk=true"
-				res, err := r.client.Post(urlPath, body, reqMods...)
+				res, err := helpers.RetryOnParallelLock(ctx, func() (gjson.Result, error) {
+					return r.client.Post(urlPath, body, reqMods...)
+				})
 				if err != nil {
 					return state, diag.Diagnostics{
 						diag.NewErrorDiagnostic("Client Error", fmt.Sprintf("Failed to create a bulk (POST) id: %s, got error: %s, %s", state.Id.ValueString(), err, res.String())),
@@ -1471,7 +1447,9 @@ func (r *{{camelCase .Name}}Resource) deleteSubresources(ctx context.Context, st
 			// If bulk size was reached or all entries have been processed
 			if idsToRemove.Len() >= maxUrlParamLength || idx == len(objectsToRemove.Items) {
 				urlPath := state.getPath() + "?bulk=true&filter=ids:" + url.QueryEscape(idsToRemove.String())
-				res, err := r.client.Delete(urlPath, reqMods...)
+				res, err := helpers.RetryOnParallelLock(ctx, func() (gjson.Result, error) {
+					return r.client.Delete(urlPath, reqMods...)
+				})
 				if err != nil {
 					return state, diag.Diagnostics{
 						diag.NewErrorDiagnostic("Client Error", fmt.Sprintf("%s: Failed to delete subobject(s) (DELETE), got error: %s, %s", state.Id.ValueString(), err, res.String())),

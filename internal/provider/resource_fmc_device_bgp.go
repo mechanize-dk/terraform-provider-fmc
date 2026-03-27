@@ -41,6 +41,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-fmc"
+	"github.com/tidwall/gjson"
 )
 
 // End of section. //template:end imports
@@ -711,45 +712,20 @@ func (r *DeviceBGPResource) Create(ctx context.Context, req resource.CreateReque
 	// Create object
 	body := plan.toBody(ctx, DeviceBGP{})
 	res, err := r.client.Post(plan.getPath(), body, reqMods...)
+	var ingestID string
 	if err != nil {
-		if strings.Contains(err.Error(), "StatusCode 409") || (strings.Contains(err.Error(), "StatusCode 400") && strings.Contains(res.String(), "already exists")) {
-			// Object already exists in FMC - search for existing object and ingest it
-			tflog.Debug(ctx, fmt.Sprintf("%s: Object already exists (409/400), searching for existing object by as_number", plan.Id.ValueString()))
-			offset := 0
-			limit := 1000
-			for page := 1; ; page++ {
-				queryString := fmt.Sprintf("?limit=%d&offset=%d&expanded=true", limit, offset)
-				listRes, listErr := r.client.Get(plan.getPath()+queryString, reqMods...)
-				if listErr != nil {
-					resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists but failed to retrieve objects (GET), got error: %s, %s", listErr, listRes.String()))
-					return
-				}
-				for _, v := range listRes.Get("items").Array() {
-					if plan.AsNumber.ValueString() == v.Get("asNumber").String() {
-						plan.Id = types.StringValue(v.Get("id").String())
-						tflog.Debug(ctx, fmt.Sprintf("%s: Found existing object with as_number '%v'", plan.Id.ValueString(), plan.AsNumber.ValueString()))
-						break
-					}
-				}
-				if plan.Id.ValueString() != "" || !listRes.Get("paging.next.0").Exists() {
-					break
-				}
-				offset += limit
-			}
-			if plan.Id.ValueString() == "" {
-				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists (conflict) but failed to find existing object with as_number '%v': %s", plan.AsNumber.ValueString(), err))
-				return
-			}
-			res, err = r.client.Get(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), reqMods...)
-			if err != nil {
-				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Object already exists (conflict) but failed to retrieve existing object (GET), got error: %s, %s", err, res.String()))
-				return
-			}
-			plan.fromBodyUnknowns(ctx, res)
-		} else {
+		ingestID, res, err = helpers.IngestOnConflict(ctx, r.client, plan.getPath(), err, res,
+			"as_number",
+			func(v gjson.Result) bool {
+				return plan.AsNumber.ValueString() == v.Get("asNumber").String()
+			},
+			reqMods...)
+		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
 			return
 		}
+		plan.Id = types.StringValue(ingestID)
+		plan.fromBodyUnknowns(ctx, res)
 	} else {
 		plan.Id = types.StringValue(res.Get("id").String())
 		plan.fromBodyUnknowns(ctx, res)

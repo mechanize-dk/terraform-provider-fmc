@@ -40,6 +40,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-fmc"
+	"github.com/tidwall/gjson"
 )
 
 // End of section. //template:end imports
@@ -464,7 +465,9 @@ func (r *InterfaceGroupsResource) createSubresources(ctx context.Context, state,
 
 			// Execute request
 			urlPath := state.getPath() + "?bulk=true"
-			res, err := r.client.Post(urlPath, body, reqMods...)
+			res, err := helpers.RetryOnParallelLock(ctx, func() (gjson.Result, error) {
+				return r.client.Post(urlPath, body, reqMods...)
+			})
 			if err != nil {
 				return state, diag.Diagnostics{
 					diag.NewErrorDiagnostic("Client Error", fmt.Sprintf("Failed to create a bulk (POST) id: %s, got error: %s, %s", state.Id.ValueString(), err, res.String())),

@@ -905,57 +905,20 @@ func (r *AccessRulesResource) createRulesAt(ctx context.Context, plan AccessRule
 				individualURLParams = "?section=" + url.QueryEscape(s)
 			}
 
-			res, err := r.client.Post(plan.getPath()+urlParams, body, reqMods...)
+			postURL := plan.getPath() + urlParams
+			res, err := helpers.RetryOnParallelLock(ctx, func() (gjson.Result, error) {
+				return r.client.Post(postURL, body, reqMods...)
+			})
 			if err != nil {
 				if !(strings.Contains(err.Error(), "StatusCode 409") || (strings.Contains(err.Error(), "StatusCode 400") && strings.Contains(res.String(), "already exists"))) {
 					return err
 				}
 
-				// Bulk failed due to conflict — fall back to individual POSTs with per-item idempotency
+				// Bulk failed due to conflict — fall back to "find first" idempotency.
 				tflog.Debug(ctx, "Access rules bulk create conflict, falling back to individual creates")
 				itemBodies := gjson.Parse(body).Array()
-				for i := range bulk.Items {
-					var itemBody string
-					if i < len(itemBodies) {
-						itemBody = itemBodies[i].Raw
-					}
-					itemRes, itemErr := r.client.Post(plan.getPath()+individualURLParams, itemBody, reqMods...)
-					if itemErr != nil {
-						if strings.Contains(itemErr.Error(), "StatusCode 409") || (strings.Contains(itemErr.Error(), "StatusCode 400") && strings.Contains(itemRes.String(), "already exists")) {
-							// Rule already exists — find it by name and ingest
-							name := bulk.Items[i].Name.ValueString()
-							tflog.Debug(ctx, fmt.Sprintf("Access rule '%s' already exists, searching by name", name))
-							found := false
-							offset := 0
-							limit := 1000
-							for {
-								queryString := fmt.Sprintf("?limit=%d&offset=%d&expanded=true", limit, offset)
-								listRes, listErr := r.client.Get(plan.getPath()+queryString, reqMods...)
-								if listErr != nil {
-									return fmt.Errorf("access rule '%s' already exists but failed to list: %s, %s", name, listErr, listRes.String())
-								}
-								for _, v := range listRes.Get("items").Array() {
-									if v.Get("name").String() == name {
-										bulk.Items[i].Id = types.StringValue(v.Get("id").String())
-										found = true
-										tflog.Debug(ctx, fmt.Sprintf("Found existing access rule '%s' (id=%s)", name, v.Get("id").String()))
-										break
-									}
-								}
-								if found || !listRes.Get("paging.next.0").Exists() {
-									break
-								}
-								offset += limit
-							}
-							if !found {
-								return fmt.Errorf("access rule '%s' already exists (conflict) but could not be found in the list: %s", name, itemErr)
-							}
-						} else {
-							return itemErr
-						}
-					} else {
-						bulk.Items[i].Id = types.StringValue(itemRes.Get("id").String())
-					}
+				if err := accessRulesFindOrCreate(ctx, r.client, plan, &bulk, itemBodies, individualURLParams, reqMods...); err != nil {
+					return err
 				}
 				state.Items = append(state.Items, bulk.Items...)
 				bulk.Items = bulk.Items[:0]
@@ -1000,7 +963,10 @@ func (r *AccessRulesResource) truncateRulesAt(ctx context.Context, state *Access
 	}()
 
 	for i, bulk := range bulks {
-		res, err := r.client.Delete(state.getPath()+"?bulk=true&filter=ids:"+url.QueryEscape(bulk), reqMods...)
+		urlPath := state.getPath() + "?bulk=true&filter=ids:" + url.QueryEscape(bulk)
+		res, err := helpers.RetryOnParallelLock(ctx, func() (gjson.Result, error) {
+			return r.client.Delete(urlPath, reqMods...)
+		})
 		if err != nil {
 			return fmt.Errorf("failed to bulk-delete rules, got error: %v, %s", err, res.String())
 		}
