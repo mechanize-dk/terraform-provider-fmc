@@ -67,8 +67,9 @@ const (
 	bulkSizeCreate int = 1000
 	// maximum payload size in bytes
 	maxPayloadSize int = 2048000
-	// maximum URL Param length. This is a rough estimate and does not account for the entire URL length.
-	maxUrlParamLength int = 7000
+	// maximum URL Param length (un-encoded). url.QueryEscape inflates UUIDs by ~27% (dashes become %2D,
+	// commas become %2C), so this must be sized to keep encoded batches well under FMC's ~8KB URL limit.
+	maxUrlParamLength int = 4500
 )
 
 // Metadata returns the provider type name.
