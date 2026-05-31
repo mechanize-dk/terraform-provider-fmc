@@ -175,6 +175,28 @@ fmc_create_access_rule() {
     -d "{\"name\":\"${name}\",\"action\":\"ALLOW\",\"type\":\"AccessRule\",\"enabled\":true}"
 }
 
+# Creates an FTD NAT policy; prints the full JSON response
+fmc_create_nat_policy() {
+  local tok="$1" domain="$2" name="$3"
+  "${CURL[@]}" -X POST \
+    "${FMC_URL}/api/fmc_config/v1/domain/${domain}/policy/ftdnatpolicies" \
+    -H "X-auth-access-token: ${tok}" \
+    -H "Content-Type: application/json" \
+    -d "{\"name\":\"${name}\",\"type\":\"FTDNatPolicy\"}"
+}
+
+# Creates a manual NAT rule inside an FTD NAT policy; prints the full JSON response.
+# Body content must match the HCL in main.tf exactly so FMC's content-level
+# duplicate detection fires on the subsequent terraform-driven POST.
+fmc_create_manual_nat_rule() {
+  local tok="$1" domain="$2" natp_id="$3" orig_id="$4" trans_id="$5"
+  "${CURL[@]}" -X POST \
+    "${FMC_URL}/api/fmc_config/v1/domain/${domain}/policy/ftdnatpolicies/${natp_id}/manualnatrules?section=before_auto" \
+    -H "X-auth-access-token: ${tok}" \
+    -H "Content-Type: application/json" \
+    -d "{\"natType\":\"STATIC\",\"originalSource\":{\"id\":\"${orig_id}\",\"type\":\"Host\"},\"translatedSource\":{\"id\":\"${trans_id}\",\"type\":\"Host\"},\"type\":\"FTDManualNatRule\"}"
+}
+
 # Generic DELETE by URL path
 fmc_delete() {
   local tok="$1" path="$2"
@@ -510,6 +532,63 @@ pass "No changes detected after ingest"
 info "terraform destroy -target=fmc_access_rules.idempotency_test -target=fmc_access_control_policy.test_acp2..."
 terraform destroy -target=fmc_access_rules.idempotency_test -target=fmc_access_control_policy.test_acp2 -auto-approve
 pass "TEST 7 — fmc_access_rules PASSED — existing rules were ingested correctly"
+
+# ══════════════════════════════════════════════════════════════════════════════
+header "TEST 8 — fmc_ftd_manual_nat_rule duplicate-by-index recovery"
+# Pre-creates an FTD NAT policy and a manual NAT rule via the FMC REST API
+# with content identical to the HCL. Terraform's POST will trigger FMC's
+# "Duplicate entry of ManualNatRule at rule index [N]" 400 error; the
+# helpers.FindDuplicateByIndex recovery (Patch 11) must fetch the rule and
+# import it.
+# ══════════════════════════════════════════════════════════════════════════════
+
+info "Re-authenticating with FMC..."
+fmc_authenticate
+[[ -z "$AUTH_TOKEN" ]] && fail "Could not re-obtain auth token"
+pass "Auth token refreshed"
+
+info "Pre-creating original-source host via API..."
+API_RESPONSE=$(fmc_create_host "$AUTH_TOKEN" "$DOMAIN_UUID" "tf-idempotency-test-host" "192.0.2.111")
+ORIG_SRC_ID=$(echo "$API_RESPONSE" | json_id)
+[[ -z "$ORIG_SRC_ID" ]] && fail "Pre-creation of original-source host failed. Response: $API_RESPONSE"
+EMERGENCY_CLEANUPS+=("/api/fmc_config/v1/domain/${DOMAIN_UUID}/object/hosts/${ORIG_SRC_ID}")
+pass "Original-source host pre-created (ID: $ORIG_SRC_ID)"
+
+info "Pre-creating translated-source host via API..."
+API_RESPONSE=$(fmc_create_host "$AUTH_TOKEN" "$DOMAIN_UUID" "tf-idempotency-test-nat-trans" "203.0.113.5")
+TRANS_SRC_ID=$(echo "$API_RESPONSE" | json_id)
+[[ -z "$TRANS_SRC_ID" ]] && fail "Pre-creation of translated-source host failed. Response: $API_RESPONSE"
+EMERGENCY_CLEANUPS+=("/api/fmc_config/v1/domain/${DOMAIN_UUID}/object/hosts/${TRANS_SRC_ID}")
+pass "Translated-source host pre-created (ID: $TRANS_SRC_ID)"
+
+info "Pre-creating NAT policy 'tf-idempotency-test-natp' via API..."
+API_RESPONSE=$(fmc_create_nat_policy "$AUTH_TOKEN" "$DOMAIN_UUID" "tf-idempotency-test-natp")
+NATP_ID=$(echo "$API_RESPONSE" | json_id)
+[[ -z "$NATP_ID" ]] && fail "Pre-creation of NAT policy failed. Response: $API_RESPONSE"
+EMERGENCY_CLEANUPS+=("/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/ftdnatpolicies/${NATP_ID}")
+pass "NAT policy pre-created (ID: $NATP_ID)"
+
+info "Pre-creating manual NAT rule (orig=$ORIG_SRC_ID trans=$TRANS_SRC_ID) via API..."
+API_RESPONSE=$(fmc_create_manual_nat_rule "$AUTH_TOKEN" "$DOMAIN_UUID" "$NATP_ID" "$ORIG_SRC_ID" "$TRANS_SRC_ID")
+NAT_RULE_ID=$(echo "$API_RESPONSE" | json_id)
+[[ -z "$NAT_RULE_ID" ]] && fail "Pre-creation of manual NAT rule failed. Response: $API_RESPONSE"
+EMERGENCY_CLEANUPS+=("/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/ftdnatpolicies/${NATP_ID}/manualnatrules/${NAT_RULE_ID}")
+pass "Manual NAT rule pre-created (ID: $NAT_RULE_ID)"
+
+run_idempotency_test \
+  "TEST 8 — fmc_ftd_manual_nat_rule" \
+  "fmc_ftd_manual_nat_rule" "idempotency_test" \
+  "$NAT_RULE_ID" \
+  "/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/ftdnatpolicies/${NATP_ID}/manualnatrules/${NAT_RULE_ID}" \
+  -target=fmc_host.idempotency_test \
+  -target=fmc_host.manual_nat_translated \
+  -target=fmc_ftd_nat_policy.test_natp \
+  -target=fmc_ftd_manual_nat_rule.idempotency_test
+
+# Tear down the NAT policy (the rule is already gone from run_idempotency_test's destroy)
+info "terraform destroy -target=fmc_ftd_nat_policy.test_natp -target=fmc_host.manual_nat_translated -target=fmc_host.idempotency_test..."
+terraform destroy -target=fmc_ftd_nat_policy.test_natp -target=fmc_host.manual_nat_translated -target=fmc_host.idempotency_test -auto-approve
+pass "TEST 8 cleanup complete"
 
 # ── Done ──────────────────────────────────────────────────────────────────────
 echo ""

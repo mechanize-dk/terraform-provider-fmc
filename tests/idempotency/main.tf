@@ -67,3 +67,22 @@ resource "fmc_access_rules" "idempotency_test" {
     },
   ]
 }
+
+# ── Prerequisite for Test 8 ──────────────────────────────────────────────────
+resource "fmc_ftd_nat_policy" "test_natp" {
+  name = "tf-idempotency-test-natp"
+}
+
+resource "fmc_host" "manual_nat_translated" {
+  name = "tf-idempotency-test-nat-trans"
+  ip   = "203.0.113.5"
+}
+
+# ── Test 8: fmc_ftd_manual_nat_rule ──────────────────────────────────────────
+resource "fmc_ftd_manual_nat_rule" "idempotency_test" {
+  ftd_nat_policy_id    = fmc_ftd_nat_policy.test_natp.id
+  section              = "BEFORE_AUTO"
+  nat_type             = "STATIC"
+  original_source_id   = fmc_host.idempotency_test.id
+  translated_source_id = fmc_host.manual_nat_translated.id
+}
