@@ -542,31 +542,24 @@ header "TEST 8 — fmc_ftd_manual_nat_rule duplicate-by-index recovery"
 # import it.
 # ══════════════════════════════════════════════════════════════════════════════
 
+info "Creating prerequisites (NAT policy + hosts) via terraform..."
+terraform apply \
+  -target=fmc_ftd_nat_policy.test_natp \
+  -target=fmc_host.idempotency_test \
+  -target=fmc_host.manual_nat_translated \
+  -auto-approve
+NATP_ID=$(tf_resource_id "fmc_ftd_nat_policy" "test_natp")
+ORIG_SRC_ID=$(tf_resource_id "fmc_host" "idempotency_test")
+TRANS_SRC_ID=$(tf_resource_id "fmc_host" "manual_nat_translated")
+[[ -z "$NATP_ID" ]] && fail "Could not get NAT policy ID from Terraform state"
+[[ -z "$ORIG_SRC_ID" ]] && fail "Could not get original-source host ID from Terraform state"
+[[ -z "$TRANS_SRC_ID" ]] && fail "Could not get translated-source host ID from Terraform state"
+pass "NAT policy + hosts created via TF (natp=$NATP_ID, orig=$ORIG_SRC_ID, trans=$TRANS_SRC_ID)"
+
 info "Re-authenticating with FMC..."
 fmc_authenticate
 [[ -z "$AUTH_TOKEN" ]] && fail "Could not re-obtain auth token"
 pass "Auth token refreshed"
-
-info "Pre-creating original-source host via API..."
-API_RESPONSE=$(fmc_create_host "$AUTH_TOKEN" "$DOMAIN_UUID" "tf-idempotency-test-host" "192.0.2.111")
-ORIG_SRC_ID=$(echo "$API_RESPONSE" | json_id)
-[[ -z "$ORIG_SRC_ID" ]] && fail "Pre-creation of original-source host failed. Response: $API_RESPONSE"
-EMERGENCY_CLEANUPS+=("/api/fmc_config/v1/domain/${DOMAIN_UUID}/object/hosts/${ORIG_SRC_ID}")
-pass "Original-source host pre-created (ID: $ORIG_SRC_ID)"
-
-info "Pre-creating translated-source host via API..."
-API_RESPONSE=$(fmc_create_host "$AUTH_TOKEN" "$DOMAIN_UUID" "tf-idempotency-test-nat-trans" "203.0.113.5")
-TRANS_SRC_ID=$(echo "$API_RESPONSE" | json_id)
-[[ -z "$TRANS_SRC_ID" ]] && fail "Pre-creation of translated-source host failed. Response: $API_RESPONSE"
-EMERGENCY_CLEANUPS+=("/api/fmc_config/v1/domain/${DOMAIN_UUID}/object/hosts/${TRANS_SRC_ID}")
-pass "Translated-source host pre-created (ID: $TRANS_SRC_ID)"
-
-info "Pre-creating NAT policy 'tf-idempotency-test-natp' via API..."
-API_RESPONSE=$(fmc_create_nat_policy "$AUTH_TOKEN" "$DOMAIN_UUID" "tf-idempotency-test-natp")
-NATP_ID=$(echo "$API_RESPONSE" | json_id)
-[[ -z "$NATP_ID" ]] && fail "Pre-creation of NAT policy failed. Response: $API_RESPONSE"
-EMERGENCY_CLEANUPS+=("/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/ftdnatpolicies/${NATP_ID}")
-pass "NAT policy pre-created (ID: $NATP_ID)"
 
 info "Pre-creating manual NAT rule (orig=$ORIG_SRC_ID trans=$TRANS_SRC_ID) via API..."
 API_RESPONSE=$(fmc_create_manual_nat_rule "$AUTH_TOKEN" "$DOMAIN_UUID" "$NATP_ID" "$ORIG_SRC_ID" "$TRANS_SRC_ID")
@@ -580,12 +573,9 @@ run_idempotency_test \
   "fmc_ftd_manual_nat_rule" "idempotency_test" \
   "$NAT_RULE_ID" \
   "/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/ftdnatpolicies/${NATP_ID}/manualnatrules/${NAT_RULE_ID}" \
-  -target=fmc_host.idempotency_test \
-  -target=fmc_host.manual_nat_translated \
-  -target=fmc_ftd_nat_policy.test_natp \
   -target=fmc_ftd_manual_nat_rule.idempotency_test
 
-# Tear down the NAT policy (the rule is already gone from run_idempotency_test's destroy)
+# Tear down the prerequisites that the run_idempotency_test harness didn't own
 info "terraform destroy -target=fmc_ftd_nat_policy.test_natp -target=fmc_host.manual_nat_translated -target=fmc_host.idempotency_test..."
 terraform destroy -target=fmc_ftd_nat_policy.test_natp -target=fmc_host.manual_nat_translated -target=fmc_host.idempotency_test -auto-approve
 pass "TEST 8 cleanup complete"
