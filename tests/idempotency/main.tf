@@ -63,14 +63,15 @@ resource "fmc_access_rules" "idempotency_test" {
     },
     {
       name   = "tf-idempotency-test-bulk-rule2"
-      action = "BLOCK"
+      action = "ALLOW"
     },
   ]
 }
 
 # ── Prerequisite for Test 8 ──────────────────────────────────────────────────
 resource "fmc_ftd_nat_policy" "test_natp" {
-  name = "tf-idempotency-test-natp"
+  name         = "tf-idempotency-test-natp"
+  manage_rules = false
 }
 
 resource "fmc_host" "manual_nat_translated" {
