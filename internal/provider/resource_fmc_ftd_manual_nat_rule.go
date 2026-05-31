@@ -22,6 +22,7 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"reflect"
 	"regexp"
 	"strings"
 
@@ -228,8 +229,22 @@ func (r *FTDManualNATRuleResource) Create(ctx context.Context, req resource.Crea
 	body = plan.adjustBody(ctx, body)
 	res, err := r.client.Post(plan.getPath()+"?section="+strings.ToLower(plan.Section.ValueString()), body, reqMods...)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
-		return
+		foundRes, dupErr := helpers.FindDuplicateByIndex(ctx, r.client, plan.getPath(), err, res, reqMods...)
+		if dupErr != nil {
+			// Pattern didn't match (dupErr == original err) or GET failed.
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", dupErr, res.String()))
+			return
+		}
+		// FMC says we'd duplicate an existing object. Parse it and compare to the plan.
+		var existing FTDManualNATRule
+		existing.fromBody(ctx, foundRes)
+		planCopy := plan
+		planCopy.Id = existing.Id
+		if !reflect.DeepEqual(planCopy, existing) {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("FMC reported a duplicate object, but the existing object's content differs from the proposed body. Original error: %s", err))
+			return
+		}
+		res = foundRes
 	}
 	plan.Id = types.StringValue(res.Get("id").String())
 	plan.fromBodyUnknowns(ctx, res)
