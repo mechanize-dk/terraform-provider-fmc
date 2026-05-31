@@ -13,8 +13,16 @@ upstream commit `701b7f56` (v2.0.1).
    own.
 4. Run `go generate` (with `terraform` in PATH) to regenerate all files, then
    verify `git diff` matches what `PATCHES.md` describes.
-5. Build and run the stress test (`tests/stress-test/run_test.py --count 1000`)
-   to confirm everything still works.
+5. Build and run **all** test suites to confirm every patch still works:
+   - `tests/idempotency/run_test.sh` (covers Patches 1, 5; bulk variants of 2, 3)
+   - `tests/rule_position/run_test.sh` (access rule position-change handling)
+   - `tests/network_groups_safe/run_test.sh --count 10` (Patch 8, fast)
+   - `tests/network_groups_safe/run_test.sh --count 1000` (Patch 8 at scale)
+   - `tests/stress-test/run_test.py --count 1000` (Patches 2, 3, 4, 6, 8, 10
+     end-to-end with MITM proxy)
+
+   Each must reach a clean RESULT: PASSED. The stress test is the strongest
+   signal because it exercises bulk paths at scale through the proxy.
 6. Push to `mechanize` remote and tag a new release if appropriate.
 
 See `PATCHES.md` for a detailed description of every patch that must survive
