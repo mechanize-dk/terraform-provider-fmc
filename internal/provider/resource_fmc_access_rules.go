@@ -789,6 +789,26 @@ func (r *AccessRulesResource) Read(ctx context.Context, req resource.ReadRequest
 		state.fromBodyPartial(ctx, res)
 	}
 
+	// Dedup state.Items by Id. FMC's `?filter=name:` does prefix/substring
+	// matching, so a query for `name:rule-1,rule-2,...` also matches rule-10,
+	// rule-100, rule-20, etc. When Read batches names into multiple GETs and
+	// merges the responses, the same rule can appear in more than one batch.
+	// Without this dedup, state.Items grows beyond the configured rule count
+	// and subsequent Update -> truncateRulesAt sends bulk DELETEs whose URL
+	// contains duplicate IDs, which FMC rejects with 404.
+	{
+		seen := make(map[string]bool, len(state.Items))
+		out := state.Items[:0]
+		for _, item := range state.Items {
+			id := item.Id.ValueString()
+			if id == "" || !seen[id] {
+				seen[id] = true
+				out = append(out, item)
+			}
+		}
+		state.Items = out
+	}
+
 	tflog.Debug(ctx, fmt.Sprintf("%s: Read finished successfully", state.Id.ValueString()))
 
 	diags = resp.State.Set(ctx, &state)

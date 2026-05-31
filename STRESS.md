@@ -272,13 +272,75 @@ above issues diagnosable within minutes of observing them.
 
 ---
 
+## Problem 6 — `fmc_access_rules.Read` returns duplicate items at scale
+
+### Symptom
+
+After the bulk POST and the soft-delete of group-1 in Step 2, the bulk DELETE
+of the access rules failed with **HTTP 404** on the second batch. The proxy
+log showed the second batch URL contained overlapping/duplicate UUIDs — the
+last ~21 IDs in batch 2 were the same as the first ~21 IDs of batch 1
+(already deleted).
+
+### Diagnosis
+
+Adding a file-based instrumentation hook inside `truncateRulesAt` revealed:
+
+```
+truncateRulesAt(entry): kept=0 len=309 unique=250 dup_ids=59
+```
+
+`state.Items` held **309 entries with only 250 unique IDs** — 59 duplicates.
+The batch-builder loop was working correctly; the problem was that state
+itself was corrupted before truncate ever ran.
+
+The corruption came from `fmc_access_rules.Read`. Read issues GETs of the
+form:
+
+```
+GET …/accessrules?expanded=true&limit=1000&filter=name:<n1>,<n2>,…
+```
+
+batching ≤2500 chars of names per call. FMC's `filter=name:` does
+**prefix/substring** matching, not exact match, so a filter value of
+`stress-test-rule-1` also matches `stress-test-rule-10`, `…-100`, etc.
+For the test config (250 or 1000 rules with `stress-test-rule-N` names),
+each batch's response contained rules that appeared in other batches'
+responses too. `Read` merged the responses by appending — no dedup — so
+the merged `items` array had more entries than the rule set.
+`fromBodyPartial` then resized `state.Items` to match, persisting the
+duplicates into Terraform state.
+
+### Fix (Patch 10 — `Read` dedup by Id)
+
+Dedup `state.Items` by `Id` at the end of `Read`, after
+`fromBody`/`fromBodyPartial`. Keeps the first occurrence in slice order;
+no-op when no duplicates exist. See PATCHES.md "Patch 10" for the code.
+
+This is a pre-existing upstream bug, not introduced by the fork. It only
+surfaces when:
+- A bulk `fmc_access_rules` resource manages enough rules that `Read`
+  has to batch the name filter, **and**
+- Rule names share a common prefix such that one name is a substring of
+  another (e.g. `rule-1`, `rule-10`, `rule-100`).
+
+---
+
 ## Current test status
 
-The stress test at `--count 1000` was interrupted before completing a full
-clean run (laptop left the local network). All unit and functional tests pass:
+After applying Patch 10, the stress test at `--count 1000` **passes
+end-to-end**:
 
 - `tests/idempotency/run_test.sh` — all 7 tests pass ✓
 - `tests/rule_position/run_test.sh` — passes ✓
 - `tests/network_groups_safe/run_test.sh --count 10` — all 5 tests pass ✓
+- `tests/stress-test/run_test.py --count 250` — passes (~3 min, 2026-05-31) ✓
+- `tests/stress-test/run_test.py --count 1000` — passes (~10 min, 2026-05-31) ✓
 
-The stress test (`--count 1000`) is tracked in TODO.md.
+| Step | Duration at count=1000 |
+|---|---|
+| Step 1: full apply (1000 groups + 1000 rules) | 2 min |
+| Step 2: partial apply (soft-delete group-1, remove rule-1) | 90 s |
+| Step 3: verify `__gc_` group present | 3 s |
+| Step 4: GC apply (second apply) | 86 s |
+| Step 5: verify `__gc_` group removed by GC | 5 min |

@@ -21,6 +21,7 @@ Use this file to re-apply all patches after a sync with upstream.
 | 7 | Code generator: preserve imports | `gen/generator.go` | None — generator not generated |
 | 8 | New resource: fmc_network_groups_safe | multiple new files | None — entirely new files |
 | 9 | Tests | `tests/` | None — not touched by upstream |
+| 10 | `fmc_access_rules.Read` dedup by Id | `resource_fmc_access_rules.go` (Read, not template-generated) | Low — small block, file section not under template markers |
 
 ---
 
@@ -428,6 +429,65 @@ Not touched by upstream; all files survive merges.
 
 ---
 
+## Patch 10 — `fmc_access_rules.Read` dedup by Id
+
+### Problem
+
+`fmc_access_rules.Read` refreshes state by issuing GET requests with
+`?filter=name:<name1>,<name2>,…`, batching ≤2500 chars of names per call and
+merging the responses. FMC's `filter=name:` does **prefix/substring** matching,
+not exact match — so a query value of `stress-test-rule-1` also matches
+`stress-test-rule-10`, `stress-test-rule-100`, … `stress-test-rule-199`. When
+the rules list spans multiple batches, the same rule can land in more than
+one batch's response, and the merge appends without deduping.
+
+Effect:
+1. `state.Items` grows beyond the configured rule count (e.g. 309 entries for
+   1000 unique IDs at `--count 250`; same pattern at 1000).
+2. `fromBodyPartial` resizes state.Items to match the merged response length,
+   so duplicates persist in saved state.
+3. Next `Update → truncateRulesAt` walks the inflated state.Items and produces
+   bulk-DELETE URLs whose `filter=ids:` list contains duplicates *and* IDs
+   that an earlier batch already deleted.
+4. FMC returns **HTTP 404** on those batches → `terraform apply` fails.
+
+This is a pre-existing upstream bug, not introduced by this fork; it only
+surfaces at scale + with names that share a common prefix.
+
+### Solution
+
+Dedup `state.Items` by `Id` at the end of `Read`, immediately after
+`fromBody`/`fromBodyPartial`:
+
+```go
+// internal/provider/resource_fmc_access_rules.go, end of Read()
+{
+    seen := make(map[string]bool, len(state.Items))
+    out := state.Items[:0]
+    for _, item := range state.Items {
+        id := item.Id.ValueString()
+        if id == "" || !seen[id] {
+            seen[id] = true
+            out = append(out, item)
+        }
+    }
+    state.Items = out
+}
+```
+
+Keeps the first occurrence of each Id in the slice order. No-op when there
+are no duplicates.
+
+`Read` lives outside any `//template:begin`/`//template:end` markers in
+`resource_fmc_access_rules.go`, so `go generate` will not overwrite it.
+
+### Conflict risk on sync
+
+Low. The patch is a small block in a non-generated section of the file. If
+upstream rewrites `Read` significantly, re-apply by hand.
+
+---
+
 ## Re-applying after upstream sync
 
 After `git merge origin/main` (or rebase):
@@ -453,5 +513,11 @@ After `git merge origin/main` (or rebase):
 6. **Patch 8** — `resource_fmc_network_groups_safe.go` is not generated;
    survives merges. Check `gen/templates/provider.go` and `gen/doc_category.go`
    after any upstream change to those files.
+
+7. **Patch 10** — `resource_fmc_access_rules.go` `Read()` is not under template
+   markers; survives `go generate`. After an upstream merge, check that the
+   dedup block at the end of `Read()` (just before `resp.State.Set`) still
+   exists. If upstream reworked `Read`, re-apply the ~12-line block from the
+   "Patch 10" section above.
 
 7. **Patch 9** — `tests/` directory not touched by upstream; survives merges.
