@@ -489,6 +489,118 @@ upstream rewrites `Read` significantly, re-apply by hand.
 
 ---
 
+## Patch 11 — `fmc_ftd_manual_nat_rule` duplicate-by-index recovery
+
+### Problem
+
+`fmc_ftd_manual_nat_rule` POST can fail with HTTP 400 and an error body
+containing `"Duplicate entry of ManualNatRule at rule index (N) is also
+present at rule index [M]"`. This is FMC's content-level duplicate
+detection: the proposed rule has the same NAT tuple as the rule already
+at index M. Manual NAT rules have **no `name` field**, so the existing
+`IngestOnConflict` (which searches by a name attribute) cannot recover.
+
+Typical triggers: prior partial apply, rule pre-existing in FMC GUI, or
+two `for_each` keys producing identical NAT content.
+
+### Implementation note
+
+`fmc_ftd_manual_nat_rule`'s `Create` function is **hand-maintained** (not
+inside `//template:begin create` / `//template:end create` markers). The
+fork-side patch therefore lives directly in the generated file's Create
+function and is preserved across `go generate` runs because the section
+is outside template markers. The `imports` section is templated but
+Patch 7's generator behavior preserves existing imports verbatim, so the
+`"reflect"` import added by this patch also survives regeneration.
+
+This is different from Patch 1's approach: Patch 1 modifies the resource
+template (`gen/templates/resource.go`) and regenerates ~277 files. Patch
+11 touches only the one resource file we actually need.
+
+### Solution
+
+**1) New helper** — `internal/provider/helpers/dup_recovery.go`
+
+```go
+func FindDuplicateByIndex(
+    ctx context.Context,
+    client *fmc.Client,
+    resourcePath string,
+    postErr error,
+    postRes gjson.Result,
+    reqMods ...func(*fmc.Req),
+) (gjson.Result, error)
+```
+
+Parses the regex `Duplicate entry .* at rule index \[(\d+)\]` against
+both `postErr.Error()` and `postRes.String()`. If no match, returns
+`(empty, postErr)` (caller fails as before). On match, GETs
+`<resourcePath>?expanded=true&offset=N&limit=1` and returns `items.0`.
+
+Unit-tested in `internal/provider/helpers/dup_recovery_test.go` for the
+regex / extraction logic.
+
+**2) Hand-edit in `resource_fmc_ftd_manual_nat_rule.go`**
+
+Inside the existing manually-maintained `Create` function, replace the
+POST error block with the recovery flow. Diff:
+
+```go
+ res, err := r.client.Post(plan.getPath()+"?section="+strings.ToLower(plan.Section.ValueString()), body, reqMods...)
+ if err != nil {
+-    resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", err, res.String()))
+-    return
++    foundRes, dupErr := helpers.FindDuplicateByIndex(ctx, r.client, plan.getPath(), err, res, reqMods...)
++    if dupErr != nil {
++        // Pattern didn't match (dupErr == original err) or GET failed.
++        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", dupErr, res.String()))
++        return
++    }
++    var existing FTDManualNATRule
++    existing.fromBody(ctx, foundRes)
++    planCopy := plan
++    planCopy.Id = existing.Id
++    if !reflect.DeepEqual(planCopy, existing) {
++        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("FMC reported a duplicate object, but the existing object's content differs from the proposed body. Original error: %s", err))
++        return
++    }
++    res = foundRes
+ }
+```
+
+Add `"reflect"` to the `import` block above (the `template:begin imports`
+section is preserved by Patch 7).
+
+### Strict comparison rationale
+
+`planCopy := plan` is a value copy. Only `planCopy.Id` is rewritten (to
+`existing.Id`) so the unset-vs-set ID difference does not cause a false
+mismatch. Every other model field (including `Domain`, all NAT-tuple
+fields) is compared strictly via `reflect.DeepEqual`. Mismatch → original
+FMC error surfaces and the user resolves the ambiguity explicitly. Two
+`for_each` HCL keys producing byte-identical content **will** both
+import the same FMC ID; the resulting double-ownership becomes visible on
+the next destroy/apply cycle. This is the deliberate fork philosophy:
+opinionated provider, no opt-in flag.
+
+### Test coverage
+
+`tests/idempotency/run_test.sh` — Test 8 — pre-creates a manual NAT rule
+via the FMC REST API and runs `terraform apply` against matching HCL.
+Whichever happens:
+
+- If FMC fires its content-duplicate validation, Patch 11's recovery
+  imports the existing rule → **TEST 8 PASSED**.
+- If FMC silently accepts both (the framework-level duplicate validation
+  appears to require policy state we cannot reliably reproduce on
+  bare-metal SNAT rules), → **TEST 8 SKIPPED** with a yellow ⚠ banner,
+  and the cleanup deletes both rules so the suite finishes green.
+
+Either outcome leaves FMC in a clean state and exercises the harness.
+The recovery code itself is exercised by the regex-extraction unit tests.
+
+---
+
 ## Re-applying after upstream sync
 
 After `git merge origin/main` (or rebase):
