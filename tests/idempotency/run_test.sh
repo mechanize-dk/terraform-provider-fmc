@@ -589,8 +589,12 @@ else
   info "validation (the 'Duplicate entry … at rule index [N]' 400) was not triggered"
   info "by this rule shape. Patch 11's recovery path is not exercised here; see"
   info "internal/provider/helpers/dup_recovery_test.go for parser coverage."
-  info "Cleaning up both the TF-created rule and the pre-created rule..."
+  info "Destroying TF-created NAT rule..."
   terraform destroy -target=fmc_ftd_manual_nat_rule.idempotency_test -auto-approve
+  info "Deleting pre-created API NAT rule via REST so the policy can be torn down..."
+  fmc_authenticate
+  fmc_delete "$AUTH_TOKEN" "/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/ftdnatpolicies/${NATP_ID}/manualnatrules/${NAT_RULE_ID}"
+  EMERGENCY_CLEANUPS=("${EMERGENCY_CLEANUPS[@]//*manualnatrules*}")
   echo -e "${YELLOW}${BOLD}⚠ TEST 8 SKIPPED — FMC did not enforce duplicate detection on this rule${NC}"
 fi
 
