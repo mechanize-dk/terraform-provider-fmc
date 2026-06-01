@@ -22,6 +22,7 @@ Use this file to re-apply all patches after a sync with upstream.
 | 8 | New resource: fmc_network_groups_safe | multiple new files | None — entirely new files |
 | 9 | Tests | `tests/` | None — not touched by upstream |
 | 10 | `fmc_access_rules.Read` dedup by Id | `resource_fmc_access_rules.go` (Read, not template-generated) | Low — small block, file section not under template markers |
+| 11 | `fmc_ftd_manual_nat_rule` duplicate-by-index recovery | `resource_fmc_ftd_manual_nat_rule.go` (Create, hand-maintained) + `helpers/dup_recovery.go` (new) | Low — hand-edit lives outside template markers; helper is a new file |
 
 ---
 
@@ -519,5 +520,14 @@ After `git merge origin/main` (or rebase):
    dedup block at the end of `Read()` (just before `resp.State.Set`) still
    exists. If upstream reworked `Read`, re-apply the ~12-line block from the
    "Patch 10" section above.
+
+8. **Patch 11** — `resource_fmc_ftd_manual_nat_rule.go`'s `Create()` is
+   hand-maintained (not inside `template:begin create` markers); the edit
+   survives `go generate`. After an upstream merge, verify the recovery block
+   in Create is intact and that `"reflect"` is still listed in the imports
+   block. If upstream reworked Create, re-apply the diff from the "Patch 11"
+   section above. `internal/provider/helpers/dup_recovery.go` and
+   `dup_recovery_test.go` are new files and survive merges.
+   `tests/idempotency/main.tf` and `run_test.sh` additions survive merges too.
 
 7. **Patch 9** — `tests/` directory not touched by upstream; survives merges.
