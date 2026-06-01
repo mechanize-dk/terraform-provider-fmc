@@ -13,15 +13,24 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-// dupIndexRegex matches FMC's content-level "duplicate at index" error. The
-// pattern is anchored on both "Duplicate entry" and "rule index [N]" so it
-// does not false-positive on unrelated messages that happen to mention an
-// index.
-var dupIndexRegex = regexp.MustCompile(`Duplicate entry .* at rule index \[(\d+)\]`)
+// dupIndexRegex matches FMC's content-level "duplicate at index" error and
+// captures the EXISTING duplicate rule's 1-indexed position from the parens
+// group. FMC's full error is of the form
+//
+//	"Duplicate entry of ManualNatRule at rule index (N) is also present at rule index [M]"
+//
+// where (N) is the existing duplicate (what we want — verified against a live
+// FMC) and [M] is the would-be position of the new rule (= existing_total + 1,
+// past the end of the list). The pattern is anchored on both "Duplicate entry"
+// and "rule index (N)" so it does not false-positive on unrelated messages
+// that happen to mention an index.
+var dupIndexRegex = regexp.MustCompile(`Duplicate entry .* at rule index \((\d+)\)`)
 
 // extractDuplicateIndex scans an FMC error and response body for the
-// "Duplicate entry … at rule index [N]" pattern and returns N together with
-// a bool indicating whether the pattern matched.
+// "Duplicate entry … at rule index (N)" pattern and returns N together with
+// a bool indicating whether the pattern matched. N is FMC's 1-indexed position
+// of the existing duplicate rule; callers must convert to 0-indexed when
+// calling the list endpoint (subtract 1 for ?offset=).
 //
 // Both the err string and the res string are scanned because FMC sometimes
 // nests the descriptive text in either place.
@@ -66,7 +75,12 @@ func FindDuplicateByIndex(
 	if !ok {
 		return gjson.Result{}, postErr
 	}
-	listURL := resourcePath + fmt.Sprintf("?expanded=true&offset=%d&limit=1", idx)
+	// FMC reports 1-indexed positions; the list endpoint takes 0-indexed offsets.
+	offset := idx - 1
+	if offset < 0 {
+		return gjson.Result{}, fmt.Errorf("duplicate-index regex matched but value %d is not a valid 1-indexed position; original POST error: %w", idx, postErr)
+	}
+	listURL := resourcePath + fmt.Sprintf("?expanded=true&offset=%d&limit=1", offset)
 	listRes, err := client.Get(listURL, reqMods...)
 	if err != nil {
 		return gjson.Result{}, fmt.Errorf("duplicate at index %d but GET failed: %w (original POST error: %v)", idx, err, postErr)

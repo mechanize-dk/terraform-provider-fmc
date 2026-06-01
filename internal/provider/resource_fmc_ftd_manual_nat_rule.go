@@ -235,12 +235,19 @@ func (r *FTDManualNATRuleResource) Create(ctx context.Context, req resource.Crea
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", dupErr, res.String()))
 			return
 		}
-		// FMC says we'd duplicate an existing object. Parse it and compare to the plan.
-		var existing FTDManualNATRule
-		existing.fromBody(ctx, foundRes)
-		planCopy := plan
-		planCopy.Id = existing.Id
-		if !reflect.DeepEqual(planCopy, existing) {
+		// FMC says we'd duplicate an existing object. Compare to the plan using
+		// fromBodyPartial: only fields the user explicitly set in HCL are
+		// compared against FMC's stored values. Unmanaged attributes (Bool
+		// defaults like `unidirectional`, `enabled`, computed fields like
+		// `type`, etc.) are not part of the comparison — they're FMC's
+		// business, not ours. A divergence here is a real content mismatch
+		// the user must resolve.
+		foundID := types.StringValue(foundRes.Get("id").String())
+		plan.Id = foundID
+		plan.fromBodyUnknowns(ctx, foundRes)
+		existing := plan
+		existing.fromBodyPartial(ctx, foundRes)
+		if !reflect.DeepEqual(plan, existing) {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("FMC reported a duplicate object, but the existing object's content differs from the proposed body. Original error: %s", err))
 			return
 		}

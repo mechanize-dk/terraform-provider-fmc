@@ -60,7 +60,25 @@ FMC_URL="${FMC_URL%/}"
 # ── Paths ─────────────────────────────────────────────────────────────────────
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"   # tests/idempotency → tests → repo root
-PROVIDER_BIN="$SCRIPT_DIR/terraform-provider-fmc"
+# terraform on Windows looks for `terraform-provider-fmc.exe` in the override
+# dir; on Linux/macOS it looks for `terraform-provider-fmc`.
+case "$(uname -s)" in
+  MINGW*|MSYS*|CYGWIN*) PROVIDER_BIN="$SCRIPT_DIR/terraform-provider-fmc.exe" ;;
+  *)                    PROVIDER_BIN="$SCRIPT_DIR/terraform-provider-fmc" ;;
+esac
+
+# Convert a POSIX path to a native path when running on MSYS/Cygwin/Git-Bash so
+# that terraform.exe and other Windows-native tools can resolve it. Uses mixed
+# style (forward slashes with drive letter) so the path is safe to embed inside
+# HCL strings (no backslash-escape issues in tfrc). On Linux/macOS this is a
+# no-op.
+to_native_path() {
+  if command -v cygpath >/dev/null 2>&1; then
+    cygpath -m "$1"
+  else
+    echo "$1"
+  fi
+}
 TFRC="$SCRIPT_DIR/dev.tfrc"
 
 # Test object settings
@@ -100,14 +118,16 @@ pass "Provider binary: $PROVIDER_BIN"
 cat > "$TFRC" <<EOF
 provider_installation {
   dev_overrides {
-    "CiscoDevNet/fmc" = "${SCRIPT_DIR}"
+    "CiscoDevNet/fmc" = "$(to_native_path "$SCRIPT_DIR")"
   }
   direct {}
 }
 EOF
 
-# Export env vars consumed by the provider and Terraform
-export TF_CLI_CONFIG_FILE="$TFRC"
+# Export env vars consumed by the provider and Terraform. TF_CLI_CONFIG_FILE
+# must be a native path because terraform.exe on Windows can't resolve POSIX
+# MSYS paths (e.g. /c/Users/... is read as a literal directory).
+export TF_CLI_CONFIG_FILE="$(to_native_path "$TFRC")"
 export FMC_USERNAME FMC_PASSWORD FMC_URL
 export FMC_INSECURE=true
 
@@ -230,14 +250,33 @@ cleanup() {
   info "Running cleanup..."
   cd "$SCRIPT_DIR"
 
+  # Unassign any policy that may still be bound to a device, BEFORE terraform
+  # destroy tries to delete the policy itself. FMC blocks policy deletion while
+  # assigned, and the unassign endpoint does not accept DELETE (405); use PUT
+  # with an empty targets array instead.
+  for path in "${EMERGENCY_CLEANUPS[@]:-}"; do
+    [[ "$path" == */policyassignments/* ]] || continue
+    # Extract the policy/assignment id (last path segment).
+    assign_id="${path##*/}"
+    info "Unassigning policy/assignment ${assign_id} (PUT empty targets)..."
+    "${CURL[@]}" \
+      -H "X-auth-access-token: $AUTH_TOKEN" \
+      -H "Content-Type: application/json" \
+      -X PUT "${FMC_URL}${path}" \
+      -d "{\"type\":\"PolicyAssignment\",\"policy\":{\"id\":\"${assign_id}\",\"type\":\"FTDNatPolicy\"},\"targets\":[]}" \
+      > /dev/null || true
+  done
+
   # Destroy any Terraform-managed resources still in state
   if [[ -f terraform.tfstate ]]; then
     terraform destroy -auto-approve 2>/dev/null || true
   fi
 
-  # Delete any API-created objects that terraform destroy did not clean up
+  # Delete any API-created objects that terraform destroy did not clean up.
+  # Skip policyassignments — those were already handled above via PUT.
   for path in "${EMERGENCY_CLEANUPS[@]:-}"; do
     [[ -z "$path" ]] && continue
+    [[ "$path" == */policyassignments/* ]] && continue
     info "Deleting orphaned object at ${path}..."
     fmc_delete "$AUTH_TOKEN" "$path" && pass "Orphaned object deleted" || true
   done
@@ -537,9 +576,15 @@ pass "TEST 7 — fmc_access_rules PASSED — existing rules were ingested correc
 header "TEST 8 — fmc_ftd_manual_nat_rule duplicate-by-index recovery"
 # Pre-creates an FTD NAT policy and a manual NAT rule via the FMC REST API
 # with content identical to the HCL. Terraform's POST will trigger FMC's
-# "Duplicate entry of ManualNatRule at rule index [N]" 400 error; the
-# helpers.FindDuplicateByIndex recovery (Patch 11) must fetch the rule and
-# import it.
+# "Duplicate entry of ManualNatRule at rule index (N) is also present at rule
+# index [M]" 400 error; helpers.FindDuplicateByIndex (Patch 11) must extract
+# the existing rule's 1-indexed position from the parens (N), GET it at
+# ?offset=N-1, and import it into state.
+#
+# IMPORTANT: FMC's content-level dedup ONLY fires when the NAT policy is
+# assigned to an FTD device. Without an assignment, FMC accepts duplicate
+# POSTs silently (HTTP 201) and Patch 11's recovery is never exercised.
+# Verified on a lab FMC on 2026-06-01.
 # ══════════════════════════════════════════════════════════════════════════════
 
 info "Creating prerequisites (NAT policy + hosts) via terraform..."
@@ -560,6 +605,53 @@ info "Re-authenticating with FMC..."
 fmc_authenticate
 [[ -z "$AUTH_TOKEN" ]] && fail "Could not re-obtain auth token"
 pass "Auth token refreshed"
+
+# ── Assign NAT policy to a device so FMC's dedup validation fires ────────────
+TEST8_SKIP=0
+info "Looking up any FTD device to assign the NAT policy to..."
+DEV_RESP=$("${CURL[@]}" \
+  -H "X-auth-access-token: $AUTH_TOKEN" \
+  "${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}/devices/devicerecords?limit=1&expanded=true")
+DEVICE_ID=$(echo "$DEV_RESP" | python3 -c "import sys,json; d=json.loads(sys.stdin.read()); items=d.get('items',[]); print(items[0]['id'] if items else '')")
+DEVICE_NAME=$(echo "$DEV_RESP" | python3 -c "import sys,json; d=json.loads(sys.stdin.read()); items=d.get('items',[]); print(items[0]['name'] if items else '')")
+if [[ -z "$DEVICE_ID" ]]; then
+  info "No FTD device registered on this FMC — TEST 8 will be SKIPPED."
+  info "  (Patch 11's helper logic is covered by go test of dup_recovery_test.go.)"
+  TEST8_SKIP=1
+else
+  pass "Found device for assignment: $DEVICE_NAME ($DEVICE_ID)"
+  info "Assigning NAT policy $NATP_ID to device..."
+  ASSIGN_RESP=$("${CURL[@]}" \
+    -H "X-auth-access-token: $AUTH_TOKEN" \
+    -H "Content-Type: application/json" \
+    -X POST "${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}/assignment/policyassignments" \
+    -d "{\"type\":\"PolicyAssignment\",\"policy\":{\"id\":\"${NATP_ID}\",\"type\":\"FTDNatPolicy\"},\"targets\":[{\"id\":\"${DEVICE_ID}\",\"type\":\"Device\",\"name\":\"${DEVICE_NAME}\"}]}")
+  # If assignment fails (e.g. policy already assigned, or device unsupported),
+  # warn and keep going: the rule POST may still trigger dedup, or we'll fall
+  # through to the SKIP branch below.
+  ASSIGN_ERR=$(echo "$ASSIGN_RESP" | python3 -c "import sys,json
+try:
+    d=json.loads(sys.stdin.read())
+    if 'id' in d:
+        print('OK')
+    else:
+        msgs = d.get('error',{}).get('messages',[{}])
+        print(msgs[0].get('description','unknown error'))
+except Exception as e:
+    print(f'parse: {e}')")
+  if [[ "$ASSIGN_ERR" == "OK" ]]; then
+    pass "NAT policy assigned to $DEVICE_NAME"
+    EMERGENCY_CLEANUPS+=("/api/fmc_config/v1/domain/${DOMAIN_UUID}/assignment/policyassignments/${NATP_ID}")
+  else
+    info "Policy assignment returned: $ASSIGN_ERR — continuing (may already be assigned)"
+  fi
+fi
+
+if [[ "$TEST8_SKIP" == "1" ]]; then
+  info "terraform destroy -target=fmc_ftd_nat_policy.test_natp -target=fmc_host.manual_nat_translated -target=fmc_host.idempotency_test..."
+  terraform destroy -target=fmc_ftd_nat_policy.test_natp -target=fmc_host.manual_nat_translated -target=fmc_host.idempotency_test -auto-approve
+  echo -e "${YELLOW}${BOLD}⚠ TEST 8 SKIPPED — no device on FMC to bind the NAT policy to${NC}"
+else
 
 info "Pre-creating manual NAT rule (orig=$ORIG_SRC_ID trans=$TRANS_SRC_ID) via API..."
 API_RESPONSE=$(fmc_create_manual_nat_rule "$AUTH_TOKEN" "$DOMAIN_UUID" "$NATP_ID" "$ORIG_SRC_ID" "$TRANS_SRC_ID")
@@ -598,10 +690,29 @@ else
   echo -e "${YELLOW}${BOLD}⚠ TEST 8 SKIPPED — FMC did not enforce duplicate detection on this rule${NC}"
 fi
 
+# Unassign the NAT policy from the device before destroying the policy. Without
+# this, terraform destroy on fmc_ftd_nat_policy fails with HTTP 400 because FMC
+# blocks deletion of a policy that is actively assigned.
+#
+# FMC does not accept DELETE on /assignment/policyassignments/<id> (returns 405
+# Method Not Allowed). The supported unassign path is PUT with an empty targets
+# array, which is what we do here.
+info "Unassigning NAT policy from $DEVICE_NAME..."
+fmc_authenticate
+"${CURL[@]}" \
+  -H "X-auth-access-token: $AUTH_TOKEN" \
+  -H "Content-Type: application/json" \
+  -X PUT "${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}/assignment/policyassignments/${NATP_ID}" \
+  -d "{\"type\":\"PolicyAssignment\",\"policy\":{\"id\":\"${NATP_ID}\",\"type\":\"FTDNatPolicy\"},\"targets\":[]}" \
+  > /dev/null || true
+EMERGENCY_CLEANUPS=("${EMERGENCY_CLEANUPS[@]//*policyassignments*}")
+
 # Tear down the prerequisites that we created via TF up front
 info "terraform destroy -target=fmc_ftd_nat_policy.test_natp -target=fmc_host.manual_nat_translated -target=fmc_host.idempotency_test..."
 terraform destroy -target=fmc_ftd_nat_policy.test_natp -target=fmc_host.manual_nat_translated -target=fmc_host.idempotency_test -auto-approve
 pass "TEST 8 cleanup complete"
+
+fi  # close: if [[ "$TEST8_SKIP" == "1" ]]; then ... else
 
 # ── Done ──────────────────────────────────────────────────────────────────────
 echo ""

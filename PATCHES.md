@@ -532,13 +532,36 @@ func FindDuplicateByIndex(
 ) (gjson.Result, error)
 ```
 
-Parses the regex `Duplicate entry .* at rule index \[(\d+)\]` against
-both `postErr.Error()` and `postRes.String()`. If no match, returns
-`(empty, postErr)` (caller fails as before). On match, GETs
-`<resourcePath>?expanded=true&offset=N&limit=1` and returns `items.0`.
+Parses the regex `Duplicate entry .* at rule index \((\d+)\)` against
+both `postErr.Error()` and `postRes.String()`, capturing the **parens**
+group `(N)`. FMC's error has the form
 
-Unit-tested in `internal/provider/helpers/dup_recovery_test.go` for the
-regex / extraction logic.
+```
+Duplicate entry of ManualNatRule at rule index (N) is also present at rule index [M]
+```
+
+where `(N)` is the **existing duplicate rule's 1-indexed position** in the
+policy and `[M]` is the would-be position of the rejected new rule
+(= total existing + 1). We want `(N)`, not `[M]`. Confirmed on a live FMC
+(`fmc-tlab1-ts.virt-service.dk`, 2026-06-01) with a 5-rule + dup-R3
+matrix: error reported `(3) ... [6]`, and `?offset=2&limit=1` returned R3.
+
+If no match, returns `(empty, postErr)` (caller fails as before). On match,
+GETs `<resourcePath>?expanded=true&offset=(N-1)&limit=1` (subtract one
+because FMC reports 1-indexed but the list endpoint takes 0-indexed
+offsets) and returns `items.0`.
+
+Unit-tested in `internal/provider/helpers/dup_recovery_test.go`:
+
+- `TestExtractDuplicateIndex` — regex extraction across positive and
+  negative cases, including the rejection of brackets-only `[M]` messages
+  (which previously matched the buggy regex).
+- `TestFindDuplicateByIndex_OffsetMapping` — gock-based round-trip:
+  feeds a fake `(3)...[6]` 400 error and asserts the helper issues
+  `?offset=2`. Locks in the `offset = N-1` arithmetic against future
+  refactors.
+- `TestFindDuplicateByIndex_NoMatch_ReturnsOriginalError` — confirms the
+  helper passes the original error through when the regex doesn't match.
 
 **2) Hand-edit in `resource_fmc_ftd_manual_nat_rule.go`**
 
@@ -556,11 +579,16 @@ POST error block with the recovery flow. Diff:
 +        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST/PUT), got error: %s, %s", dupErr, res.String()))
 +        return
 +    }
-+    var existing FTDManualNATRule
-+    existing.fromBody(ctx, foundRes)
-+    planCopy := plan
-+    planCopy.Id = existing.Id
-+    if !reflect.DeepEqual(planCopy, existing) {
++    // Compare against the plan using fromBodyPartial: only fields the user
++    // explicitly set in HCL are compared against FMC's stored values.
++    // Unmanaged attributes (Bool defaults like `unidirectional`, `enabled`,
++    // computed fields like `type`) are not part of the comparison.
++    foundID := types.StringValue(foundRes.Get("id").String())
++    plan.Id = foundID
++    plan.fromBodyUnknowns(ctx, foundRes)
++    existing := plan
++    existing.fromBodyPartial(ctx, foundRes)
++    if !reflect.DeepEqual(plan, existing) {
 +        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("FMC reported a duplicate object, but the existing object's content differs from the proposed body. Original error: %s", err))
 +        return
 +    }
@@ -571,32 +599,70 @@ POST error block with the recovery flow. Diff:
 Add `"reflect"` to the `import` block above (the `template:begin imports`
 section is preserved by Patch 7).
 
-### Strict comparison rationale
+### Comparison rationale
 
-`planCopy := plan` is a value copy. Only `planCopy.Id` is rewritten (to
-`existing.Id`) so the unset-vs-set ID difference does not cause a false
-mismatch. Every other model field (including `Domain`, all NAT-tuple
-fields) is compared strictly via `reflect.DeepEqual`. Mismatch → original
-FMC error surfaces and the user resolves the ambiguity explicitly. Two
-`for_each` HCL keys producing byte-identical content **will** both
-import the same FMC ID; the resulting double-ownership becomes visible on
-the next destroy/apply cycle. This is the deliberate fork philosophy:
-opinionated provider, no opt-in flag.
+The first cut of this patch used `reflect.DeepEqual(planCopy, existing)`
+after a fresh `existing.fromBody(ctx, foundRes)`. That implementation
+always reported "content differs" because:
+
+- The fresh `existing` had FMC-emitted defaults populated for every Bool
+  field (`unidirectional=false`, `enabled=false`, `interfaceIpv6=false`,
+  …), while the user's `plan` had those as `types.BoolNull()`.
+- The plan's computed fields (`Id`, `Type`) were `Unknown` while `existing`
+  had concrete FMC values.
+- The plan had `FtdNatPolicyId` set (from HCL), but `fromBody` does not
+  populate that field at all, so `existing.FtdNatPolicyId` stayed `Null`.
+
+The corrected approach narrows the comparison to fields the user actually
+manages:
+
+1. Set `plan.Id` from FMC's id and call `plan.fromBodyUnknowns` so the
+   plan's `Unknown` computed fields take FMC's values.
+2. Build `existing := plan` — a copy with the same user-set values and
+   same computed values.
+3. Call `existing.fromBodyPartial(ctx, foundRes)`, which only updates
+   non-null fields from the FMC response. Null plan fields stay null on
+   the existing side. User-set fields get overwritten with FMC's actual
+   value — any divergence here is a real content mismatch we surface.
+
+Mismatch → original FMC error surfaces and the user resolves the
+ambiguity explicitly. Two `for_each` HCL keys producing byte-identical
+content **will** both import the same FMC ID; the resulting
+double-ownership becomes visible on the next destroy/apply cycle. This is
+the deliberate fork philosophy: opinionated provider, no opt-in flag.
 
 ### Test coverage
 
 `tests/idempotency/run_test.sh` — Test 8 — pre-creates a manual NAT rule
 via the FMC REST API and runs `terraform apply` against matching HCL.
-Whichever happens:
 
-- If FMC fires its content-duplicate validation, Patch 11's recovery
+**Device-assignment prerequisite (important):** FMC's content-level dedup
+validation **only fires when the NAT policy is assigned to an FTD device.**
+Without an assignment, FMC accepts duplicate POSTs silently (HTTP 201) and
+Patch 11's recovery path never runs. Verified on the lab FMC on
+2026-06-01: a probe matrix of six body shapes (minimal SNAT through full
+tuple with security zones) all returned 201 without an assignment; the
+exact same matrix all returned 400 with the duplicate error once the
+policy was bound to `ftd-tlab-1`.
+
+Accordingly, Test 8 looks up any FTD device on the FMC via
+`/devices/devicerecords?limit=1`, assigns the test NAT policy to it via
+`/assignment/policyassignments`, then pre-creates the rule. After the
+test, the policy is unassigned (PUT with empty targets; DELETE is not
+allowed on the assignment endpoint — returns 405) before Terraform
+destroys the policy.
+
+Outcomes:
+
+- Device exists + FMC fires the duplicate validation: Patch 11's recovery
   imports the existing rule → **TEST 8 PASSED**.
-- If FMC silently accepts both (the framework-level duplicate validation
-  appears to require policy state we cannot reliably reproduce on
-  bare-metal SNAT rules), → **TEST 8 SKIPPED** with a yellow ⚠ banner,
-  and the cleanup deletes both rules so the suite finishes green.
+- Device exists + FMC silently accepts both (unusual at this point but
+  guarded against): **TEST 8 SKIPPED** with a yellow ⚠ banner.
+- No FTD device registered on the FMC: **TEST 8 SKIPPED** with a yellow
+  ⚠ banner explaining that the helper logic is covered by
+  `dup_recovery_test.go` instead.
 
-Either outcome leaves FMC in a clean state and exercises the harness.
+Either skip outcome leaves FMC in a clean state.
 The recovery code itself is exercised by the regex-extraction unit tests.
 
 ---
