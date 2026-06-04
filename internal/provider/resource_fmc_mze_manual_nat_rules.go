@@ -477,8 +477,181 @@ func (r *MzeManualNatRulesResource) Read(ctx context.Context, req resource.ReadR
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func (r *MzeManualNatRulesResource) Update(_ context.Context, _ resource.UpdateRequest, resp *resource.UpdateResponse) {
-	resp.Diagnostics.AddError("not implemented", "Update not implemented yet (Task 2.6)")
+// mzeManualNatRulesDiffEntry classifies one key during Update.
+type mzeManualNatRulesDiffEntry struct {
+	key      string
+	statePos int  // -1 if absent in state
+	planPos  int  // -1 if absent in plan
+	stateID  string
+}
+
+// diffByKey computes the bulk-resource diff classes for one section.
+// Returns: removed, modified (body changed, same position), reordered
+// (position changed, body may or may not have changed), added.
+func mzeManualNatRulesDiffByKey(state, plan []MzeManualNatRulesItem) (removed, modified, reordered, added []mzeManualNatRulesDiffEntry) {
+	byKey := map[string]*mzeManualNatRulesDiffEntry{}
+	for i := range state {
+		k := state[i].Key.ValueString()
+		byKey[k] = &mzeManualNatRulesDiffEntry{key: k, statePos: i, planPos: -1, stateID: state[i].ID.ValueString()}
+	}
+	for i := range plan {
+		k := plan[i].Key.ValueString()
+		if e, ok := byKey[k]; ok {
+			e.planPos = i
+		} else {
+			byKey[k] = &mzeManualNatRulesDiffEntry{key: k, statePos: -1, planPos: i}
+		}
+	}
+	for _, e := range byKey {
+		switch {
+		case e.statePos == -1:
+			added = append(added, *e)
+		case e.planPos == -1:
+			removed = append(removed, *e)
+		default:
+			bodyChanged := state[e.statePos].toBody("X") != plan[e.planPos].toBody("X")
+			posChanged := e.statePos != e.planPos
+			switch {
+			case posChanged:
+				reordered = append(reordered, *e)
+			case bodyChanged:
+				modified = append(modified, *e)
+			}
+		}
+	}
+	return
+}
+
+func (r *MzeManualNatRulesResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan, state MzeManualNatRules
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	matcher := plan.MatchOn.extract()
+
+	updateSection := func(section string, stateItems, planItems []MzeManualNatRulesItem) ([]MzeManualNatRulesItem, bool) {
+		removed, modified, reordered, added := mzeManualNatRulesDiffByKey(stateItems, planItems)
+
+		// state ID lookup
+		stateIDByKey := map[string]string{}
+		for _, it := range stateItems {
+			stateIDByKey[it.Key.ValueString()] = it.ID.ValueString()
+		}
+
+		// classification sets
+		needsPOST := map[string]bool{}
+		for _, e := range added {
+			needsPOST[e.key] = true
+		}
+		for _, e := range reordered {
+			needsPOST[e.key] = true
+		}
+		isModified := map[string]bool{}
+		for _, e := range modified {
+			isModified[e.key] = true
+		}
+
+		// Phase 1 — DELETE removed + reordered.
+		deleteSet := map[string]bool{}
+		for _, e := range removed {
+			deleteSet[e.key] = true
+		}
+		for _, e := range reordered {
+			deleteSet[e.key] = true
+		}
+		for k := range deleteSet {
+			id := stateIDByKey[k]
+			if id == "" {
+				continue
+			}
+			_, err := r.client.Delete(plan.resourcePath()+"/"+id,
+				fmc.DomainName(plan.Domain.ValueString()))
+			if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
+				resp.Diagnostics.AddError("DELETE failed for key "+k, err.Error())
+				return planItems, false
+			}
+		}
+
+		// Phase 2 — PUT modified ∧ ¬reordered.
+		for _, e := range modified {
+			it := planItems[e.planPos]
+			if err := matcher.Validate(it.Key.ValueString(), it.fieldsForMatchOn()); err != nil {
+				resp.Diagnostics.AddError("match_on validation failed", err.Error())
+				return planItems, false
+			}
+			it.applyAutoFill(matcher)
+			id := stateIDByKey[e.key]
+			body := it.toBody(section)
+			body, _ = sjson.Set(body, "id", id)
+			res, err := r.client.Put(plan.resourcePath()+"/"+id, body,
+				fmc.DomainName(plan.Domain.ValueString()))
+			if err != nil {
+				resp.Diagnostics.AddError("PUT failed for key "+it.Key.ValueString(), err.Error())
+				return planItems, false
+			}
+			it.fromBody(res)
+			planItems[e.planPos] = it
+		}
+
+		// Phase 3 — walk planItems in order. POST what needs POST; otherwise
+		// preserve the stored ID for unchanged items (modified items already
+		// have their refreshed body from the PUT).
+		for i := range planItems {
+			k := planItems[i].Key.ValueString()
+			if needsPOST[k] {
+				it := planItems[i]
+				if err := matcher.Validate(it.Key.ValueString(), it.fieldsForMatchOn()); err != nil {
+					resp.Diagnostics.AddError("match_on validation failed", err.Error())
+					return planItems, false
+				}
+				it.applyAutoFill(matcher)
+				path := plan.resourcePath() + "?section=" + strings.ToLower(section)
+				body := it.toBody(section)
+				postRes, postErr := r.client.Post(path, body, fmc.DomainName(plan.Domain.ValueString()))
+				if postErr != nil {
+					rec, recErr := helpers.FindDuplicateByIndex(ctx, r.client, plan.resourcePath(), postErr, postRes,
+						fmc.DomainName(plan.Domain.ValueString()))
+					if recErr != nil {
+						resp.Diagnostics.AddError("POST failed for key "+it.Key.ValueString(), recErr.Error())
+						return planItems, false
+					}
+					it.fromBody(rec)
+				} else {
+					it.fromBody(postRes)
+				}
+				planItems[i] = it
+				continue
+			}
+			if isModified[k] {
+				// Already handled in Phase 2.
+				continue
+			}
+			// Unchanged — preserve stored ID.
+			if planItems[i].ID.IsNull() || planItems[i].ID.IsUnknown() {
+				if id, ok := stateIDByKey[k]; ok && id != "" {
+					planItems[i].ID = types.StringValue(id)
+				}
+			}
+		}
+		return planItems, true
+	}
+
+	var ok bool
+	plan.BeforeAuto, ok = updateSection("BEFORE_AUTO", state.BeforeAuto, plan.BeforeAuto)
+	if !ok {
+		return
+	}
+	plan.AfterAuto, ok = updateSection("AFTER_AUTO", state.AfterAuto, plan.AfterAuto)
+	if !ok {
+		return
+	}
+
+	plan.ID = types.StringValue(plan.syntheticID())
+	plan.rebuildByKey()
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
 func (r *MzeManualNatRulesResource) Delete(_ context.Context, _ resource.DeleteRequest, _ *resource.DeleteResponse) {
