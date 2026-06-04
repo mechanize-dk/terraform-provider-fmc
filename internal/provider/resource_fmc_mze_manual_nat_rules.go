@@ -278,11 +278,14 @@ func (it *MzeManualNatRulesItem) applyAutoFill(matcher helpers.MatchOn) {
 	}
 }
 
-// toBody builds the FMC POST/PUT body for a single rule. section must be
-// "BEFORE_AUTO" or "AFTER_AUTO". The body excludes the tenant `key` (TF-only).
+// toBody builds the FMC POST/PUT body for a single rule. The `section`
+// argument is currently only used as a key for the diffByKey body comparison
+// ("X" placeholder) — the actual section assignment is via the ?section=
+// URL query parameter, not the body. (FMC rejects a `section` body field as
+// "Unrecognized" — verified against the lab on 2026-06-04.)
 func (it MzeManualNatRulesItem) toBody(section string) string {
+	_ = section // body-side section field would be rejected; URL ?section= is canonical
 	body := `{"type":"FTDManualNatRule"}`
-	body, _ = sjson.Set(body, "metadata.section", section)
 	body, _ = sjson.Set(body, "natType", it.NatType.ValueString())
 	if !it.Description.IsNull() && !it.Description.IsUnknown() {
 		body, _ = sjson.Set(body, "description", it.Description.ValueString())
@@ -407,7 +410,8 @@ func (r *MzeManualNatRulesResource) Create(ctx context.Context, req resource.Cre
 				rec, recErr := helpers.FindDuplicateByIndex(ctx, r.client, plan.resourcePath(), postErr, postRes,
 					fmc.DomainName(plan.Domain.ValueString()))
 				if recErr != nil {
-					resp.Diagnostics.AddError("manual NAT POST failed for key "+it.Key.ValueString(), recErr.Error())
+					resp.Diagnostics.AddError("manual NAT POST failed for key "+it.Key.ValueString(),
+						"err="+recErr.Error()+"; body="+body+"; resp="+postRes.String())
 					return items, false
 				}
 				it.fromBody(rec)
@@ -427,6 +431,16 @@ func (r *MzeManualNatRulesResource) Create(ctx context.Context, req resource.Cre
 	plan.AfterAuto, ok = postSection("AFTER_AUTO", plan.AfterAuto)
 	if !ok {
 		return
+	}
+
+	// Normalize empty lists to nil so TF Framework writes the schema's
+	// Optional-list-null form (rather than an empty list, which would
+	// surface as drift on the next plan when the user omitted the field).
+	if len(plan.BeforeAuto) == 0 {
+		plan.BeforeAuto = nil
+	}
+	if len(plan.AfterAuto) == 0 {
+		plan.AfterAuto = nil
 	}
 
 	plan.ID = types.StringValue(plan.syntheticID())
@@ -464,6 +478,12 @@ func (r *MzeManualNatRulesResource) Read(ctx context.Context, req resource.ReadR
 
 	state.BeforeAuto = refresh(state.BeforeAuto)
 	state.AfterAuto = refresh(state.AfterAuto)
+	if len(state.BeforeAuto) == 0 {
+		state.BeforeAuto = nil
+	}
+	if len(state.AfterAuto) == 0 {
+		state.AfterAuto = nil
+	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
@@ -638,6 +658,12 @@ func (r *MzeManualNatRulesResource) Update(ctx context.Context, req resource.Upd
 	plan.AfterAuto, ok = updateSection("AFTER_AUTO", state.AfterAuto, plan.AfterAuto)
 	if !ok {
 		return
+	}
+	if len(plan.BeforeAuto) == 0 {
+		plan.BeforeAuto = nil
+	}
+	if len(plan.AfterAuto) == 0 {
+		plan.AfterAuto = nil
 	}
 
 	plan.ID = types.StringValue(plan.syntheticID())
