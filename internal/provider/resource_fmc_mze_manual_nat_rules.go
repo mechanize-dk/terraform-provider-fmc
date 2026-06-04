@@ -386,8 +386,59 @@ func (r *MzeManualNatRules) rebuildByKey() {
 
 // ─── CRUD stubs — filled in by later tasks ───────────────────────────────────
 
-func (r *MzeManualNatRulesResource) Create(_ context.Context, _ resource.CreateRequest, resp *resource.CreateResponse) {
-	resp.Diagnostics.AddError("not implemented", "Create not implemented yet (Task 2.5)")
+func (r *MzeManualNatRulesResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan MzeManualNatRules
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	matcher := plan.MatchOn.extract()
+	if matcher.IsEmpty() {
+		resp.Diagnostics.AddError("invalid match_on", "match_on must declare at least one field")
+		return
+	}
+
+	postSection := func(section string, items []MzeManualNatRulesItem) ([]MzeManualNatRulesItem, bool) {
+		for i := range items {
+			it := items[i]
+			if err := matcher.Validate(it.Key.ValueString(), it.fieldsForMatchOn()); err != nil {
+				resp.Diagnostics.AddError("match_on validation failed", err.Error())
+				return items, false
+			}
+			it.applyAutoFill(matcher)
+			path := plan.resourcePath() + "?section=" + strings.ToLower(section)
+			body := it.toBody(section)
+			postRes, postErr := r.client.Post(path, body, fmc.DomainName(plan.Domain.ValueString()))
+			if postErr != nil {
+				rec, recErr := helpers.FindDuplicateByIndex(ctx, r.client, plan.resourcePath(), postErr, postRes,
+					fmc.DomainName(plan.Domain.ValueString()))
+				if recErr != nil {
+					resp.Diagnostics.AddError("manual NAT POST failed for key "+it.Key.ValueString(), recErr.Error())
+					return items, false
+				}
+				it.fromBody(rec)
+			} else {
+				it.fromBody(postRes)
+			}
+			items[i] = it
+		}
+		return items, true
+	}
+
+	var ok bool
+	plan.BeforeAuto, ok = postSection("BEFORE_AUTO", plan.BeforeAuto)
+	if !ok {
+		return
+	}
+	plan.AfterAuto, ok = postSection("AFTER_AUTO", plan.AfterAuto)
+	if !ok {
+		return
+	}
+
+	plan.ID = types.StringValue(plan.syntheticID())
+	plan.rebuildByKey()
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
 func (r *MzeManualNatRulesResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
