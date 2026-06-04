@@ -27,3 +27,27 @@ func TestMatchOn_Hash_DiffersByField(t *testing.T) {
 		t.Fatal("Hash() should differ when adding destination_interface_id")
 	}
 }
+
+func TestMatchOn_Validate(t *testing.T) {
+	m := MatchOn{SourceInterfaceID: "zone-a"}
+	tests := []struct {
+		name    string
+		rule    map[string]*string
+		wantErr bool
+	}{
+		{"absent — passes (will be auto-filled)", map[string]*string{}, false},
+		{"matches — passes", map[string]*string{"source_interface_id": ptr("zone-a")}, false},
+		{"conflicts — fails", map[string]*string{"source_interface_id": ptr("zone-b")}, true},
+		{"explicitly null — fails (rules cannot opt out)", map[string]*string{"source_interface_id": nil}, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := m.Validate("test_item", tt.rule)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Validate() err=%v, wantErr=%v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func ptr(s string) *string { return &s }

@@ -57,3 +57,36 @@ func (m MatchOn) Hash() string {
 	sum := sha256.Sum256([]byte(canonical))
 	return hex.EncodeToString(sum[:])[:16]
 }
+
+// Validate checks one item against the matcher. The item is represented as
+// a map of field name → optional value: nil means the field is explicitly
+// unset (still a conflict for matcher-declared fields), absence means the
+// field will be auto-filled.
+//
+// itemLabel is included in any returned error so the user can identify the
+// offending item (typically the value of the item's `key` field).
+func (m MatchOn) Validate(itemLabel string, item map[string]*string) error {
+	check := func(fieldName, want string) error {
+		if want == "" {
+			return nil
+		}
+		got, present := item[fieldName]
+		if !present {
+			return nil // will be auto-filled
+		}
+		if got == nil {
+			return fmt.Errorf("item %q: %s is explicitly unset but match_on requires %s=%q", itemLabel, fieldName, fieldName, want)
+		}
+		if *got != want {
+			return fmt.Errorf("item %q: %s=%q conflicts with match_on.%s=%q", itemLabel, fieldName, *got, fieldName, want)
+		}
+		return nil
+	}
+	if err := check("source_interface_id", m.SourceInterfaceID); err != nil {
+		return err
+	}
+	if err := check("destination_interface_id", m.DestinationInterfaceID); err != nil {
+		return err
+	}
+	return nil
+}
