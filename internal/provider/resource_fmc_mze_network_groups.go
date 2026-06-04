@@ -52,23 +52,23 @@ const gcNamePrefix = "__gc_"
 const gcMarkerIP = "127.6.6.6"
 
 var (
-	_ resource.Resource                = &NetworkGroupsSafeResource{}
-	_ resource.ResourceWithImportState = &NetworkGroupsSafeResource{}
+	_ resource.Resource                = &MzeNetworkGroupsResource{}
+	_ resource.ResourceWithImportState = &MzeNetworkGroupsResource{}
 )
 
-func NewNetworkGroupsSafeResource() resource.Resource {
-	return &NetworkGroupsSafeResource{}
+func NewMzeNetworkGroupsResource() resource.Resource {
+	return &MzeNetworkGroupsResource{}
 }
 
-type NetworkGroupsSafeResource struct {
+type MzeNetworkGroupsResource struct {
 	client *fmc.Client
 }
 
-func (r *NetworkGroupsSafeResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_network_groups_safe"
+func (r *MzeNetworkGroupsResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_mze_network_groups"
 }
 
-func (r *NetworkGroupsSafeResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *MzeNetworkGroupsResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: helpers.NewAttributeDescription("This resource manages Network Groups through bulk operations, with safe (soft) deletion. " +
 			"When a network group cannot be deleted because it is still referenced by an access rule or another group, " +
@@ -125,7 +125,7 @@ func (r *NetworkGroupsSafeResource) Schema(ctx context.Context, req resource.Sch
 							Optional:            true,
 						},
 						"network_groups": schema.SetAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Set of names (not Ids) of child Network Groups. The names must be defined in the same instance of `fmc_network_groups_safe` resource.").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Set of names (not Ids) of child Network Groups. The names must be defined in the same instance of `fmc_mze_network_groups` resource.").String,
 							ElementType:         types.StringType,
 							Optional:            true,
 						},
@@ -164,14 +164,14 @@ func (r *NetworkGroupsSafeResource) Schema(ctx context.Context, req resource.Sch
 	}
 }
 
-func (r *NetworkGroupsSafeResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (r *MzeNetworkGroupsResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
 	r.client = req.ProviderData.(*FmcProviderData).Client
 }
 
-func (r *NetworkGroupsSafeResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (r *MzeNetworkGroupsResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan NetworkGroups
 
 	diags := req.Plan.Get(ctx, &plan)
@@ -205,7 +205,7 @@ func (r *NetworkGroupsSafeResource) Create(ctx context.Context, req resource.Cre
 	helpers.SetFlagImporting(ctx, false, resp.Private, &resp.Diagnostics)
 }
 
-func (r *NetworkGroupsSafeResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+func (r *MzeNetworkGroupsResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state NetworkGroups
 
 	diags := req.State.Get(ctx, &state)
@@ -251,7 +251,7 @@ func (r *NetworkGroupsSafeResource) Read(ctx context.Context, req resource.ReadR
 	helpers.SetFlagImporting(ctx, false, resp.Private, &resp.Diagnostics)
 }
 
-func (r *NetworkGroupsSafeResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (r *MzeNetworkGroupsResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state NetworkGroups
 
 	diags := req.Plan.Get(ctx, &plan)
@@ -282,7 +282,7 @@ func (r *NetworkGroupsSafeResource) Update(ctx context.Context, req resource.Upd
 	resp.Diagnostics.Append(diags...)
 }
 
-func (r *NetworkGroupsSafeResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (r *MzeNetworkGroupsResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	var state NetworkGroups
 
 	diags := req.State.Get(ctx, &state)
@@ -309,7 +309,7 @@ func (r *NetworkGroupsSafeResource) Delete(ctx context.Context, req resource.Del
 	tflog.Debug(ctx, fmt.Sprintf("%s: Delete finished", state.Id.ValueString()))
 }
 
-func (r *NetworkGroupsSafeResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *MzeNetworkGroupsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	var inputPattern = regexp.MustCompile(`^(?:(?P<domain>[^\s,]+),)?\[(?P<names>.*?)\]$`)
 	match := inputPattern.FindStringSubmatch(req.ID)
 	if match == nil {
@@ -333,11 +333,11 @@ func (r *NetworkGroupsSafeResource) ImportState(ctx context.Context, req resourc
 	helpers.SetFlagImporting(ctx, true, resp.Private, &resp.Diagnostics)
 }
 
-// updateSubresources creates, updates, and deletes subresources of the NetworkGroupsSafe resource.
+// updateSubresources creates, updates, and deletes subresources of the MzeNetworkGroups resource.
 // On delete, if FMC returns 409 (group still in use), the group is soft-deleted instead of failing:
 // it is renamed to __gc_<id> and its content is replaced with a single 127.6.6.6 literal.
 // The Read function will garbage-collect these groups once they are no longer referenced.
-func (r *NetworkGroupsSafeResource) updateSubresources(ctx context.Context, tfsdkPlan tfsdk.Plan, plan NetworkGroups, planBody string, tfsdkState tfsdk.State, state NetworkGroups, reqMods ...func(*fmc.Req)) (NetworkGroups, diag.Diagnostics) {
+func (r *MzeNetworkGroupsResource) updateSubresources(ctx context.Context, tfsdkPlan tfsdk.Plan, plan NetworkGroups, planBody string, tfsdkState tfsdk.State, state NetworkGroups, reqMods ...func(*fmc.Req)) (NetworkGroups, diag.Diagnostics) {
 	seq, diags := graphTopologicalSeq(ctx, planBody)
 	if diags.HasError() {
 		return state, diags
@@ -513,7 +513,7 @@ func (r *NetworkGroupsSafeResource) updateSubresources(ctx context.Context, tfsd
 // 127.6.6.6 literal, making any access rule that references it harmless.
 // The group is removed from Terraform state immediately; the GC pass in Read will delete it
 // from FMC once it is no longer referenced.
-func (r *NetworkGroupsSafeResource) softDelete(ctx context.Context, state NetworkGroups, name, id string, reqMods ...func(*fmc.Req)) diag.Diagnostics {
+func (r *MzeNetworkGroupsResource) softDelete(ctx context.Context, state NetworkGroups, name, id string, reqMods ...func(*fmc.Req)) diag.Diagnostics {
 	gcName := gcNamePrefix + id
 	gcBody := "{}"
 	gcBody, _ = sjson.Set(gcBody, "id", id)
@@ -539,7 +539,7 @@ func (r *NetworkGroupsSafeResource) softDelete(ctx context.Context, state Networ
 // that have been soft-deleted (name starts with __gc_) and are no longer referenced by anyone.
 // It is called from Read so it runs on every terraform plan/apply cycle.
 // Errors are logged and ignored — GC is best-effort and will retry on the next cycle.
-func (r *NetworkGroupsSafeResource) runGarbageCollection(ctx context.Context, state NetworkGroups, allGroups gjson.Result, reqMods ...func(*fmc.Req)) {
+func (r *MzeNetworkGroupsResource) runGarbageCollection(ctx context.Context, state NetworkGroups, allGroups gjson.Result, reqMods ...func(*fmc.Req)) {
 	for _, v := range allGroups.Get("items").Array() {
 		name := v.Get("name").String()
 		if !strings.HasPrefix(name, gcNamePrefix) {

@@ -1,6 +1,6 @@
-resource "fmc_network_groups_safe" "example" {
+resource "fmc_mze_network_groups" "example" {
   items = {
-    my_network_groups_safe = {
+    my_mze_network_groups = {
       description    = "My Network Group 1"
       network_groups = ["child_group_1"]
       objects = [
