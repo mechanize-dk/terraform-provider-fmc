@@ -1,5 +1,5 @@
 variable "use_safe" {
-  description = "When true, use fmc_network_groups_safe instead of fmc_network_groups."
+  description = "When true, use fmc_mze_network_groups instead of fmc_network_groups."
   type        = bool
   default     = false
 }

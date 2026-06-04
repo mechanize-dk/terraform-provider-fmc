@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# run_test.sh — diagnostic tests for fmc_network_groups_safe
+# run_test.sh — diagnostic tests for fmc_mze_network_groups
 #
 # Tests whether removing a network group that is still referenced by access rules
 # breaks terraform apply when using fmc_network_groups (expected), and succeeds
-# gracefully using fmc_network_groups_safe (expected).
+# gracefully using fmc_mze_network_groups (expected).
 #
 # Tests:
 #   1. fmc_network_groups   — remove one group → confirm BREAKS
 #   2. fmc_network_groups   — remove all groups → confirm BREAKS
-#   3. fmc_network_groups_safe — remove one group → confirm SUCCEEDS + GC cleans up
-#   4. fmc_network_groups_safe — remove all groups → confirm SUCCEEDS + GC cleans up
-#   5. fmc_network_groups_safe — nested groups (group-a child of group-b) → confirm SUCCEEDS
+#   3. fmc_mze_network_groups — remove one group → confirm SUCCEEDS + GC cleans up
+#   4. fmc_mze_network_groups — remove all groups → confirm SUCCEEDS + GC cleans up
+#   5. fmc_mze_network_groups — nested groups (group-a child of group-b) → confirm SUCCEEDS
 #
 # Usage:
 #   ./run_test.sh -u <username> -p <password> --url <fmc_url> [--terraform /path/to/terraform]
@@ -60,7 +60,22 @@ FMC_URL="${FMC_URL%/}"
 # ── Paths ──────────────────────────────────────────────────────────────────────
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
-PROVIDER_BIN="$SCRIPT_DIR/terraform-provider-fmc"
+
+# Convert a POSIX path to a native path on MSYS/Cygwin/Git-Bash so terraform.exe
+# can resolve it. Mixed style (forward slashes with drive letter) is safe inside
+# HCL strings. No-op on Linux/macOS.
+to_native_path() {
+  if command -v cygpath >/dev/null 2>&1; then
+    cygpath -m "$1"
+  else
+    echo "$1"
+  fi
+}
+
+case "$(uname -s)" in
+  MINGW*|MSYS*|CYGWIN*) PROVIDER_BIN="$SCRIPT_DIR/terraform-provider-fmc.exe" ;;
+  *)                    PROVIDER_BIN="$SCRIPT_DIR/terraform-provider-fmc" ;;
+esac
 TFRC="$SCRIPT_DIR/dev.tfrc"
 TFVARS="$SCRIPT_DIR/test.auto.tfvars"
 
@@ -95,12 +110,15 @@ pass "Provider binary: $PROVIDER_BIN"
 
 cat > "$TFRC" <<EOF
 provider_installation {
-  dev_overrides { "CiscoDevNet/fmc" = "${SCRIPT_DIR}" }
+  dev_overrides { "CiscoDevNet/fmc" = "$(to_native_path "$SCRIPT_DIR")" }
   direct {}
 }
 EOF
 
-export TF_CLI_CONFIG_FILE="$TFRC"
+export TF_CLI_CONFIG_FILE="$(to_native_path "$TFRC")"
+# Force UTF-8 stdout for child Python invocations (so they don't crash on the
+# Windows cp1252 console when printing box-drawing/arrow characters).
+export PYTHONIOENCODING=utf-8
 export FMC_USERNAME FMC_PASSWORD FMC_URL
 export FMC_INSECURE=true
 
@@ -319,7 +337,7 @@ trap_cleanup() {
 trap trap_cleanup EXIT
 
 cd "$SCRIPT_DIR"
-terraform -chdir="$SCRIPT_DIR" init -upgrade > /dev/null 2>&1 || true
+terraform -chdir="$(to_native_path "$SCRIPT_DIR")" init -upgrade > /dev/null 2>&1 || true
 
 # Pre-run hard cleanup: ensure FMC is clean before starting tests
 fmc_hard_cleanup
@@ -395,7 +413,7 @@ network_groups     = {}
 access_rule_groups = {}'
 
 # Note: the nested relationship (group-a inside group-b) is set via network_groups attribute
-# in fmc_network_groups_safe. Test 5 uses its own terraform config written inline by the script
+# in fmc_mze_network_groups. Test 5 uses its own terraform config written inline by the script
 # and is not affected by GROUP_COUNT.
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -415,8 +433,14 @@ else
   if terraform apply -auto-approve > /tmp/tf_test1.txt 2>&1; then
     fail "TEST 1: apply succeeded — fmc_network_groups should have failed with 409"
   else
-    PLAIN=$(sed 's/\x1b\[[0-9;]*m//g' /tmp/tf_test1.txt)
-    if echo "$PLAIN" | grep -qi "StatusCode 4"; then
+    # Write the colour-stripped output to a temp file, then grep the file —
+    # don't pipe `sed | grep -q`. With `set -o pipefail` enabled, `grep -q`
+    # closes its stdin on the first match, which sends SIGPIPE to sed. sed
+    # then exits 141, pipefail reports the pipeline as failed (even though
+    # grep matched), and TEST 1 false-fails. At count=1000 the match lands
+    # near the end of a ~1 MB file so the race nearly always trips.
+    sed 's/\x1b\[[0-9;]*m//g' /tmp/tf_test1.txt > /tmp/tf_test1_plain.txt
+    if grep -qi "StatusCode 4" /tmp/tf_test1_plain.txt; then
       pass "TEST 1 CONFIRMED: fmc_network_groups failed (network group still referenced by access rule)"
     else
       fail "TEST 1: apply failed but not with an expected HTTP 4xx error — check output: /tmp/tf_test1.txt"
@@ -445,8 +469,10 @@ else
   if terraform apply -auto-approve > /tmp/tf_test2.txt 2>&1; then
     fail "TEST 2: apply succeeded — fmc_network_groups should have failed with 409"
   else
-    PLAIN=$(sed 's/\x1b\[[0-9;]*m//g' /tmp/tf_test2.txt)
-    if echo "$PLAIN" | grep -qi "StatusCode 4"; then
+    # See TEST 1 above for why this writes to a temp file instead of piping
+    # sed → grep -q (pipefail + SIGPIPE race).
+    sed 's/\x1b\[[0-9;]*m//g' /tmp/tf_test2.txt > /tmp/tf_test2_plain.txt
+    if grep -qi "StatusCode 4" /tmp/tf_test2_plain.txt; then
       pass "TEST 2 CONFIRMED: fmc_network_groups failed (all groups still referenced by access rules)"
     else
       fail "TEST 2: apply failed but not with an expected HTTP 4xx error — check output: /tmp/tf_test2.txt"
@@ -460,7 +486,7 @@ fi # run_test 2
 
 # ══════════════════════════════════════════════════════════════════════════════
 if run_test 3; then
-header "TEST 3 — fmc_network_groups_safe: remove one group (expect SUCCESS + GC)"
+header "TEST 3 — fmc_mze_network_groups: remove one group (expect SUCCESS + GC)"
 # ══════════════════════════════════════════════════════════════════════════════
 
 echo "$FULL_SAFE_TFVARS" > "$TFVARS"
@@ -473,7 +499,7 @@ else
   echo "$PARTIAL_SAFE_TFVARS" > "$TFVARS"
   info "Applying partial config (remove group-a + rule-a)..."
   if ! terraform apply -auto-approve > /tmp/tf_test3a.txt 2>&1; then
-    fail "TEST 3: apply failed — fmc_network_groups_safe should have soft-deleted group-a"
+    fail "TEST 3: apply failed — fmc_mze_network_groups should have soft-deleted group-a"
     cat /tmp/tf_test3a.txt
   else
     pass "Partial apply succeeded"
@@ -512,7 +538,7 @@ fi # run_test 3
 
 # ══════════════════════════════════════════════════════════════════════════════
 if run_test 4; then
-header "TEST 4 — fmc_network_groups_safe: remove all groups (expect SUCCESS + GC)"
+header "TEST 4 — fmc_mze_network_groups: remove all groups (expect SUCCESS + GC)"
 # ══════════════════════════════════════════════════════════════════════════════
 
 echo "$FULL_SAFE_TFVARS" > "$TFVARS"
@@ -525,7 +551,7 @@ else
   echo "$EMPTY_SAFE_TFVARS" > "$TFVARS"
   info "Applying empty config (remove all groups and rules)..."
   if ! terraform apply -auto-approve > /tmp/tf_test4a.txt 2>&1; then
-    fail "TEST 4: apply failed — fmc_network_groups_safe should have soft-deleted all groups"
+    fail "TEST 4: apply failed — fmc_mze_network_groups should have soft-deleted all groups"
     cat /tmp/tf_test4a.txt
   else
     pass "Empty apply succeeded"
@@ -565,7 +591,7 @@ fi # run_test 4
 
 # ══════════════════════════════════════════════════════════════════════════════
 if run_test 5; then
-header "TEST 5 — fmc_network_groups_safe: nested groups (group-a child of group-b, expect SUCCESS)"
+header "TEST 5 — fmc_mze_network_groups: nested groups (group-a child of group-b, expect SUCCESS)"
 # ══════════════════════════════════════════════════════════════════════════════
 #
 # group-a is a child of group-b (via the network_groups attribute).
@@ -581,7 +607,7 @@ cp "$SCRIPT_DIR/providers.tf" "$T5_DIR/providers.tf"
 # Write the TFRC so the temp workspace finds the local provider binary.
 cat > "$TFRC" <<EOF
 provider_installation {
-  dev_overrides { "CiscoDevNet/fmc" = "${SCRIPT_DIR}" }
+  dev_overrides { "CiscoDevNet/fmc" = "$(to_native_path "$SCRIPT_DIR")" }
   direct {}
 }
 EOF
@@ -595,7 +621,7 @@ resource "fmc_access_control_policy" "test" {
 }
 
 # group-a is a child of group-b via the network_groups attribute.
-resource "fmc_network_groups_safe" "test" {
+resource "fmc_mze_network_groups" "test" {
   items = {
     "tf-ng-safe-test5-group-a" = {
       literals = [{ value = "10.11.1.0/24" }]
@@ -617,7 +643,7 @@ resource "fmc_access_rules" "test" {
       name   = "tf-ng-safe-test5-rule-b"
       action = "ALLOW"
       destination_network_objects = [{
-        id   = fmc_network_groups_safe.test.items["tf-ng-safe-test5-group-b"].id
+        id   = fmc_mze_network_groups.test.items["tf-ng-safe-test5-group-b"].id
         type = "NetworkGroup"
       }]
     },
@@ -625,7 +651,7 @@ resource "fmc_access_rules" "test" {
       name   = "tf-ng-safe-test5-rule-c"
       action = "ALLOW"
       destination_network_objects = [{
-        id   = fmc_network_groups_safe.test.items["tf-ng-safe-test5-group-c"].id
+        id   = fmc_mze_network_groups.test.items["tf-ng-safe-test5-group-c"].id
         type = "NetworkGroup"
       }]
     },
@@ -644,7 +670,7 @@ resource "fmc_access_control_policy" "test" {
 }
 
 # group-a removed. group-b no longer references it.
-resource "fmc_network_groups_safe" "test" {
+resource "fmc_mze_network_groups" "test" {
   items = {
     "tf-ng-safe-test5-group-b" = {
       literals = [{ value = "10.11.2.0/24" }]
@@ -662,7 +688,7 @@ resource "fmc_access_rules" "test" {
       name   = "tf-ng-safe-test5-rule-b"
       action = "ALLOW"
       destination_network_objects = [{
-        id   = fmc_network_groups_safe.test.items["tf-ng-safe-test5-group-b"].id
+        id   = fmc_mze_network_groups.test.items["tf-ng-safe-test5-group-b"].id
         type = "NetworkGroup"
       }]
     },
@@ -670,7 +696,7 @@ resource "fmc_access_rules" "test" {
       name   = "tf-ng-safe-test5-rule-c"
       action = "ALLOW"
       destination_network_objects = [{
-        id   = fmc_network_groups_safe.test.items["tf-ng-safe-test5-group-c"].id
+        id   = fmc_mze_network_groups.test.items["tf-ng-safe-test5-group-c"].id
         type = "NetworkGroup"
       }]
     },
@@ -682,12 +708,12 @@ t5_cleanup() {
   info "Cleaning up test 5..."
   # Restore full config before destroying so all resources are in state.
   cp "$T5_DIR/main_full.tf.tpl" "$T5_DIR/main.tf" 2>/dev/null || true
-  (cd "$T5_DIR" && TF_CLI_CONFIG_FILE="$TFRC" terraform destroy -auto-approve 2>/dev/null) || true
+  (cd "$T5_DIR" && TF_CLI_CONFIG_FILE="$(to_native_path "$TFRC")" terraform destroy -auto-approve 2>/dev/null) || true
   rm -rf "$T5_DIR"
 }
 
 info "Applying full nested config (group-a child of group-b)..."
-if ! (cd "$T5_DIR" && TF_CLI_CONFIG_FILE="$TFRC" terraform apply -auto-approve > /tmp/tf_test5_init.txt 2>&1); then
+if ! (cd "$T5_DIR" && TF_CLI_CONFIG_FILE="$(to_native_path "$TFRC")" terraform apply -auto-approve > /tmp/tf_test5_init.txt 2>&1); then
   fail "TEST 5: Initial full apply failed — cannot proceed"
   cat /tmp/tf_test5_init.txt >&2
   t5_cleanup
@@ -698,13 +724,13 @@ else
   cp "$T5_DIR/main_partial.tf.tpl" "$T5_DIR/main.tf"
 
   info "Applying partial config (remove group-a, update group-b to drop the child reference)..."
-  if ! (cd "$T5_DIR" && TF_CLI_CONFIG_FILE="$TFRC" terraform apply -auto-approve > /tmp/tf_test5a.txt 2>&1); then
-    fail "TEST 5: apply failed — fmc_network_groups_safe should have soft-deleted group-a"
+  if ! (cd "$T5_DIR" && TF_CLI_CONFIG_FILE="$(to_native_path "$TFRC")" terraform apply -auto-approve > /tmp/tf_test5a.txt 2>&1); then
+    fail "TEST 5: apply failed — fmc_mze_network_groups should have soft-deleted group-a"
     cat /tmp/tf_test5a.txt
   else
     pass "Partial apply succeeded"
 
-    # For nested groups within a single fmc_network_groups_safe resource, the topological sort
+    # For nested groups within a single fmc_mze_network_groups resource, the topological sort
     # in updateSubresources updates group-b (removing group-a from its children) BEFORE deleting
     # group-a. So group-a is deleted cleanly without needing a soft-delete.
     fmc_auth

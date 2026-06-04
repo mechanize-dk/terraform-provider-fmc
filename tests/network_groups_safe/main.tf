@@ -17,7 +17,7 @@ resource "fmc_network_groups" "test" {
 
 # Safe bulk resource — used when use_safe = true (tests 3, 4 & 5).
 # When use_safe = false its items map is empty, making it a no-op in FMC.
-resource "fmc_network_groups_safe" "test" {
+resource "fmc_mze_network_groups" "test" {
   items = var.use_safe ? {
     for name, cfg in var.network_groups : name => {
       literals = [{ value = cfg.literal }]
@@ -30,7 +30,7 @@ locals {
   ng_ids = {
     for k, v in merge(
       fmc_network_groups.test.items,
-      fmc_network_groups_safe.test.items
+      fmc_mze_network_groups.test.items
     ) : k => v.id
   }
 }

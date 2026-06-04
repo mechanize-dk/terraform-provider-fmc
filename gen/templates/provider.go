@@ -331,7 +331,7 @@ func (p *FmcProvider) Resources(ctx context.Context) []func() resource.Resource 
 		{{- end}}
 		{{- end}}
 		// Fork additions — manually implemented, not code-generated:
-		NewNetworkGroupsSafeResource,
+		NewMzeNetworkGroupsResource,
 		NewMzeManualNatRulesResource,
 		NewMzeAutoNatRulesResource,
 	}

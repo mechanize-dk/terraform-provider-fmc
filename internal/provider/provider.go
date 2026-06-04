@@ -508,7 +508,7 @@ func (p *FmcProvider) Resources(ctx context.Context) []func() resource.Resource 
 		NewVPNS2SIKESettingsResource,
 		NewVPNS2SIPSECSettingsResource,
 		// Fork additions — manually implemented, not code-generated:
-		NewNetworkGroupsSafeResource,
+		NewMzeNetworkGroupsResource,
 		NewMzeManualNatRulesResource,
 		NewMzeAutoNatRulesResource,
 	}

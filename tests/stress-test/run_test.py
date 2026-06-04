@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-stress_test.py — Stress test for fmc_network_groups_safe (equivalent to
+stress_test.py — Stress test for fmc_mze_network_groups (equivalent to
 test 3 in tests/network_groups_safe/run_test.sh).
 
 All traffic — both the Python FMC API calls and Terraform's HTTP calls —
@@ -12,7 +12,7 @@ What the test does:
   1. Hard-cleanup: delete any leftover test objects in FMC.
   2. Start MITM proxy thread on port 63323 (daemon — dies with the process).
   3. Build the Terraform provider binary from the repository.
-  4. Apply full config  : N fmc_network_groups_safe + N fmc_access_rules.
+  4. Apply full config  : N fmc_mze_network_groups + N fmc_access_rules.
   5. Apply partial config: remove group-1 and rule-1.
      Expected: apply succeeds; group-1 is soft-deleted (renamed __gc_…).
   6. Verify: a __gc_ group exists in FMC.
@@ -738,7 +738,7 @@ def _write_tf_workspace(tf_dir: str, provider_dir: str) -> str:
                   manage_categories = false
                 }}
 
-                resource "fmc_network_groups_safe" "test" {{
+                resource "fmc_mze_network_groups" "test" {{
                   items = {{
                     for name, cfg in var.network_groups : name => {{
                       literals = [{{ value = cfg.literal }}]
@@ -753,7 +753,7 @@ def _write_tf_workspace(tf_dir: str, provider_dir: str) -> str:
                       name   = rule_name
                       action = "ALLOW"
                       destination_network_objects = [{{
-                        id   = fmc_network_groups_safe.test.items[group_name].id
+                        id   = fmc_mze_network_groups.test.items[group_name].id
                         type = "NetworkGroup"
                       }}]
                     }}
@@ -823,7 +823,7 @@ def _run_terraform(
 
 
 # ---------------------------------------------------------------------------
-# Test 3 — fmc_network_groups_safe: remove one group (expect SUCCESS + GC)
+# Test 3 — fmc_mze_network_groups: remove one group (expect SUCCESS + GC)
 # ---------------------------------------------------------------------------
 
 
@@ -835,7 +835,7 @@ def run_test_3(
 ) -> bool:
     """
     Equivalent to test 3 in run_test.sh:
-      - full apply  (count groups + count rules via fmc_network_groups_safe)
+      - full apply  (count groups + count rules via fmc_mze_network_groups)
       - partial apply (remove group-1 and rule-1)
       - verify soft-delete (__gc_ group appears in FMC)
       - GC apply (second apply)
@@ -846,7 +846,7 @@ def run_test_3(
     sep = "=" * 60
     log.info(sep)
     log.info(
-        "TEST 3 — fmc_network_groups_safe: remove one group "
+        "TEST 3 — fmc_mze_network_groups: remove one group "
         "(expect SUCCESS + GC)"
     )
     log.info(sep)
@@ -895,7 +895,7 @@ def run_test_3(
         if result.returncode != 0:
             log.error(
                 "FAIL — partial apply failed "
-                "(fmc_network_groups_safe should have soft-deleted group-1)"
+                "(fmc_mze_network_groups should have soft-deleted group-1)"
                 ":\n%s",
                 result.stdout[-3000:],
             )
@@ -981,7 +981,7 @@ def _build_provider(output_path: str) -> None:
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Stress test for fmc_network_groups_safe (test 3). "
+            "Stress test for fmc_mze_network_groups (test 3). "
             "Routes all traffic through a local MITM proxy on "
             f"port {PROXY_PORT} and logs headers to {LOG_FILE}."
         )

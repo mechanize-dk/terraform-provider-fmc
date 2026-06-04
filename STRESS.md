@@ -1,6 +1,6 @@
 # STRESS.md — stress testing notes
 
-This file documents the stress-testing campaign run against `fmc_network_groups_safe`
+This file documents the stress-testing campaign run against `fmc_mze_network_groups`
 at `--count 1000` (1000 network groups + 1000 access rules). It records every
 problem we hit, how we diagnosed it, and what we changed to fix it.
 
@@ -16,7 +16,7 @@ problem we hit, how we diagnosed it, and what we changed to fix it.
    response from both Terraform and the Python cleanup code is logged to
    `/tmp/logfile`.** This was essential for diagnosing all the issues below.
 3. Builds the provider binary from source.
-4. `terraform apply` — creates N network groups (`fmc_network_groups_safe`) and
+4. `terraform apply` — creates N network groups (`fmc_mze_network_groups`) and
    N access rules (`fmc_access_rules`) with each rule targeting one group.
 5. `terraform apply` (partial config) — removes group-1 and rule-1. Expects
    the group to be soft-deleted (`__gc_…`) rather than hard-deleted.

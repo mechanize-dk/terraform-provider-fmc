@@ -43,7 +43,7 @@ var docPaths = []string{"./docs/data-sources/", "./docs/resources/"}
 
 var extraDocs = map[string]string{
 	// Fork additions — manually implemented resources:
-	"network_groups_safe":  "Objects",
+	"mze_network_groups":   "Objects",
 	"mze_manual_nat_rules": "Policies",
 	"mze_auto_nat_rules":   "Policies",
 }

@@ -47,8 +47,6 @@ resource "fmc_mze_manual_nat_rules" "example" {
 
 ### Read-Only
 
-- `after_auto_by_key` (Attributes Map) Derived map view of `after_auto`, keyed by each item's `key`. Read-only. (see [below for nested schema](#nestedatt--after_auto_by_key))
-- `before_auto_by_key` (Attributes Map) Derived map view of `before_auto`, keyed by each item's `key`. Read-only; populated by the resource for downstream reference. (see [below for nested schema](#nestedatt--before_auto_by_key))
 - `id` (String) Synthetic id: <ftd_nat_policy_id>:<sha256(match_on)[:16]>
 
 <a id="nestedatt--match_on"></a>
@@ -97,76 +95,6 @@ Read-Only:
 
 <a id="nestedatt--before_auto"></a>
 ### Nested Schema for `before_auto`
-
-Required:
-
-- `key` (String) Tenant-chosen identifier for this rule. Used by the resource to track item identity across plans; never sent to FMC.
-- `nat_type` (String) STATIC or DYNAMIC
-
-Optional:
-
-- `description` (String)
-- `destination_interface_id` (String) Auto-filled from match_on when omitted.
-- `enabled` (Boolean)
-- `fall_through` (Boolean)
-- `interface_in_original_destination` (Boolean)
-- `interface_in_translated_source` (Boolean)
-- `ipv6` (Boolean)
-- `net_to_net` (Boolean)
-- `no_proxy_arp` (Boolean)
-- `original_destination_id` (String)
-- `original_destination_port_id` (String)
-- `original_source_id` (String)
-- `original_source_port_id` (String)
-- `source_interface_id` (String) Auto-filled from match_on when omitted.
-- `translated_destination_id` (String)
-- `translated_destination_port_id` (String)
-- `translated_source_id` (String)
-- `translated_source_port_id` (String)
-- `unidirectional` (Boolean)
-
-Read-Only:
-
-- `id` (String) FMC rule UUID (computed after POST).
-
-
-<a id="nestedatt--after_auto_by_key"></a>
-### Nested Schema for `after_auto_by_key`
-
-Required:
-
-- `key` (String) Tenant-chosen identifier for this rule. Used by the resource to track item identity across plans; never sent to FMC.
-- `nat_type` (String) STATIC or DYNAMIC
-
-Optional:
-
-- `description` (String)
-- `destination_interface_id` (String) Auto-filled from match_on when omitted.
-- `enabled` (Boolean)
-- `fall_through` (Boolean)
-- `interface_in_original_destination` (Boolean)
-- `interface_in_translated_source` (Boolean)
-- `ipv6` (Boolean)
-- `net_to_net` (Boolean)
-- `no_proxy_arp` (Boolean)
-- `original_destination_id` (String)
-- `original_destination_port_id` (String)
-- `original_source_id` (String)
-- `original_source_port_id` (String)
-- `source_interface_id` (String) Auto-filled from match_on when omitted.
-- `translated_destination_id` (String)
-- `translated_destination_port_id` (String)
-- `translated_source_id` (String)
-- `translated_source_port_id` (String)
-- `unidirectional` (Boolean)
-
-Read-Only:
-
-- `id` (String) FMC rule UUID (computed after POST).
-
-
-<a id="nestedatt--before_auto_by_key"></a>
-### Nested Schema for `before_auto_by_key`
 
 Required:
 
