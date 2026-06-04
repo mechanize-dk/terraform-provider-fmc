@@ -21,6 +21,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/netascode/go-fmc"
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 )
 
 // ─── Model types ─────────────────────────────────────────────────────────────
@@ -207,6 +209,176 @@ func (m *matchOnRequiresReplace) PlanModifyObject(_ context.Context, req planmod
 	}
 	if !req.PlanValue.Equal(req.StateValue) {
 		resp.RequiresReplace = true
+	}
+}
+
+// ─── Private helpers ─────────────────────────────────────────────────────────
+
+// extract pulls a helpers.MatchOn out of the framework model.
+func (m *MzeManualNatRulesMatchOn) extract() helpers.MatchOn {
+	if m == nil {
+		return helpers.MatchOn{}
+	}
+	return helpers.MatchOn{
+		SourceInterfaceID:      m.SourceInterfaceID.ValueString(),
+		DestinationInterfaceID: m.DestinationInterfaceID.ValueString(),
+	}
+}
+
+// syntheticID returns "<ftd_nat_policy_id>:<match_on_hash>".
+func (r *MzeManualNatRules) syntheticID() string {
+	return r.FtdNatPolicyID.ValueString() + ":" + r.MatchOn.extract().Hash()
+}
+
+// resourcePath returns the FMC URL for the manualnatrules collection on this resource's policy.
+func (r *MzeManualNatRules) resourcePath() string {
+	return "/api/fmc_config/v1/domain/{DOMAIN_UUID}/policy/ftdnatpolicies/" + r.FtdNatPolicyID.ValueString() + "/manualnatrules"
+}
+
+// fieldsForMatchOn returns the item's fields as the map[string]*string shape
+// that helpers.MatchOn.Validate and AutoFill expect.
+//
+// nil pointer = explicitly unset; missing key = unknown / to-be-filled.
+func (it MzeManualNatRulesItem) fieldsForMatchOn() map[string]*string {
+	out := map[string]*string{}
+	put := func(name string, v types.String) {
+		if v.IsUnknown() {
+			return
+		}
+		if v.IsNull() {
+			out[name] = nil
+			return
+		}
+		s := v.ValueString()
+		out[name] = &s
+	}
+	put("source_interface_id", it.SourceInterfaceID)
+	put("destination_interface_id", it.DestinationInterfaceID)
+	return out
+}
+
+// applyAutoFill mutates `it` so that any matcher-declared field the item
+// omitted gets injected, mirroring the schema's Computed semantics so the
+// post-Create state value isn't unknown.
+func (it *MzeManualNatRulesItem) applyAutoFill(matcher helpers.MatchOn) {
+	fields := it.fieldsForMatchOn()
+	matcher.AutoFill(fields)
+	if v, ok := fields["source_interface_id"]; ok && v != nil && (it.SourceInterfaceID.IsNull() || it.SourceInterfaceID.IsUnknown()) {
+		it.SourceInterfaceID = types.StringValue(*v)
+	}
+	if v, ok := fields["destination_interface_id"]; ok && v != nil && (it.DestinationInterfaceID.IsNull() || it.DestinationInterfaceID.IsUnknown()) {
+		it.DestinationInterfaceID = types.StringValue(*v)
+	}
+}
+
+// toBody builds the FMC POST/PUT body for a single rule. section must be
+// "BEFORE_AUTO" or "AFTER_AUTO". The body excludes the tenant `key` (TF-only).
+func (it MzeManualNatRulesItem) toBody(section string) string {
+	body := `{"type":"FTDManualNatRule"}`
+	body, _ = sjson.Set(body, "section", section)
+	body, _ = sjson.Set(body, "natType", it.NatType.ValueString())
+	if !it.Description.IsNull() && !it.Description.IsUnknown() {
+		body, _ = sjson.Set(body, "description", it.Description.ValueString())
+	}
+	if !it.Enabled.IsNull() && !it.Enabled.IsUnknown() {
+		body, _ = sjson.Set(body, "enabled", it.Enabled.ValueBool())
+	}
+	for _, b := range []struct {
+		path string
+		v    types.Bool
+	}{
+		{"fallThrough", it.FallThrough},
+		{"interfaceInOriginalDestination", it.InterfaceInOriginalDestination},
+		{"interfaceInTranslatedSource", it.InterfaceInTranslatedSource},
+		{"interfaceIpv6", it.IPv6},
+		{"netToNet", it.NetToNet},
+		{"noProxyArp", it.NoProxyArp},
+		{"unidirectional", it.Unidirectional},
+	} {
+		if !b.v.IsNull() && !b.v.IsUnknown() {
+			body, _ = sjson.Set(body, b.path, b.v.ValueBool())
+		}
+	}
+	for _, r := range []struct {
+		path string
+		id   types.String
+	}{
+		{"sourceInterface.id", it.SourceInterfaceID},
+		{"destinationInterface.id", it.DestinationInterfaceID},
+		{"originalSource.id", it.OriginalSourceID},
+		{"originalDestination.id", it.OriginalDestinationID},
+		{"originalSourcePort.id", it.OriginalSourcePortID},
+		{"originalDestinationPort.id", it.OriginalDestinationPortID},
+		{"translatedSource.id", it.TranslatedSourceID},
+		{"translatedDestination.id", it.TranslatedDestinationID},
+		{"translatedSourcePort.id", it.TranslatedSourcePortID},
+		{"translatedDestinationPort.id", it.TranslatedDestinationPortID},
+	} {
+		if !r.id.IsNull() && !r.id.IsUnknown() && r.id.ValueString() != "" {
+			body, _ = sjson.Set(body, r.path, r.id.ValueString())
+		}
+	}
+	return body
+}
+
+// fromBody populates an item from an FMC GET response body.
+func (it *MzeManualNatRulesItem) fromBody(res gjson.Result) {
+	it.ID = types.StringValue(res.Get("id").String())
+	if d := res.Get("description"); d.Exists() {
+		it.Description = types.StringValue(d.String())
+	}
+	if e := res.Get("enabled"); e.Exists() {
+		it.Enabled = types.BoolValue(e.Bool())
+	}
+	if v := res.Get("natType"); v.Exists() {
+		it.NatType = types.StringValue(v.String())
+	}
+	for _, b := range []struct {
+		path string
+		dst  *types.Bool
+	}{
+		{"fallThrough", &it.FallThrough},
+		{"interfaceInOriginalDestination", &it.InterfaceInOriginalDestination},
+		{"interfaceInTranslatedSource", &it.InterfaceInTranslatedSource},
+		{"interfaceIpv6", &it.IPv6},
+		{"netToNet", &it.NetToNet},
+		{"noProxyArp", &it.NoProxyArp},
+		{"unidirectional", &it.Unidirectional},
+	} {
+		if v := res.Get(b.path); v.Exists() {
+			*b.dst = types.BoolValue(v.Bool())
+		}
+	}
+	for _, r := range []struct {
+		path string
+		dst  *types.String
+	}{
+		{"sourceInterface.id", &it.SourceInterfaceID},
+		{"destinationInterface.id", &it.DestinationInterfaceID},
+		{"originalSource.id", &it.OriginalSourceID},
+		{"originalDestination.id", &it.OriginalDestinationID},
+		{"originalSourcePort.id", &it.OriginalSourcePortID},
+		{"originalDestinationPort.id", &it.OriginalDestinationPortID},
+		{"translatedSource.id", &it.TranslatedSourceID},
+		{"translatedDestination.id", &it.TranslatedDestinationID},
+		{"translatedSourcePort.id", &it.TranslatedSourcePortID},
+		{"translatedDestinationPort.id", &it.TranslatedDestinationPortID},
+	} {
+		if v := res.Get(r.path); v.Exists() {
+			*r.dst = types.StringValue(v.String())
+		}
+	}
+}
+
+// rebuildByKey populates the *_by_key maps from the ordered lists. Idempotent.
+func (r *MzeManualNatRules) rebuildByKey() {
+	r.BeforeAutoByKey = map[string]MzeManualNatRulesItem{}
+	for _, it := range r.BeforeAuto {
+		r.BeforeAutoByKey[it.Key.ValueString()] = it
+	}
+	r.AfterAutoByKey = map[string]MzeManualNatRulesItem{}
+	for _, it := range r.AfterAuto {
+		r.AfterAutoByKey[it.Key.ValueString()] = it
 	}
 }
 
