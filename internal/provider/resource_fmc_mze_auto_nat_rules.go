@@ -22,6 +22,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -30,6 +32,19 @@ import (
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
+// boolFMCDefault is the standard plan-modifier set for FMC-defaulted bool
+// fields: Optional + Computed + UseStateForUnknown. FMC returns false for
+// these by default, so the state value diverges from a user-Null plan unless
+// we mark the attribute Computed.
+func boolFMCDefault() []planmodifier.Bool {
+	return []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()}
+}
+
+// int64FMCDefault is the int64 counterpart.
+func int64FMCDefault() []planmodifier.Int64 {
+	return []planmodifier.Int64{int64planmodifier.UseStateForUnknown()}
+}
 
 // ─── Model types ─────────────────────────────────────────────────────────────
 
@@ -90,16 +105,16 @@ func (r *MzeAutoNatRulesResource) Schema(_ context.Context, _ resource.SchemaReq
 		"translated_network_id":    schema.StringAttribute{Optional: true},
 		"source_interface_id":      schema.StringAttribute{Optional: true, Computed: true, PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()}},
 		"destination_interface_id": schema.StringAttribute{Optional: true, Computed: true, PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()}},
-		"original_port":            schema.Int64Attribute{Optional: true},
-		"translated_port":          schema.Int64Attribute{Optional: true},
+		"original_port":            schema.Int64Attribute{Optional: true, Computed: true, PlanModifiers: int64FMCDefault()},
+		"translated_port":          schema.Int64Attribute{Optional: true, Computed: true, PlanModifiers: int64FMCDefault()},
 		"protocol":                 schema.StringAttribute{Optional: true},
-		"fall_through":             schema.BoolAttribute{Optional: true},
-		"ipv6":                     schema.BoolAttribute{Optional: true},
-		"net_to_net":               schema.BoolAttribute{Optional: true},
-		"no_proxy_arp":             schema.BoolAttribute{Optional: true},
-		"perform_route_lookup":     schema.BoolAttribute{Optional: true},
-		"translate_dns":            schema.BoolAttribute{Optional: true},
-		"translated_network_is_destination_interface": schema.BoolAttribute{Optional: true},
+		"fall_through":             schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: boolFMCDefault()},
+		"ipv6":                     schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: boolFMCDefault()},
+		"net_to_net":               schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: boolFMCDefault()},
+		"no_proxy_arp":             schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: boolFMCDefault()},
+		"perform_route_lookup":     schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: boolFMCDefault()},
+		"translate_dns":            schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: boolFMCDefault()},
+		"translated_network_is_destination_interface": schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: boolFMCDefault()},
 	}}
 	resp.Schema = schema.Schema{
 		MarkdownDescription: helpers.NewAttributeDescription(
@@ -159,9 +174,13 @@ func (it *MzeAutoNatRulesItem) applyAutoFill(matcher helpers.MatchOn) {
 	matcher.AutoFill(fields)
 	if v, ok := fields["source_interface_id"]; ok && v != nil && (it.SourceInterfaceID.IsNull() || it.SourceInterfaceID.IsUnknown()) {
 		it.SourceInterfaceID = types.StringValue(*v)
+	} else if it.SourceInterfaceID.IsUnknown() {
+		it.SourceInterfaceID = types.StringNull()
 	}
 	if v, ok := fields["destination_interface_id"]; ok && v != nil && (it.DestinationInterfaceID.IsNull() || it.DestinationInterfaceID.IsUnknown()) {
 		it.DestinationInterfaceID = types.StringValue(*v)
+	} else if it.DestinationInterfaceID.IsUnknown() {
+		it.DestinationInterfaceID = types.StringNull()
 	}
 }
 

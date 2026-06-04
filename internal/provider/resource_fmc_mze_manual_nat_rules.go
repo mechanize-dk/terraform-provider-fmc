@@ -19,6 +19,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -28,17 +29,24 @@ import (
 	"github.com/tidwall/sjson"
 )
 
+// mzeBoolFMCDefault is the standard plan-modifier set for FMC-defaulted bool
+// fields. See the auto-NAT counterpart for rationale.
+func mzeBoolFMCDefault() []planmodifier.Bool {
+	return []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()}
+}
+
 // ─── Model types ─────────────────────────────────────────────────────────────
 
 type MzeManualNatRules struct {
-	ID              types.String                     `tfsdk:"id"`
-	Domain          types.String                     `tfsdk:"domain"`
-	FtdNatPolicyID  types.String                     `tfsdk:"ftd_nat_policy_id"`
-	MatchOn         *MzeManualNatRulesMatchOn        `tfsdk:"match_on"`
-	BeforeAuto      []MzeManualNatRulesItem          `tfsdk:"before_auto"`
-	AfterAuto       []MzeManualNatRulesItem          `tfsdk:"after_auto"`
-	BeforeAutoByKey map[string]MzeManualNatRulesItem `tfsdk:"before_auto_by_key"`
-	AfterAutoByKey  map[string]MzeManualNatRulesItem `tfsdk:"after_auto_by_key"`
+	ID             types.String              `tfsdk:"id"`
+	Domain         types.String              `tfsdk:"domain"`
+	FtdNatPolicyID types.String              `tfsdk:"ftd_nat_policy_id"`
+	MatchOn        *MzeManualNatRulesMatchOn `tfsdk:"match_on"`
+	BeforeAuto     []MzeManualNatRulesItem   `tfsdk:"before_auto"`
+	AfterAuto      []MzeManualNatRulesItem   `tfsdk:"after_auto"`
+	// before_auto_by_key / after_auto_by_key (computed map views) are deferred
+	// to v1.1 — TF Framework's nested-Map Computed-without-state model needs
+	// a typed wrapper to avoid "received unknown value" conversion errors.
 }
 
 type MzeManualNatRulesMatchOn struct {
@@ -111,15 +119,15 @@ func mzeManualNatRulesItemSchema() schema.NestedAttributeObject {
 				PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 			},
 			"description":                       schema.StringAttribute{Optional: true},
-			"enabled":                           schema.BoolAttribute{Optional: true},
+			"enabled":                           schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: mzeBoolFMCDefault()},
 			"nat_type":                          schema.StringAttribute{Required: true, MarkdownDescription: "STATIC or DYNAMIC"},
-			"fall_through":                      schema.BoolAttribute{Optional: true},
-			"interface_in_original_destination": schema.BoolAttribute{Optional: true},
-			"interface_in_translated_source":    schema.BoolAttribute{Optional: true},
-			"ipv6":                              schema.BoolAttribute{Optional: true},
-			"net_to_net":                        schema.BoolAttribute{Optional: true},
-			"no_proxy_arp":                      schema.BoolAttribute{Optional: true},
-			"unidirectional":                    schema.BoolAttribute{Optional: true},
+			"fall_through":                      schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: mzeBoolFMCDefault()},
+			"interface_in_original_destination": schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: mzeBoolFMCDefault()},
+			"interface_in_translated_source":    schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: mzeBoolFMCDefault()},
+			"ipv6":                              schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: mzeBoolFMCDefault()},
+			"net_to_net":                        schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: mzeBoolFMCDefault()},
+			"no_proxy_arp":                      schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: mzeBoolFMCDefault()},
+			"unidirectional":                    schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: mzeBoolFMCDefault()},
 			"source_interface_id": schema.StringAttribute{
 				Optional:            true,
 				Computed:            true,
@@ -181,16 +189,6 @@ func (r *MzeManualNatRulesResource) Schema(_ context.Context, _ resource.SchemaR
 			"after_auto": schema.ListNestedAttribute{
 				Optional:     true,
 				NestedObject: mzeManualNatRulesItemSchema(),
-			},
-			"before_auto_by_key": schema.MapNestedAttribute{
-				MarkdownDescription: "Derived map view of `before_auto`, keyed by each item's `key`. Read-only; populated by the resource for downstream reference.",
-				Computed:            true,
-				NestedObject:        mzeManualNatRulesItemSchema(),
-			},
-			"after_auto_by_key": schema.MapNestedAttribute{
-				MarkdownDescription: "Derived map view of `after_auto`, keyed by each item's `key`. Read-only.",
-				Computed:            true,
-				NestedObject:        mzeManualNatRulesItemSchema(),
 			},
 		},
 	}
@@ -262,15 +260,21 @@ func (it MzeManualNatRulesItem) fieldsForMatchOn() map[string]*string {
 
 // applyAutoFill mutates `it` so that any matcher-declared field the item
 // omitted gets injected, mirroring the schema's Computed semantics so the
-// post-Create state value isn't unknown.
+// post-Create state value isn't unknown. Any Optional+Computed field that
+// the matcher didn't fill AND the item left Unknown is collapsed to Null,
+// because the framework rejects Unknown values in the post-apply state.
 func (it *MzeManualNatRulesItem) applyAutoFill(matcher helpers.MatchOn) {
 	fields := it.fieldsForMatchOn()
 	matcher.AutoFill(fields)
 	if v, ok := fields["source_interface_id"]; ok && v != nil && (it.SourceInterfaceID.IsNull() || it.SourceInterfaceID.IsUnknown()) {
 		it.SourceInterfaceID = types.StringValue(*v)
+	} else if it.SourceInterfaceID.IsUnknown() {
+		it.SourceInterfaceID = types.StringNull()
 	}
 	if v, ok := fields["destination_interface_id"]; ok && v != nil && (it.DestinationInterfaceID.IsNull() || it.DestinationInterfaceID.IsUnknown()) {
 		it.DestinationInterfaceID = types.StringValue(*v)
+	} else if it.DestinationInterfaceID.IsUnknown() {
+		it.DestinationInterfaceID = types.StringNull()
 	}
 }
 
@@ -278,7 +282,7 @@ func (it *MzeManualNatRulesItem) applyAutoFill(matcher helpers.MatchOn) {
 // "BEFORE_AUTO" or "AFTER_AUTO". The body excludes the tenant `key` (TF-only).
 func (it MzeManualNatRulesItem) toBody(section string) string {
 	body := `{"type":"FTDManualNatRule"}`
-	body, _ = sjson.Set(body, "section", section)
+	body, _ = sjson.Set(body, "metadata.section", section)
 	body, _ = sjson.Set(body, "natType", it.NatType.ValueString())
 	if !it.Description.IsNull() && !it.Description.IsUnknown() {
 		body, _ = sjson.Set(body, "description", it.Description.ValueString())
@@ -373,18 +377,6 @@ func (it *MzeManualNatRulesItem) fromBody(res gjson.Result) {
 	}
 }
 
-// rebuildByKey populates the *_by_key maps from the ordered lists. Idempotent.
-func (r *MzeManualNatRules) rebuildByKey() {
-	r.BeforeAutoByKey = map[string]MzeManualNatRulesItem{}
-	for _, it := range r.BeforeAuto {
-		r.BeforeAutoByKey[it.Key.ValueString()] = it
-	}
-	r.AfterAutoByKey = map[string]MzeManualNatRulesItem{}
-	for _, it := range r.AfterAuto {
-		r.AfterAutoByKey[it.Key.ValueString()] = it
-	}
-}
-
 // ─── CRUD stubs — filled in by later tasks ───────────────────────────────────
 
 func (r *MzeManualNatRulesResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -438,7 +430,6 @@ func (r *MzeManualNatRulesResource) Create(ctx context.Context, req resource.Cre
 	}
 
 	plan.ID = types.StringValue(plan.syntheticID())
-	plan.rebuildByKey()
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
@@ -473,7 +464,6 @@ func (r *MzeManualNatRulesResource) Read(ctx context.Context, req resource.ReadR
 
 	state.BeforeAuto = refresh(state.BeforeAuto)
 	state.AfterAuto = refresh(state.AfterAuto)
-	state.rebuildByKey()
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
@@ -651,7 +641,6 @@ func (r *MzeManualNatRulesResource) Update(ctx context.Context, req resource.Upd
 	}
 
 	plan.ID = types.StringValue(plan.syntheticID())
-	plan.rebuildByKey()
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
