@@ -59,9 +59,10 @@ func (m MatchOn) Hash() string {
 }
 
 // Validate checks one item against the matcher. The item is represented as
-// a map of field name → optional value: nil means the field is explicitly
-// unset (still a conflict for matcher-declared fields), absence means the
-// field will be auto-filled.
+// a map of field name → optional value: nil means the field is null (user
+// omitted it in HCL), absence means the field is Unknown. Both cases pass
+// validation — the field will be auto-filled at apply time. Only an
+// explicit non-matching value is a conflict.
 //
 // itemLabel is included in any returned error so the user can identify the
 // offending item (typically the value of the item's `key` field).
@@ -71,11 +72,8 @@ func (m MatchOn) Validate(itemLabel string, item map[string]*string) error {
 			return nil
 		}
 		got, present := item[fieldName]
-		if !present {
-			return nil // will be auto-filled
-		}
-		if got == nil {
-			return fmt.Errorf("item %q: %s is explicitly unset but match_on requires %s=%q", itemLabel, fieldName, fieldName, want)
+		if !present || got == nil {
+			return nil // unset or null — auto-fill will populate it
 		}
 		if *got != want {
 			return fmt.Errorf("item %q: %s=%q conflicts with match_on.%s=%q", itemLabel, fieldName, *got, fieldName, want)

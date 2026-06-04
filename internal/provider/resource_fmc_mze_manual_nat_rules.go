@@ -19,7 +19,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -28,12 +27,6 @@ import (
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
-// mzeBoolFMCDefault is the standard plan-modifier set for FMC-defaulted bool
-// fields. See the auto-NAT counterpart for rationale.
-func mzeBoolFMCDefault() []planmodifier.Bool {
-	return []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()}
-}
 
 // ─── Model types ─────────────────────────────────────────────────────────────
 
@@ -116,18 +109,22 @@ func mzeManualNatRulesItemSchema() schema.NestedAttributeObject {
 			"id": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("FMC rule UUID (computed after POST).").String,
 				Computed:            true,
-				PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+				// UseStateForUnknown deliberately omitted: when a new item is
+				// added to an existing list, the framework marks per-item
+				// Computed fields with UseStateForUnknown as Null at
+				// plan-time (not Unknown), which then collides with the
+				// post-apply id and surfaces as "inconsistent result".
 			},
 			"description":                       schema.StringAttribute{Optional: true},
-			"enabled":                           schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: mzeBoolFMCDefault()},
+			"enabled":                           schema.BoolAttribute{Optional: true},
 			"nat_type":                          schema.StringAttribute{Required: true, MarkdownDescription: "STATIC or DYNAMIC"},
-			"fall_through":                      schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: mzeBoolFMCDefault()},
-			"interface_in_original_destination": schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: mzeBoolFMCDefault()},
-			"interface_in_translated_source":    schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: mzeBoolFMCDefault()},
-			"ipv6":                              schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: mzeBoolFMCDefault()},
-			"net_to_net":                        schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: mzeBoolFMCDefault()},
-			"no_proxy_arp":                      schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: mzeBoolFMCDefault()},
-			"unidirectional":                    schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: mzeBoolFMCDefault()},
+			"fall_through":                      schema.BoolAttribute{Optional: true},
+			"interface_in_original_destination": schema.BoolAttribute{Optional: true},
+			"interface_in_translated_source":    schema.BoolAttribute{Optional: true},
+			"ipv6":                              schema.BoolAttribute{Optional: true},
+			"net_to_net":                        schema.BoolAttribute{Optional: true},
+			"no_proxy_arp":                      schema.BoolAttribute{Optional: true},
+			"unidirectional":                    schema.BoolAttribute{Optional: true},
 			"source_interface_id": schema.StringAttribute{
 				Optional:            true,
 				Computed:            true,
@@ -338,11 +335,23 @@ func (it *MzeManualNatRulesItem) fromBody(res gjson.Result) {
 		it.Description = types.StringValue(d.String())
 	}
 	if e := res.Get("enabled"); e.Exists() {
-		it.Enabled = types.BoolValue(e.Bool())
+		// Only adopt FMC's value if state was already non-Null (drift refresh)
+		// or Unknown. A user-omitted Optional bool reads as Null; writing
+		// FMC's default into state would produce a "provider produced
+		// inconsistent result after apply" error.
+		if it.Enabled.IsUnknown() {
+			it.Enabled = types.BoolValue(e.Bool())
+		} else if !it.Enabled.IsNull() {
+			it.Enabled = types.BoolValue(e.Bool())
+		}
 	}
 	if v := res.Get("natType"); v.Exists() {
 		it.NatType = types.StringValue(v.String())
 	}
+	// fromBody for Optional-only bool fields: only adopt FMC's value if state
+	// was already non-Null (drift refresh) or Unknown. A user-omitted
+	// Optional bool reads as Null; writing FMC's default into state would
+	// produce a "provider produced inconsistent result after apply" error.
 	for _, b := range []struct {
 		path string
 		dst  *types.Bool
@@ -356,7 +365,9 @@ func (it *MzeManualNatRulesItem) fromBody(res gjson.Result) {
 		{"unidirectional", &it.Unidirectional},
 	} {
 		if v := res.Get(b.path); v.Exists() {
-			*b.dst = types.BoolValue(v.Bool())
+			if b.dst.IsUnknown() || !b.dst.IsNull() {
+				*b.dst = types.BoolValue(v.Bool())
+			}
 		}
 	}
 	for _, r := range []struct {

@@ -38,7 +38,7 @@ func TestMatchOn_Validate(t *testing.T) {
 		{"absent — passes (will be auto-filled)", map[string]*string{}, false},
 		{"matches — passes", map[string]*string{"source_interface_id": ptr("zone-a")}, false},
 		{"conflicts — fails", map[string]*string{"source_interface_id": ptr("zone-b")}, true},
-		{"explicitly null — fails (rules cannot opt out)", map[string]*string{"source_interface_id": nil}, true},
+		{"explicit null — passes (TF Framework reports user-omitted Optional as null)", map[string]*string{"source_interface_id": nil}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

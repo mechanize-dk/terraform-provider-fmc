@@ -53,6 +53,44 @@ export FMC_USERNAME FMC_PASSWORD FMC_URL FMC_INSECURE=true
 cd "$SCRIPT_DIR"
 echo "ftdv_name = \"${FMC_FTDV_NAME}\"" > terraform.tfvars
 
+# Pre-flight: if a previous run was killed mid-cleanup, the FMC may still
+# carry tf-bulk-nat-test-* objects. Wipe them via the API so the apply below
+# starts clean.
+preflight_cleanup() {
+  fmc_authenticate || return 0
+  local API="${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}"
+  # NAT policies
+  local IDS=$("${CURL[@]}" -H "X-auth-access-token: $AUTH_TOKEN" \
+    "$API/policy/ftdnatpolicies?limit=100&expanded=true" \
+    | python3 -c "
+import sys,json
+d=json.loads(sys.stdin.read())
+print('\n'.join(it['id'] for it in d.get('items',[]) if 'tf-bulk-nat-test' in it.get('name','')))
+" 2>/dev/null)
+  for id in $IDS; do
+    [[ -z "$id" ]] && continue
+    # Unassign first, then delete.
+    "${CURL[@]}" -X PUT "$API/assignment/policyassignments/$id" \
+      -H "X-auth-access-token: $AUTH_TOKEN" -H "Content-Type: application/json" \
+      -d "{\"type\":\"PolicyAssignment\",\"policy\":{\"id\":\"$id\",\"type\":\"FTDNatPolicy\"},\"targets\":[]}" \
+      > /dev/null 2>&1 || true
+    "${CURL[@]}" -X DELETE "$API/policy/ftdnatpolicies/$id" -H "X-auth-access-token: $AUTH_TOKEN" > /dev/null 2>&1 || true
+  done
+  # Hosts + zones (delete in this order since hosts may be referenced by zones in some
+  # configurations — though not in this one).
+  for endpoint in object/hosts object/securityzones; do
+    IDS=$("${CURL[@]}" -H "X-auth-access-token: $AUTH_TOKEN" "$API/$endpoint?limit=200&expanded=true" \
+      | python3 -c "
+import sys,json
+d=json.loads(sys.stdin.read())
+print('\n'.join(it['id'] for it in d.get('items',[]) if it.get('name','').startswith('tf-bnt-') or it.get('name','').startswith('tf-bulk-nat-test-')))
+" 2>/dev/null)
+    for id in $IDS; do
+      [[ -z "$id" ]] && continue
+      "${CURL[@]}" -X DELETE "$API/$endpoint/$id" -H "X-auth-access-token: $AUTH_TOKEN" > /dev/null 2>&1 || true
+    done
+  done
+}
 cleanup() {
   info "Cleaning up..."
   cd "$SCRIPT_DIR"
@@ -97,6 +135,10 @@ fmc_authenticate() {
   [[ -z "$AUTH_TOKEN" ]] && return 1
   return 0
 }
+
+info "Pre-flight cleanup..."
+preflight_cleanup
+pass "Pre-flight done"
 
 # ─── SCENARIO 1 — multi-tenant baseline ──────────────────────────────────────
 header "SCENARIO 1 — multi-tenant baseline"
@@ -195,7 +237,111 @@ else
   fail "SCENARIO 2: ID mismatch — state=$TF_ID, pre-created=$PRECREATED_ID"
 fi
 
-# Scenarios 3-5 follow in subsequent commits.
+# ─── SCENARIO 3 — reorder ────────────────────────────────────────────────────
+header "SCENARIO 3 — reorder"
+
+# Back up main.tf so we can mutate-and-restore.
+cp main.tf /tmp/bnt_main_backup.tf
+restore_main_tf() { cp /tmp/bnt_main_backup.tf "$SCRIPT_DIR/main.tf"; }
+# Ensure restoration even on early exit.
+trap 'restore_main_tf; cleanup' EXIT
+
+info "Adding rule_2 to tenant_a..."
+python3 - <<'PY'
+import pathlib
+p = pathlib.Path("main.tf")
+s = p.read_text()
+needle = '''  before_auto = [
+    {
+      key                  = "rule_1"
+      nat_type             = "STATIC"
+      original_source_id   = fmc_host.src_a.id
+      translated_source_id = fmc_host.trans_a.id
+    },
+  ]
+}
+
+resource "fmc_mze_manual_nat_rules" "tenant_b"'''
+replacement = '''  before_auto = [
+    {
+      key                  = "rule_1"
+      nat_type             = "STATIC"
+      original_source_id   = fmc_host.src_a.id
+      translated_source_id = fmc_host.trans_a.id
+    },
+    {
+      key                  = "rule_2"
+      nat_type             = "STATIC"
+      original_source_id   = fmc_host.trans_a.id
+      translated_source_id = fmc_host.src_a.id
+    },
+  ]
+}
+
+resource "fmc_mze_manual_nat_rules" "tenant_b"'''
+if needle not in s: raise SystemExit("scenario 3: anchor block not found in main.tf")
+p.write_text(s.replace(needle, replacement, 1))
+PY
+terraform apply -auto-approve > /dev/null
+pass "rule_2 added"
+
+info "Swapping rule_1 and rule_2 positions..."
+python3 - <<'PY'
+import pathlib
+p = pathlib.Path("main.tf")
+s = p.read_text()
+old = '''    {
+      key                  = "rule_1"
+      nat_type             = "STATIC"
+      original_source_id   = fmc_host.src_a.id
+      translated_source_id = fmc_host.trans_a.id
+    },
+    {
+      key                  = "rule_2"
+      nat_type             = "STATIC"
+      original_source_id   = fmc_host.trans_a.id
+      translated_source_id = fmc_host.src_a.id
+    },'''
+new = '''    {
+      key                  = "rule_2"
+      nat_type             = "STATIC"
+      original_source_id   = fmc_host.trans_a.id
+      translated_source_id = fmc_host.src_a.id
+    },
+    {
+      key                  = "rule_1"
+      nat_type             = "STATIC"
+      original_source_id   = fmc_host.src_a.id
+      translated_source_id = fmc_host.trans_a.id
+    },'''
+if old not in s: raise SystemExit("scenario 3: swap anchor not found")
+p.write_text(s.replace(old, new, 1))
+PY
+terraform apply -auto-approve > /dev/null
+pass "Reorder applied"
+
+# Verify state shows rule_2 first, rule_1 second. Use a Python-side
+# comparison (not bash string equality) to dodge CR/LF differences on MSYS.
+ORDER_OK=$(terraform show -json | python3 -c "
+import sys, json
+want = ['rule_2', 'rule_1']
+s = json.load(sys.stdin)
+for r in s.get('values',{}).get('root_module',{}).get('resources',[]):
+    if r.get('type')=='fmc_mze_manual_nat_rules' and r.get('name')=='tenant_a':
+        got = [it.get('key','') for it in r.get('values',{}).get('before_auto',[])]
+        print('OK' if got == want else 'got={} want={}'.format(got, want))
+        break
+")
+if [[ "$ORDER_OK" == "OK" ]]; then
+  pass "SCENARIO 3 CONFIRMED: state reflects swapped order (rule_2 first, rule_1 second)"
+else
+  fail "SCENARIO 3: state order mismatch — $ORDER_OK"
+fi
+
+restore_main_tf
+trap cleanup EXIT  # restore normal cleanup-only trap
+
+# Scenarios 4-5 follow in subsequent commits.
 
 echo
 echo -e "${GREEN}${BOLD}══════════════════════════════${NC}"

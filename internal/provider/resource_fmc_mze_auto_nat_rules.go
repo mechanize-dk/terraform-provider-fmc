@@ -22,8 +22,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -32,19 +30,6 @@ import (
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
-// boolFMCDefault is the standard plan-modifier set for FMC-defaulted bool
-// fields: Optional + Computed + UseStateForUnknown. FMC returns false for
-// these by default, so the state value diverges from a user-Null plan unless
-// we mark the attribute Computed.
-func boolFMCDefault() []planmodifier.Bool {
-	return []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()}
-}
-
-// int64FMCDefault is the int64 counterpart.
-func int64FMCDefault() []planmodifier.Int64 {
-	return []planmodifier.Int64{int64planmodifier.UseStateForUnknown()}
-}
 
 // ─── Model types ─────────────────────────────────────────────────────────────
 
@@ -99,22 +84,22 @@ func (r *MzeAutoNatRulesResource) Configure(_ context.Context, req resource.Conf
 
 func (r *MzeAutoNatRulesResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	autoItem := schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
-		"id":                       schema.StringAttribute{Computed: true, PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()}},
+		"id":                       schema.StringAttribute{Computed: true}, // UseStateForUnknown deliberately omitted — see manual NAT counterpart.
 		"nat_type":                 schema.StringAttribute{Required: true, MarkdownDescription: "STATIC or DYNAMIC"},
 		"original_network_id":      schema.StringAttribute{Required: true},
 		"translated_network_id":    schema.StringAttribute{Optional: true},
 		"source_interface_id":      schema.StringAttribute{Optional: true, Computed: true, PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()}},
 		"destination_interface_id": schema.StringAttribute{Optional: true, Computed: true, PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()}},
-		"original_port":            schema.Int64Attribute{Optional: true, Computed: true, PlanModifiers: int64FMCDefault()},
-		"translated_port":          schema.Int64Attribute{Optional: true, Computed: true, PlanModifiers: int64FMCDefault()},
+		"original_port":            schema.Int64Attribute{Optional: true},
+		"translated_port":          schema.Int64Attribute{Optional: true},
 		"protocol":                 schema.StringAttribute{Optional: true},
-		"fall_through":             schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: boolFMCDefault()},
-		"ipv6":                     schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: boolFMCDefault()},
-		"net_to_net":               schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: boolFMCDefault()},
-		"no_proxy_arp":             schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: boolFMCDefault()},
-		"perform_route_lookup":     schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: boolFMCDefault()},
-		"translate_dns":            schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: boolFMCDefault()},
-		"translated_network_is_destination_interface": schema.BoolAttribute{Optional: true, Computed: true, PlanModifiers: boolFMCDefault()},
+		"fall_through":             schema.BoolAttribute{Optional: true},
+		"ipv6":                     schema.BoolAttribute{Optional: true},
+		"net_to_net":               schema.BoolAttribute{Optional: true},
+		"no_proxy_arp":             schema.BoolAttribute{Optional: true},
+		"perform_route_lookup":     schema.BoolAttribute{Optional: true},
+		"translate_dns":            schema.BoolAttribute{Optional: true},
+		"translated_network_is_destination_interface": schema.BoolAttribute{Optional: true},
 	}}
 	resp.Schema = schema.Schema{
 		MarkdownDescription: helpers.NewAttributeDescription(
@@ -238,14 +223,26 @@ func (it *MzeAutoNatRulesItem) fromBody(res gjson.Result) {
 	if v := res.Get("destinationInterface.id"); v.Exists() {
 		it.DestinationInterfaceID = types.StringValue(v.String())
 	}
-	if v := res.Get("originalPort"); v.Exists() {
-		it.OriginalPort = types.Int64Value(v.Int())
-	}
-	if v := res.Get("translatedPort"); v.Exists() {
-		it.TranslatedPort = types.Int64Value(v.Int())
+	// Int64 / Bool / String defaultable fields: only adopt FMC's value if
+	// state was already non-Null (drift refresh) or Unknown. See the manual
+	// NAT counterpart for rationale.
+	for _, ip := range []struct {
+		path string
+		dst  *types.Int64
+	}{
+		{"originalPort", &it.OriginalPort},
+		{"translatedPort", &it.TranslatedPort},
+	} {
+		if v := res.Get(ip.path); v.Exists() {
+			if ip.dst.IsUnknown() || !ip.dst.IsNull() {
+				*ip.dst = types.Int64Value(v.Int())
+			}
+		}
 	}
 	if v := res.Get("serviceProtocol"); v.Exists() {
-		it.Protocol = types.StringValue(v.String())
+		if it.Protocol.IsUnknown() || !it.Protocol.IsNull() {
+			it.Protocol = types.StringValue(v.String())
+		}
 	}
 	for _, b := range []struct {
 		path string
@@ -256,7 +253,9 @@ func (it *MzeAutoNatRulesItem) fromBody(res gjson.Result) {
 		{"interfaceInTranslatedNetwork", &it.TranslatedNetworkIsDestinationInterface},
 	} {
 		if v := res.Get(b.path); v.Exists() {
-			*b.dst = types.BoolValue(v.Bool())
+			if b.dst.IsUnknown() || !b.dst.IsNull() {
+				*b.dst = types.BoolValue(v.Bool())
+			}
 		}
 	}
 }
