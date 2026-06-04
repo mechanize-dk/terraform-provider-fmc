@@ -339,9 +339,104 @@ else
 fi
 
 restore_main_tf
+info "Re-applying baseline config to reconcile state for subsequent scenarios..."
+terraform apply -auto-approve > /dev/null
 trap cleanup EXIT  # restore normal cleanup-only trap
 
-# Scenarios 4-5 follow in subsequent commits.
+# ─── SCENARIO 4 — out-of-band rule coexistence ───────────────────────────────
+header "SCENARIO 4 — out-of-band rule coexistence"
+
+fmc_authenticate || fail "FMC re-auth failed"
+NATP_ID=$(get_state_id fmc_ftd_nat_policy shared)
+ZONE_A=$(get_state_id fmc_security_zone tenant_a)
+SRC_A=$(get_state_id fmc_host src_a)
+SRC_B=$(get_state_id fmc_host src_b)
+TRANS_B=$(get_state_id fmc_host trans_b)
+
+# OOB rule uses src_b/trans_b (distinct from tenant_a's rule) and lives in
+# tenant_a's source zone — so it matches tenant_a's match_on but isn't in
+# tenant_a's items list. If cooperative ownership works, tenant_a will
+# ignore it.
+info "Creating an out-of-band rule in tenant_a's zone via API..."
+OOB_RESP=$("${CURL[@]}" -X POST \
+  "${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/ftdnatpolicies/${NATP_ID}/manualnatrules?section=before_auto" \
+  -H "X-auth-access-token: ${AUTH_TOKEN}" -H "Content-Type: application/json" \
+  -d "{\"type\":\"FTDManualNatRule\",\"natType\":\"STATIC\",\"originalSource\":{\"id\":\"${SRC_B}\"},\"translatedSource\":{\"id\":\"${TRANS_B}\"},\"sourceInterface\":{\"id\":\"${ZONE_A}\"},\"description\":\"out-of-band rule for SCENARIO 4\"}")
+OOB_ID=$(echo "$OOB_RESP" | python3 -c "import sys,json;print(json.loads(sys.stdin.read()).get('id',''))")
+[[ -z "$OOB_ID" ]] && fail "OOB pre-create failed: $OOB_RESP"
+pass "OOB rule id: $OOB_ID"
+
+info "terraform plan -detailed-exitcode (expect 0 = no drift, cooperative ownership)..."
+if terraform plan -detailed-exitcode -out=/dev/null; then
+  pass "SCENARIO 4 CONFIRMED: OOB rule ignored (no drift)"
+else
+  fail "SCENARIO 4: terraform plan detected drift on OOB rule (cooperative ownership broken)"
+fi
+
+info "Cleanup: delete OOB rule..."
+"${CURL[@]}" -X DELETE -H "X-auth-access-token: ${AUTH_TOKEN}" \
+  "${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/ftdnatpolicies/${NATP_ID}/manualnatrules/${OOB_ID}" > /dev/null
+
+# ─── SCENARIO 5 — auto-NAT specificity ───────────────────────────────────────
+header "SCENARIO 5 — auto-NAT specificity"
+
+# Add a Network-typed auto-NAT entry alongside the existing Host-typed one.
+# FMC will reorder them by specificity (Host before Network); our resource's
+# Read should refresh by stored ID, ignoring FMC's position.
+cp main.tf /tmp/bnt_main_backup.tf
+trap 'restore_main_tf; cleanup' EXIT
+
+info "Adding a Network-typed auto-NAT entry to tenant_a_auto..."
+python3 - <<'PY'
+import pathlib
+p = pathlib.Path("main.tf")
+s = p.read_text()
+# Insert a fmc_network resource and extend the auto-NAT map.
+if 'fmc_network "net_a"' not in s:
+    s = s.replace(
+        'resource "fmc_host" "trans_b" {',
+        '''resource "fmc_network" "net_a" {
+  name   = "tf-bnt-net-a"
+  prefix = "10.30.0.0/24"
+}
+
+resource "fmc_host" "trans_b" {''', 1)
+needle = '''  rules = {
+    "obj_a" = {
+      nat_type              = "STATIC"
+      original_network_id   = fmc_host.src_a.id
+      translated_network_id = fmc_host.trans_a.id
+    }
+  }
+}'''
+replacement = '''  rules = {
+    "obj_a" = {
+      nat_type              = "STATIC"
+      original_network_id   = fmc_host.src_a.id
+      translated_network_id = fmc_host.trans_a.id
+    }
+    "obj_a_net" = {
+      nat_type              = "STATIC"
+      original_network_id   = fmc_network.net_a.id
+      translated_network_id = fmc_host.trans_a.id
+    }
+  }
+}'''
+if needle not in s: raise SystemExit("scenario 5: anchor for tenant_a_auto rules not found")
+p.write_text(s.replace(needle, replacement, 1))
+PY
+terraform apply -auto-approve > /dev/null
+pass "Network rule added"
+
+info "terraform plan -detailed-exitcode (expect 0 = no drift even though FMC reorders by specificity)..."
+if terraform plan -detailed-exitcode -out=/dev/null; then
+  pass "SCENARIO 5 CONFIRMED: Read by stored ID is order-independent"
+else
+  fail "SCENARIO 5: plan detected drift — Read should be order-independent"
+fi
+
+restore_main_tf
+trap cleanup EXIT
 
 echo
 echo -e "${GREEN}${BOLD}══════════════════════════════${NC}"
