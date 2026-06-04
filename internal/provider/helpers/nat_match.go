@@ -90,3 +90,21 @@ func (m MatchOn) Validate(itemLabel string, item map[string]*string) error {
 	}
 	return nil
 }
+
+// AutoFill mutates an item, injecting matcher-declared fields that the item
+// did not set. Existing values (matching or not) are left untouched —
+// Validate should be called before AutoFill if conflicts matter.
+func (m MatchOn) AutoFill(item map[string]*string) {
+	fill := func(fieldName, want string) {
+		if want == "" {
+			return
+		}
+		if _, present := item[fieldName]; present {
+			return
+		}
+		v := want
+		item[fieldName] = &v
+	}
+	fill("source_interface_id", m.SourceInterfaceID)
+	fill("destination_interface_id", m.DestinationInterfaceID)
+}
