@@ -1,0 +1,230 @@
+// Copyright © 2023 Cisco Systems, Inc. and its affiliates.
+// SPDX-License-Identifier: MPL-2.0
+//
+// This file is part of the mechanize-dk fork of terraform-provider-fmc and
+// has no upstream counterpart. It implements the fmc_mze_manual_nat_rules
+// resource — a bulk wrapper for /policy/ftdnatpolicies/{id}/manualnatrules
+// with tenant-scoped (match_on) cooperative ownership.
+//
+// See docs/superpowers/specs/2026-06-04-bulk-nat-tenant-resources-design.md
+// for the design rationale.
+
+package provider
+
+import (
+	"context"
+
+	"github.com/CiscoDevNet/terraform-provider-fmc/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/netascode/go-fmc"
+)
+
+// ─── Model types ─────────────────────────────────────────────────────────────
+
+type MzeManualNatRules struct {
+	ID              types.String                                 `tfsdk:"id"`
+	Domain          types.String                                 `tfsdk:"domain"`
+	FtdNatPolicyID  types.String                                 `tfsdk:"ftd_nat_policy_id"`
+	MatchOn         *MzeManualNatRulesMatchOn                    `tfsdk:"match_on"`
+	BeforeAuto      []MzeManualNatRulesItem                      `tfsdk:"before_auto"`
+	AfterAuto       []MzeManualNatRulesItem                      `tfsdk:"after_auto"`
+	BeforeAutoByKey map[string]MzeManualNatRulesItem             `tfsdk:"before_auto_by_key"`
+	AfterAutoByKey  map[string]MzeManualNatRulesItem             `tfsdk:"after_auto_by_key"`
+}
+
+type MzeManualNatRulesMatchOn struct {
+	SourceInterfaceID      types.String `tfsdk:"source_interface_id"`
+	DestinationInterfaceID types.String `tfsdk:"destination_interface_id"`
+}
+
+type MzeManualNatRulesItem struct {
+	Key                            types.String `tfsdk:"key"`
+	ID                             types.String `tfsdk:"id"`
+	Description                    types.String `tfsdk:"description"`
+	Enabled                        types.Bool   `tfsdk:"enabled"`
+	NatType                        types.String `tfsdk:"nat_type"`
+	FallThrough                    types.Bool   `tfsdk:"fall_through"`
+	InterfaceInOriginalDestination types.Bool   `tfsdk:"interface_in_original_destination"`
+	InterfaceInTranslatedSource    types.Bool   `tfsdk:"interface_in_translated_source"`
+	IPv6                           types.Bool   `tfsdk:"ipv6"`
+	NetToNet                       types.Bool   `tfsdk:"net_to_net"`
+	NoProxyArp                     types.Bool   `tfsdk:"no_proxy_arp"`
+	Unidirectional                 types.Bool   `tfsdk:"unidirectional"`
+	SourceInterfaceID              types.String `tfsdk:"source_interface_id"`
+	DestinationInterfaceID         types.String `tfsdk:"destination_interface_id"`
+	OriginalSourceID               types.String `tfsdk:"original_source_id"`
+	OriginalDestinationID          types.String `tfsdk:"original_destination_id"`
+	OriginalSourcePortID           types.String `tfsdk:"original_source_port_id"`
+	OriginalDestinationPortID      types.String `tfsdk:"original_destination_port_id"`
+	TranslatedSourceID             types.String `tfsdk:"translated_source_id"`
+	TranslatedDestinationID        types.String `tfsdk:"translated_destination_id"`
+	TranslatedSourcePortID         types.String `tfsdk:"translated_source_port_id"`
+	TranslatedDestinationPortID    types.String `tfsdk:"translated_destination_port_id"`
+}
+
+// ─── Resource type + framework boilerplate ───────────────────────────────────
+
+var (
+	_ resource.Resource                = &MzeManualNatRulesResource{}
+	_ resource.ResourceWithImportState = &MzeManualNatRulesResource{}
+)
+
+func NewMzeManualNatRulesResource() resource.Resource {
+	return &MzeManualNatRulesResource{}
+}
+
+type MzeManualNatRulesResource struct {
+	client *fmc.Client
+}
+
+func (r *MzeManualNatRulesResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_mze_manual_nat_rules"
+}
+
+func (r *MzeManualNatRulesResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+	r.client = req.ProviderData.(*FmcProviderData).Client
+}
+
+// itemSchema returns the per-item nested schema, shared between before_auto and after_auto.
+func mzeManualNatRulesItemSchema() schema.NestedAttributeObject {
+	return schema.NestedAttributeObject{
+		Attributes: map[string]schema.Attribute{
+			"key": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Tenant-chosen identifier for this rule. Used by the resource to track item identity across plans; never sent to FMC.").String,
+				Required:            true,
+			},
+			"id": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("FMC rule UUID (computed after POST).").String,
+				Computed:            true,
+				PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+			},
+			"description":                       schema.StringAttribute{Optional: true},
+			"enabled":                           schema.BoolAttribute{Optional: true},
+			"nat_type":                          schema.StringAttribute{Required: true, MarkdownDescription: "STATIC or DYNAMIC"},
+			"fall_through":                      schema.BoolAttribute{Optional: true},
+			"interface_in_original_destination": schema.BoolAttribute{Optional: true},
+			"interface_in_translated_source":    schema.BoolAttribute{Optional: true},
+			"ipv6":                              schema.BoolAttribute{Optional: true},
+			"net_to_net":                        schema.BoolAttribute{Optional: true},
+			"no_proxy_arp":                      schema.BoolAttribute{Optional: true},
+			"unidirectional":                    schema.BoolAttribute{Optional: true},
+			"source_interface_id": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: "Auto-filled from match_on when omitted.",
+				PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+			},
+			"destination_interface_id": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: "Auto-filled from match_on when omitted.",
+				PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+			},
+			"original_source_id":             schema.StringAttribute{Optional: true},
+			"original_destination_id":        schema.StringAttribute{Optional: true},
+			"original_source_port_id":        schema.StringAttribute{Optional: true},
+			"original_destination_port_id":   schema.StringAttribute{Optional: true},
+			"translated_source_id":           schema.StringAttribute{Optional: true},
+			"translated_destination_id":      schema.StringAttribute{Optional: true},
+			"translated_source_port_id":      schema.StringAttribute{Optional: true},
+			"translated_destination_port_id": schema.StringAttribute{Optional: true},
+		},
+	}
+}
+
+func (r *MzeManualNatRulesResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = schema.Schema{
+		MarkdownDescription: helpers.NewAttributeDescription(
+			"Bulk-manages a tenant-scoped set of FTD manual NAT rules within a shared NAT policy. " +
+				"Use `before_auto` and `after_auto` (ordered lists, each item carries a tenant-chosen `key`) to declare rules; the resource POSTs them in list order. " +
+				"`match_on` declares the tenant scope and auto-fills the matching fields onto items that omit them. " +
+				"Cooperative ownership — other tenants' rules in the same section are ignored.").String,
+
+		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{
+				MarkdownDescription: "Synthetic id: <ftd_nat_policy_id>:<sha256(match_on)[:16]>",
+				Computed:            true,
+				PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+			},
+			"domain": schema.StringAttribute{
+				Optional:      true,
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
+			},
+			"ftd_nat_policy_id": schema.StringAttribute{
+				Required:      true,
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
+			},
+			"match_on": schema.SingleNestedAttribute{
+				Required:      true,
+				PlanModifiers: []planmodifier.Object{&matchOnRequiresReplace{}},
+				Attributes: map[string]schema.Attribute{
+					"source_interface_id":      schema.StringAttribute{Optional: true},
+					"destination_interface_id": schema.StringAttribute{Optional: true},
+				},
+			},
+			"before_auto": schema.ListNestedAttribute{
+				Optional:     true,
+				NestedObject: mzeManualNatRulesItemSchema(),
+			},
+			"after_auto": schema.ListNestedAttribute{
+				Optional:     true,
+				NestedObject: mzeManualNatRulesItemSchema(),
+			},
+			"before_auto_by_key": schema.MapNestedAttribute{
+				MarkdownDescription: "Derived map view of `before_auto`, keyed by each item's `key`. Read-only; populated by the resource for downstream reference.",
+				Computed:            true,
+				NestedObject:        mzeManualNatRulesItemSchema(),
+			},
+			"after_auto_by_key": schema.MapNestedAttribute{
+				MarkdownDescription: "Derived map view of `after_auto`, keyed by each item's `key`. Read-only.",
+				Computed:            true,
+				NestedObject:        mzeManualNatRulesItemSchema(),
+			},
+		},
+	}
+}
+
+// matchOnRequiresReplace implements ObjectPlanModifier — any change to
+// match_on triggers replace of the resource.
+type matchOnRequiresReplace struct{}
+
+func (m *matchOnRequiresReplace) Description(_ context.Context) string {
+	return "Changing match_on replaces the resource."
+}
+func (m *matchOnRequiresReplace) MarkdownDescription(_ context.Context) string {
+	return m.Description(nil)
+}
+func (m *matchOnRequiresReplace) PlanModifyObject(_ context.Context, req planmodifier.ObjectRequest, resp *planmodifier.ObjectResponse) {
+	if req.StateValue.IsNull() {
+		return
+	}
+	if !req.PlanValue.Equal(req.StateValue) {
+		resp.RequiresReplace = true
+	}
+}
+
+// ─── CRUD stubs — filled in by later tasks ───────────────────────────────────
+
+func (r *MzeManualNatRulesResource) Create(_ context.Context, _ resource.CreateRequest, resp *resource.CreateResponse) {
+	resp.Diagnostics.AddError("not implemented", "Create not implemented yet (Task 2.5)")
+}
+
+func (r *MzeManualNatRulesResource) Read(_ context.Context, _ resource.ReadRequest, _ *resource.ReadResponse) {
+}
+
+func (r *MzeManualNatRulesResource) Update(_ context.Context, _ resource.UpdateRequest, resp *resource.UpdateResponse) {
+	resp.Diagnostics.AddError("not implemented", "Update not implemented yet (Task 2.6)")
+}
+
+func (r *MzeManualNatRulesResource) Delete(_ context.Context, _ resource.DeleteRequest, _ *resource.DeleteResponse) {
+}
+
+func (r *MzeManualNatRulesResource) ImportState(_ context.Context, _ resource.ImportStateRequest, _ *resource.ImportStateResponse) {
+}
