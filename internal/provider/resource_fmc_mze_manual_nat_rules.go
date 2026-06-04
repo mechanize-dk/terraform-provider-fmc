@@ -13,6 +13,7 @@ package provider
 
 import (
 	"context"
+	"strings"
 
 	"github.com/CiscoDevNet/terraform-provider-fmc/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -20,6 +21,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-fmc"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
@@ -388,7 +390,40 @@ func (r *MzeManualNatRulesResource) Create(_ context.Context, _ resource.CreateR
 	resp.Diagnostics.AddError("not implemented", "Create not implemented yet (Task 2.5)")
 }
 
-func (r *MzeManualNatRulesResource) Read(_ context.Context, _ resource.ReadRequest, _ *resource.ReadResponse) {
+func (r *MzeManualNatRulesResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state MzeManualNatRules
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	refresh := func(items []MzeManualNatRulesItem) []MzeManualNatRulesItem {
+		out := make([]MzeManualNatRulesItem, 0, len(items))
+		for _, it := range items {
+			if it.ID.IsNull() || it.ID.IsUnknown() || it.ID.ValueString() == "" {
+				continue
+			}
+			res, err := r.client.Get(state.resourcePath()+"/"+it.ID.ValueString(),
+				fmc.DomainName(state.Domain.ValueString()))
+			if err != nil {
+				if strings.Contains(err.Error(), "StatusCode 404") {
+					tflog.Debug(ctx, "manual NAT rule "+it.ID.ValueString()+" gone on FMC, dropping from state")
+					continue
+				}
+				resp.Diagnostics.AddError("FMC GET failed", err.Error())
+				return items
+			}
+			it.fromBody(res)
+			out = append(out, it)
+		}
+		return out
+	}
+
+	state.BeforeAuto = refresh(state.BeforeAuto)
+	state.AfterAuto = refresh(state.AfterAuto)
+	state.rebuildByKey()
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 func (r *MzeManualNatRulesResource) Update(_ context.Context, _ resource.UpdateRequest, resp *resource.UpdateResponse) {
