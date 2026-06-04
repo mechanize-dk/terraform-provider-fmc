@@ -16,6 +16,7 @@ import (
 	"strings"
 
 	"github.com/CiscoDevNet/terraform-provider-fmc/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -654,8 +655,44 @@ func (r *MzeManualNatRulesResource) Update(ctx context.Context, req resource.Upd
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
-func (r *MzeManualNatRulesResource) Delete(_ context.Context, _ resource.DeleteRequest, _ *resource.DeleteResponse) {
+func (r *MzeManualNatRulesResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state MzeManualNatRules
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	deleteAll := func(items []MzeManualNatRulesItem) bool {
+		for _, it := range items {
+			if it.ID.IsNull() || it.ID.ValueString() == "" {
+				continue
+			}
+			_, err := r.client.Delete(state.resourcePath()+"/"+it.ID.ValueString(),
+				fmc.DomainName(state.Domain.ValueString()))
+			if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
+				resp.Diagnostics.AddError("DELETE failed", err.Error())
+				return false
+			}
+		}
+		return true
+	}
+	if !deleteAll(state.BeforeAuto) {
+		return
+	}
+	if !deleteAll(state.AfterAuto) {
+		return
+	}
 }
 
-func (r *MzeManualNatRulesResource) ImportState(_ context.Context, _ resource.ImportStateRequest, _ *resource.ImportStateResponse) {
+func (r *MzeManualNatRulesResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	parts := strings.SplitN(req.ID, ":", 2)
+	if len(parts) != 2 {
+		resp.Diagnostics.AddError("invalid import id",
+			"expected <ftd_nat_policy_id>:<match_on_hash>, got "+req.ID)
+		return
+	}
+	// match_on and the rule lists are populated by the next Read after the
+	// user supplies match_on in HCL.
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("ftd_nat_policy_id"), parts[0])...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), req.ID)...)
 }
