@@ -444,16 +444,6 @@ func (r *MzeManualNatRulesResource) Create(ctx context.Context, req resource.Cre
 		return
 	}
 
-	// Normalize empty lists to nil so TF Framework writes the schema's
-	// Optional-list-null form (rather than an empty list, which would
-	// surface as drift on the next plan when the user omitted the field).
-	if len(plan.BeforeAuto) == 0 {
-		plan.BeforeAuto = nil
-	}
-	if len(plan.AfterAuto) == 0 {
-		plan.AfterAuto = nil
-	}
-
 	plan.ID = types.StringValue(plan.syntheticID())
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
@@ -466,6 +456,12 @@ func (r *MzeManualNatRulesResource) Read(ctx context.Context, req resource.ReadR
 	}
 
 	refresh := func(items []MzeManualNatRulesItem) []MzeManualNatRulesItem {
+		// Preserve nil-vs-empty distinction across refresh. Returning a
+		// fresh `make([]T, 0, …)` for a nil input would surface "null -> []"
+		// drift on the next plan when the user omitted the field.
+		if items == nil {
+			return nil
+		}
 		out := make([]MzeManualNatRulesItem, 0, len(items))
 		for _, it := range items {
 			if it.ID.IsNull() || it.ID.IsUnknown() || it.ID.ValueString() == "" {
@@ -489,12 +485,6 @@ func (r *MzeManualNatRulesResource) Read(ctx context.Context, req resource.ReadR
 
 	state.BeforeAuto = refresh(state.BeforeAuto)
 	state.AfterAuto = refresh(state.AfterAuto)
-	if len(state.BeforeAuto) == 0 {
-		state.BeforeAuto = nil
-	}
-	if len(state.AfterAuto) == 0 {
-		state.AfterAuto = nil
-	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
@@ -554,128 +544,149 @@ func (r *MzeManualNatRulesResource) Update(ctx context.Context, req resource.Upd
 
 	matcher := plan.MatchOn.extract()
 
-	updateSection := func(section string, stateItems, planItems []MzeManualNatRulesItem) ([]MzeManualNatRulesItem, bool) {
-		removed, modified, reordered, added := mzeManualNatRulesDiffByKey(stateItems, planItems)
+	// Compute diffs for both sections up front, then execute in cross-section
+	// stages: all DELETEs → all PUTs → all POSTs. Cross-section moves (rule
+	// migrates BEFORE_AUTO ↔ AFTER_AUTO) would otherwise hit a duplicate POST
+	// before the matching DELETE runs.
 
-		// state ID lookup
-		stateIDByKey := map[string]string{}
+	type sectionPlan struct {
+		section      string
+		statePos     []MzeManualNatRulesItem
+		planPos      []MzeManualNatRulesItem
+		removed      []mzeManualNatRulesDiffEntry
+		modified     []mzeManualNatRulesDiffEntry
+		reordered    []mzeManualNatRulesDiffEntry
+		added        []mzeManualNatRulesDiffEntry
+		stateIDByKey map[string]string
+		needsPOST    map[string]bool
+		isModified   map[string]bool
+	}
+
+	buildPlan := func(section string, stateItems, planItems []MzeManualNatRulesItem) sectionPlan {
+		rem, mod, reord, add := mzeManualNatRulesDiffByKey(stateItems, planItems)
+		sp := sectionPlan{
+			section:      section,
+			statePos:     stateItems,
+			planPos:      planItems,
+			removed:      rem,
+			modified:     mod,
+			reordered:    reord,
+			added:        add,
+			stateIDByKey: map[string]string{},
+			needsPOST:    map[string]bool{},
+			isModified:   map[string]bool{},
+		}
 		for _, it := range stateItems {
-			stateIDByKey[it.Key.ValueString()] = it.ID.ValueString()
+			sp.stateIDByKey[it.Key.ValueString()] = it.ID.ValueString()
 		}
+		for _, e := range add {
+			sp.needsPOST[e.key] = true
+		}
+		for _, e := range reord {
+			sp.needsPOST[e.key] = true
+		}
+		for _, e := range mod {
+			sp.isModified[e.key] = true
+		}
+		return sp
+	}
 
-		// classification sets
-		needsPOST := map[string]bool{}
-		for _, e := range added {
-			needsPOST[e.key] = true
-		}
-		for _, e := range reordered {
-			needsPOST[e.key] = true
-		}
-		isModified := map[string]bool{}
-		for _, e := range modified {
-			isModified[e.key] = true
-		}
+	sps := []sectionPlan{
+		buildPlan("BEFORE_AUTO", state.BeforeAuto, plan.BeforeAuto),
+		buildPlan("AFTER_AUTO", state.AfterAuto, plan.AfterAuto),
+	}
 
-		// Phase 1 — DELETE removed + reordered.
+	// ── Phase 1 — DELETE removed + reordered (across both sections). ─────────
+	for i := range sps {
+		sp := &sps[i]
 		deleteSet := map[string]bool{}
-		for _, e := range removed {
+		for _, e := range sp.removed {
 			deleteSet[e.key] = true
 		}
-		for _, e := range reordered {
+		for _, e := range sp.reordered {
 			deleteSet[e.key] = true
 		}
 		for k := range deleteSet {
-			id := stateIDByKey[k]
+			id := sp.stateIDByKey[k]
 			if id == "" {
 				continue
 			}
 			_, err := r.client.Delete(plan.resourcePath()+"/"+id,
 				fmc.DomainName(plan.Domain.ValueString()))
 			if err != nil && !strings.Contains(err.Error(), "StatusCode 404") {
-				resp.Diagnostics.AddError("DELETE failed for key "+k, err.Error())
-				return planItems, false
+				resp.Diagnostics.AddError("DELETE failed for key "+k+" (section "+sp.section+")", err.Error())
+				return
 			}
 		}
+	}
 
-		// Phase 2 — PUT modified ∧ ¬reordered.
-		for _, e := range modified {
-			it := planItems[e.planPos]
+	// ── Phase 2 — PUT modified ∧ ¬reordered. ────────────────────────────────
+	for i := range sps {
+		sp := &sps[i]
+		for _, e := range sp.modified {
+			it := sp.planPos[e.planPos]
 			if err := matcher.Validate(it.Key.ValueString(), it.fieldsForMatchOn()); err != nil {
 				resp.Diagnostics.AddError("match_on validation failed", err.Error())
-				return planItems, false
+				return
 			}
 			it.applyAutoFill(matcher)
-			id := stateIDByKey[e.key]
-			body := it.toBody(section)
+			id := sp.stateIDByKey[e.key]
+			body := it.toBody(sp.section)
 			body, _ = sjson.Set(body, "id", id)
 			res, err := r.client.Put(plan.resourcePath()+"/"+id, body,
 				fmc.DomainName(plan.Domain.ValueString()))
 			if err != nil {
 				resp.Diagnostics.AddError("PUT failed for key "+it.Key.ValueString(), err.Error())
-				return planItems, false
+				return
 			}
 			it.fromBody(res)
-			planItems[e.planPos] = it
+			sp.planPos[e.planPos] = it
 		}
+	}
 
-		// Phase 3 — walk planItems in order. POST what needs POST; otherwise
-		// preserve the stored ID for unchanged items (modified items already
-		// have their refreshed body from the PUT).
-		for i := range planItems {
-			k := planItems[i].Key.ValueString()
-			if needsPOST[k] {
-				it := planItems[i]
+	// ── Phase 3 — POST added + reordered (in list order, across sections). ──
+	for i := range sps {
+		sp := &sps[i]
+		for j := range sp.planPos {
+			k := sp.planPos[j].Key.ValueString()
+			if sp.needsPOST[k] {
+				it := sp.planPos[j]
 				if err := matcher.Validate(it.Key.ValueString(), it.fieldsForMatchOn()); err != nil {
 					resp.Diagnostics.AddError("match_on validation failed", err.Error())
-					return planItems, false
+					return
 				}
 				it.applyAutoFill(matcher)
-				path := plan.resourcePath() + "?section=" + strings.ToLower(section)
-				body := it.toBody(section)
+				path := plan.resourcePath() + "?section=" + strings.ToLower(sp.section)
+				body := it.toBody(sp.section)
 				postRes, postErr := r.client.Post(path, body, fmc.DomainName(plan.Domain.ValueString()))
 				if postErr != nil {
 					rec, recErr := helpers.FindDuplicateByIndex(ctx, r.client, plan.resourcePath(), postErr, postRes,
 						fmc.DomainName(plan.Domain.ValueString()))
 					if recErr != nil {
 						resp.Diagnostics.AddError("POST failed for key "+it.Key.ValueString(), recErr.Error())
-						return planItems, false
+						return
 					}
 					it.fromBody(rec)
 				} else {
 					it.fromBody(postRes)
 				}
-				planItems[i] = it
+				sp.planPos[j] = it
 				continue
 			}
-			if isModified[k] {
-				// Already handled in Phase 2.
+			if sp.isModified[k] {
 				continue
 			}
 			// Unchanged — preserve stored ID.
-			if planItems[i].ID.IsNull() || planItems[i].ID.IsUnknown() {
-				if id, ok := stateIDByKey[k]; ok && id != "" {
-					planItems[i].ID = types.StringValue(id)
+			if sp.planPos[j].ID.IsNull() || sp.planPos[j].ID.IsUnknown() {
+				if id, ok := sp.stateIDByKey[k]; ok && id != "" {
+					sp.planPos[j].ID = types.StringValue(id)
 				}
 			}
 		}
-		return planItems, true
 	}
 
-	var ok bool
-	plan.BeforeAuto, ok = updateSection("BEFORE_AUTO", state.BeforeAuto, plan.BeforeAuto)
-	if !ok {
-		return
-	}
-	plan.AfterAuto, ok = updateSection("AFTER_AUTO", state.AfterAuto, plan.AfterAuto)
-	if !ok {
-		return
-	}
-	if len(plan.BeforeAuto) == 0 {
-		plan.BeforeAuto = nil
-	}
-	if len(plan.AfterAuto) == 0 {
-		plan.AfterAuto = nil
-	}
+	plan.BeforeAuto = sps[0].planPos
+	plan.AfterAuto = sps[1].planPos
 
 	plan.ID = types.StringValue(plan.syntheticID())
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)

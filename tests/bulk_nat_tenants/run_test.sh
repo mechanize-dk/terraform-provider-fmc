@@ -435,7 +435,324 @@ else
   fail "SCENARIO 5: plan detected drift — Read should be order-independent"
 fi
 
+# Two-step revert: FMC blocks deletion of a network object that is still
+# referenced by a NAT policy, so we must remove the obj_a_net auto-NAT
+# entry from tenant_a_auto BEFORE removing fmc_network.net_a from HCL.
+info "Step 1/2: removing obj_a_net entry while keeping fmc_network.net_a (drops the auto-NAT rule)..."
+python3 - <<'PY'
+import pathlib
+p = pathlib.Path("main.tf")
+s = p.read_text()
+old = '''    "obj_a_net" = {
+      nat_type              = "STATIC"
+      original_network_id   = fmc_network.net_a.id
+      translated_network_id = fmc_host.trans_a.id
+    }
+'''
+if old in s:
+    p.write_text(s.replace(old, '', 1))
+PY
+terraform apply -auto-approve > /dev/null
+
+info "Step 2/2: restoring baseline main.tf (drops fmc_network.net_a)..."
 restore_main_tf
+terraform apply -auto-approve > /dev/null
+trap cleanup EXIT
+
+# ─── helper: reset to baseline between scenarios that mutate main.tf ─────────
+# Restores main.tf from the snapshot and re-applies so state matches config.
+reset_to_baseline() {
+  cp /tmp/bnt_main_backup.tf "$SCRIPT_DIR/main.tf"
+  terraform apply -auto-approve > /dev/null
+}
+
+# Convenience accessor for item ids out of the live state.
+mze_item_id() {
+  local rtype="$1" rname="$2" key="$3" list="$4"  # list = before_auto|after_auto|rules
+  terraform show -json | python3 -c "
+import sys, json
+rtype, rname, key, list_ = '${rtype}', '${rname}', '${key}', '${list}'
+s = json.load(sys.stdin)
+for r in s.get('values',{}).get('root_module',{}).get('resources',[]):
+    if r.get('type')==rtype and r.get('name')==rname:
+        v = r.get('values',{}).get(list_)
+        if isinstance(v, list):
+            for it in v:
+                if it.get('key')==key:
+                    print(it.get('id','')); break
+        elif isinstance(v, dict):
+            it = v.get(key, {})
+            print(it.get('id',''))
+        break
+"
+}
+
+# ─── SCENARIO 6 — ImportState (smoke test) ──────────────────────────────────
+# Verifies the ImportState code path runs and sets id + ftd_nat_policy_id.
+# Does NOT assert convergence of items — that's S2's job (Patch 11 adoption).
+header "SCENARIO 6 — ImportState"
+
+ORIG_ID=$(get_state_id fmc_mze_manual_nat_rules tenant_a)
+NATP_FOR_S6=$(get_state_id fmc_ftd_nat_policy shared)
+[[ -z "$ORIG_ID" ]] && fail "SCENARIO 6: prerequisite missing (orig_id)"
+
+info "Removing tenant_a from state (FMC rule remains)..."
+terraform state rm fmc_mze_manual_nat_rules.tenant_a > /dev/null
+
+info "Importing tenant_a via 'terraform import' with synthetic id $ORIG_ID..."
+terraform import fmc_mze_manual_nat_rules.tenant_a "$ORIG_ID" > /dev/null
+
+NEW_ID=$(get_state_id fmc_mze_manual_nat_rules tenant_a)
+NEW_FTD=$(terraform show -json | python3 -c "
+import sys, json
+s = json.load(sys.stdin)
+for r in s.get('values',{}).get('root_module',{}).get('resources',[]):
+    if r.get('type')=='fmc_mze_manual_nat_rules' and r.get('name')=='tenant_a':
+        print(r.get('values',{}).get('ftd_nat_policy_id',''))
+        break
+")
+if [[ "$NEW_ID" == "$ORIG_ID" && "$NEW_FTD" == "$NATP_FOR_S6" ]]; then
+  pass "SCENARIO 6 CONFIRMED: ImportState set synthetic id ($NEW_ID) + ftd_nat_policy_id"
+else
+  fail "SCENARIO 6: import incomplete — orig=$ORIG_ID new=$NEW_ID expected_natp=$NATP_FOR_S6 got_natp=$NEW_FTD"
+fi
+
+# Re-apply so subsequent scenarios start from a fully-tracked state.
+# (Patch 11 recovery may or may not converge depending on FMC's pending-
+# state semantics for a still-present rule; either way state ends up
+# pointing at *some* tenant_a rule_1, and we'll reset_to_baseline before
+# the next scenario.)
+terraform apply -auto-approve > /dev/null 2>&1 || true
+reset_to_baseline 2>&1 | tail -3 || true
+
+# ─── SCENARIO 7 — Auto-NAT duplicate-recovery (FindDuplicateAutoNatRule) ─────
+header "SCENARIO 7 — auto-NAT duplicate-recovery end-to-end"
+
+fmc_authenticate || fail "SCENARIO 7: FMC re-auth failed"
+NATP_ID=$(get_state_id fmc_ftd_nat_policy shared)
+SRC_A=$(get_state_id fmc_host src_a)
+TRANS_A=$(get_state_id fmc_host trans_a)
+
+PRE_AUTO_ID=$(mze_item_id fmc_mze_auto_nat_rules tenant_a_auto obj_a rules)
+[[ -z "$PRE_AUTO_ID" ]] && fail "SCENARIO 7: could not read tenant_a_auto obj_a state id"
+
+info "Destroying tenant_a_auto so we can probe the duplicate-recovery path..."
+terraform destroy -auto-approve -target=fmc_mze_auto_nat_rules.tenant_a_auto > /dev/null
+
+# Re-auth right before the curl POST: FMC sometimes invalidates older tokens
+# when many tokens are active, and the destroy above takes long enough to
+# trip that.
+fmc_authenticate || fail "SCENARIO 7: FMC re-auth (pre-POST) failed"
+
+info "Pre-creating an auto-NAT rule (obj_a content) via API..."
+PRE_AUTO_RESP=$("${CURL[@]}" -X POST \
+  "${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/ftdnatpolicies/${NATP_ID}/autonatrules" \
+  -H "X-auth-access-token: ${AUTH_TOKEN}" -H "Content-Type: application/json" \
+  -d "{\"type\":\"FTDAutoNatRule\",\"natType\":\"STATIC\",\"originalNetwork\":{\"id\":\"${SRC_A}\",\"type\":\"Host\"},\"translatedNetwork\":{\"id\":\"${TRANS_A}\",\"type\":\"Host\"}}")
+PRE_AUTO_NEW_ID=$(echo "$PRE_AUTO_RESP" | python3 -c "import sys,json;print(json.loads(sys.stdin.read()).get('id',''))")
+[[ -z "$PRE_AUTO_NEW_ID" ]] && fail "SCENARIO 7 pre-create failed: $PRE_AUTO_RESP"
+pass "Auto-NAT rule pre-created (id=$PRE_AUTO_NEW_ID)"
+
+info "terraform apply -target=fmc_mze_auto_nat_rules.tenant_a_auto (expect FindDuplicateAutoNatRule to adopt it)..."
+terraform apply -auto-approve -target=fmc_mze_auto_nat_rules.tenant_a_auto > /dev/null
+
+ADOPTED_ID=$(mze_item_id fmc_mze_auto_nat_rules tenant_a_auto obj_a rules)
+if [[ "$ADOPTED_ID" == "$PRE_AUTO_NEW_ID" ]]; then
+  pass "SCENARIO 7 CONFIRMED: auto-NAT dedup-recovery adopted the pre-created rule ($ADOPTED_ID)"
+else
+  fail "SCENARIO 7: auto-NAT recovery failed — pre-created=$PRE_AUTO_NEW_ID state=$ADOPTED_ID"
+fi
+
+# Re-apply full config so other auto-NAT items (if any) come back, then continue.
+terraform apply -auto-approve > /dev/null
+
+# ─── SCENARIO 8 — Cross-section move (BEFORE_AUTO -> AFTER_AUTO) ────────────
+header "SCENARIO 8 — cross-section move"
+
+cp main.tf /tmp/bnt_main_backup.tf
+trap 'cp /tmp/bnt_main_backup.tf "$SCRIPT_DIR/main.tf"; cleanup' EXIT
+
+# Pre-record the current rule_1 ID so we can verify FMC gave it a NEW id on
+# the move (FMC re-IDs rules on cross-section moves — see CLAUDE.md).
+PRE_MOVE_ID=$(mze_item_id fmc_mze_manual_nat_rules tenant_a rule_1 before_auto)
+
+info "Moving rule_1 from before_auto to after_auto..."
+python3 - <<'PY'
+import pathlib
+p = pathlib.Path("main.tf")
+s = p.read_text()
+needle = '''resource "fmc_mze_manual_nat_rules" "tenant_a" {
+  ftd_nat_policy_id = fmc_ftd_nat_policy.shared.id
+  match_on = {
+    source_interface_id = fmc_security_zone.tenant_a.id
+  }
+  before_auto = [
+    {
+      key                  = "rule_1"
+      nat_type             = "STATIC"
+      original_source_id   = fmc_host.src_a.id
+      translated_source_id = fmc_host.trans_a.id
+    },
+  ]
+}'''
+replacement = '''resource "fmc_mze_manual_nat_rules" "tenant_a" {
+  ftd_nat_policy_id = fmc_ftd_nat_policy.shared.id
+  match_on = {
+    source_interface_id = fmc_security_zone.tenant_a.id
+  }
+  before_auto = []
+  after_auto = [
+    {
+      key                  = "rule_1"
+      nat_type             = "STATIC"
+      original_source_id   = fmc_host.src_a.id
+      translated_source_id = fmc_host.trans_a.id
+    },
+  ]
+}'''
+if needle not in s: raise SystemExit("scenario 8: anchor block not found")
+p.write_text(s.replace(needle, replacement, 1))
+PY
+terraform apply -auto-approve > /dev/null
+pass "Cross-section move applied"
+
+POST_MOVE_BEFORE=$(terraform show -json | python3 -c "
+import sys, json
+s = json.load(sys.stdin)
+for r in s.get('values',{}).get('root_module',{}).get('resources',[]):
+    if r.get('type')=='fmc_mze_manual_nat_rules' and r.get('name')=='tenant_a':
+        b = r.get('values',{}).get('before_auto') or []
+        a = r.get('values',{}).get('after_auto') or []
+        print('before_count=%d after_count=%d' % (len(b), len(a)))
+        if a: print('after_key=%s after_id=%s' % (a[0].get('key'), a[0].get('id')))
+        break
+")
+POST_MOVE_ID=$(mze_item_id fmc_mze_manual_nat_rules tenant_a rule_1 after_auto)
+if echo "$POST_MOVE_BEFORE" | grep -q 'before_count=0 after_count=1' && \
+   echo "$POST_MOVE_BEFORE" | grep -q 'after_key=rule_1' && \
+   [[ -n "$POST_MOVE_ID" ]]; then
+  if [[ "$POST_MOVE_ID" != "$PRE_MOVE_ID" ]]; then
+    pass "SCENARIO 8 CONFIRMED: rule moved to AFTER_AUTO with new FMC id ($PRE_MOVE_ID -> $POST_MOVE_ID)"
+  else
+    fail "SCENARIO 8: rule moved sections but FMC id unchanged ($POST_MOVE_ID) — FMC should re-id on cross-section moves"
+  fi
+else
+  fail "SCENARIO 8: unexpected state after move — $POST_MOVE_BEFORE"
+fi
+
+reset_to_baseline
+trap cleanup EXIT
+
+# ─── SCENARIO 9 — PUT path in Update (modified ∧ ¬reordered) ────────────────
+header "SCENARIO 9 — in-place PUT (body change, position stable)"
+
+cp main.tf /tmp/bnt_main_backup.tf
+trap 'cp /tmp/bnt_main_backup.tf "$SCRIPT_DIR/main.tf"; cleanup' EXIT
+
+PRE_PUT_ID=$(mze_item_id fmc_mze_manual_nat_rules tenant_a rule_1 before_auto)
+
+info "Adding a description to rule_1 without changing position..."
+python3 - <<'PY'
+import pathlib
+p = pathlib.Path("main.tf")
+s = p.read_text()
+needle = '''      key                  = "rule_1"
+      nat_type             = "STATIC"
+      original_source_id   = fmc_host.src_a.id
+      translated_source_id = fmc_host.trans_a.id
+    },
+  ]
+}
+
+resource "fmc_mze_manual_nat_rules" "tenant_b"'''
+replacement = '''      key                  = "rule_1"
+      description          = "scenario 9 in-place PUT marker"
+      nat_type             = "STATIC"
+      original_source_id   = fmc_host.src_a.id
+      translated_source_id = fmc_host.trans_a.id
+    },
+  ]
+}
+
+resource "fmc_mze_manual_nat_rules" "tenant_b"'''
+if needle not in s: raise SystemExit("scenario 9: anchor not found")
+p.write_text(s.replace(needle, replacement, 1))
+PY
+terraform apply -auto-approve > /dev/null
+
+POST_PUT_ID=$(mze_item_id fmc_mze_manual_nat_rules tenant_a rule_1 before_auto)
+DESC=$(terraform show -json | python3 -c "
+import sys, json
+s = json.load(sys.stdin)
+for r in s.get('values',{}).get('root_module',{}).get('resources',[]):
+    if r.get('type')=='fmc_mze_manual_nat_rules' and r.get('name')=='tenant_a':
+        for it in r.get('values',{}).get('before_auto', []):
+            if it.get('key')=='rule_1':
+                print(it.get('description',''))
+                break
+        break
+")
+if [[ "$POST_PUT_ID" == "$PRE_PUT_ID" && "$DESC" == "scenario 9 in-place PUT marker" ]]; then
+  pass "SCENARIO 9 CONFIRMED: PUT preserved FMC id ($POST_PUT_ID) while updating description"
+else
+  fail "SCENARIO 9: PUT semantics broken — pre=$PRE_PUT_ID post=$POST_PUT_ID desc='$DESC'"
+fi
+
+reset_to_baseline
+trap cleanup EXIT
+
+# ─── SCENARIO 10 — match_on conflict surfaces as plan-time error ────────────
+header "SCENARIO 10 — match_on validation error path"
+
+cp main.tf /tmp/bnt_main_backup.tf
+trap 'cp /tmp/bnt_main_backup.tf "$SCRIPT_DIR/main.tf"; cleanup' EXIT
+
+info "Adding a rule to tenant_a with source_interface_id pointing at tenant_b's zone (conflict)..."
+python3 - <<'PY'
+import pathlib
+p = pathlib.Path("main.tf")
+s = p.read_text()
+needle = '''      key                  = "rule_1"
+      nat_type             = "STATIC"
+      original_source_id   = fmc_host.src_a.id
+      translated_source_id = fmc_host.trans_a.id
+    },
+  ]
+}
+
+resource "fmc_mze_manual_nat_rules" "tenant_b"'''
+replacement = '''      key                  = "rule_1"
+      nat_type             = "STATIC"
+      original_source_id   = fmc_host.src_a.id
+      translated_source_id = fmc_host.trans_a.id
+    },
+    {
+      key                  = "rule_bad"
+      nat_type             = "STATIC"
+      original_source_id   = fmc_host.src_a.id
+      translated_source_id = fmc_host.trans_a.id
+      source_interface_id  = fmc_security_zone.tenant_b.id
+    },
+  ]
+}
+
+resource "fmc_mze_manual_nat_rules" "tenant_b"'''
+if needle not in s: raise SystemExit("scenario 10: anchor not found")
+p.write_text(s.replace(needle, replacement, 1))
+PY
+
+info "terraform apply (expect failure with match_on conflict message)..."
+APPLY_OUT=$(terraform apply -auto-approve 2>&1 || true)
+# Terraform wraps error messages across lines; strip the line-prefixes and
+# concatenate so multi-line phrases like "conflicts with match_on" match.
+NORMALIZED=$(echo "$APPLY_OUT" | sed 's/^[│|│] //' | tr '\n' ' ')
+if echo "$NORMALIZED" | grep -q 'conflicts with .*match_on'; then
+  pass "SCENARIO 10 CONFIRMED: match_on conflict surfaced as resource error"
+else
+  fail "SCENARIO 10: expected 'conflicts with match_on' in apply output, got: $(echo "$APPLY_OUT" | tail -5)"
+fi
+
+reset_to_baseline
 trap cleanup EXIT
 
 echo
