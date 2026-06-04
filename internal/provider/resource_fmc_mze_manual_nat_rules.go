@@ -31,14 +31,14 @@ import (
 // ─── Model types ─────────────────────────────────────────────────────────────
 
 type MzeManualNatRules struct {
-	ID              types.String                                 `tfsdk:"id"`
-	Domain          types.String                                 `tfsdk:"domain"`
-	FtdNatPolicyID  types.String                                 `tfsdk:"ftd_nat_policy_id"`
-	MatchOn         *MzeManualNatRulesMatchOn                    `tfsdk:"match_on"`
-	BeforeAuto      []MzeManualNatRulesItem                      `tfsdk:"before_auto"`
-	AfterAuto       []MzeManualNatRulesItem                      `tfsdk:"after_auto"`
-	BeforeAutoByKey map[string]MzeManualNatRulesItem             `tfsdk:"before_auto_by_key"`
-	AfterAutoByKey  map[string]MzeManualNatRulesItem             `tfsdk:"after_auto_by_key"`
+	ID              types.String                     `tfsdk:"id"`
+	Domain          types.String                     `tfsdk:"domain"`
+	FtdNatPolicyID  types.String                     `tfsdk:"ftd_nat_policy_id"`
+	MatchOn         *MzeManualNatRulesMatchOn        `tfsdk:"match_on"`
+	BeforeAuto      []MzeManualNatRulesItem          `tfsdk:"before_auto"`
+	AfterAuto       []MzeManualNatRulesItem          `tfsdk:"after_auto"`
+	BeforeAutoByKey map[string]MzeManualNatRulesItem `tfsdk:"before_auto_by_key"`
+	AfterAutoByKey  map[string]MzeManualNatRulesItem `tfsdk:"after_auto_by_key"`
 }
 
 type MzeManualNatRulesMatchOn struct {
@@ -481,8 +481,8 @@ func (r *MzeManualNatRulesResource) Read(ctx context.Context, req resource.ReadR
 // mzeManualNatRulesDiffEntry classifies one key during Update.
 type mzeManualNatRulesDiffEntry struct {
 	key      string
-	statePos int  // -1 if absent in state
-	planPos  int  // -1 if absent in plan
+	statePos int // -1 if absent in state
+	planPos  int // -1 if absent in plan
 	stateID  string
 }
 
