@@ -20,7 +20,7 @@ import "log"
 // The upstream provider version (e.g. v2.4.1) tracks the release published
 // to registry.terraform.io/mechanize-dk/fmc and is set at tag time by
 // goreleaser — not here.
-const _VERSION = "0.2.8"
+const _VERSION = "0.3.0"
 
 // init emits the fork's patch-level version once at package load. Visible to
 // the user via `TF_LOG=INFO terraform apply` (or any other log level that

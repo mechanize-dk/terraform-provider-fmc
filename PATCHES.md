@@ -21,8 +21,8 @@ Use this file to re-apply all patches after a sync with upstream.
 | 7 | Code generator: preserve imports | `gen/generator.go` | None — generator not generated |
 | 8 | New resource: fmc_network_groups_safe | multiple new files | None — entirely new files |
 | 9 | Tests | `tests/` | None — not touched by upstream |
-| 10 | `fmc_access_rules.Read` dedup by Id | `resource_fmc_access_rules.go` (Read, not template-generated) | Low — small block, file section not under template markers |
-| 11 | `fmc_ftd_manual_nat_rule` duplicate-by-index recovery | `resource_fmc_ftd_manual_nat_rule.go` (Create, hand-maintained) + `helpers/dup_recovery.go` (new) | Low — hand-edit lives outside template markers; helper is a new file |
+| 10 | `fmc_access_rules.Read` dedup by Id | `resource_fmc_access_rules.go` (Read, not template-generated, delimited by `// mechanize-dk:patch10 begin/end`) | Low — small block, file section not under template markers |
+| 11 | `fmc_ftd_manual_nat_rule` duplicate-by-index recovery | `resource_fmc_ftd_manual_nat_rule.go` (Create, hand-maintained, delimited by `// mechanize-dk:patch11 begin/end`) + `helpers/dup_recovery.go` (new) | Low — hand-edit lives outside template markers; helper is a new file |
 
 ---
 
@@ -513,6 +513,11 @@ is outside template markers. The `imports` section is templated but
 Patch 7's generator behavior preserves existing imports verbatim, so the
 `"reflect"` import added by this patch also survives regeneration.
 
+The patch block is delimited by `// mechanize-dk:patch11 begin` and
+`// mechanize-dk:patch11 end` comment markers so it can be located
+quickly after an upstream refactor of `Create()` — search for those
+strings, re-apply if missing.
+
 This is different from Patch 1's approach: Patch 1 modifies the resource
 template (`gen/templates/resource.go`) and regenerates ~277 files. Patch
 11 touches only the one resource file we actually need.
@@ -667,6 +672,73 @@ The recovery code itself is exercised by the regex-extraction unit tests.
 
 ---
 
+## Patch 12 — Bulk NAT tenant resources (`fmc_mze_manual_nat_rules` + `fmc_mze_auto_nat_rules`)
+
+**Why:** Multiple tenants sharing one FTD NAT policy need tenant-scoped bulk
+resources with cooperative ownership. The single-rule upstream resources
+(`fmc_ftd_manual_nat_rule`, `fmc_ftd_auto_nat_rule`) don't express
+intra-tenant ordering or tenant boundaries.
+
+**Going-forward naming convention:** fork-owned resources use the
+`fmc_mze_*` prefix (`mze` for Mechanize) so they're visually distinguishable
+from upstream resources at the HCL level. `fmc_network_groups_safe` (Patch 8)
+predates this convention and is **not** renamed — Terraform has no aliasing
+for resource type names, so a rename would break every existing user.
+
+**Files (all hand-written, all outside template markers — survive `go generate`):**
+- `internal/provider/resource_fmc_mze_manual_nat_rules.go` — bulk manual-NAT
+  resource: ordered `before_auto` + `after_auto` lists, tenant-chosen `key`
+  per item, custom diff-by-key in `Update` (DELETE → PUT → POST in that order
+  to handle reorders + body changes + adds while letting other tenants'
+  rules coexist).
+- `internal/provider/resource_fmc_mze_auto_nat_rules.go` — bulk auto-NAT
+  resource: unordered `map(rules)` (FMC sorts auto-NAT by specificity), map
+  key is the tenant identifier.
+- `internal/provider/helpers/nat_match.go` — `MatchOn` evaluator: `Validate`
+  (plan-time conflict check), `AutoFill` (Create-time injection), `Hash`
+  (16-char prefix used in the synthetic resource ID).
+- `internal/provider/helpers/nat_match_test.go` — unit tests for the above.
+- `internal/provider/helpers/dup_recovery_autonat.go` — auto-NAT duplicate-
+  recovery helper, **Branch B-prime**: detects FMC's "Duplicate Auto NAT
+  rule" marker phrase and uses a caller-supplied `originalNetworkID` to
+  search the section. (The error body doesn't carry the existing rule's
+  UUID; the resource always knows what `originalNetwork.id` it just POSTed,
+  so the helper takes that as a parameter.)
+- `internal/provider/helpers/dup_recovery_autonat_test.go` — unit tests for
+  the marker detector.
+
+**Files modified — re-apply on upstream merges if upstream touches them:**
+- `gen/templates/provider.go` — added `NewMzeManualNatRulesResource,` and
+  `NewMzeAutoNatRulesResource,` after the existing `NewNetworkGroupsSafeResource,`
+  line in the `Resources()` function. Same survival mechanism as Patch 8.
+- `gen/doc_category.go` — added two entries to `extraDocs`:
+  ```
+  "mze_manual_nat_rules": "Policies",
+  "mze_auto_nat_rules":   "Policies",
+  ```
+
+**Examples (required for tfplugindocs):**
+- `examples/resources/fmc_mze_manual_nat_rules/resource.tf`
+- `examples/resources/fmc_mze_auto_nat_rules/resource.tf`
+
+**Tests (survive merges; live entirely under `tests/`):**
+- `tests/bulk_nat_tenants/run_test.sh` and supporting `.tf` files
+- `tests/bulk_nat_tenants/probe_autonat_dup.sh` — one-shot probe used to
+  determine the auto-NAT duplicate-error shape
+- `tests/bulk_nat_tenants/PROBE_AUTONAT.md` — captured probe result and
+  recovery-shape decision (Branch B-prime)
+
+**Reuses Patch 11:** `helpers.FindDuplicateByIndex` is called from
+`fmc_mze_manual_nat_rules` Create/Update to recover from duplicate-by-index
+errors. Manual-NAT and auto-NAT duplicate-recovery helpers live in separate
+files so future changes to one don't disturb the other.
+
+**Spec and plan:**
+- `docs/superpowers/specs/2026-06-04-bulk-nat-tenant-resources-design.md`
+- `docs/superpowers/plans/2026-06-04-bulk-nat-tenant-resources.md`
+
+---
+
 ## Re-applying after upstream sync
 
 After `git merge origin/main` (or rebase):
@@ -709,3 +781,14 @@ After `git merge origin/main` (or rebase):
    `tests/idempotency/main.tf` and `run_test.sh` additions survive merges too.
 
 7. **Patch 9** — `tests/` directory not touched by upstream; survives merges.
+
+9. **Patch 12** — `resource_fmc_mze_manual_nat_rules.go`,
+   `resource_fmc_mze_auto_nat_rules.go`, `helpers/nat_match.go`, and
+   `helpers/dup_recovery_autonat.go` are all hand-written and never under
+   template markers — they survive `go generate`. After an upstream merge,
+   check that `gen/templates/provider.go` still has the two
+   `NewMze…Resource,` entries after `NewNetworkGroupsSafeResource,` and that
+   `gen/doc_category.go` still has both `mze_*_nat_rules` entries in
+   `extraDocs`. If upstream reworked either file, re-apply the changes from
+   the "Patch 12" section above. `tests/bulk_nat_tenants/` is in `tests/`
+   and survives by virtue of Patch 9.
