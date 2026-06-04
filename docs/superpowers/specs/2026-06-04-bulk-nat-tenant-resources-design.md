@@ -15,13 +15,17 @@ Multiple tenants share one FTD NAT policy on the same FMC, each writing rules fr
 
 This design adds two new fork-owned resources that solve all three.
 
+## Naming convention (going forward)
+
+Fork-owned resources use the `fmc_mze_*` prefix (`mze` for Mechanize) so they're visually distinguishable from upstream resources at the HCL level. The two NAT resources in this spec are the first to adopt it. The existing `fmc_network_groups_safe` predates this convention and is **not** renamed (Terraform has no aliasing for resource type names, so a rename would break every existing user of the fork). PATCHES.md and CLAUDE.md should be updated to document this rule for any future fork-only additions.
+
 ## Resources
 
-### `fmc_ftd_manual_nat_rules`
+### `fmc_mze_manual_nat_rules`
 
 Bulk resource wrapping `/policy/ftdnatpolicies/{id}/manualnatrules`. Owns two ordered lists per instance — `before_auto` and `after_auto` — within the boundary expressed by `match_on`. Tenant-chosen `key` per item gives stable identity across plans; list position dictates intra-tenant order (the FMC 1-indexed position within the section).
 
-### `fmc_ftd_auto_nat_rules`
+### `fmc_mze_auto_nat_rules`
 
 Bulk resource wrapping `/policy/ftdnatpolicies/{id}/autonatrules`. Owns one map of rules per instance — order opaque, since FMC reorders auto-NAT rules by specificity (verified by live probe 2026-06-03 against the lab FMC: three Host-typed rules ranked ahead of one Network-typed rule even though Network was POSTed first; intra-tier order non-deterministic). The map key is the tenant's identity for the rule.
 
@@ -37,10 +41,10 @@ These came out of the brainstorming Q&A and frame the rest of the design.
 - **Two resources, not one.** Manual NAT and auto-NAT have different endpoints, different schemas, and different ordering semantics. Bundling them in one HCL block hides those differences and confuses operators. Users wanting a unified surface can wrap both in a Terraform module.
 - **Implementation: fully manual.** Hand-written resource files. The codegen YAML schema can't express tenant-keyed ordered lists or custom diff logic without significant framework changes, and the resources' semantics differ enough from upstream's per-rule resources that codegen would not buy us much.
 
-## Schema: `fmc_ftd_manual_nat_rules`
+## Schema: `fmc_mze_manual_nat_rules`
 
 ```hcl
-resource "fmc_ftd_manual_nat_rules" "tenant_foo" {
+resource "fmc_mze_manual_nat_rules" "tenant_foo" {
   ftd_nat_policy_id = fmc_ftd_nat_policy.shared.id
 
   match_on = {
@@ -91,10 +95,10 @@ In both `before_auto` and `after_auto`:
 - All other rule body fields: mirror the per-item schema of upstream `fmc_ftd_manual_nat_rule` (`nat_type`, `enabled`, `description`, `original_source_id`, `translated_source_id`, `source_interface_id`, `destination_interface_id`, original/translated source/destination port IDs, `fall_through`, `interface_in_original_destination`, `interface_in_translated_source`, `no_proxy_arp`, `unidirectional`, `net_to_net`, `ipv6`).
 - The `section` field from the upstream single-rule schema is **omitted** — implicit from which list the item lives in.
 
-## Schema: `fmc_ftd_auto_nat_rules`
+## Schema: `fmc_mze_auto_nat_rules`
 
 ```hcl
-resource "fmc_ftd_auto_nat_rules" "tenant_foo" {
+resource "fmc_mze_auto_nat_rules" "tenant_foo" {
   ftd_nat_policy_id = fmc_ftd_nat_policy.shared.id
 
   match_on = {
@@ -149,7 +153,7 @@ Adding more fields later is non-breaking (optional additions).
 
 1. **Plan-time validation.** Every item is checked: if it explicitly sets a field also declared in `match_on`, the values must match. Otherwise the plan errors with a message naming the offending item key. Prevents accidental cross-tenant rules.
 2. **Create-time auto-fill.** Items that omit a field declared in `match_on` get it injected before POST. So a tenant typically writes `source_interface_id` zero times across their config — it lives once on the parent resource.
-3. **Import-time scope.** `terraform import fmc_ftd_manual_nat_rules.tenant_foo <ftd_nat_policy_id>:<match_on_hash>` scans the section, finds all rules matching `match_on` (AND semantics), GETs each, and builds state. The hash matches the synthetic resource ID so the importer doesn't need to re-pass the args.
+3. **Import-time scope.** `terraform import fmc_mze_manual_nat_rules.tenant_foo <ftd_nat_policy_id>:<match_on_hash>` scans the section, finds all rules matching `match_on` (AND semantics), GETs each, and builds state. The hash matches the synthetic resource ID so the importer doesn't need to re-pass the args.
 
 ### What `match_on` does not do
 
@@ -276,17 +280,17 @@ Two tenants applying simultaneously against the same shared NAT policy is expect
 
 New files (never touched by `go generate`):
 
-- `internal/provider/resource_fmc_ftd_manual_nat_rules.go`
-- `internal/provider/resource_fmc_ftd_auto_nat_rules.go`
+- `internal/provider/resource_fmc_mze_manual_nat_rules.go`
+- `internal/provider/resource_fmc_mze_auto_nat_rules.go`
 - `internal/provider/helpers/nat_match.go`
 - `internal/provider/helpers/nat_match_test.go`
-- `examples/resources/fmc_ftd_manual_nat_rules/resource.tf`
-- `examples/resources/fmc_ftd_auto_nat_rules/resource.tf`
+- `examples/resources/fmc_mze_manual_nat_rules/resource.tf`
+- `examples/resources/fmc_mze_auto_nat_rules/resource.tf`
 - `tests/bulk_nat_tenants/` (new integration-test harness)
 
 Modifications needing re-application on upstream merges (the Patch 12 entry in PATCHES.md documents these):
 
-- `gen/templates/provider.go` — add `NewFTDManualNatRulesResource,` and `NewFTDAutoNatRulesResource,` after the existing `NewNetworkGroupsSafeResource,` entry in the `Resources()` function.
+- `gen/templates/provider.go` — add `NewMzeManualNatRulesResource,` and `NewMzeAutoNatRulesResource,` after the existing `NewNetworkGroupsSafeResource,` entry in the `Resources()` function.
 - `gen/doc_category.go` — add both resource names with category `Policies` to `extraDocs`.
 
 ## Testing strategy
@@ -306,7 +310,7 @@ Modifications needing re-application on upstream merges (the Patch 12 entry in P
 
 New `tests/bulk_nat_tenants/run_test.sh`, mirroring `tests/idempotency/run_test.sh`. CLI surface: `-u/-p/--url/--terraform/--ftdv`. Scenarios:
 
-1. **Multi-tenant baseline.** Instantiate `fmc_ftd_manual_nat_rules` and `fmc_ftd_auto_nat_rules` twice (two tenants, two zones) on one shared NAT policy. Apply both, verify both sets present, verify cooperative coexistence.
+1. **Multi-tenant baseline.** Instantiate `fmc_mze_manual_nat_rules` and `fmc_mze_auto_nat_rules` twice (two tenants, two zones) on one shared NAT policy. Apply both, verify both sets present, verify cooperative coexistence.
 2. **Idempotency.** Pre-create rules via API matching tenant A's items, run apply, verify adoption (state IDs == pre-created IDs).
 3. **Reorder.** Move tenant A's `before_auto[2]` to position 1, apply, verify FMC reflects.
 4. **Out-of-band rule in same zone.** Create a rule via API in tenant A's zone but not in tenant A's items. Run apply. Verify it is left untouched (cooperative ownership).
