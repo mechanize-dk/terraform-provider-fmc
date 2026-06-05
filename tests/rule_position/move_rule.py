@@ -39,6 +39,12 @@ def make_ssl_ctx() -> ssl.SSLContext:
     return ctx
 
 
+# Cloudflare in front of the lab FMC blocks the default `Python-urllib/x` user
+# agent with a 1010 "browser signature banned" error. Use a curl-like UA so all
+# requests get through. Override per-request via headers if needed.
+USER_AGENT = "curl/8.0 move_rule.py"
+
+
 def main() -> None:
     if len(sys.argv) < 2:
         print("Usage: move_rule.py <policy_id>", file=sys.stderr)
@@ -55,14 +61,22 @@ def main() -> None:
     auth_req = urllib.request.Request(
         f"{fmc_url}/api/fmc_platform/v1/auth/generatetoken",
         method="POST",
-        headers={"Authorization": f"Basic {creds}", "Content-Type": "application/json"},
+        headers={
+            "Authorization": f"Basic {creds}",
+            "Content-Type": "application/json",
+            "User-Agent": USER_AGENT,
+        },
     )
     with urllib.request.urlopen(auth_req, context=ctx) as resp:
         token = resp.headers.get("X-auth-access-token")
         domain_uuid = resp.headers.get("DOMAIN_UUID")
 
     print(f"Authenticated  →  domain UUID: {domain_uuid}")
-    hdrs = {"X-auth-access-token": token, "Content-Type": "application/json"}
+    hdrs = {
+        "X-auth-access-token": token,
+        "Content-Type": "application/json",
+        "User-Agent": USER_AGENT,
+    }
     base = (
         f"/api/fmc_config/v1/domain/{domain_uuid}"
         f"/policy/accesspolicies/{policy_id}/accessrules"

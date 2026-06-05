@@ -53,7 +53,24 @@ FMC_URL="${FMC_URL%/}"
 # ── Paths ─────────────────────────────────────────────────────────────────────
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"   # tests/rule_position → tests → repo root
-PROVIDER_BIN="$SCRIPT_DIR/terraform-provider-fmc"
+
+# Convert a POSIX path to a native path on MSYS/Cygwin/Git-Bash so terraform.exe
+# and other Windows-native tools can resolve it. Mixed style (forward slashes
+# with drive letter) is safe to embed inside HCL strings. No-op on Linux/macOS.
+to_native_path() {
+  if command -v cygpath >/dev/null 2>&1; then
+    cygpath -m "$1"
+  else
+    echo "$1"
+  fi
+}
+
+# terraform on Windows looks for `terraform-provider-fmc.exe`; Linux/macOS use the
+# extensionless name.
+case "$(uname -s)" in
+  MINGW*|MSYS*|CYGWIN*) PROVIDER_BIN="$SCRIPT_DIR/terraform-provider-fmc.exe" ;;
+  *)                    PROVIDER_BIN="$SCRIPT_DIR/terraform-provider-fmc" ;;
+esac
 TFRC="$SCRIPT_DIR/dev.tfrc"
 
 if [[ -z "$TERRAFORM_BIN" ]]; then
@@ -79,12 +96,16 @@ pass "Provider binary: $PROVIDER_BIN"
 
 cat > "$TFRC" <<EOF
 provider_installation {
-  dev_overrides { "CiscoDevNet/fmc" = "${SCRIPT_DIR}" }
+  dev_overrides { "CiscoDevNet/fmc" = "$(to_native_path "$SCRIPT_DIR")" }
   direct {}
 }
 EOF
 
-export TF_CLI_CONFIG_FILE="$TFRC"
+export TF_CLI_CONFIG_FILE="$(to_native_path "$TFRC")"
+# Force UTF-8 stdout for child Python (move_rule.py prints box-drawing and
+# arrow characters). Without this, Python on Windows uses the cp1252 console
+# encoding and crashes with UnicodeEncodeError.
+export PYTHONIOENCODING=utf-8
 export FMC_USERNAME FMC_PASSWORD FMC_URL
 export FMC_INSECURE=true
 
