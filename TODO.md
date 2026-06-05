@@ -27,17 +27,3 @@ upstream commit `701b7f56` (v2.0.1).
 
 See `PATCHES.md` for a detailed description of every patch that must survive
 the sync.
-
----
-
-## Commit and test pending changes
-
-Several changes are implemented but not yet committed or fully tested:
-
-- `internal/provider/helpers/utils.go` — `RetryOnParallelLock` + `isRetryableError`
-- `internal/provider/resource_fmc_network_groups.go` — "find first" with `nameOrValue` filter + `RetryOnParallelLock` on bulk POST
-- `internal/provider/resource_fmc_access_rules.go` — "find first" with `name:` filter + `RetryOnParallelLock` on bulk POST and DELETE
-- `internal/provider/provider.go` — `maxUrlParamLength` reduced from 7000 → 4500
-
-**Next step:** Run the `--count 1000` stress test against FMC, then commit
-once it passes.
