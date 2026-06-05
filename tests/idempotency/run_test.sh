@@ -26,24 +26,29 @@ header(){ echo -e "\n${BOLD}══ $* ══${NC}"; }
 FMC_USERNAME=""
 FMC_PASSWORD=""
 FMC_URL=""
-TERRAFORM_BIN=""   # optional; defaults to 'terraform' found on PATH
+TERRAFORM_BIN=""           # optional; defaults to 'terraform' found on PATH
+FMC_FTDV_NAME="${FMC_FTDV:-}"  # required for TEST 8 (NAT-policy device assignment).
 
 usage() {
-  echo "Usage: $0 -u <username> -p <password> --url <fmc_url> [--terraform /path/to/terraform]"
+  echo "Usage: $0 -u <username> -p <password> --url <fmc_url> [--terraform /path/to/terraform] [--ftdv <device-name>]"
   echo ""
   echo "  -u, --username      FMC username"
   echo "  -p, --password      FMC password"
   echo "  --url               FMC base URL  (e.g. https://10.0.0.1)"
   echo "  --terraform <path>  Path to the terraform binary (default: terraform on PATH)"
+  echo "  --ftdv <name>       Name of a registered FTDv on the FMC, used by TEST 8 to"
+  echo "                      assign the NAT policy (required — TEST 8 will fail if absent."
+  echo "                      May also be supplied via the FMC_FTDV environment variable)."
   exit 1
 }
 
 while [[ $# -gt 0 ]]; do
   case $1 in
-    -u|--username)  FMC_USERNAME="$2";  shift 2 ;;
-    -p|--password)  FMC_PASSWORD="$2";  shift 2 ;;
-    --url)          FMC_URL="$2";       shift 2 ;;
-    --terraform)    TERRAFORM_BIN="$2"; shift 2 ;;
+    -u|--username)  FMC_USERNAME="$2";   shift 2 ;;
+    -p|--password)  FMC_PASSWORD="$2";   shift 2 ;;
+    --url)          FMC_URL="$2";        shift 2 ;;
+    --terraform)    TERRAFORM_BIN="$2";  shift 2 ;;
+    --ftdv)         FMC_FTDV_NAME="$2";  shift 2 ;;
     -h|--help)      usage ;;
     *) echo "Unknown option: $1"; usage ;;
   esac
@@ -583,9 +588,17 @@ header "TEST 8 — fmc_ftd_manual_nat_rule duplicate-by-index recovery"
 #
 # IMPORTANT: FMC's content-level dedup ONLY fires when the NAT policy is
 # assigned to an FTD device. Without an assignment, FMC accepts duplicate
-# POSTs silently (HTTP 201) and Patch 11's recovery is never exercised.
-# Verified on a lab FMC on 2026-06-01.
+# POSTs silently (HTTP 201) and Patch 11's recovery is never exercised. This
+# is why the device name MUST be supplied (--ftdv / FMC_FTDV) — TEST 8 fails
+# loudly rather than silently misreporting success.
 # ══════════════════════════════════════════════════════════════════════════════
+
+# Hard precondition: the test requires a named FTDv to bind the NAT policy to.
+# Auto-discovery was deliberately removed: silent device selection on a shared
+# lab can mutate the wrong device, and a missing device must surface as a
+# failure rather than be skipped (otherwise a real Patch 11 regression would
+# pass undetected).
+[[ -z "$FMC_FTDV_NAME" ]] && fail "TEST 8 requires --ftdv <name> or FMC_FTDV — pass the name of a registered FTDv on the FMC"
 
 info "Creating prerequisites (NAT policy + hosts) via terraform..."
 terraform apply \
@@ -606,29 +619,70 @@ fmc_authenticate
 [[ -z "$AUTH_TOKEN" ]] && fail "Could not re-obtain auth token"
 pass "Auth token refreshed"
 
-# ── Assign NAT policy to a device so FMC's dedup validation fires ────────────
-TEST8_SKIP=0
-info "Looking up any FTD device to assign the NAT policy to..."
+# ── Look up the named FTDv and assign the NAT policy to it ────────────────────
+info "Looking up FTDv '$FMC_FTDV_NAME'..."
+# devicerecords doesn't reliably honour ?filter=name:..., so pull a small page
+# and match in Python. Lab FMCs rarely have >1000 devices so a single GET
+# suffices.
 DEV_RESP=$("${CURL[@]}" \
   -H "X-auth-access-token: $AUTH_TOKEN" \
-  "${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}/devices/devicerecords?limit=1&expanded=true")
-DEVICE_ID=$(echo "$DEV_RESP" | python3 -c "import sys,json; d=json.loads(sys.stdin.read()); items=d.get('items',[]); print(items[0]['id'] if items else '')")
-DEVICE_NAME=$(echo "$DEV_RESP" | python3 -c "import sys,json; d=json.loads(sys.stdin.read()); items=d.get('items',[]); print(items[0]['name'] if items else '')")
-if [[ -z "$DEVICE_ID" ]]; then
-  info "No FTD device registered on this FMC — TEST 8 will be SKIPPED."
-  info "  (Patch 11's helper logic is covered by go test of dup_recovery_test.go.)"
-  TEST8_SKIP=1
-else
-  pass "Found device for assignment: $DEVICE_NAME ($DEVICE_ID)"
-  info "Assigning NAT policy $NATP_ID to device..."
+  "${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}/devices/devicerecords?limit=1000&expanded=true")
+DEVICE_ID=$(echo "$DEV_RESP" | FMC_FTDV_NAME="$FMC_FTDV_NAME" python3 -c "
+import sys, json, os
+want = os.environ['FMC_FTDV_NAME']
+d = json.loads(sys.stdin.read())
+for it in d.get('items', []):
+    if it.get('name') == want:
+        print(it.get('id',''))
+        break
+")
+[[ -z "$DEVICE_ID" ]] && fail "FTDv '$FMC_FTDV_NAME' not found on FMC. Register it first, or pass a different --ftdv."
+pass "Found FTDv '$FMC_FTDV_NAME' (ID: $DEVICE_ID)"
+
+# ── Pre-check: is a *different* FTD NAT policy already bound to this FTDv? ───
+# FMC enforces 1:1 between an FTD device and an FTDNatPolicy. If the testbed
+# (or a stale prior run from a different fork branch) left a different NAT
+# policy bound to this device, our POST assignment below will silently fail
+# and TEST 8 would later trip the dedup-didn't-fire assertion — confusing.
+# Detect and report this case directly.
+info "Checking existing NAT-policy assignment on '$FMC_FTDV_NAME'..."
+ASSIGN_LIST_RESP=$("${CURL[@]}" \
+  -H "X-auth-access-token: $AUTH_TOKEN" \
+  "${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}/assignment/policyassignments?expanded=true&limit=1000")
+EXISTING_NAT=$(echo "$ASSIGN_LIST_RESP" | DEVICE_ID="$DEVICE_ID" python3 -c "
+import sys, json, os
+dev = os.environ['DEVICE_ID']
+d = json.loads(sys.stdin.read())
+for it in d.get('items', []):
+    pol = it.get('policy', {})
+    if pol.get('type') != 'FTDNatPolicy':
+        continue
+    for tgt in it.get('targets', []):
+        if tgt.get('id') == dev:
+            print('{}|{}'.format(pol.get('id',''), pol.get('name','')))
+            sys.exit(0)
+")
+EXISTING_NAT_ID="${EXISTING_NAT%%|*}"
+EXISTING_NAT_NAME="${EXISTING_NAT##*|}"
+
+ASSIGNMENT_NEEDED=1
+if [[ -n "$EXISTING_NAT_ID" ]]; then
+  if [[ "$EXISTING_NAT_ID" == "$NATP_ID" ]]; then
+    pass "test_natp already bound to '$FMC_FTDV_NAME' (stale from prior run) — reusing assignment"
+    EMERGENCY_CLEANUPS+=("/api/fmc_config/v1/domain/${DOMAIN_UUID}/assignment/policyassignments/${NATP_ID}")
+    ASSIGNMENT_NEEDED=0
+  else
+    fail "FTDv '$FMC_FTDV_NAME' already has NAT policy '$EXISTING_NAT_NAME' (id=$EXISTING_NAT_ID) bound. FMC allows only one NAT policy per device — unbind it (or pass a different --ftdv) before re-running TEST 8."
+  fi
+fi
+
+if [[ "$ASSIGNMENT_NEEDED" == "1" ]]; then
+  info "Assigning NAT policy $NATP_ID to '$FMC_FTDV_NAME'..."
   ASSIGN_RESP=$("${CURL[@]}" \
     -H "X-auth-access-token: $AUTH_TOKEN" \
     -H "Content-Type: application/json" \
     -X POST "${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}/assignment/policyassignments" \
-    -d "{\"type\":\"PolicyAssignment\",\"policy\":{\"id\":\"${NATP_ID}\",\"type\":\"FTDNatPolicy\"},\"targets\":[{\"id\":\"${DEVICE_ID}\",\"type\":\"Device\",\"name\":\"${DEVICE_NAME}\"}]}")
-  # If assignment fails (e.g. policy already assigned, or device unsupported),
-  # warn and keep going: the rule POST may still trigger dedup, or we'll fall
-  # through to the SKIP branch below.
+    -d "{\"type\":\"PolicyAssignment\",\"policy\":{\"id\":\"${NATP_ID}\",\"type\":\"FTDNatPolicy\"},\"targets\":[{\"id\":\"${DEVICE_ID}\",\"type\":\"Device\",\"name\":\"${FMC_FTDV_NAME}\"}]}")
   ASSIGN_ERR=$(echo "$ASSIGN_RESP" | python3 -c "import sys,json
 try:
     d=json.loads(sys.stdin.read())
@@ -640,18 +694,15 @@ try:
 except Exception as e:
     print(f'parse: {e}')")
   if [[ "$ASSIGN_ERR" == "OK" ]]; then
-    pass "NAT policy assigned to $DEVICE_NAME"
+    pass "NAT policy assigned to '$FMC_FTDV_NAME'"
     EMERGENCY_CLEANUPS+=("/api/fmc_config/v1/domain/${DOMAIN_UUID}/assignment/policyassignments/${NATP_ID}")
   else
-    info "Policy assignment returned: $ASSIGN_ERR — continuing (may already be assigned)"
+    # The pre-check above already cleared the "different policy already bound"
+    # case and the "same policy already bound" case, so an error here is
+    # genuinely unexpected.
+    fail "NAT policy assignment failed: $ASSIGN_ERR"
   fi
 fi
-
-if [[ "$TEST8_SKIP" == "1" ]]; then
-  info "terraform destroy -target=fmc_ftd_nat_policy.test_natp -target=fmc_host.manual_nat_translated -target=fmc_host.idempotency_test..."
-  terraform destroy -target=fmc_ftd_nat_policy.test_natp -target=fmc_host.manual_nat_translated -target=fmc_host.idempotency_test -auto-approve
-  echo -e "${YELLOW}${BOLD}⚠ TEST 8 SKIPPED — no device on FMC to bind the NAT policy to${NC}"
-else
 
 info "Pre-creating manual NAT rule (orig=$ORIG_SRC_ID trans=$TRANS_SRC_ID) via API..."
 API_RESPONSE=$(fmc_create_manual_nat_rule "$AUTH_TOKEN" "$DOMAIN_UUID" "$NATP_ID" "$ORIG_SRC_ID" "$TRANS_SRC_ID")
@@ -676,18 +727,20 @@ if [[ "$TF_NAT_RULE_ID" == "$NAT_RULE_ID" ]]; then
   terraform destroy -target=fmc_ftd_manual_nat_rule.idempotency_test -auto-approve
   pass "TEST 8 PASSED — Patch 11 duplicate-by-index recovery verified end-to-end"
 else
+  # ID mismatch means FMC accepted both POSTs as distinct rules and Patch 11's
+  # recovery path was never exercised. Two likely causes:
+  #   1. The NAT policy isn't actually attached to the FTDv (assignment silently
+  #      failed earlier, or the FTDv isn't of a type that triggers content dedup).
+  #   2. A real regression in Patch 11 (helpers.FindDuplicateByIndex) — the dup
+  #      400 fired but recovery picked a different rule.
+  # Either case is a test failure: don't suppress it.
   info "State ID ($TF_NAT_RULE_ID) ≠ pre-created ID ($NAT_RULE_ID)."
-  info "This indicates FMC accepted both rules silently — its content-duplicate"
-  info "validation (the 'Duplicate entry … at rule index [N]' 400) was not triggered"
-  info "by this rule shape. Patch 11's recovery path is not exercised here; see"
-  info "internal/provider/helpers/dup_recovery_test.go for parser coverage."
-  info "Destroying TF-created NAT rule..."
-  terraform destroy -target=fmc_ftd_manual_nat_rule.idempotency_test -auto-approve
-  info "Deleting pre-created API NAT rule via REST so the policy can be torn down..."
+  info "Best-effort cleanup before failing..."
+  terraform destroy -target=fmc_ftd_manual_nat_rule.idempotency_test -auto-approve 2>/dev/null || true
   fmc_authenticate
-  fmc_delete "$AUTH_TOKEN" "/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/ftdnatpolicies/${NATP_ID}/manualnatrules/${NAT_RULE_ID}"
+  fmc_delete "$AUTH_TOKEN" "/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/ftdnatpolicies/${NATP_ID}/manualnatrules/${NAT_RULE_ID}" 2>/dev/null || true
   EMERGENCY_CLEANUPS=("${EMERGENCY_CLEANUPS[@]//*manualnatrules*}")
-  echo -e "${YELLOW}${BOLD}⚠ TEST 8 SKIPPED — FMC did not enforce duplicate detection on this rule${NC}"
+  fail "TEST 8 FAILED — FMC dedup did not fire (or Patch 11 picked the wrong rule). Verify --ftdv '$FMC_FTDV_NAME' is a registered FTDv and the policy assignment succeeded."
 fi
 
 # Unassign the NAT policy from the device before destroying the policy. Without
@@ -697,7 +750,7 @@ fi
 # FMC does not accept DELETE on /assignment/policyassignments/<id> (returns 405
 # Method Not Allowed). The supported unassign path is PUT with an empty targets
 # array, which is what we do here.
-info "Unassigning NAT policy from $DEVICE_NAME..."
+info "Unassigning NAT policy from '$FMC_FTDV_NAME'..."
 fmc_authenticate
 "${CURL[@]}" \
   -H "X-auth-access-token: $AUTH_TOKEN" \
@@ -711,8 +764,6 @@ EMERGENCY_CLEANUPS=("${EMERGENCY_CLEANUPS[@]//*policyassignments*}")
 info "terraform destroy -target=fmc_ftd_nat_policy.test_natp -target=fmc_host.manual_nat_translated -target=fmc_host.idempotency_test..."
 terraform destroy -target=fmc_ftd_nat_policy.test_natp -target=fmc_host.manual_nat_translated -target=fmc_host.idempotency_test -auto-approve
 pass "TEST 8 cleanup complete"
-
-fi  # close: if [[ "$TEST8_SKIP" == "1" ]]; then ... else
 
 # ── Done ──────────────────────────────────────────────────────────────────────
 echo ""
