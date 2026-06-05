@@ -789,7 +789,8 @@ func (r *AccessRulesResource) Read(ctx context.Context, req resource.ReadRequest
 		state.fromBodyPartial(ctx, res)
 	}
 
-	// Dedup state.Items by Id. FMC's `?filter=name:` does prefix/substring
+	// mechanize-dk:patch10 begin — dedup state.Items by Id.
+	// See PATCHES.md "Patch 10". FMC's `?filter=name:` does prefix/substring
 	// matching, so a query for `name:rule-1,rule-2,...` also matches rule-10,
 	// rule-100, rule-20, etc. When Read batches names into multiple GETs and
 	// merges the responses, the same rule can appear in more than one batch.
@@ -808,6 +809,7 @@ func (r *AccessRulesResource) Read(ctx context.Context, req resource.ReadRequest
 		}
 		state.Items = out
 	}
+	// mechanize-dk:patch10 end
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Read finished successfully", state.Id.ValueString()))
 

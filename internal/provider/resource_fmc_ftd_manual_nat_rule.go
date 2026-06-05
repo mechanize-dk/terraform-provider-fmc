@@ -228,6 +228,11 @@ func (r *FTDManualNATRuleResource) Create(ctx context.Context, req resource.Crea
 	body := plan.toBody(ctx, FTDManualNATRule{})
 	body = plan.adjustBody(ctx, body)
 	res, err := r.client.Post(plan.getPath()+"?section="+strings.ToLower(plan.Section.ValueString()), body, reqMods...)
+	// mechanize-dk:patch11 begin — duplicate-by-index recovery for fmc_ftd_manual_nat_rule.
+	// See PATCHES.md "Patch 11". This block replaces the upstream
+	//     if err != nil { resp.Diagnostics.AddError(...); return }
+	// pattern. When upstream rewrites this Create() function, re-apply this
+	// block verbatim between the matching begin/end markers below.
 	if err != nil {
 		foundRes, dupErr := helpers.FindDuplicateByIndex(ctx, r.client, plan.getPath(), err, res, reqMods...)
 		if dupErr != nil {
@@ -253,6 +258,7 @@ func (r *FTDManualNATRuleResource) Create(ctx context.Context, req resource.Crea
 		}
 		res = foundRes
 	}
+	// mechanize-dk:patch11 end
 	plan.Id = types.StringValue(res.Get("id").String())
 	plan.fromBodyUnknowns(ctx, res)
 
