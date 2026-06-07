@@ -729,7 +729,37 @@ above for the breaking-change note).
 - `examples/resources/fmc_mze_auto_nat_rules/resource.tf`
 
 **Tests (survive merges; live entirely under `tests/`):**
-- `tests/bulk_nat_tenants/run_test.sh` and supporting `.tf` files
+- `tests/bulk_nat_tenants/run_test.sh` and supporting `.tf` files — 10
+  integration scenarios run against a live FMC:
+   1. **Multi-tenant baseline** — two tenants on one shared NAT policy
+      plus auto-NAT, verifies `Create` + `Read` + no-drift plan.
+   2. **Patch 11 adoption** — pre-create a manual NAT rule via the API,
+      assert the resource adopts its FMC id on apply (requires the NAT
+      policy to be assigned to the FTDv — the scenario wires this up).
+   3. **Reorder within a section** — moves `rule_2` ahead of `rule_1`,
+      asserts the state list reflects the swap.
+   4. **OOB coexistence** — curl-creates an unrelated rule in tenant A's
+      zone, asserts `terraform plan` reports no drift (cooperative
+      ownership).
+   5. **Auto-NAT specificity** — adds a Network-typed entry alongside the
+      Host-typed one, asserts `Read` refreshes by stored id regardless of
+      FMC's specificity-based reordering.
+   6. **ImportState smoke test** — `terraform state rm` then
+      `terraform import` with the synthetic id; asserts the import code
+      path runs and populates id + ftd_nat_policy_id.
+   7. **Auto-NAT duplicate-recovery end-to-end** — destroys
+      `tenant_a_auto`, pre-creates the matching auto-NAT rule via API,
+      applies; asserts state id equals the pre-created id (proves the
+      Branch B-prime helper is wired into the bulk Create/Update).
+   8. **Cross-section move** — moves `rule_1` from BEFORE_AUTO to
+      AFTER_AUTO; asserts FMC assigned a new id (cross-section moves
+      require DELETE+POST, the prior id is unreachable).
+   9. **In-place PUT** — adds a `description` to `rule_1` without
+      changing position; asserts the FMC id is preserved (PUT path,
+      `modified ∧ ¬reordered` diff class).
+   10. **match_on validation error** — adds an item with
+      `source_interface_id` pointing at the wrong tenant's zone; asserts
+      `terraform apply` surfaces "conflicts with match_on".
 - `tests/bulk_nat_tenants/probe_autonat_dup.sh` — one-shot probe used to
   determine the auto-NAT duplicate-error shape
 - `tests/bulk_nat_tenants/PROBE_AUTONAT.md` — captured probe result and
@@ -739,6 +769,21 @@ above for the breaking-change note).
 `fmc_mze_manual_nat_rules` Create/Update to recover from duplicate-by-index
 errors. Manual-NAT and auto-NAT duplicate-recovery helpers live in separate
 files so future changes to one don't disturb the other.
+
+**Cross-section ordering in `Update`:** when scenarios 8 + S5-reset exposed
+that processing each section serially could POST a rule into one section
+before DELETEing it from the other, `Update` was restructured to compute
+diffs for BOTH sections up front, then execute in cross-section stages —
+all DELETEs first, then all PUTs, then all POSTs. Without this, moving a
+rule between sections (or restoring an after-section rule to before in
+one apply) hits FMC's duplicate-content detection.
+
+**Nil-vs-empty preservation:** `before_auto`/`after_auto` are Optional
+list attributes. The framework distinguishes user-omitted (Null → Go nil
+slice) from user-empty (`= []` → Go `[]T{}`). `Read.refresh()` returns
+`nil` unchanged rather than always producing `make([]T, 0, …)` so the
+two cases round-trip cleanly. The previous len==0→nil normalization
+broke user-explicit-empty.
 
 **Spec and plan:**
 - `docs/superpowers/specs/2026-06-04-bulk-nat-tenant-resources-design.md`

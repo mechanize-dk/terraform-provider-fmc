@@ -21,8 +21,15 @@ The following objects are unchanged by this fix (and are therefore **not** idemp
 - resource.fmc_policy_assignment
 - resource.fmc_device_cluster
 
-At current the following resources has been added:
-- **fmc_mze_network_groups**
+At current the following resources have been added:
+
+- **fmc_mze_manual_nat_rules** *(bulk, tenant-scoped manual NAT rules)*
+  <br>Lets multiple tenants share one FTD NAT policy without stepping on each other. Each resource instance owns an ordered list per section (`before_auto`, `after_auto`) within the boundary expressed by `match_on` (typically `source_interface_id` = the tenant's security zone). Tenant-chosen `key` per item gives stable identity across plans — reorders don't thrash. Cooperative ownership: rules in the same section that don't match `match_on` are ignored. Reuses the fork's duplicate-recovery helper so pre-existing FMC rules are adopted on apply rather than triggering an error.
+
+- **fmc_mze_auto_nat_rules** *(bulk, tenant-scoped auto-NAT / object NAT rules)*
+  <br>Same model for auto-NAT. Exposed as an unordered `map(rules)` because FMC orders auto-NAT rules by specificity at runtime — the map key is the tenant identifier. Has its own duplicate-recovery path that searches by `originalNetwork.id` (the natural uniqueness key for auto-NAT).
+
+- **fmc_mze_network_groups** *(formerly `fmc_network_groups_safe`; renamed 2026-06-04)*
   <br>Is a drop-in replacement for `fmc_network_groups` that handles a dependency problem the FMC has with network group deletion.
   When Terraform destroys or replaces a network group that is still referenced by an access-rule (or another group), the FMC rejects the DELETE with HTTP 400. The standard `fmc_network_groups` resource fails with an error, and the network group is left behind in the FMC — requiring manual cleanup.
   This happens in a common Terraform pattern: `fmc_network_groups` has `depends_on = [fmc_access_rules]` to ensure rules are created before groups. The dependency also controls the destroy order — but destroy order is the reverse of create order, so Terraform destroys (or updates) `fmc_network_groups` *before* it updates `fmc_access_rules`. If a rule still holds a reference to a group being deleted, the FMC rejects it.
