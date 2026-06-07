@@ -23,6 +23,7 @@ Use this file to re-apply all patches after a sync with upstream.
 | 9 | Tests | `tests/` | None — not touched by upstream |
 | 10 | `fmc_access_rules.Read` dedup by Id | `resource_fmc_access_rules.go` (Read, not template-generated, delimited by `// mechanize-dk:patch10 begin/end`) | Low — small block, file section not under template markers |
 | 11 | `fmc_ftd_manual_nat_rule` duplicate-by-index recovery | `resource_fmc_ftd_manual_nat_rule.go` (Create, hand-maintained, delimited by `// mechanize-dk:patch11 begin/end`) + `helpers/dup_recovery.go` (new) | Low — hand-edit lives outside template markers; helper is a new file |
+| 12 | Bulk NAT tenant resources (`fmc_mze_manual_nat_rules`, `fmc_mze_auto_nat_rules`) | new `resource_fmc_mze_*_nat_rules.go`, `helpers/nat_match.go`, `helpers/dup_recovery_autonat.go` + 2-line edits in `gen/templates/provider.go` and `gen/doc_category.go` | Low — new files survive; only the two registration edits can conflict |
 
 ---
 
@@ -244,6 +245,26 @@ func RetryOnParallelLock(ctx context.Context, fn func() (gjson.Result, error)) (
 }
 ```
 
+### Call sites (important on upstream sync)
+
+`RetryOnParallelLock` is wrapped around three kinds of operations:
+
+1. **Custom-resource bulk POST/DELETE** (Patches 2 and 3) — see those
+   sections for the wrap inside `resource_fmc_network_groups.go` and
+   `resource_fmc_access_rules.go`.
+2. **Template-generated `IsBulk` resources** — `gen/templates/resource.go`
+   wraps both the bulk-create call (around line 1366, inside
+   `createSubresources`) and the bulk-delete call (around line 1450). This
+   propagates the retry to ~20 generated resources (networks, network_groups,
+   vlan_tags, ports, security_zones, urls, sgts, dynamic_objects,
+   url_groups, range/host/fqdn objects, …). **A re-apply that misses this
+   template change silently loses retry on every templated bulk resource.**
+   Re-apply the wrap at both call sites if upstream edits the template.
+
+If `helpers.RetryOnParallelLock` is removed from `helpers/utils.go` during
+sync, every one of these call sites — both custom and templated — will
+fail to compile, which is the safety net that catches most regressions.
+
 ---
 
 ## Patch 5 — IngestOnConflict helper
@@ -372,7 +393,9 @@ if currentSectionName == "imports" {
 }
 ```
 
-See commit `4059b802` for the exact diff.
+The `else` branch above is pseudocode — see commit `4059b802` for the
+full diff (the real branch builds the replacement block from the template
+via `getTemplateSection` and writes it into `newContent`).
 
 ---
 
@@ -421,6 +444,10 @@ var extraDocs = map[string]string{
     "mze_network_groups": "Objects",
 }
 ```
+
+Note: Patch 12 adds two more entries to the same `extraDocs` map
+(`mze_manual_nat_rules` and `mze_auto_nat_rules`) — preserve both when
+re-applying.
 
 ---
 
@@ -716,7 +743,7 @@ above for the breaking-change note).
 
 **Files modified — re-apply on upstream merges if upstream touches them:**
 - `gen/templates/provider.go` — added `NewMzeManualNatRulesResource,` and
-  `NewMzeAutoNatRulesResource,` after the existing `NewNetworkGroupsSafeResource,`
+  `NewMzeAutoNatRulesResource,` after the existing `NewMzeNetworkGroupsResource,`
   line in the `Resources()` function. Same survival mechanism as Patch 8.
 - `gen/doc_category.go` — added two entries to `extraDocs`:
   ```
@@ -817,13 +844,15 @@ After `git merge origin/main` (or rebase):
    survives merges. Check `gen/templates/provider.go` and `gen/doc_category.go`
    after any upstream change to those files.
 
-7. **Patch 10** — `resource_fmc_access_rules.go` `Read()` is not under template
+7. **Patch 9** — `tests/` directory not touched by upstream; survives merges.
+
+8. **Patch 10** — `resource_fmc_access_rules.go` `Read()` is not under template
    markers; survives `go generate`. After an upstream merge, check that the
    dedup block at the end of `Read()` (just before `resp.State.Set`) still
    exists. If upstream reworked `Read`, re-apply the ~12-line block from the
    "Patch 10" section above.
 
-8. **Patch 11** — `resource_fmc_ftd_manual_nat_rule.go`'s `Create()` is
+9. **Patch 11** — `resource_fmc_ftd_manual_nat_rule.go`'s `Create()` is
    hand-maintained (not inside `template:begin create` markers); the edit
    survives `go generate`. After an upstream merge, verify the recovery block
    in Create is intact and that `"reflect"` is still listed in the imports
@@ -832,14 +861,12 @@ After `git merge origin/main` (or rebase):
    `dup_recovery_test.go` are new files and survive merges.
    `tests/idempotency/main.tf` and `run_test.sh` additions survive merges too.
 
-7. **Patch 9** — `tests/` directory not touched by upstream; survives merges.
-
-9. **Patch 12** — `resource_fmc_mze_manual_nat_rules.go`,
+10. **Patch 12** — `resource_fmc_mze_manual_nat_rules.go`,
    `resource_fmc_mze_auto_nat_rules.go`, `helpers/nat_match.go`, and
    `helpers/dup_recovery_autonat.go` are all hand-written and never under
    template markers — they survive `go generate`. After an upstream merge,
    check that `gen/templates/provider.go` still has the two
-   `NewMze…Resource,` entries after `NewNetworkGroupsSafeResource,` and that
+   `NewMze…Resource,` entries after `NewMzeNetworkGroupsResource,` and that
    `gen/doc_category.go` still has both `mze_*_nat_rules` entries in
    `extraDocs`. If upstream reworked either file, re-apply the changes from
    the "Patch 12" section above. `tests/bulk_nat_tenants/` is in `tests/`

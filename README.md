@@ -12,7 +12,7 @@ This is a fork of [CiscoDevNet/terraform-provider-fmc](https://github.com/CiscoD
 - **Import statements in terraform**
   <br>As conflicts are handled by code, there is no need for import statements. This also fixes objects with no `import` function (like `fmc_access_rules`)
 
-Other than the standard objects, the following bulk objects has also been fixed:
+Other than the standard objects, the following bulk objects have also been fixed:
 - fmc_network_groups
 - fmc_access_rules
 
@@ -21,15 +21,17 @@ The following objects are unchanged by this fix (and are therefore **not** idemp
 - resource.fmc_policy_assignment
 - resource.fmc_device_cluster
 
-At current the following resources have been added:
+Other reliability improvements from this fork include transient-error retry on parallel FMC locks, a URL-length fix that prevents HTTP 400 on bulk rule deletes, and duplicate-recovery for `fmc_ftd_manual_nat_rule`. See [PATCHES.md](PATCHES.md) for the full list.
+
+Currently the following resources have been added:
 
 - **fmc_mze_manual_nat_rules** *(bulk, tenant-scoped manual NAT rules)*
-  <br>Lets multiple tenants share one FTD NAT policy without stepping on each other. Each resource instance owns an ordered list per section (`before_auto`, `after_auto`) within the boundary expressed by `match_on` (typically `source_interface_id` = the tenant's security zone). Tenant-chosen `key` per item gives stable identity across plans — reorders don't thrash. Cooperative ownership: rules in the same section that don't match `match_on` are ignored. Reuses the fork's duplicate-recovery helper so pre-existing FMC rules are adopted on apply rather than triggering an error.
+  <br>Cooperative ownership lets multiple tenants share one FTD NAT policy without stepping on each other: each resource instance only manages rules in the section (`before_auto`, `after_auto`) that match `match_on` (typically `source_interface_id` = the tenant's security zone) — rules that don't match are ignored. Tenant-chosen `key` per item gives stable identity across plans, so reorders don't thrash. Reuses the fork's duplicate-recovery helper so pre-existing FMC rules are adopted on apply rather than triggering an error.
 
 - **fmc_mze_auto_nat_rules** *(bulk, tenant-scoped auto-NAT / object NAT rules)*
-  <br>Same model for auto-NAT. Exposed as an unordered `map(rules)` because FMC orders auto-NAT rules by specificity at runtime — the map key is the tenant identifier. Has its own duplicate-recovery path that searches by `originalNetwork.id` (the natural uniqueness key for auto-NAT).
+  <br>Same model for auto-NAT. Exposed as an unordered `map(rules)` because FMC orders auto-NAT rules by specificity at runtime — the map key is the tenant identifier. Has its own duplicate-recovery path that searches by `originalNetwork.id` — FMC enforces uniqueness on that field, making it the natural recovery key.
 
-- **fmc_mze_network_groups** *(formerly `fmc_network_groups_safe`; renamed 2026-06-04)*
+- **fmc_mze_network_groups**
   <br>Is a drop-in replacement for `fmc_network_groups` that handles a dependency problem the FMC has with network group deletion.
   When Terraform destroys or replaces a network group that is still referenced by an access-rule (or another group), the FMC rejects the DELETE with HTTP 400. The standard `fmc_network_groups` resource fails with an error, and the network group is left behind in the FMC — requiring manual cleanup.
   This happens in a common Terraform pattern: `fmc_network_groups` has `depends_on = [fmc_access_rules]` to ensure rules are created before groups. The dependency also controls the destroy order — but destroy order is the reverse of create order, so Terraform destroys (or updates) `fmc_network_groups` *before* it updates `fmc_access_rules`. If a rule still holds a reference to a group being deleted, the FMC rejects it.
@@ -37,7 +39,7 @@ At current the following resources have been added:
     1. The group is renamed to `__gc_<original-fmc-id>` and its description is set to `GC: was <original-name>` so it remains identifiable in the FMC UI.
     2. Its content is replaced with a single harmless literal (`127.6.6.6`) as the FMC requires at least one member, and a loopback address ensures any access-rule still pointing at it becomes effectively inactive.
     3. Terraform state is updated as if the group was deleted — the apply succeeds.
-    4. The renamed group is cleaned up automatically. Every time `fmc_mze_network_groups` is read (during `terraform plan` or `terraform apply`), it scans all network groups in the FMC for names starting with `__gc_` and attempts to delete them. By that point Terraform has already updated the access-rules, so the reference is gone and the FMC accepts the delete.
+    4. The renamed group is cleaned up automatically. On each Read of an `fmc_mze_network_groups` resource (i.e. once per resource block per plan/apply), the provider scans all network groups in the FMC for names starting with `__gc_` and attempts to delete them. By that point Terraform has already updated the access-rules, so the reference is gone and the FMC accepts the delete.
 
 ## The original provider
 
