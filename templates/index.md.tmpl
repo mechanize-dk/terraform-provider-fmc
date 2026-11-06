@@ -1,6 +1,4 @@
-
 ---
-layout: ""
 page_title: "Provider: FMC"
 description: |-
   The FMC Idempotent provider provides resources to interact with a Cisco Secure Firewall Management Center (FMC) and Cloud-Delivered FMC (cdFMC) instances.
@@ -46,11 +44,11 @@ Resources and data sources have been tested with the following releases.
 
 | Platform | Version |
 | -------- | ------- |
-| FMC      | 7.2.10  |
-| FMC      | 7.4.5   |
-| FMC      | 7.6.2   |
-| FMC      | 7.7.11  |
-| FMC      | 10.0.0  |
+| FMC      | 7.2.11  |
+| FMC      | 7.4.7   |
+| FMC      | 7.6.5   |
+| FMC      | 7.7.12  |
+| FMC      | 10.0.1  |
 | cdFMC    |         |
 
 Please note that resources and data sources support depends on FMC version.

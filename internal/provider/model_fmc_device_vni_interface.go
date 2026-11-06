@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"net/url"
 	"slices"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -61,6 +62,9 @@ type DeviceVNIInterface struct {
 	Ipv6Ra                     types.Bool                        `tfsdk:"ipv6_ra"`
 	Ipv6Addresses              []DeviceVNIInterfaceIpv6Addresses `tfsdk:"ipv6_addresses"`
 	Proxy                      types.Bool                        `tfsdk:"proxy"`
+	ProxyType                  types.String                      `tfsdk:"proxy_type"`
+	ActiveMacAddress           types.String                      `tfsdk:"active_mac_address"`
+	StandbyMacAddress          types.String                      `tfsdk:"standby_mac_address"`
 }
 
 type DeviceVNIInterfaceIpv6Addresses struct {
@@ -152,7 +156,8 @@ func (data DeviceVNIInterface) toBody(ctx context.Context, state DeviceVNIInterf
 		body, _ = sjson.Set(body, "ipv6.enableRA", data.Ipv6Ra.ValueBool())
 	}
 	if len(data.Ipv6Addresses) > 0 {
-		body, _ = sjson.Set(body, "ipv6.addresses", []any{})
+		var ipv6AddressesBody strings.Builder
+		ipv6AddressesBody.WriteString("[")
 		for _, item := range data.Ipv6Addresses {
 			itemBody := ""
 			if !item.Address.IsNull() {
@@ -164,11 +169,27 @@ func (data DeviceVNIInterface) toBody(ctx context.Context, state DeviceVNIInterf
 			if !item.EnforceEui.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "enforceEUI64", item.EnforceEui.ValueBool())
 			}
-			body, _ = sjson.SetRaw(body, "ipv6.addresses.-1", itemBody)
+			if itemBody != "" {
+				if ipv6AddressesBody.Len() > 1 {
+					ipv6AddressesBody.WriteString(",")
+				}
+				ipv6AddressesBody.WriteString(itemBody)
+			}
 		}
+		ipv6AddressesBody.WriteString("]")
+		body, _ = sjson.SetRaw(body, "ipv6.addresses", ipv6AddressesBody.String())
 	}
 	if !data.Proxy.IsNull() {
 		body, _ = sjson.Set(body, "enableProxy", data.Proxy.ValueBool())
+	}
+	if !data.ProxyType.IsNull() {
+		body, _ = sjson.Set(body, "proxyType", data.ProxyType.ValueString())
+	}
+	if !data.ActiveMacAddress.IsNull() {
+		body, _ = sjson.Set(body, "activeMACAddress", data.ActiveMacAddress.ValueString())
+	}
+	if !data.StandbyMacAddress.IsNull() {
+		body, _ = sjson.Set(body, "standbyMACAddress", data.StandbyMacAddress.ValueString())
 	}
 	return body
 }
@@ -284,7 +305,7 @@ func (data *DeviceVNIInterface) fromBody(ctx context.Context, res gjson.Result) 
 		data.Ipv6Ra = types.BoolNull()
 	}
 	if value := res.Get("ipv6.addresses"); value.Exists() {
-		data.Ipv6Addresses = make([]DeviceVNIInterfaceIpv6Addresses, 0)
+		data.Ipv6Addresses = make([]DeviceVNIInterfaceIpv6Addresses, 0, int(value.Get("#").Int()))
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := DeviceVNIInterfaceIpv6Addresses{}
@@ -311,6 +332,21 @@ func (data *DeviceVNIInterface) fromBody(ctx context.Context, res gjson.Result) 
 		data.Proxy = types.BoolValue(value.Bool())
 	} else {
 		data.Proxy = types.BoolValue(false)
+	}
+	if value := res.Get("proxyType"); value.Exists() {
+		data.ProxyType = types.StringValue(value.String())
+	} else {
+		data.ProxyType = types.StringNull()
+	}
+	if value := res.Get("activeMACAddress"); value.Exists() {
+		data.ActiveMacAddress = types.StringValue(value.String())
+	} else {
+		data.ActiveMacAddress = types.StringNull()
+	}
+	if value := res.Get("standbyMACAddress"); value.Exists() {
+		data.StandbyMacAddress = types.StringValue(value.String())
+	} else {
+		data.StandbyMacAddress = types.StringNull()
 	}
 }
 
@@ -428,16 +464,16 @@ func (data *DeviceVNIInterface) fromBodyPartial(ctx context.Context, res gjson.R
 	} else {
 		data.Ipv6Ra = types.BoolNull()
 	}
+	ipv6AddressesArray := res.Get("ipv6.addresses")
 	for i := 0; i < len(data.Ipv6Addresses); i++ {
 		keys := [...]string{"address", "prefix"}
 		keyValues := [...]string{data.Ipv6Addresses[i].Address.ValueString(), data.Ipv6Addresses[i].Prefix.ValueString()}
 
 		parent := &data
 		data := (*parent).Ipv6Addresses[i]
-		parentRes := &res
 		var res gjson.Result
 
-		parentRes.Get("ipv6.addresses").ForEach(
+		ipv6AddressesArray.ForEach(
 			func(_, v gjson.Result) bool {
 				found := false
 				for ik := range keys {
@@ -485,6 +521,21 @@ func (data *DeviceVNIInterface) fromBodyPartial(ctx context.Context, res gjson.R
 		data.Proxy = types.BoolValue(value.Bool())
 	} else if data.Proxy.ValueBool() != false {
 		data.Proxy = types.BoolNull()
+	}
+	if value := res.Get("proxyType"); value.Exists() && !data.ProxyType.IsNull() {
+		data.ProxyType = types.StringValue(value.String())
+	} else {
+		data.ProxyType = types.StringNull()
+	}
+	if value := res.Get("activeMACAddress"); value.Exists() && !data.ActiveMacAddress.IsNull() {
+		data.ActiveMacAddress = types.StringValue(value.String())
+	} else {
+		data.ActiveMacAddress = types.StringNull()
+	}
+	if value := res.Get("standbyMACAddress"); value.Exists() && !data.StandbyMacAddress.IsNull() {
+		data.StandbyMacAddress = types.StringValue(value.String())
+	} else {
+		data.StandbyMacAddress = types.StringNull()
 	}
 }
 

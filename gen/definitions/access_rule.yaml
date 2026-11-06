@@ -30,6 +30,26 @@ attributes:
     exclude_example: true
     exclude_test: true
     requires_replace: true
+  - tf_name: insert_before_rule
+    tf_only: true
+    type: Int64
+    description: >-
+      Specifies that the rules will be inserted before the specified rule index.
+      Either 'insert_before_rule' or 'insert_after_rule' can be set.
+      This attribute is used for initial rule creation only and is ignored during the resource lifecycle.
+    requires_replace: true
+    exclude_test: true
+    exclude_example: true
+  - tf_name: insert_after_rule
+    tf_only: true
+    type: Int64
+    description: >-
+      Specifies that the rules will be inserted after the specified rule index.
+      Either 'insert_before_rule' or 'insert_after_rule' can be set.
+      This attribute is used for initial rule creation only and is ignored during the resource lifecycle.
+    requires_replace: true
+    exclude_test: true
+    exclude_example: true
   - model_name: action
     type: String
     description: Rule action.
@@ -51,7 +71,7 @@ attributes:
     data_source_query: true
   - model_name: enabled
     type: Bool
-    description: Indicates whether the access rule is in effect (true) or not (false).
+    description: Enable rule.
     default_value: "true"
     exclude_example: true
     test_value: "true"
@@ -630,6 +650,51 @@ attributes:
           example: "24"
           id: true
           mandatory: true
+    - model_name: objects
+      data_path: [users]
+      tf_name: user_objects
+      type: Set
+      description: User objects.
+      exclude_test: true
+      attributes:
+        - model_name: id
+          type: String
+          description: Id of the User or User Group object.
+          id: true
+          mandatory: true
+          example: 76d24097-41c4-4558-a4d0-a8c07ac08470
+        - model_name: type
+          type: String
+          description: Type of the User or User Group object.
+          enum_values: [RealmUser, RealmUserGroup]
+          example: RealmUser
+          mandatory: true
+        - model_name: name
+          type: String
+          description: Name of the User or User Group object.
+          mandatory: true
+          example: MyRealmUser1
+        - model_name: id
+          data_path: [realm]
+          tf_name: realm_id
+          type: String
+          id: true
+          mandatory: true
+          description: Id of the Realm the User or User Group belongs to.
+          example: 76d24097-41c4-4558-a4d0-a8c07ac08470
+        - model_name: type
+          data_path: [realm]
+          tf_name: realm_type
+          type: String
+          description: Type of the Realm the User or User Group belongs to.
+          enum_values: [Realm]
+          example: "Realm"
+        - model_name: name
+          data_path: [realm]
+          tf_name: realm_name
+          type: String
+          description: Name of the Realm the User or User Group belongs to.
+          example: "MyRealm"
 
 test_prerequisites: |-
   resource "fmc_access_control_policy" "test" {

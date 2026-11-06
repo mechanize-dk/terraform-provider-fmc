@@ -23,15 +23,22 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"strings"
+	"time"
 
-	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/CiscoDevNet/terraform-provider-fmc/internal/provider/helpers"
+	"github.com/hashicorp/go-version"
+	"github.com/hashicorp/terraform-plugin-framework-validators/datasourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-fmc"
-	"github.com/CiscoDevNet/terraform-provider-fmc/internal/provider/helpers"
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 )
 
 // End of section. //template:end imports
@@ -72,6 +79,7 @@ func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasour
 		{{- end}}
 
 		Attributes: map[string]schema.Attribute{
+			{{- if not .NoId}}
 			"id": schema.StringAttribute{
 				MarkdownDescription: "Id of the object",
 				{{- if and (not (hasDataSourceQuery .Attributes)) (not .IsBulk) }}
@@ -83,6 +91,7 @@ func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasour
 				Computed:            true,
 				{{- end}}
 			},
+			{{- end}}
 			{{- if isDomainDependent .}}
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
@@ -98,7 +107,7 @@ func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasour
 			{{- range .Attributes}}
 			{{- if not .Value}}
 			"{{.TfName}}": schema.{{if isNestedListMapSet .}}{{.Type}}Nested{{else if isList .}}List{{else if isSet .}}Set{{else if eq .Type "Versions"}}List{{else if eq .Type "Version"}}Int64{{else}}{{.Type}}{{end}}Attribute{
-				MarkdownDescription: "{{.Description}}",
+				MarkdownDescription: "{{if .DsDescription}}{{.DsDescription}}{{else}}{{.Description}}{{end}}",
 				{{- if isListSet .}}
 				ElementType:         types.{{.ElementType}}Type,
 				{{- end}}
@@ -123,7 +132,7 @@ func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasour
 						{{- range .Attributes}}
 						{{- if not .Value}}
 						"{{.TfName}}": schema.{{if isNestedListMapSet .}}{{.Type}}Nested{{else if isList .}}List{{else if isSet .}}Set{{else if eq .Type "Versions"}}List{{else if eq .Type "Version"}}Int64{{else}}{{.Type}}{{end}}Attribute{
-							MarkdownDescription: "{{.Description}}",
+							MarkdownDescription: "{{if .DsDescription}}{{.DsDescription}}{{else}}{{.Description}}{{end}}",
 							{{- if isListSet .}}
 							ElementType:         types.{{.ElementType}}Type,
 							{{- end}}
@@ -141,7 +150,7 @@ func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasour
 									{{- range .Attributes}}
 									{{- if not .Value}}
 									"{{.TfName}}": schema.{{if isNestedListMapSet .}}{{.Type}}Nested{{else if isList .}}List{{else if isSet .}}Set{{else if eq .Type "Versions"}}List{{else if eq .Type "Version"}}Int64{{else}}{{.Type}}{{end}}Attribute{
-										MarkdownDescription: "{{.Description}}",
+										MarkdownDescription: "{{if .DsDescription}}{{.DsDescription}}{{else}}{{.Description}}{{end}}",
 										{{- if isListSet .}}
 										ElementType:         types.{{.ElementType}}Type,
 										{{- end}}
@@ -155,7 +164,7 @@ func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasour
 												{{- range .Attributes}}
 												{{- if not .Value}}
 												"{{.TfName}}": schema.{{if isNestedListMapSet .}}{{.Type}}Nested{{else if isList .}}List{{else if isSet .}}Set{{else if eq .Type "Versions"}}List{{else if eq .Type "Version"}}Int64{{else}}{{.Type}}{{end}}Attribute{
-													MarkdownDescription: "{{.Description}}",
+													MarkdownDescription: "{{if .DsDescription}}{{.DsDescription}}{{else}}{{.Description}}{{end}}",
 													{{- if isListSet .}}
 													ElementType:         types.{{.ElementType}}Type,
 													{{- end}}
@@ -187,13 +196,15 @@ func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasour
 		},
 	}
 }
-{{- $dataSourceAttribute := getDataSourceQueryAttribute .}}
+{{- $dataSourceAttributes := getDataSourceQueryAttributes .}}
 {{- if and (hasDataSourceQuery .Attributes) (not .IsBulk)}}
 func (d *{{camelCase .Name}}DataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
     return []datasource.ConfigValidator{
         datasourcevalidator.ExactlyOneOf(
             path.MatchRoot("id"),
-			path.MatchRoot("{{$dataSourceAttribute.TfName}}"),
+			{{- range $index, $attr := $dataSourceAttributes }}
+			path.MatchRoot("{{$attr.TfName}}"),
+			{{- end }}
         ),
     }
 }
@@ -237,9 +248,10 @@ func (d *{{camelCase .Name}}DataSource) Read(ctx context.Context, req datasource
 	}
 	{{- end}}
 
-	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
+	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", {{if .NoId}}"{{.Name}}"{{else}}config.Id.String(){{end}}))
 
 	{{- if and (hasDataSourceQuery .Attributes) (not .IsBulk)}}
+	{{- range $index, $dataSourceAttribute := $dataSourceAttributes }}
 	if config.Id.IsNull() && !config.{{toGoName $dataSourceAttribute.TfName}}.IsNull() {
 		offset := 0
 		limit := 1000
@@ -276,6 +288,7 @@ func (d *{{camelCase .Name}}DataSource) Read(ctx context.Context, req datasource
 		}
 	}
 	{{- end}}
+	{{- end}}
 
 	{{- if .IsBulk}}
 	
@@ -283,6 +296,8 @@ func (d *{{camelCase .Name}}DataSource) Read(ctx context.Context, req datasource
 	urlPath := config.getPath() + "?expanded=true"
 	{{- else if .IsOverride}}
 	urlPath := config.getPath() + "/" + url.QueryEscape(config.Id.ValueString()) + "/overrides"
+	{{- else if .NoId}}
+	urlPath := config.getPath()
 	{{- else}}
 	urlPath := config.getPath()+"/"+url.QueryEscape(config.Id.ValueString())
 	{{- end}}
@@ -292,13 +307,29 @@ func (d *{{camelCase .Name}}DataSource) Read(ctx context.Context, req datasource
 		return
 	}
 
+	{{- if .IsBulk}}
+
+	// Read all items if user did not provide any specific item names in the config
+	if len(config.Items) == 0 {
+		if config.Items == nil {
+			config.Items = map[string]{{camelCase .Name}}Items{}
+		}
+		res.Get("items").ForEach(func(_, v gjson.Result) bool {
+			if name := v.Get("name").String(); name != "" {
+				config.Items[name] = {{camelCase .Name}}Items{}
+			}
+			return true
+		})
+	}
+	{{- end}}
+
 	{{- if .IsOverride}}
 	res = config.synthesizeOverrides(ctx, res)
 	{{- end}}
 
 	config.fromBody(ctx, res)
 
-	tflog.Debug(ctx, fmt.Sprintf("%s: Read finished successfully", config.Id.ValueString()))
+	tflog.Debug(ctx, fmt.Sprintf("%s: Read finished successfully", {{if .NoId}}"{{.Name}}"{{else}}config.Id.ValueString(){{end}}))
 
 	diags = resp.State.Set(ctx, &config)
 	resp.Diagnostics.Append(diags...)

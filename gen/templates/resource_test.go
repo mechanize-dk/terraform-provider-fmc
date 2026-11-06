@@ -20,9 +20,17 @@ package provider
 
 // Section below is generated&owned by "gen/generator.go". //template:begin imports
 import (
+	"fmt"
+	"os"
+	"regexp"
+	"slices"
+	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/tidwall/gjson"
 )
 
 // End of section. //template:end imports
@@ -54,11 +62,11 @@ func TestAccFmc{{camelCase .Name}}(t *testing.T) {
 	{{- if isNestedListSet .}}
 	{{- $clist := .TfName }}
 	{{- range  .Attributes}}
-	{{- if and (not .WriteOnly) (not .ExcludeTest) (not .Value) (not .TestValue) (not .Computed) (not (isSet .))}}
+	{{- if and (not .WriteOnly) (not .ExcludeTest) (not .Value) (not .TestValue) (not .Computed) (not (isSet .)) (not .TfOnly) }}
 	checks = append(checks, resource.TestCheckResourceAttr("fmc_{{snakeCase $name}}.test", "{{$list}}.{{$map}}.{{$clist}}.0.{{.TfName}}", "{{.Example}}"))
 	{{- end}}
 	{{- end}}
-	{{- else if and (not .WriteOnly) (not .ExcludeTest) (not .Value) (not .TestValue) (not .Computed) (not (isSet .))}}
+	{{- else if and (not .WriteOnly) (not .ExcludeTest) (not .Value) (not .TestValue) (not .Computed) (not (isSet .)) (not .TfOnly)}}
 	checks = append(checks, resource.TestCheckResourceAttr("fmc_{{snakeCase $name}}.test", "{{$list}}.{{$map}}.{{.TfName}}", "{{.Example}}"))
 	{{- end}}
 	{{- end}}

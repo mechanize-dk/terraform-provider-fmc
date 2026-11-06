@@ -9,10 +9,78 @@ description: |-
 
 ## Unreleased
 
-- (Enh) Add support for `fmc_host_overrides`, `fmc_network_overrides`, `fmc_network_group_overrides`, `fmc_range_overrides`, `fmc_fqdn_overrides`
-- (Fix) `fmc_file_policy`: Add missing choice
-- (Fix) Access Control and Prefilter Policies: Source \ Destination Port Literals had wrong attributes
-- (Doc) Access Rules: Update description of Source \ Destination Objects to include Geolocation objects support
+- (Enhancement) Add support for `fmc_device_eigrp`
+- (Enhancement) `fmc_chassis`: Add `deploy_on_destroy` attribute to trigger chassis deployment just before the chassis is removed from FMC
+- (Fix) `fmc_host*`, `fmc_network_group*`: Normalize IPv6 addresses to avoid plan differences
+
+## 2.6.1
+
+- (Fix) `fmc_policy_assignment`: Do not re-assign targets that no longer exist
+
+## 2.6.0
+
+- (Enhancement) Improve performance when managing large FMC resources
+- (Enhancement) Add support for `fmc_device_vlan_interface`
+- (Enhancement) Add support for `fmc_device_redundant_interface`
+- (Enhancement) Add support for `fmc_device_inline_set`
+- (Enhancement) `fmc_device`: Add `access_control_policy_domain`, `nat_policy_domain` and `health_policy_domain` to support policies that exist in a different domain than the device
+- (Enhancement) `fmc_device`: Add `deploy_on_destroy` attribute to trigger device deployment just before the device is removed from FMC
+- (Enhancement) `fmc_policy_assignment`: Add `after_destroy_policy_domain` to specify the domain in which `after_destroy_policy_id` exists
+- (Enhancement) `fmc_device_physical_interface`: Add switchport configuration attributes
+- (Change) `fmc_device_physical_interface`: Increase the maximum MTU from `9000` to `9198`
+- (Change) `fmc_device_etherchannel_interface`: Increase the maximum MTU from `9000` to `9198`
+- (Change) `fmc_device_subinterface`: Increase the maximum MTU from `9000` to `9198`
+- (Change) `fmc_device_physical_interface`, `fmc_device_etherchannel_interface`: `mode` is now optional and set to `NONE` if not configured
+- (Fix) `fmc_device`: Fix incorrect `health_policy_id` assignment for HA pair and cluster configurations
+
+## 2.5.0
+
+- (Enhancement) Add support for `fmc_device_certificate`
+- (Enhancement) Add support for `fmc_device_dhcp_server`, `fmc_device_dhcp_relay` and `fmc_device_ddns`
+- (Enhancement) Add support for `fmc_url_category` and `fmc_url_categories`
+- (Enhancement) Add support for `fmc_sinkhole` and `fmc_sinkholes`
+- (Enhancement) Add support for `fmc_distinguished_name` and `fmc_distinguished_names`
+- (Enhancement) Add support for `fmc_cipher_suite_list` and `fmc_cipher_suite_lists`
+- (Enhancement) Add support for `fmc_mac_address_pool` and `fmc_mac_address_pools`
+- (Fix) `fmc_chassis_physical_interface` is not cleared correctly on destroy
+- (Fix) `fmc_device_ha_pair` may not detect unsuccessful split request
+
+## 2.4.1
+
+- (Fix) `fmc_dynamic_objects`: Complete the import fix
+
+## 2.4.0
+
+- (Enhancement) Add support for `fmc_device_ecmp_zone`
+- (Enhancement) Add support for Intrusion Rule and Intrusion Rule Group
+- (Enhancement) Add support for Intrusion Policy Group and Rules Overrides
+- (Fix) `fmc_dynamic_objects`: Fixed type handling that affected import and some update operations
+
+## 2.3.0
+
+- (Enhancement) `fmc_device_vni_interface`: Add `proxy_type` attribute
+- (Enhancement) Add support for `fmc_identity_policy` resource and data source
+- (Enhancement) Add support for `fmc_realms`, `fmc_realm_users` and `fmc_realm_user_groups` data sources
+- (Enhancement) `fmc_access_control_policy`, `fmc_access_rule`, `fmc_access_rules`: Add support for Identity Based Access Rules
+- (Fix) `fmc_key_chain`: `key` attribute is now sensitive
+
+## 2.2.0
+
+- (Enhancement) Access Rule and Category: Add possibility to create at specific location
+- (Enhancement) Device interface data sources now accept `logical_name` as search parameter
+- (Enhancement) If `items` in a bulk data source is empty, all objects from FMC will be loaded
+- (Enhancement) Add `fmc_system_information` data source
+- (Enhancement) Add `fmc_access_control_policy_inheritance` resource and data source
+- (Fix) Access Control Policies with inheritance enabled would report rules incorrectly
+
+## 2.1.0
+
+- (Enhancement) Auto and Manual NAT rules: add support for PAT pool options
+- (Enhancement) Add support for `fmc_host_overrides`, `fmc_network_overrides`, `fmc_network_group_overrides`, `fmc_range_overrides`, and `fmc_fqdn_overrides`
+- (Fix) `fmc_file_policy`: add a missing choice for `action`
+- (Fix) Access Control and Prefilter Policies: Source port literals used incorrect attributes, that could generate incorrect configuration on FMC
+- (Fix) Prefilter Policies: Added missing attributes to Destination port literals
+- (Documentation) Access rules: update the Source and Destination Objects description to include geolocation object support
 
 ## 2.0.1
 
@@ -44,7 +112,7 @@ description: |-
     - `*_dpd_*` to `*_dead_peer_detection_*`
     - `dhcp_network_scope_network_object_id` to `ipv4_dhcp_network_scope_network_object_id`
     - `split_dns_domain_list` to `dns_request_split_tunnel_domains`
-- (Fix) Updated `required` flag for several attributs in multiple resources
+- (Fix) Updated `required` flag for several attributes in multiple resources
 - (Fix) `fmc_vpn_ra_ipsec_ike_parameters`: Added `ipsec_path_maximum_transmission_unit_aging` attribute
 
 ## 2.0.0-rc10
@@ -60,7 +128,7 @@ description: |-
 - BREAKING CHANGE: `fmc_device_vti_interface`: Rename attribute `ipv4_address/netmask` to `ipv4_static_address/netmask`
 - BREAKING CHANGE: Rename `fmc_device_vti_interface` to `fmc_device_virtual_tunnel_interface`
 - (Change) `fmc_ftd_platform_settings_syslog_settings_syslog_id`: Adjusted to versions with fix for CSCwr26361 (FMC API: FTD Platform Settings Syslog Settings Syslog ID 'enabled' field value gets inverted)
-- (Fix) Updated `required` flag for several attributs in multiple resources
+- (Fix) Updated `required` flag for several attributes in multiple resources
 - (Fix) `fmc_chassis_logical_device`: Deletion would fail if registered device is under deployment
 - (Enhancement) Add multiple bulk/non-bulk variants of already existing resources and data sources
 - (Enhancement) `fmc_certificate_enrollment`: Add support for ACME
@@ -203,8 +271,8 @@ description: |-
 - (Enhancement) Add support for `fmc_extended_community_list` and `fmc_extended_community_lists` resources and data sources
 - (Enhancement) Add support for `fmc_expanded_community_list` and `fmc_expanded_community_lists` resources and data sources
 - (Enhancement) Add support for `fmc_standard_community_list` and `fmc_standard_community_lists` resources and data sources
-- (Enhancement) Add support for `fmc_ipv6_preflix_list` and `fmc_ipv6_preflix_lists` resources and data sources
-- (Enhancement) Add support for `fmc_ipv4_preflix_list` and `fmc_ipv4_preflix_lists` resources and data sources
+- (Enhancement) Add support for `fmc_ipv6_prefix_list` and `fmc_ipv6_prefix_lists` resources and data sources
+- (Enhancement) Add support for `fmc_ipv4_prefix_list` and `fmc_ipv4_prefix_lists` resources and data sources
 - (Enhancement) Add support for `fmc_as_path` and `fmc_as_paths` resources and data sources
 
 ## 2.0.0-rc0

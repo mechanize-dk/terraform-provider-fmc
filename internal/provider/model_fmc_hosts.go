@@ -22,7 +22,9 @@ import (
 	"context"
 	"fmt"
 	"maps"
+	"strings"
 
+	"github.com/CiscoDevNet/terraform-provider-fmc/internal/provider/helpers"
 	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -71,7 +73,8 @@ func (data Hosts) toBody(ctx context.Context, state Hosts) string {
 		body, _ = sjson.Set(body, "id", data.Id.ValueString())
 	}
 	if len(data.Items) > 0 {
-		body, _ = sjson.Set(body, "items", []any{})
+		var itemsBody strings.Builder
+		itemsBody.WriteString("[")
 		for key, item := range data.Items {
 			itemBody, _ := sjson.Set("{}", "name", key)
 			if !item.Id.IsNull() && !item.Id.IsUnknown() {
@@ -86,8 +89,15 @@ func (data Hosts) toBody(ctx context.Context, state Hosts) string {
 			if !item.Ip.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "value", item.Ip.ValueString())
 			}
-			body, _ = sjson.SetRaw(body, "items.-1", itemBody)
+			if itemBody != "" {
+				if itemsBody.Len() > 1 {
+					itemsBody.WriteString(",")
+				}
+				itemsBody.WriteString(itemBody)
+			}
 		}
+		itemsBody.WriteString("]")
+		body, _ = sjson.SetRaw(body, "items", itemsBody.String())
 	}
 	return gjson.Get(body, "items").String()
 }
@@ -187,7 +197,10 @@ func (data *Hosts) fromBodyPartial(ctx context.Context, res gjson.Result) {
 			data.Overridable = types.BoolNull()
 		}
 		if value := res.Get("value"); value.Exists() && !data.Ip.IsNull() {
-			data.Ip = types.StringValue(value.String())
+			// Keep the configured value if the API returned the same IP address in canonical form
+			if helpers.NormalizeIP(data.Ip.ValueString()) != helpers.NormalizeIP(value.String()) {
+				data.Ip = types.StringValue(value.String())
+			}
 		} else {
 			data.Ip = types.StringNull()
 		}

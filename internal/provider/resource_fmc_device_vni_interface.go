@@ -27,6 +27,7 @@ import (
 
 	"github.com/CiscoDevNet/terraform-provider-fmc/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -91,7 +92,7 @@ func (r *DeviceVNIInterfaceResource) Schema(ctx context.Context, req resource.Sc
 				},
 			},
 			"type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Type of the object").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Type of the object.").String,
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
@@ -112,7 +113,7 @@ func (r *DeviceVNIInterfaceResource) Schema(ctx context.Context, req resource.Sc
 				Optional:            true,
 			},
 			"segment_id": schema.Int64Attribute{
-				MarkdownDescription: helpers.NewAttributeDescription("VNI tag value used in packets over the wire. If null, the `enable_proxy` must be true.").AddIntegerRangeDescription(1, 16777215).String,
+				MarkdownDescription: helpers.NewAttributeDescription("VNI tag value used in packets over the wire. If null, the `proxy` must be true.").AddIntegerRangeDescription(1, 16777215).String,
 				Optional:            true,
 				Validators: []validator.Int64{
 					int64validator.Between(1, 16777215),
@@ -126,7 +127,7 @@ func (r *DeviceVNIInterfaceResource) Schema(ctx context.Context, req resource.Sc
 				},
 			},
 			"enabled": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether to enable the interface.").AddDefaultValueDescription("true").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Enable the interface.").AddDefaultValueDescription("true").String,
 				Optional:            true,
 				Computed:            true,
 				Default:             booldefault.StaticBool(true),
@@ -136,7 +137,7 @@ func (r *DeviceVNIInterfaceResource) Schema(ctx context.Context, req resource.Sc
 				Optional:            true,
 			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Optional user-created description.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Description of the object.").String,
 				Optional:            true,
 			},
 			"mtu": schema.Int64Attribute{
@@ -151,7 +152,7 @@ func (r *DeviceVNIInterfaceResource) Schema(ctx context.Context, req resource.Sc
 				},
 			},
 			"security_zone_id": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Id of the assigned security zone. Can only be used when `logical_name` is set.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Id of the assigned Security Zone. Can only be used when `logical_name` is set.").String,
 				Optional:            true,
 			},
 			"ipv4_static_address": schema.StringAttribute{
@@ -159,7 +160,7 @@ func (r *DeviceVNIInterfaceResource) Schema(ctx context.Context, req resource.Sc
 				Optional:            true,
 			},
 			"ipv4_static_netmask": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Netmask (width) for ipv4_static_address.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Netmask (width) for `ipv4_static_address`.").String,
 				Optional:            true,
 			},
 			"ipv4_dhcp_obtain_default_route": schema.BoolAttribute{
@@ -174,31 +175,31 @@ func (r *DeviceVNIInterfaceResource) Schema(ctx context.Context, req resource.Sc
 				},
 			},
 			"ipv6": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether to enable IPv6.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Enable IPv6.").String,
 				Optional:            true,
 			},
 			"ipv6_enforce_eui": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether to enforce IPv6 Extended Unique Identifier (EUI64 from RFC2373).").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Enforce IPv6 Extended Unique Identifier (EUI64 from RFC2373).").String,
 				Optional:            true,
 			},
 			"ipv6_auto_config": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether to enable IPv6 autoconfiguration.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Enable IPv6 autoconfiguration.").String,
 				Optional:            true,
 			},
 			"ipv6_dhcp_address": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether to enable DHCPv6 for address config.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Enable DHCPv6 for address config.").String,
 				Optional:            true,
 			},
 			"ipv6_dhcp_nonaddress": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether to enable DHCPv6 for non-address config.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Enable DHCPv6 for non-address config.").String,
 				Optional:            true,
 			},
 			"ipv6_ra": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether to enable IPv6 router advertisement (RA).").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Enable IPv6 router advertisement (RA).").String,
 				Optional:            true,
 			},
 			"ipv6_addresses": schema.ListNestedAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("List of IPv6 addresses.").String,
 				Optional:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -211,17 +212,32 @@ func (r *DeviceVNIInterfaceResource) Schema(ctx context.Context, req resource.Sc
 							Required:            true,
 						},
 						"enforce_eui": schema.BoolAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Indicates whether to enforce IPv6 Extended Unique Identifier (EUI64 from RFC2373).").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Enforce IPv6 Extended Unique Identifier (EUI64 from RFC2373).").String,
 							Optional:            true,
 						},
 					},
 				},
 			},
 			"proxy": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether to enable proxy.").AddDefaultValueDescription("false").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Enable proxy.").AddDefaultValueDescription("false").String,
 				Optional:            true,
 				Computed:            true,
 				Default:             booldefault.StaticBool(false),
+			},
+			"proxy_type": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Proxy type. Can only be used when `proxy` is true.").AddStringEnumDescription("SINGLE_ARM", "DUAL_ARM", "PAIRED").String,
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("SINGLE_ARM", "DUAL_ARM", "PAIRED"),
+				},
+			},
+			"active_mac_address": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("MAC address for active interface in format 0123.4567.89ab.").String,
+				Optional:            true,
+			},
+			"standby_mac_address": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("MAC address for standby interface in format 0123.4567.89ab.").String,
+				Optional:            true,
 			},
 		},
 	}

@@ -189,7 +189,7 @@ func (d *AccessControlPolicyDataSource) Schema(ctx context.Context, req datasour
 							Computed:            true,
 						},
 						"enabled": schema.BoolAttribute{
-							MarkdownDescription: "Indicates whether the access rule is in effect (true) or not (false).",
+							MarkdownDescription: "Enable rule.",
 							Computed:            true,
 						},
 						"source_network_literals": schema.SetNestedAttribute{
@@ -636,6 +636,38 @@ func (d *AccessControlPolicyDataSource) Schema(ctx context.Context, req datasour
 								},
 							},
 						},
+						"user_objects": schema.SetNestedAttribute{
+							MarkdownDescription: "User objects.",
+							Computed:            true,
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										MarkdownDescription: "Id of the User or User Group object.",
+										Computed:            true,
+									},
+									"type": schema.StringAttribute{
+										MarkdownDescription: "Type of the User or User Group object.",
+										Computed:            true,
+									},
+									"name": schema.StringAttribute{
+										MarkdownDescription: "Name of the User or User Group object.",
+										Computed:            true,
+									},
+									"realm_id": schema.StringAttribute{
+										MarkdownDescription: "Id of the Realm the User or User Group belongs to.",
+										Computed:            true,
+									},
+									"realm_type": schema.StringAttribute{
+										MarkdownDescription: "Type of the Realm the User or User Group belongs to.",
+										Computed:            true,
+									},
+									"realm_name": schema.StringAttribute{
+										MarkdownDescription: "Name of the Realm the User or User Group belongs to.",
+										Computed:            true,
+									},
+								},
+							},
+						},
 					},
 				},
 			},
@@ -663,6 +695,7 @@ func (d *AccessControlPolicyDataSource) Configure(_ context.Context, req datasou
 
 func (d *AccessControlPolicyDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var config AccessControlPolicy
+	var hasInheritance bool = false
 
 	// Read config
 	diags := req.Config.Get(ctx, &config)
@@ -721,10 +754,22 @@ func (d *AccessControlPolicyDataSource) Read(ctx context.Context, req datasource
 
 	// Set string that will have categories and rules injected
 	replace := res.String()
+	policyName := res.Get("name").String()
 
 	// Save state of categories and rules management
 	manageCategories := false
 	manageRules := false
+
+	if (!config.ManageCategories.IsUnknown() && config.ManageCategories.ValueBool()) || (!config.ManageRules.IsUnknown() && config.ManageRules.ValueBool()) {
+		resInh, err := d.client.Get(config.getPath()+"/"+url.QueryEscape(config.Id.ValueString())+"/inheritancesettings?expanded=true", reqMods...)
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve inheritance settings (GET), got error: %s, %s", err, resInh.String()))
+			return
+		}
+		if resInh.Get("items.0.basePolicy.name").Exists() {
+			hasInheritance = true
+		}
+	}
 
 	// If manage_categories is set to true, retrieve categories
 	if !config.ManageCategories.IsUnknown() && config.ManageCategories.ValueBool() {
@@ -740,6 +785,10 @@ func (d *AccessControlPolicyDataSource) Read(ctx context.Context, req datasource
 		replaceCats := resCats.Get("items").String()
 		if replaceCats == "" {
 			replaceCats = "[]"
+		}
+		// If the rule inheritance is enabled, API will include categories from parent policies in the response
+		if hasInheritance {
+			replaceCats = config.filterByPolicyName(replaceCats, policyName)
 		}
 		replace, _ = sjson.SetRaw(replace, "dummy_categories", replaceCats)
 		manageCategories = true
@@ -759,6 +808,10 @@ func (d *AccessControlPolicyDataSource) Read(ctx context.Context, req datasource
 		replaceRules := resRules.Get("items").String()
 		if replaceRules == "" {
 			replaceRules = "[]"
+		}
+		// If the rule inheritance is enabled, API will include rules from parent policies in the response
+		if hasInheritance {
+			replaceRules = config.filterByPolicyName(replaceRules, policyName)
 		}
 		replace, _ = sjson.SetRaw(replace, "dummy_rules", replaceRules)
 		manageRules = true

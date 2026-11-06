@@ -32,6 +32,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -106,6 +107,20 @@ func (r *AccessRuleResource) Schema(ctx context.Context, req resource.SchemaRequ
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
+			"insert_before_rule": schema.Int64Attribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Specifies that the rules will be inserted before the specified rule index. Either 'insert_before_rule' or 'insert_after_rule' can be set. This attribute is used for initial rule creation only and is ignored during the resource lifecycle.").String,
+				Optional:            true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.RequiresReplace(),
+				},
+			},
+			"insert_after_rule": schema.Int64Attribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Specifies that the rules will be inserted after the specified rule index. Either 'insert_before_rule' or 'insert_after_rule' can be set. This attribute is used for initial rule creation only and is ignored during the resource lifecycle.").String,
+				Optional:            true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.RequiresReplace(),
+				},
+			},
 			"action": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Rule action.").AddStringEnumDescription("ALLOW", "TRUST", "BLOCK", "MONITOR", "BLOCK_RESET", "BLOCK_INTERACTIVE", "BLOCK_RESET_INTERACTIVE").String,
 				Required:            true,
@@ -118,7 +133,7 @@ func (r *AccessRuleResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Required:            true,
 			},
 			"enabled": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the access rule is in effect (true) or not (false).").AddDefaultValueDescription("true").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Enable rule.").AddDefaultValueDescription("true").String,
 				Optional:            true,
 				Computed:            true,
 				Default:             booldefault.StaticBool(true),
@@ -586,6 +601,44 @@ func (r *AccessRuleResource) Schema(ctx context.Context, req resource.SchemaRequ
 								},
 							},
 						},
+						"user_objects": schema.SetNestedAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("User objects.").String,
+							Optional:            true,
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("Id of the User or User Group object.").String,
+										Required:            true,
+									},
+									"type": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("Type of the User or User Group object.").AddStringEnumDescription("RealmUser", "RealmUserGroup").String,
+										Required:            true,
+										Validators: []validator.String{
+											stringvalidator.OneOf("RealmUser", "RealmUserGroup"),
+										},
+									},
+									"name": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("Name of the User or User Group object.").String,
+										Required:            true,
+									},
+									"realm_id": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("Id of the Realm the User or User Group belongs to.").String,
+										Required:            true,
+									},
+									"realm_type": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("Type of the Realm the User or User Group belongs to.").AddStringEnumDescription("Realm").String,
+										Optional:            true,
+										Validators: []validator.String{
+											stringvalidator.OneOf("Realm"),
+										},
+									},
+									"realm_name": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("Name of the Realm the User or User Group belongs to.").String,
+										Optional:            true,
+									},
+								},
+							},
+						},
 					},
 				},
 			},
@@ -609,6 +662,10 @@ func (r AccessRuleResource) ConfigValidators(ctx context.Context) []resource.Con
 			path.MatchRoot("category_name"),
 			path.MatchRoot("section"),
 		),
+		resourcevalidator.Conflicting(
+			path.MatchRoot("insert_before_rule"),
+			path.MatchRoot("insert_after_rule"),
+		),
 	}
 }
 
@@ -628,11 +685,20 @@ func (r *AccessRuleResource) Create(ctx context.Context, req resource.CreateRequ
 	}
 
 	urlParams := ""
+	urlSeparator := "?"
 
 	if !plan.CategoryName.IsUnknown() && plan.CategoryName.ValueString() != "" {
 		urlParams += fmt.Sprintf("?category=%s", url.QueryEscape(plan.CategoryName.ValueString()))
+		urlSeparator = "&"
 	} else if !plan.Section.IsUnknown() && plan.Section.ValueString() != "" {
 		urlParams += fmt.Sprintf("?section=%s", url.QueryEscape(plan.Section.ValueString()))
+		urlSeparator = "&"
+	}
+
+	if !plan.InsertBeforeRule.IsNull() {
+		urlParams += fmt.Sprintf("%sinsertBefore=%d", urlSeparator, plan.InsertBeforeRule.ValueInt64())
+	} else if !plan.InsertAfterRule.IsNull() {
+		urlParams += fmt.Sprintf("%sinsertAfter=%d", urlSeparator, plan.InsertAfterRule.ValueInt64())
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))

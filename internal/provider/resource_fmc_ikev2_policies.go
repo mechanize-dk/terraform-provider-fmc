@@ -111,7 +111,7 @@ func (r *IKEv2PoliciesResource) Schema(ctx context.Context, req resource.SchemaR
 							},
 						},
 						"priority": schema.Int64Attribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Priority of the IKEv1 Policy.").AddIntegerRangeDescription(1, 65535).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Priority of the IKEv2 Policy.").AddIntegerRangeDescription(1, 65535).String,
 							Required:            true,
 							Validators: []validator.Int64{
 								int64validator.Between(1, 65535),
@@ -465,7 +465,12 @@ func (r *IKEv2PoliciesResource) ImportState(ctx context.Context, req resource.Im
 	names := strings.Split(match[inputPattern.SubexpIndex("names")], ",")
 	itemsMap := make(map[string]IKEv2PoliciesItems, len(names))
 	for _, v := range names {
-		itemsMap[v] = IKEv2PoliciesItems{}
+		itemsMap[v] = IKEv2PoliciesItems{
+			IntegrityAlgorithms:  types.SetNull(types.StringType),
+			EncryptionAlgorithms: types.SetNull(types.StringType),
+			PrfAlgorithms:        types.SetNull(types.StringType),
+			DhGroups:             types.SetNull(types.StringType),
+		}
 	}
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("items"), itemsMap)...)
 

@@ -76,7 +76,7 @@ Read-Only:
 - `destination_port_objects` (Attributes Set) Set of objects representing destination ports associated with the rule. (see [below for nested schema](#nestedatt--rules--destination_port_objects))
 - `destination_sgt_objects` (Attributes Set) Set of objects representing the destination ISE Security Group Tags (SGT). (see [below for nested schema](#nestedatt--rules--destination_sgt_objects))
 - `destination_zones` (Attributes Set) Set of objects representing destination Security Zones associated with the access rule. (see [below for nested schema](#nestedatt--rules--destination_zones))
-- `enabled` (Boolean) Indicates whether the access rule is in effect (true) or not (false).
+- `enabled` (Boolean) Enable rule.
 - `endpoint_device_types` (Attributes Set) Set of objects representing the source Endpoint Device Types. (see [below for nested schema](#nestedatt--rules--endpoint_device_types))
 - `file_policy_id` (String) Id of the File Policy for the rule action. Cannot be set when action is BLOCK, BLOCK_RESET, TRUST, MONITOR.
 - `id` (String) Id of the Access Rule.
@@ -102,6 +102,7 @@ Read-Only:
 - `url_categories` (Attributes Set) Set of objects representing the URL Categories associated with the rule. (see [below for nested schema](#nestedatt--rules--url_categories))
 - `url_literals` (Attributes Set) Set of objects representing the URLs associated with the rule (literally specified). (see [below for nested schema](#nestedatt--rules--url_literals))
 - `url_objects` (Attributes Set) Set of objects representing the URLs associated with the rule. (see [below for nested schema](#nestedatt--rules--url_objects))
+- `user_objects` (Attributes Set) User objects. (see [below for nested schema](#nestedatt--rules--user_objects))
 - `variable_set_id` (String) Id of the Variable Set for the rule action.
 - `vlan_tag_literals` (Attributes Set) Set of objects that represent vlan tags (literally specified). (see [below for nested schema](#nestedatt--rules--vlan_tag_literals))
 - `vlan_tag_objects` (Attributes Set) Set of objects that represent vlan tags or vlan tags group. (see [below for nested schema](#nestedatt--rules--vlan_tag_objects))
@@ -330,6 +331,19 @@ Read-Only:
 Read-Only:
 
 - `id` (String) Id of the object.
+
+
+<a id="nestedatt--rules--user_objects"></a>
+### Nested Schema for `rules.user_objects`
+
+Read-Only:
+
+- `id` (String) Id of the User or User Group object.
+- `name` (String) Name of the User or User Group object.
+- `realm_id` (String) Id of the Realm the User or User Group belongs to.
+- `realm_name` (String) Name of the Realm the User or User Group belongs to.
+- `realm_type` (String) Type of the Realm the User or User Group belongs to.
+- `type` (String) Type of the User or User Group object.
 
 
 <a id="nestedatt--rules--vlan_tag_literals"></a>

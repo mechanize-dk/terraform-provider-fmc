@@ -21,6 +21,7 @@ import (
 	"context"
 	"fmt"
 	"math/rand"
+	"net/netip"
 	"net/url"
 	"strings"
 	"time"
@@ -236,4 +237,17 @@ func DifferenceStringSet(ctx context.Context, a basetypes.SetValue, b basetypes.
 	}
 
 	return types.SetValueMust(types.StringType, diff)
+}
+
+// NormalizeIP returns the canonical form of an IP address or prefix (lowercase, zeros compressed), as FMC stores it.
+// Values that are not an IP address or prefix are only lowercased.
+func NormalizeIP(s string) string {
+	if strings.Contains(s, "/") {
+		if p, err := netip.ParsePrefix(s); err == nil {
+			return p.String()
+		}
+	} else if a, err := netip.ParseAddr(s); err == nil {
+		return a.String()
+	}
+	return strings.ToLower(s)
 }
