@@ -788,6 +788,14 @@ above for the breaking-change note).
    10. **match_on validation error** — adds an item with
       `source_interface_id` pointing at the wrong tenant's zone; asserts
       `terraform apply` surfaces "conflicts with match_on".
+- All direct FMC requests in `run_test.sh` go through `tests/lib/fmc_api.sh`,
+  which logs in fresh for every request and fails on any unexpected HTTP
+  status. A new login by the same user cancels the previous token, and every
+  terraform run logs in. Before this, a token reused across terraform calls
+  silently got 401s, which left the scenario 4 rule and the NAT policy
+  assignment on the FMC. Cleanup now reports each failed step and finally
+  lists any `tf-bnt-*` / `tf-bulk-nat-test*` objects left on the FMC. The run
+  fails if any remain.
 - `tests/bulk_nat_tenants/probe_autonat_dup.sh` — one-shot probe used to
   determine the auto-NAT duplicate-error shape
 - `tests/bulk_nat_tenants/PROBE_AUTONAT.md` — captured probe result and
