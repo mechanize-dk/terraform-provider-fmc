@@ -131,7 +131,7 @@ func (r *AccessRulesResource) Schema(ctx context.Context, req resource.SchemaReq
 							Required:            true,
 						},
 						"enabled": schema.BoolAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the access rule is in effect (true) or not (false).").AddDefaultValueDescription("true").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Enable rule.").AddDefaultValueDescription("true").String,
 							Optional:            true,
 							Computed:            true,
 							Default:             booldefault.StaticBool(true),
@@ -602,6 +602,44 @@ func (r *AccessRulesResource) Schema(ctx context.Context, req resource.SchemaReq
 								},
 							},
 						},
+						"user_objects": schema.SetNestedAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("User objects.").String,
+							Optional:            true,
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("Id of the User or User Group object.").String,
+										Required:            true,
+									},
+									"type": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("Type of the User or User Group object.").AddStringEnumDescription("RealmUser", "RealmUserGroup").String,
+										Required:            true,
+										Validators: []validator.String{
+											stringvalidator.OneOf("RealmUser", "RealmUserGroup"),
+										},
+									},
+									"name": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("Name of the User or User Group object.").String,
+										Required:            true,
+									},
+									"realm_id": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("Id of the Realm the User or User Group belongs to.").String,
+										Required:            true,
+									},
+									"realm_type": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("Type of the Realm the User or User Group belongs to.").AddStringEnumDescription("Realm").String,
+										Optional:            true,
+										Validators: []validator.String{
+											stringvalidator.OneOf("Realm"),
+										},
+									},
+									"realm_name": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("Name of the Realm the User or User Group belongs to.").String,
+										Optional:            true,
+									},
+								},
+							},
+						},
 					},
 				},
 			},
@@ -684,7 +722,6 @@ func (r *AccessRulesResource) Read(ctx context.Context, req resource.ReadRequest
 	// Create URL path for the request
 	var ruleNames strings.Builder
 	var bulks []string
-	var resAccessRules string = ""
 	var counter int = 0
 	for i := 0; i < len(state.Items); i++ {
 		counter += 1
@@ -704,36 +741,37 @@ func (r *AccessRulesResource) Read(ctx context.Context, req resource.ReadRequest
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.ValueString()))
+	// Collect the items from each bulk into a single raw JSON array and assemble once.
+	// Appending into the growing response with sjson on every bulk would re-parse and
+	// re-serialize the whole (potentially multi-MB) document each time, i.e. O(bulks^2).
+	var itemsBuilder strings.Builder
+	itemsBuilder.WriteString("[")
 	for _, bulk := range bulks {
 		urlPath := state.getPath() + "?expanded=true&limit=1000&filter=name:" + url.QueryEscape(bulk)
 
 		// Read Access Rules
 		resTemp, err := r.client.Get(urlPath, reqMods...)
 		if err != nil {
-			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, resAccessRules))
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
 		}
-		if resAccessRules == "" {
-			resAccessRules = resTemp.String()
-		} else {
-			items := gjson.Get(resTemp.String(), "items")
-			if !items.Exists() {
-				continue
+
+		items := gjson.Get(resTemp.String(), "items")
+		if !items.Exists() {
+			continue
+		}
+		// items.Raw is "[...]"; strip the surrounding brackets to get the raw elements.
+		if inner := items.Raw[1 : len(items.Raw)-1]; strings.TrimSpace(inner) != "" {
+			if itemsBuilder.Len() > 1 {
+				itemsBuilder.WriteString(",")
 			}
-			if resItems := items.String()[1 : len(items.String())-1]; resItems != "" {
-				resAccessRules, _ = sjson.SetRaw(resAccessRules, "items.-1", resItems)
-			}
+			itemsBuilder.WriteString(inner)
 		}
 	}
+	itemsBuilder.WriteString("]")
+	resAccessRules, _ := sjson.SetRaw("{}", "items", itemsBuilder.String())
 
 	var tmp string
-
-	gjson.AddModifier("case", func(json, arg string) string {
-		if arg == "lower" {
-			return strings.ToLower(json)
-		}
-		return json
-	})
 
 	if !state.CategoryName.IsUnknown() && state.CategoryName.ValueString() != "" {
 		var category string

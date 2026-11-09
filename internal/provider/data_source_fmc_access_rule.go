@@ -83,6 +83,14 @@ func (d *AccessRuleDataSource) Schema(ctx context.Context, req datasource.Schema
 				MarkdownDescription: "The section of the policy to which the rule belongs. Either 'section' or 'category_name' can be set.",
 				Computed:            true,
 			},
+			"insert_before_rule": schema.Int64Attribute{
+				MarkdownDescription: "Specifies that the rules will be inserted before the specified rule index. Either 'insert_before_rule' or 'insert_after_rule' can be set. This attribute is used for initial rule creation only and is ignored during the resource lifecycle.",
+				Computed:            true,
+			},
+			"insert_after_rule": schema.Int64Attribute{
+				MarkdownDescription: "Specifies that the rules will be inserted after the specified rule index. Either 'insert_before_rule' or 'insert_after_rule' can be set. This attribute is used for initial rule creation only and is ignored during the resource lifecycle.",
+				Computed:            true,
+			},
 			"action": schema.StringAttribute{
 				MarkdownDescription: "Rule action.",
 				Computed:            true,
@@ -93,7 +101,7 @@ func (d *AccessRuleDataSource) Schema(ctx context.Context, req datasource.Schema
 				Computed:            true,
 			},
 			"enabled": schema.BoolAttribute{
-				MarkdownDescription: "Indicates whether the access rule is in effect (true) or not (false).",
+				MarkdownDescription: "Enable rule.",
 				Computed:            true,
 			},
 			"source_network_literals": schema.SetNestedAttribute{
@@ -532,6 +540,38 @@ func (d *AccessRuleDataSource) Schema(ctx context.Context, req datasource.Schema
 								Attributes: map[string]schema.Attribute{
 									"id": schema.StringAttribute{
 										MarkdownDescription: "Id of the Application Tag.",
+										Computed:            true,
+									},
+								},
+							},
+						},
+						"user_objects": schema.SetNestedAttribute{
+							MarkdownDescription: "User objects.",
+							Computed:            true,
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										MarkdownDescription: "Id of the User or User Group object.",
+										Computed:            true,
+									},
+									"type": schema.StringAttribute{
+										MarkdownDescription: "Type of the User or User Group object.",
+										Computed:            true,
+									},
+									"name": schema.StringAttribute{
+										MarkdownDescription: "Name of the User or User Group object.",
+										Computed:            true,
+									},
+									"realm_id": schema.StringAttribute{
+										MarkdownDescription: "Id of the Realm the User or User Group belongs to.",
+										Computed:            true,
+									},
+									"realm_type": schema.StringAttribute{
+										MarkdownDescription: "Type of the Realm the User or User Group belongs to.",
+										Computed:            true,
+									},
+									"realm_name": schema.StringAttribute{
+										MarkdownDescription: "Name of the Realm the User or User Group belongs to.",
 										Computed:            true,
 									},
 								},

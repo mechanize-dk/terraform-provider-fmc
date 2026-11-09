@@ -22,18 +22,40 @@ package provider
 import (
 	"context"
 	"fmt"
+	"maps"
 	"net/url"
+	"regexp"
+	"slices"
+	"sort"
 	"strings"
 	"sync"
+	"time"
 
+	"github.com/CiscoDevNet/terraform-provider-fmc/internal/provider/helpers"
+	"github.com/CiscoDevNet/terraform-provider-fmc/internal/provider/planmodifiers"
+	"github.com/google/uuid"
+	"github.com/hashicorp/go-version"
+	"github.com/hashicorp/terraform-plugin-framework-validators/float64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-fmc"
@@ -43,6 +65,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/go-version"
+	"github.com/tidwall/sjson"
 )
 
 // End of section. //template:end imports
@@ -106,6 +129,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 		{{- end}}
 
 		Attributes: map[string]schema.Attribute{
+			{{- if not .NoId}}
 			"id": schema.StringAttribute{
 				MarkdownDescription: "Id of the object",
 				Computed:            true,
@@ -113,6 +137,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			{{- end}}
 			{{- if isDomainDependent .}}
 			"domain": schema.StringAttribute{
 				MarkdownDescription: "Name of the FMC domain",
@@ -153,7 +178,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 				{{- end}}
 				{{- if or .Reference .Mandatory}}
 				Required:            true,
-				{{- else if and (not .ResourceId) (not .Computed)}}
+				{{- else if and (not .ResourceId) (or (not .Computed) .Optional)}}
 				Optional:            true,
 				{{- end}}
 				{{- if or (len .DefaultValue) .ResourceId .Computed}}
@@ -238,7 +263,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 							{{- end}}
 							{{- if or .Reference .Mandatory}}
 							Required:            true,
-							{{- else if and (not .ResourceId) (not .Computed)}}
+							{{- else if and (not .ResourceId) (or (not .Computed) .Optional)}}
 							Optional:            true,
 							{{- end}}
 							{{- if or (len .DefaultValue) .ResourceId .Computed}}
@@ -330,7 +355,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 										{{- end}}
 										{{- if or .Reference .Mandatory}}
 										Required:            true,
-										{{- else if and (not .ResourceId) (not .Computed)}}
+										{{- else if and (not .ResourceId) (or (not .Computed) .Optional)}}
 										Optional:            true,
 										{{- end}}
 										{{- if or (len .DefaultValue) .ResourceId .Computed}}
@@ -413,7 +438,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 													{{- end}}
 													{{- if or .Reference .Mandatory}}
 													Required:            true,
-													{{- else if and (not .ResourceId) (not .Computed)}}
+													{{- else if and (not .ResourceId) (or (not .Computed) .Optional)}}
 													Optional:            true,
 													{{- end}}
 													{{- if or (len .DefaultValue) .ResourceId .Computed}}
@@ -590,13 +615,13 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	}
 
 	{{- else}}
-	{{- $dataSourceAttribute := getAttributeByTfName .Attributes "name"}}
-	{{- if hasDataSourceQuery .Attributes}}
-	{{- $dataSourceAttribute = getDataSourceQueryAttribute . }}
+	{{- $putCreateQueryAttribute := getAttributeByTfName .Attributes "name"}}
+	{{- if hasPutCreateDataQuery .Attributes}}
+	{{- $putCreateQueryAttribute = getPutCreateDataQueryAttribute . }}
 	{{- end}}
 	
-	tflog.Debug(ctx, fmt.Sprintf("%s: considering object {{$dataSourceAttribute.TfName}} %s", plan.Id, plan.{{toGoName $dataSourceAttribute.TfName}}))
-	if plan.Id.ValueString() == "" && plan.{{toGoName $dataSourceAttribute.TfName}}.ValueString() != "" {
+	tflog.Debug(ctx, fmt.Sprintf("%s: considering object {{$putCreateQueryAttribute.TfName}} %s", plan.Id, plan.{{toGoName $putCreateQueryAttribute.TfName}}))
+	if plan.Id.ValueString() == "" && plan.{{toGoName $putCreateQueryAttribute.TfName}}.ValueString() != "" {
 		offset := 0
 		limit := 1000
 		for page := 1; ; page++ {
@@ -608,13 +633,13 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 			}
 			if value := res.Get("items"); len(value.Array()) > 0 {
 				value.ForEach(func(k, v gjson.Result) bool {
-					if plan.{{toGoName $dataSourceAttribute.TfName}}.
-						{{- if eq $dataSourceAttribute.Type "Int64" -}}ValueInt64()
-						{{- else -}}ValueString(){{- end -}} == v.Get("{{range $dataSourceAttribute.DataPath}}{{.}}.{{end}}{{$dataSourceAttribute.ModelName}}").
-						{{- if eq $dataSourceAttribute.Type "Int64" -}}Int()
+					if plan.{{toGoName $putCreateQueryAttribute.TfName}}.
+						{{- if eq $putCreateQueryAttribute.Type "Int64" -}}ValueInt64()
+						{{- else -}}ValueString(){{- end -}} == v.Get("{{range $putCreateQueryAttribute.DataPath}}{{.}}.{{end}}{{$putCreateQueryAttribute.ModelName}}").
+						{{- if eq $putCreateQueryAttribute.Type "Int64" -}}Int()
 						{{- else -}}String(){{- end -}} {
 						plan.Id = types.StringValue(v.Get("id").String())
-						tflog.Debug(ctx, fmt.Sprintf("%s: Found object with {{$dataSourceAttribute.TfName}} '%v', id: %s", plan.Id.ValueString(), plan.{{toGoName $dataSourceAttribute.TfName}}.{{if eq $dataSourceAttribute.Type "Int64"}}ValueInt64(){{else}}ValueString(){{end}}, plan.Id.ValueString()))
+						tflog.Debug(ctx, fmt.Sprintf("%s: Found object with {{$putCreateQueryAttribute.TfName}} '%v', id: %s", plan.Id.ValueString(), plan.{{toGoName $putCreateQueryAttribute.TfName}}.{{if eq $putCreateQueryAttribute.Type "Int64"}}ValueInt64(){{else}}ValueString(){{end}}, plan.Id.ValueString()))
 						return false
 					}
 					return true
@@ -627,7 +652,7 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 		}
 
 		if plan.Id.ValueString() == "" {
-			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to find object with {{$dataSourceAttribute.TfName}}: %v", plan.{{toGoName $dataSourceAttribute.TfName}}.{{if eq $dataSourceAttribute.Type "Int64"}}ValueInt64(){{else}}ValueString(){{end}}))
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to find object with {{$putCreateQueryAttribute.TfName}}: %v", plan.{{toGoName $putCreateQueryAttribute.TfName}}.{{if eq $putCreateQueryAttribute.Type "Int64"}}ValueInt64(){{else}}ValueString(){{end}}))
 			return
 		}
 	}
@@ -678,7 +703,7 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	res, err := r.client.Post(plan.getPath(), body, reqMods...)
 	{{- end}}
 	{{- if and (not .PutCreate) (hasDataSourceQuery .Attributes)}}
-	{{- $dataSourceAttribute := getDataSourceQueryAttribute .}}
+	{{- $dataSourceAttribute := index (getDataSourceQueryAttributes .) 0}}
 	var ingestID string
 	if err != nil {
 		ingestID, res, err = helpers.IngestOnConflict(ctx, r.client, plan.getPath(), err, res,
@@ -1275,7 +1300,17 @@ func (r *{{camelCase .Name}}Resource) ImportState(ctx context.Context, req resou
 		names := strings.Split(match[inputPattern.SubexpIndex("names")], ",")
 		itemsMap := make(map[string]{{camelCase .Name}}Items, len(names))
 		for _, v := range names {
-			itemsMap[v] = {{camelCase .Name}}Items{}
+			itemsMap[v] = {{camelCase .Name}}Items{
+				{{- range (getAttributeByTfName .Attributes "items").Attributes}}
+				{{- if .ElementType}}
+				{{- if isSet .}}
+				{{toGoName .TfName}}: types.SetNull(types.{{.ElementType}}Type),
+				{{- else if isList .}}
+				{{toGoName .TfName}}: types.ListNull(types.{{.ElementType}}Type),
+				{{- end}}
+				{{- end}}
+				{{- end}}
+			}
 		}
 		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("items"), itemsMap)...)
 		{{- else}}

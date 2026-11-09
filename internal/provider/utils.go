@@ -38,8 +38,11 @@ import (
 	"github.com/tidwall/sjson"
 )
 
-// Mutex to protect deployments
+// deploymentMu makes sure that a single deployment is in progress at a time
 var deploymentMu sync.Mutex
+
+// policyMu makes sure that a single policy assignment change is in progress at a time
+var policyMu sync.Mutex
 
 func FMCWaitForJobToFinish(ctx context.Context, client *fmc.Client, jobId string, reqMods [](func(*fmc.Req))) diag.Diagnostics {
 	var diags diag.Diagnostics
@@ -47,6 +50,12 @@ func FMCWaitForJobToFinish(ctx context.Context, client *fmc.Client, jobId string
 	const maxWait time.Duration = 15 * time.Minute
 	var task gjson.Result
 	var err error
+
+	if jobId == "" {
+		diags.AddError("Client Error", "Job ID is empty")
+		return diags
+	}
+
 	var taskUrl string = "/api/fmc_config/v1/domain/{DOMAIN_UUID}/job/taskstatuses/" + url.QueryEscape(jobId)
 
 	for i := time.Duration(0); i < maxWait; i += atom {

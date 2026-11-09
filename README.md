@@ -49,11 +49,11 @@ Resources and Data Sources have been tested with the following releases.
 
 | Platform | Version |
 | -------- | ------- |
-| FMC      | 7.2.10  |
-| FMC      | 7.4.5   |
-| FMC      | 7.6.2   |
-| FMC      | 7.7.11  |
-| FMC      | 10.0.0  |
+| FMC      | 7.2.11  |
+| FMC      | 7.4.7   |
+| FMC      | 7.6.5   |
+| FMC      | 7.7.12  |
+| FMC      | 10.0.1  |
 | cdFMC    |         |
 
 Please note that Resources and Data Sources support depends on FMC version.
@@ -63,7 +63,7 @@ Documentation: <https://registry.terraform.io/providers/CiscoDevNet/fmc/latest>
 ## Requirements
 
 - [Terraform](https://www.terraform.io/downloads.html) >= 1.0
-- [Go](https://golang.org/doc/install) >= 1.25
+- [Go](https://golang.org/doc/install) >= 1.26
 
 ## Building The Provider
 

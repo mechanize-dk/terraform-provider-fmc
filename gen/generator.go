@@ -126,6 +126,7 @@ type YamlConfig struct {
 	ImportNameQuery          bool                  `yaml:"import_name_query"`
 	AdjustBody               bool                  `yaml:"adjust_body"`
 	DeprecationMessage       string                `yaml:"deprecation_message"`
+	NoId                     bool                  `yaml:"no_id"`
 }
 
 type YamlConfigAttribute struct {
@@ -144,6 +145,7 @@ type YamlConfigAttribute struct {
 	ExcludeTest                         bool                  `yaml:"exclude_test"`
 	ExcludeExample                      bool                  `yaml:"exclude_example"`
 	Description                         string                `yaml:"description"`
+	DsDescription                       string                `yaml:"ds_description"`
 	Example                             string                `yaml:"example"`
 	EnumValues                          []string              `yaml:"enum_values"`
 	MinList                             int64                 `yaml:"min_list"`
@@ -158,6 +160,7 @@ type YamlConfigAttribute struct {
 	StringMinLength                     int64                 `yaml:"string_min_length"`
 	StringMaxLength                     int64                 `yaml:"string_max_length"`
 	Computed                            bool                  `yaml:"computed"`
+	Optional                            bool                  `yaml:"optional"`
 	ComputedRefreshValue                bool                  `yaml:"computed_refresh_value"`
 	ComputedBodyParam                   bool                  `yaml:"computed_body_param"`
 	DefaultValue                        string                `yaml:"default_value"`
@@ -165,11 +168,14 @@ type YamlConfigAttribute struct {
 	TestValue                           string                `yaml:"test_value"`
 	MinimumTestValue                    string                `yaml:"minimum_test_value"`
 	TestTags                            []string              `yaml:"test_tags"`
+	PutCreateDataQuery                  bool                  `yaml:"put_create_data_query"`
 	DataSourceQuery                     bool                  `yaml:"data_source_query"`
 	DataSourceOptionalParameter         bool                  `yaml:"data_source_optional_parameter"`
 	Sensitive                           bool                  `yaml:"sensitive"`
 	MissingInResponseIfSetToEmptyString bool                  `yaml:"missing_in_response_if_set_to_empty_string"`
+	NormalizeIp                         bool                  `yaml:"normalize_ip"`
 	Attributes                          []YamlConfigAttribute `yaml:"attributes"`
+	TfOnly                              bool                  `yaml:"tf_only"`
 	GoTypeName                          string
 }
 
@@ -208,6 +214,14 @@ func SnakeCase(s string) string {
 	return strings.Join(g, "_")
 }
 
+// Templating helper function to lowercase the first character of a string
+func LowerFirst(s string) string {
+	if s == "" {
+		return s
+	}
+	return strings.ToLower(s[:1]) + s[1:]
+}
+
 // Templating helper function to fail a template mid-way
 func Errorf(s string, args ...any) (struct{}, error) {
 	return struct{}{}, fmt.Errorf(s, args...)
@@ -229,9 +243,30 @@ func HasDataSourceQuery(attributes []YamlConfigAttribute) bool {
 }
 
 // Templating helper function to return Data Source Query Attribute
-func GetDataSourceQueryAttribute(config YamlConfig) YamlConfigAttribute {
+func GetDataSourceQueryAttributes(config YamlConfig) []YamlConfigAttribute {
+	var result []YamlConfigAttribute
 	for _, attr := range config.Attributes {
 		if attr.DataSourceQuery {
+			result = append(result, attr)
+		}
+	}
+	return result
+}
+
+// Templating helper function to check if any of the attributes is a put create data query
+func HasPutCreateDataQuery(attributes []YamlConfigAttribute) bool {
+	for _, attr := range attributes {
+		if attr.PutCreateDataQuery {
+			return true
+		}
+	}
+	return false
+}
+
+// Templating helper function to return Put Create Data Query Attribute
+func GetPutCreateDataQueryAttribute(config YamlConfig) YamlConfigAttribute {
+	for _, attr := range config.Attributes {
+		if attr.PutCreateDataQuery {
 			return attr
 		}
 	}
@@ -418,34 +453,37 @@ func Subtract(a, b int) int {
 
 // Map of templating functions
 var functions = template.FuncMap{
-	"toGoName":                    ToGoName,
-	"camelCase":                   CamelCase,
-	"snakeCase":                   SnakeCase,
-	"sprintf":                     fmt.Sprintf,
-	"errorf":                      Errorf,
-	"toLower":                     strings.ToLower,
-	"path":                        BuildPath,
-	"hasDataSourceQuery":          HasDataSourceQuery,
-	"getDataSourceQueryAttribute": GetDataSourceQueryAttribute,
-	"getAttributeByTfName":        GetAttributeByTfName,
-	"hasId":                       HasId,
-	"hasComputedRefreshValue":     HasComputedRefreshValue,
-	"hasReference":                HasReference,
-	"hasResourceId":               HasResourceId,
-	"hasRequiresReplace":          HasRequiresReplace,
-	"isListSet":                   IsListSet,
-	"isList":                      IsList,
-	"isSet":                       IsSet,
-	"isStringListSet":             IsStringListSet,
-	"isInt64ListSet":              IsInt64ListSet,
-	"isNestedListMapSet":          IsNestedListMapSet,
-	"isNestedListSet":             IsNestedListSet,
-	"isNestedList":                IsNestedList,
-	"isNestedMap":                 IsNestedMap,
-	"isNestedSet":                 IsNestedSet,
-	"isDomainDependent":           IsDomainDependent,
-	"importParts":                 ImportParts,
-	"subtract":                    Subtract,
+	"toGoName":                       ToGoName,
+	"camelCase":                      CamelCase,
+	"snakeCase":                      SnakeCase,
+	"lowerFirst":                     LowerFirst,
+	"sprintf":                        fmt.Sprintf,
+	"errorf":                         Errorf,
+	"toLower":                        strings.ToLower,
+	"path":                           BuildPath,
+	"hasDataSourceQuery":             HasDataSourceQuery,
+	"getDataSourceQueryAttributes":   GetDataSourceQueryAttributes,
+	"hasPutCreateDataQuery":          HasPutCreateDataQuery,
+	"getPutCreateDataQueryAttribute": GetPutCreateDataQueryAttribute,
+	"getAttributeByTfName":           GetAttributeByTfName,
+	"hasId":                          HasId,
+	"hasComputedRefreshValue":        HasComputedRefreshValue,
+	"hasReference":                   HasReference,
+	"hasResourceId":                  HasResourceId,
+	"hasRequiresReplace":             HasRequiresReplace,
+	"isListSet":                      IsListSet,
+	"isList":                         IsList,
+	"isSet":                          IsSet,
+	"isStringListSet":                IsStringListSet,
+	"isInt64ListSet":                 IsInt64ListSet,
+	"isNestedListMapSet":             IsNestedListMapSet,
+	"isNestedListSet":                IsNestedListSet,
+	"isNestedList":                   IsNestedList,
+	"isNestedMap":                    IsNestedMap,
+	"isNestedSet":                    IsNestedSet,
+	"isDomainDependent":              IsDomainDependent,
+	"importParts":                    ImportParts,
+	"subtract":                       Subtract,
 }
 
 func (attr *YamlConfigAttribute) init(parentGoTypeName string) error {
@@ -495,12 +533,25 @@ func (attr *YamlConfigAttribute) init(parentGoTypeName string) error {
 			attr.TfName)
 	}
 
+	if attr.NormalizeIp && attr.Type != "String" {
+		return fmt.Errorf("%q has type %q which cannot use `normalize_ip`: instead use type String",
+			attr.TfName, attr.Type)
+	}
+
 	if attr.ComputedRefreshValue && !attr.Computed {
 		return fmt.Errorf("%q: `computed_refresh_value: true` can only be used with `computed: true`", attr.TfName)
 	}
 
 	if attr.ComputedBodyParam && !attr.Computed {
 		return fmt.Errorf("%q: `computed_body_param: true` can only be used with `computed: true`", attr.TfName)
+	}
+
+	if attr.Optional && !attr.Computed {
+		return fmt.Errorf("%q: `optional: true` can only be used with `computed: true`, as attributes are optional by default", attr.TfName)
+	}
+
+	if attr.Optional && attr.Mandatory {
+		return fmt.Errorf("%q: `optional: true` cannot be combined with `mandatory: true`", attr.TfName)
 	}
 
 	// Recurse
@@ -515,7 +566,7 @@ func (attr *YamlConfigAttribute) init(parentGoTypeName string) error {
 
 func NewYamlConfig(bytes []byte) (YamlConfig, error) {
 	var config YamlConfig
-	var hasDataSourceQuery bool = false
+	var hasPutCreateDataQuery bool = false
 
 	if err := yaml.Unmarshal(bytes, &config); err != nil {
 		return config, err
@@ -525,11 +576,11 @@ func NewYamlConfig(bytes []byte) (YamlConfig, error) {
 		if err := config.Attributes[i].init(CamelCase(config.Name)); err != nil {
 			return YamlConfig{}, err
 		}
-		if config.Attributes[i].DataSourceQuery {
-			if hasDataSourceQuery {
-				return YamlConfig{}, fmt.Errorf("Multiple `data_source_query` attributes found. Only one is allowed.")
+		if config.Attributes[i].PutCreateDataQuery {
+			if hasPutCreateDataQuery {
+				return YamlConfig{}, fmt.Errorf("Multiple `put_create_data_query` attributes found. Only one is allowed.")
 			}
-			hasDataSourceQuery = true
+			hasPutCreateDataQuery = true
 		}
 	}
 	if config.DsDescription == "" {
@@ -641,7 +692,7 @@ func renderTemplate(templatePath, outputPath string, config any) {
 					matches := endRegex.FindStringSubmatch(line)
 					if len(matches) > 1 && matches[1] == currentSectionName {
 						currentSectionName = ""
-						newSection := getTemplateSection(string(output.Bytes()), matches[1])
+						newSection := getTemplateSection(output.String(), matches[1])
 						newContent += newSection
 					}
 				}

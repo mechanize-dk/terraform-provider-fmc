@@ -14,13 +14,12 @@ attributes:
   - model_name: device_id
     type: String
     reference: true
-    requires_replace: true
     description: Id of the parent device.
     example: 76d24097-41c4-4558-a4d0-a8c07ac08470
     test_value: var.device_id
   - model_name: type
     type: String
-    description: Type of the object; this is always 'OspfRoute'
+    description: Type of the object; this value is always 'OspfRoute'.
     computed: true
   - model_name: processId
     type: Int64
@@ -321,6 +320,7 @@ attributes:
             string_max_length: 8
             sensitive: true
             description: Password for authentication.
+            write_only: true
           - model_name: authKey
             data_path: [authentication, areaAuth, passwdAuth]
             tf_name: authentication_area_password
@@ -328,6 +328,7 @@ attributes:
             sensitive: true
             string_max_length: 8
             description: Password for area authentication.
+            write_only: true
           - model_name: md5AuthList
             data_path: [authentication, areaAuth]
             tf_name: authentication_area_md5s
@@ -346,6 +347,7 @@ attributes:
                 sensitive: true
                 description: MD5 authentication key.
                 mandatory: true
+                write_only: true
           - model_name: md5AuthList
             data_path: [authentication]
             tf_name: authentication_md5s
@@ -364,6 +366,7 @@ attributes:
                 sensitive: true
                 description: MD5 authentication key.
                 mandatory: true
+                write_only: true
           - model_name: id
             data_path: [authentication, keyChain, authKey]
             tf_name: authentication_key_chain_id

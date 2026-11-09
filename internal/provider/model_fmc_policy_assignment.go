@@ -22,6 +22,7 @@ import (
 	"context"
 	"fmt"
 	"slices"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -34,14 +35,15 @@ import (
 // Section below is generated&owned by "gen/generator.go". //template:begin types
 
 type PolicyAssignment struct {
-	Id                   types.String              `tfsdk:"id"`
-	Domain               types.String              `tfsdk:"domain"`
-	Type                 types.String              `tfsdk:"type"`
-	PolicyName           types.String              `tfsdk:"policy_name"`
-	PolicyId             types.String              `tfsdk:"policy_id"`
-	PolicyType           types.String              `tfsdk:"policy_type"`
-	AfterDestroyPolicyId types.String              `tfsdk:"after_destroy_policy_id"`
-	Targets              []PolicyAssignmentTargets `tfsdk:"targets"`
+	Id                       types.String              `tfsdk:"id"`
+	Domain                   types.String              `tfsdk:"domain"`
+	Type                     types.String              `tfsdk:"type"`
+	PolicyName               types.String              `tfsdk:"policy_name"`
+	PolicyId                 types.String              `tfsdk:"policy_id"`
+	PolicyType               types.String              `tfsdk:"policy_type"`
+	AfterDestroyPolicyId     types.String              `tfsdk:"after_destroy_policy_id"`
+	AfterDestroyPolicyDomain types.String              `tfsdk:"after_destroy_policy_domain"`
+	Targets                  []PolicyAssignmentTargets `tfsdk:"targets"`
 }
 
 type PolicyAssignmentTargets struct {
@@ -77,11 +79,9 @@ func (data PolicyAssignment) toBody(ctx context.Context, state PolicyAssignment)
 	if !data.PolicyType.IsNull() {
 		body, _ = sjson.Set(body, "policy.type", data.PolicyType.ValueString())
 	}
-	if !data.AfterDestroyPolicyId.IsNull() {
-		body, _ = sjson.Set(body, "dummy_after_destroy_policy_id", data.AfterDestroyPolicyId.ValueString())
-	}
 	if len(data.Targets) > 0 {
-		body, _ = sjson.Set(body, "targets", []any{})
+		var targetsBody strings.Builder
+		targetsBody.WriteString("[")
 		for _, item := range data.Targets {
 			itemBody := ""
 			if !item.Id.IsNull() {
@@ -93,8 +93,15 @@ func (data PolicyAssignment) toBody(ctx context.Context, state PolicyAssignment)
 			if !item.Name.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "name", item.Name.ValueString())
 			}
-			body, _ = sjson.SetRaw(body, "targets.-1", itemBody)
+			if itemBody != "" {
+				if targetsBody.Len() > 1 {
+					targetsBody.WriteString(",")
+				}
+				targetsBody.WriteString(itemBody)
+			}
 		}
+		targetsBody.WriteString("]")
+		body, _ = sjson.SetRaw(body, "targets", targetsBody.String())
 	}
 	return body
 }
@@ -125,7 +132,7 @@ func (data *PolicyAssignment) fromBody(ctx context.Context, res gjson.Result) {
 		data.PolicyType = types.StringNull()
 	}
 	if value := res.Get("targets"); value.Exists() {
-		data.Targets = make([]PolicyAssignmentTargets, 0)
+		data.Targets = make([]PolicyAssignmentTargets, 0, int(value.Get("#").Int()))
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := PolicyAssignmentTargets{}
@@ -179,16 +186,16 @@ func (data *PolicyAssignment) fromBodyPartial(ctx context.Context, res gjson.Res
 	} else {
 		data.PolicyType = types.StringNull()
 	}
+	targetsArray := res.Get("targets")
 	for i := 0; i < len(data.Targets); i++ {
 		keys := [...]string{"id"}
 		keyValues := [...]string{data.Targets[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).Targets[i]
-		parentRes := &res
 		var res gjson.Result
 
-		parentRes.Get("targets").ForEach(
+		targetsArray.ForEach(
 			func(_, v gjson.Result) bool {
 				found := false
 				for ik := range keys {

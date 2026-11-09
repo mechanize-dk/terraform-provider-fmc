@@ -179,6 +179,16 @@ resource "fmc_access_rule" "example" {
           id = "24"
         }
       ]
+      user_objects = [
+        {
+          id         = "76d24097-41c4-4558-a4d0-a8c07ac08470"
+          type       = "RealmUser"
+          name       = "MyRealmUser1"
+          realm_id   = "76d24097-41c4-4558-a4d0-a8c07ac08470"
+          realm_type = "Realm"
+          realm_name = "MyRealm"
+        }
+      ]
     }
   ]
 }
@@ -209,10 +219,12 @@ resource "fmc_access_rule" "example" {
 - `destination_sgt_objects` (Attributes Set) Set of objects representing the destination ISE Security Group Tags (SGT). (see [below for nested schema](#nestedatt--destination_sgt_objects))
 - `destination_zones` (Attributes Set) Set of objects representing destination Security Zones associated with the access rule. (see [below for nested schema](#nestedatt--destination_zones))
 - `domain` (String) Name of the FMC domain
-- `enabled` (Boolean) Indicates whether the access rule is in effect (true) or not (false).
+- `enabled` (Boolean) Enable rule.
   - Default value: `true`
 - `endpoint_device_types` (Attributes Set) Set of objects representing the source Endpoint Device Types. (see [below for nested schema](#nestedatt--endpoint_device_types))
 - `file_policy_id` (String) Id of the File Policy for the rule action. Cannot be set when action is BLOCK, BLOCK_RESET, TRUST, MONITOR.
+- `insert_after_rule` (Number) Specifies that the rules will be inserted after the specified rule index. Either 'insert_before_rule' or 'insert_after_rule' can be set. This attribute is used for initial rule creation only and is ignored during the resource lifecycle.
+- `insert_before_rule` (Number) Specifies that the rules will be inserted before the specified rule index. Either 'insert_before_rule' or 'insert_after_rule' can be set. This attribute is used for initial rule creation only and is ignored during the resource lifecycle.
 - `intrusion_policy_id` (String) Id of the Intrusion Policy for the rule action. Cannot be set when action is BLOCK, BLOCK_RESET, TRUST, MONITOR.
 - `log_connection_begin` (Boolean) Log events at the beginning of the connection. If 'MONITOR' action is selected for access rule, `log_connection_begin` must be false or absent.
   - Default value: `false`
@@ -267,6 +279,7 @@ Optional:
 - `risks` (Attributes Set) Set of Application Risk levels. (see [below for nested schema](#nestedatt--application_filters--risks))
 - `tags` (Attributes Set) Set of Application Tags. (see [below for nested schema](#nestedatt--application_filters--tags))
 - `types` (Attributes Set) Set of Application Types. (see [below for nested schema](#nestedatt--application_filters--types))
+- `user_objects` (Attributes Set) User objects. (see [below for nested schema](#nestedatt--application_filters--user_objects))
 
 <a id="nestedatt--application_filters--business_relevances"></a>
 ### Nested Schema for `application_filters.business_relevances`
@@ -306,6 +319,24 @@ Required:
 Required:
 
 - `id` (String) Id of the Application Type.
+
+
+<a id="nestedatt--application_filters--user_objects"></a>
+### Nested Schema for `application_filters.user_objects`
+
+Required:
+
+- `id` (String) Id of the User or User Group object.
+- `name` (String) Name of the User or User Group object.
+- `realm_id` (String) Id of the Realm the User or User Group belongs to.
+- `type` (String) Type of the User or User Group object.
+  - Choices: `RealmUser`, `RealmUserGroup`
+
+Optional:
+
+- `realm_name` (String) Name of the Realm the User or User Group belongs to.
+- `realm_type` (String) Type of the Realm the User or User Group belongs to.
+  - Choices: `Realm`
 
 
 

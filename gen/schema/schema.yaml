@@ -5,7 +5,7 @@ no_resource: bool(required=False) # Set to true if no resource should be created
 no_import: bool(required=False) # Set to true if the resource does not support `terraform import` command
 rest_endpoint: str(required=False) # REST endpoint path
 rest_endpoint_vrf: str(required=False) # REST endpoint path for VRF-aware resources
-put_create: bool(required=False) # Set to true if the PUT request is used for create
+put_create: bool(required=False) # Set to true if the PUT request is used for create. Objects are searched by `name` attiribute, unless overriden by `put_create_data_query`.
 retrieve_id: bool(required=False) # Set to true if there is just one ID (object) possible under the API endpoint, so that this ID can be retrieved for subsequent requests
 put_delete: bool(required=False) # Set to true if the PUT request is used to delete
 no_update: bool(required=False) # Set to true if the PUT request is not supported
@@ -29,6 +29,7 @@ import_name_query: bool(required=False) # Set to true if import should be done u
 bulk_size_create: int(required=False) # Number of resources to create in a single bulk create operation (overrides default 1000)
 adjust_body: bool(required=False) # Includes adjustBody funtion before Create/Update operations. This function gets defined in model.go template, however its body needs to be defined manually.
 deprecation_message: str(required=False) # Message to be displayed in the documentation and acceptance tests if the resource is deprecated
+no_id: bool(required=False) # Set to true if the resource does not have an ID.
 ---
 attribute:
   model_name: str(required=False) # Name of the attribute in the model (payload)
@@ -46,6 +47,7 @@ attribute:
   exclude_test: bool(required=False) # Exclude attribute from acceptance test only (example/documentation is still generated)
   exclude_example: bool(required=False) # Exclude attribute from example (documentation)
   description: str(required=False) # Attribute description
+  ds_description: str(required=False) # Attribute description override used only in the data source schema. Falls back to `description` if not set
   example: any(str(), int(), bool(), required=False) # Example value for documentation, also used for acceptance test
   enum_values: list(str(), required=False) # List of enum values, only relevant if type is "String". Null value is instead governed by `mandatory`, never include null here
   min_list: int(required=False) # Minimum number of elements in a list, only relevant if type is "List"
@@ -60,6 +62,7 @@ attribute:
   string_min_length: int(required=False) # Minimum length of a string, only relevant if type is "String"
   string_max_length: int(required=False) # Maximum length of a string, only relevant if type is "String"
   computed: bool(required=False) # Defines field as read-only (computed) with value derived from the API
+  optional: bool(required=False) # Set to true to keep the attribute user-settable while `computed: true` lets the API own the value when it is not configured. Needs to be used in conjunction with `computed`
   computed_refresh_value: bool(required=False) # Set to true if the computed value should be refreshed on every update (no UseStateForUnknown). Needs to be used in conjunction with `computed`
   computed_body_param: bool(required=False) # Set to true if the computed value should be included in the PUT payload
   default_value: any(str(), int(), bool(), required=False) # Default value for the attribute
@@ -67,8 +70,11 @@ attribute:
   test_value: any(str(), bool(), required=False) # Value used for acceptance test
   minimum_test_value: str(required=False) # Value used for "minimum" resource acceptance test
   test_tags: list(str(), required=False) # List of test tags, attribute is only included in acceptance tests if an environment variable with one of these tags is configured
+  put_create_data_query: bool(required=False) # Set to true, if this is the attribute used to query for the object to retrieve ID for `put_create` objects.
   data_source_query: bool(required=False) # Set to true if the attribute can be used in the data source query. This is supported only for top-level attributes.
-  data_source_optional_parameter: bool(required=False) # Set to true if the attribute can be used as an optional parameter in the data source query. This is supported only for top-level attributes.
+  data_source_optional_parameter: bool(required=False) # Set to true if the attribute can be used as an optional parameter in the data source query. This is used to configure how the data source behaves, rather than querying device. This is supported only for top-level attributes.
   sensitive: bool(required=False) # Set to true if the attribute is sensitive
   missing_in_response_if_set_to_empty_string: bool(required=False) # Set to true if the attribute is missing in the API GET response when it has been set to an empty string
+  normalize_ip: bool(required=False) # Set to true if the attribute holds an IP address or prefix that the API may return in canonical form.
   attributes: list(include('attribute'), required=False) # List of attributes, only relevant if type is "List" or "Set"
+  tf_only: bool(required=False) # Set to true if the attribute is only relevant for the Terraform resource but not part of the API model (payload)

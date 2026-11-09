@@ -232,7 +232,7 @@ func (r *AccessControlPolicyResource) Schema(ctx context.Context, req resource.S
 							},
 						},
 						"enabled": schema.BoolAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the access rule is in effect (true) or not (false).").AddDefaultValueDescription("true").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Enable rule.").AddDefaultValueDescription("true").String,
 							Optional:            true,
 							Computed:            true,
 							Default:             booldefault.StaticBool(true),
@@ -703,6 +703,44 @@ func (r *AccessControlPolicyResource) Schema(ctx context.Context, req resource.S
 								},
 							},
 						},
+						"user_objects": schema.SetNestedAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("User objects.").String,
+							Optional:            true,
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("Id of the User or User Group object.").String,
+										Required:            true,
+									},
+									"type": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("Type of the User or User Group object.").AddStringEnumDescription("RealmUser", "RealmUserGroup").String,
+										Required:            true,
+										Validators: []validator.String{
+											stringvalidator.OneOf("RealmUser", "RealmUserGroup"),
+										},
+									},
+									"name": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("Name of the User or User Group object.").String,
+										Required:            true,
+									},
+									"realm_id": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("Id of the Realm the User or User Group belongs to.").String,
+										Required:            true,
+									},
+									"realm_type": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("Type of the Realm the User or User Group belongs to.").AddStringEnumDescription("Realm").String,
+										Optional:            true,
+										Validators: []validator.String{
+											stringvalidator.OneOf("Realm"),
+										},
+									},
+									"realm_name": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("Name of the Realm the User or User Group belongs to.").String,
+										Optional:            true,
+									},
+								},
+							},
+						},
 					},
 				},
 			},
@@ -741,9 +779,7 @@ func (r *AccessControlPolicyResource) Create(ctx context.Context, req resource.C
 
 	// Create object
 	body := planBody
-	body, _ = sjson.Delete(body, "dummy_manage_categories")
 	body, _ = sjson.Delete(body, "dummy_categories")
-	body, _ = sjson.Delete(body, "dummy_manage_rules")
 	body, _ = sjson.Delete(body, "dummy_rules")
 
 	res, err := r.client.Post(plan.getPath(), body, reqMods...)
@@ -812,6 +848,7 @@ func (r *AccessControlPolicyResource) Create(ctx context.Context, req resource.C
 
 func (r *AccessControlPolicyResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state AccessControlPolicy
+	var hasInheritance bool = false
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -838,6 +875,18 @@ func (r *AccessControlPolicyResource) Read(ctx context.Context, req resource.Rea
 
 	// Prepare json string to be filled in with categories and rules, that come from separate endpoints.
 	s := resGet.String()
+	policyName := resGet.Get("name").String()
+
+	if (!state.ManageCategories.IsUnknown() && state.ManageCategories.ValueBool()) || (!state.ManageRules.IsUnknown() && state.ManageRules.ValueBool()) {
+		resInh, err := r.client.Get(state.getPath()+"/"+url.QueryEscape(state.Id.ValueString())+"/inheritancesettings?expanded=true", reqMods...)
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve inheritance settings (GET), got error: %s, %s", err, resInh.String()))
+			return
+		}
+		if resInh.Get("items.0.basePolicy.name").Exists() {
+			hasInheritance = true
+		}
+	}
 
 	// Get categories, if we manage them
 	if !state.ManageCategories.IsUnknown() && state.ManageCategories.ValueBool() {
@@ -849,6 +898,10 @@ func (r *AccessControlPolicyResource) Read(ctx context.Context, req resource.Rea
 		replaceCats := resCats.Get("items").String()
 		if replaceCats == "" {
 			replaceCats = "[]"
+		}
+		// If the rule inheritance is enabled, API will include categories from parent policies in the response
+		if hasInheritance {
+			replaceCats = state.filterByPolicyName(replaceCats, policyName)
 		}
 		s, _ = sjson.SetRaw(s, "dummy_categories", replaceCats)
 	}
@@ -863,6 +916,10 @@ func (r *AccessControlPolicyResource) Read(ctx context.Context, req resource.Rea
 		replaceRules := resRules.Get("items").String()
 		if replaceRules == "" {
 			replaceRules = "[]"
+		}
+		// If the rule inheritance is enabled, API will include rules from parent policies in the response
+		if hasInheritance {
+			replaceRules = state.filterByPolicyName(replaceRules, policyName)
 		}
 		s, _ = sjson.SetRaw(s, "dummy_rules", replaceRules)
 	}
@@ -920,9 +977,7 @@ func (r *AccessControlPolicyResource) Update(ctx context.Context, req resource.U
 
 	planBody := plan.toBody(ctx, state)
 	body := planBody
-	body, _ = sjson.Delete(body, "dummy_manage_categories")
 	body, _ = sjson.Delete(body, "dummy_categories")
-	body, _ = sjson.Delete(body, "dummy_manage_rules")
 	body, _ = sjson.Delete(body, "dummy_rules")
 
 	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body, reqMods...)
@@ -1013,13 +1068,9 @@ func (r *AccessControlPolicyResource) updateSubresources(ctx context.Context, tf
 }
 
 // countKept compares the state with the plan starting from index 0, and returns:
-//
 // how many categories to keep: they remain identical as to content and order
-//
 // how many rules to keep:
-//
 // - kept rules must belong to some category that is itself kept,
-//
 // - and must themselves remain identical as to id, content, and order
 func (r *AccessControlPolicyResource) countKept(ctx context.Context, state, plan AccessControlPolicy) (int, int) {
 	return 0, 0 // TODO
@@ -1084,6 +1135,7 @@ func (r *AccessControlPolicyResource) truncateCatsAt(ctx context.Context, state 
 }
 
 func (r *AccessControlPolicyResource) createCatsAt(ctx context.Context, plan AccessControlPolicy, body []gjson.Result, startIndex int, state *AccessControlPolicy, reqMods ...func(*fmc.Req)) error {
+	urlPath := plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()) + "/categories"
 	for i := startIndex; i < len(plan.Categories); i++ {
 		cat := body[i].String()
 		cat, _ = sjson.Delete(cat, "id")
@@ -1092,8 +1144,7 @@ func (r *AccessControlPolicyResource) createCatsAt(ctx context.Context, plan Acc
 		if s := plan.Categories[i].Section.ValueString(); s != "" {
 			params = "?section=" + url.QueryEscape(s)
 		}
-		res, err := r.client.Post(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString())+
-			"/categories"+params, cat, reqMods...)
+		res, err := r.client.Post(urlPath+params, cat, reqMods...)
 		if err != nil {
 			return fmt.Errorf("Failed to create a category (POST), got error: %v, %s", err, res)
 		}
@@ -1116,6 +1167,7 @@ func (r *AccessControlPolicyResource) createCatsAt(ctx context.Context, plan Acc
 // Whether it succeeds fully or partially, it takes whatever has been really created and saves in the `state`.
 // The `state` and `&plan` might be either the same value or different.
 func (r *AccessControlPolicyResource) createRulesAt(ctx context.Context, plan AccessControlPolicy, body []gjson.Result, startIndex int, state *AccessControlPolicy, reqMods ...func(*fmc.Req)) error {
+	urlPath := plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()) + "/accessrules"
 	for i := startIndex; i < len(body); i++ {
 		bulk := `{"dummy_rules":[]}`
 		j := i
@@ -1154,7 +1206,7 @@ func (r *AccessControlPolicyResource) createRulesAt(ctx context.Context, plan Ac
 		} else if s := head.GetSection(); s != "default" {
 			param += "&section=" + url.QueryEscape(s)
 		}
-		res, err := r.client.Post(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString())+"/accessrules"+param,
+		res, err := r.client.Post(urlPath+param,
 			gjson.Parse(bulk).Get("dummy_rules").String(),
 			reqMods...)
 		if err != nil {

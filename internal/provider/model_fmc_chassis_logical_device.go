@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"net/url"
 	"slices"
+	"strings"
 
 	"github.com/CiscoDevNet/terraform-provider-fmc/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -149,14 +150,22 @@ func (data ChassisLogicalDevice) toBody(ctx context.Context, state ChassisLogica
 		body, _ = sjson.Set(body, "resourceProfile.name", data.ResourceProfileName.ValueString())
 	}
 	if len(data.AssignedInterfaces) > 0 {
-		body, _ = sjson.Set(body, "externalPortLink", []any{})
+		var assignedInterfacesBody strings.Builder
+		assignedInterfacesBody.WriteString("[")
 		for _, item := range data.AssignedInterfaces {
 			itemBody := ""
 			if !item.Id.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			body, _ = sjson.SetRaw(body, "externalPortLink.-1", itemBody)
+			if itemBody != "" {
+				if assignedInterfacesBody.Len() > 1 {
+					assignedInterfacesBody.WriteString(",")
+				}
+				assignedInterfacesBody.WriteString(itemBody)
+			}
 		}
+		assignedInterfacesBody.WriteString("]")
+		body, _ = sjson.SetRaw(body, "externalPortLink", assignedInterfacesBody.String())
 	}
 	if !data.DeviceGroupId.IsNull() {
 		body, _ = sjson.Set(body, "deviceRegistration.deviceGroup.id", data.DeviceGroupId.ValueString())
@@ -276,7 +285,7 @@ func (data *ChassisLogicalDevice) fromBody(ctx context.Context, res gjson.Result
 		data.ResourceProfileName = types.StringNull()
 	}
 	if value := res.Get("externalPortLink"); value.Exists() {
-		data.AssignedInterfaces = make([]ChassisLogicalDeviceAssignedInterfaces, 0)
+		data.AssignedInterfaces = make([]ChassisLogicalDeviceAssignedInterfaces, 0, int(value.Get("#").Int()))
 		value.ForEach(func(k, res gjson.Result) bool {
 			parent := &data
 			data := ChassisLogicalDeviceAssignedInterfaces{}
@@ -293,11 +302,6 @@ func (data *ChassisLogicalDevice) fromBody(ctx context.Context, res gjson.Result
 		data.DeviceGroupId = types.StringValue(value.String())
 	} else {
 		data.DeviceGroupId = types.StringNull()
-	}
-	if value := res.Get("deviceRegistration.platformSettings.id"); value.Exists() {
-		data.PlatformSettingsId = types.StringValue(value.String())
-	} else {
-		data.PlatformSettingsId = types.StringNull()
 	}
 	if value := res.Get("deviceRegistration.licenseCaps"); value.Exists() {
 		data.Licenses = helpers.GetStringSet(value.Array())
@@ -435,16 +439,16 @@ func (data *ChassisLogicalDevice) fromBodyPartial(ctx context.Context, res gjson
 	} else {
 		data.ResourceProfileName = types.StringNull()
 	}
+	assignedInterfacesArray := res.Get("externalPortLink")
 	for i := 0; i < len(data.AssignedInterfaces); i++ {
 		keys := [...]string{"id"}
 		keyValues := [...]string{data.AssignedInterfaces[i].Id.ValueString()}
 
 		parent := &data
 		data := (*parent).AssignedInterfaces[i]
-		parentRes := &res
 		var res gjson.Result
 
-		parentRes.Get("externalPortLink").ForEach(
+		assignedInterfacesArray.ForEach(
 			func(_, v gjson.Result) bool {
 				found := false
 				for ik := range keys {
@@ -482,11 +486,6 @@ func (data *ChassisLogicalDevice) fromBodyPartial(ctx context.Context, res gjson
 		data.DeviceGroupId = types.StringValue(value.String())
 	} else {
 		data.DeviceGroupId = types.StringNull()
-	}
-	if value := res.Get("deviceRegistration.platformSettings.id"); value.Exists() && !data.PlatformSettingsId.IsNull() {
-		data.PlatformSettingsId = types.StringValue(value.String())
-	} else {
-		data.PlatformSettingsId = types.StringNull()
 	}
 	if value := res.Get("deviceRegistration.licenseCaps"); value.Exists() && !data.Licenses.IsNull() {
 		data.Licenses = helpers.GetStringSet(value.Array())

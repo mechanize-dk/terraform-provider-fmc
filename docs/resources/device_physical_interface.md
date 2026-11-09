@@ -17,7 +17,6 @@ resource "fmc_device_physical_interface" "example" {
   device_id           = "76d24097-41c4-4558-a4d0-a8c07ac08470"
   logical_name        = "myinterface-0-1"
   description         = "my description"
-  mode                = "NONE"
   security_zone_id    = "76d24097-41c4-4558-a4d0-a8c07ac08470"
   name                = "GigabitEthernet0/1"
   mtu                 = 1400
@@ -33,32 +32,30 @@ resource "fmc_device_physical_interface" "example" {
 ### Required
 
 - `device_id` (String) Id of the parent device.
-- `mode` (String) Mode of the interface. Use INLINE if, and only if, the interface is part of fmc_inline_set with tap_mode=false or tap_mode unset. Use TAP if, and only if, the interface is part of fmc_inline_set with tap_mode = true. Use ERSPAN only when both erspan_source_ip and erspan_flow_id are set.
-  - Choices: `INLINE`, `PASSIVE`, `TAP`, `ERSPAN`, `NONE`, `SWITCHPORT`
 - `name` (String) Name of the interface; it must already be present on the device.
 
 ### Optional
 
 - `active_mac_address` (String) MAC address for active interface in format 0123.4567.89ab.
-- `allow_full_fragment_reassembly` (Boolean) Allow Full Fragment Reassembly
-- `anti_spoofing` (Boolean) Enable Anti Spoofing
-- `arp_table_entries` (Attributes List) (see [below for nested schema](#nestedatt--arp_table_entries))
+- `allow_full_fragment_reassembly` (Boolean) Allow Full Fragment Reassembly.
+- `anti_spoofing` (Boolean) Enable Anti Spoofing.
+- `arp_table_entries` (Attributes List) Custom IP to MAC address mapping. (see [below for nested schema](#nestedatt--arp_table_entries))
 - `auto_negotiation` (Boolean) Enables auto negotiation of duplex and speed.
-- `description` (String) Optional user-created description.
+- `description` (String) Description of the object.
 - `domain` (String) Name of the FMC domain
-- `duplex` (String) Duplex configuraion.
+- `duplex` (String) Duplex configuration.
   - Choices: `AUTO`, `FULL`, `HALF`
-- `enabled` (Boolean) Whether to enable the interface.
+- `enabled` (Boolean) Enable the interface.
   - Default value: `true`
-- `fec_mode` (String) Path Monitoring - Monitoring Type, can be one of AUTO, CL108RS, CL74FC, CL91RS, DISABLE.
+- `fec_mode` (String) Forward Error Correction (FEC) mode.
   - Choices: `AUTO`, `CL108RS`, `CL74FC`, `CL91RS`, `DISABLE`
-- `flow_control_send` (String) Flow Control Send configuraion, can be one of ON, OFF.
+- `flow_control_send` (String) Flow Control Send configuration.
   - Choices: `ON`, `OFF`
-- `ip_based_monitoring` (Boolean) Whether to enable IP based Monitoring.
+- `ip_based_monitoring` (Boolean) Enable IP based Monitoring.
 - `ip_based_monitoring_next_hop` (String) IP address to monitor.
-- `ip_based_monitoring_type` (String) PPPoE Configuration - PPPoE route metric, [ AUTO, PEER_IPV4, PEER_IPV6, AUTO4, AUTO6 ]
+- `ip_based_monitoring_type` (String) IP based Monitoring - Monitoring Type.
   - Choices: `AUTO`, `PEER_IPV4`, `PEER_IPV6`, `AUTO4`, `AUTO6`
-- `ipv4_address_pool_id` (String) Id of the assigned IPv4 address pool.
+- `ipv4_address_pool_id` (String) Id of the assigned IPv4 Address Pool.
 - `ipv4_dhcp_default_route_metric` (Number) The metric for `ipv4_dhcp_obtain_default_route`. Any non-null value enables DHCP as a side effect. Must be null when using `ipv4_static_address`.
   - Range: `1`-`255`
 - `ipv4_dhcp_obtain_default_route` (Boolean) Any non-null value here indicates to enable DHCPv4. Value `false` indicates to enable DHCPv4 without obtaining default IPv4 route but anyway requires also `ipv4_dhcp_route_metric` to be set to exactly 1. Value `true` indicates to enable DHCPv4 and obtain the route and also requires `ipv4_dhcp_route_metric` to be non-null. The `ipv4_dhcp_obtain_default_route` must be null when using `ipv4_static_address`.
@@ -73,72 +70,82 @@ resource "fmc_device_physical_interface" "example" {
 - `ipv4_pppoe_vpdn_group_name` (String) PPPoE Configuration - PPPoE Group Name.
 - `ipv4_static_address` (String) Static IPv4 address. Conflicts with mode INLINE, PASSIVE, TAP, ERSPAN.
 - `ipv4_static_netmask` (String) Netmask (width) for ipv4_static_address.
-- `ipv6` (Boolean) Whether to enable IPv6.
-- `ipv6_address_pool_id` (String) Id of the assigned IPv6 address pool.
-- `ipv6_addresses` (Attributes List) (see [below for nested schema](#nestedatt--ipv6_addresses))
-- `ipv6_auto_config` (Boolean) Whether to enable IPv6 autoconfiguration.
-- `ipv6_dad` (Boolean) Whether to enable IPv6 DAD Loopback Detect (DAD).
+- `ipv6` (Boolean) Enable IPv6.
+- `ipv6_address_pool_id` (String) Id of the assigned IPv6 Address Pool.
+- `ipv6_addresses` (Attributes List) Assigned IPv6 addresses. (see [below for nested schema](#nestedatt--ipv6_addresses))
+- `ipv6_auto_config` (Boolean) Enable IPv6 autoconfiguration.
+- `ipv6_dad` (Boolean) Enable IPv6 DAD Loopback Detect (DAD).
 - `ipv6_dad_attempts` (Number) Number of Duplicate Address Detection (DAD) attempts.
   - Range: `0`-`600`
 - `ipv6_dhcp` (Boolean) Enable DHCPv6 client.
-- `ipv6_dhcp_address_config` (Boolean) Whether to enable DHCPv6 for address config.
+- `ipv6_dhcp_address_config` (Boolean) Enable DHCPv6 for address config.
 - `ipv6_dhcp_client_pd_hint_prefixes` (String) Hint Prefixes for Prefix Delegation (PD)
 - `ipv6_dhcp_client_pd_prefix_name` (String) Prefix Name for Prefix Delegation (PD)
-- `ipv6_dhcp_nonaddress_config` (Boolean) Whether to enable DHCPv6 for non-address config.
+- `ipv6_dhcp_nonaddress_config` (Boolean) Enable DHCPv6 for non-address config.
 - `ipv6_dhcp_obtain_default_route` (Boolean) Whether to obtain default route from DHCPv6.
-- `ipv6_dhcp_pool_id` (String) Id of the assigned DHCPv6 pool
+- `ipv6_dhcp_pool_id` (String) Id of the assigned DHCPv6 Pool.
 - `ipv6_dhcp_pool_type` (String) Type of the object; this value is always 'IPv6AddressPool'.
-- `ipv6_enforce_eui` (Boolean) Whether to enforce IPv6 Extended Unique Identifier (EUI64 from RFC2373).
+- `ipv6_enforce_eui` (Boolean) Enforce IPv6 Extended Unique Identifier (EUI64 from RFC2373).
 - `ipv6_link_local_address` (String) IPv6 Configuration - Link-Local Address.
 - `ipv6_ns_interval` (Number) Neighbor Solicitation (NS) interval.
   - Range: `1000`-`3600000`
-- `ipv6_prefixes` (Attributes List) (see [below for nested schema](#nestedatt--ipv6_prefixes))
-- `ipv6_ra` (Boolean) Whether to enable IPv6 router advertisement (RA).
-- `ipv6_ra_interval` (Number) Interval between Router Advertisements (RA) transmissions
+- `ipv6_prefixes` (Attributes List) Assigned IPv6 prefixes. (see [below for nested schema](#nestedatt--ipv6_prefixes))
+- `ipv6_ra` (Boolean) Enable IPv6 router advertisement (RA).
+- `ipv6_ra_interval` (Number) Interval between Router Advertisements (RA) transmissions.
   - Range: `3`-`1800`
 - `ipv6_ra_life_time` (Number) Router Advertisement (RA) lifetime.
   - Range: `0`-`9000`
-- `ipv6_reachable_time` (Number) The amount of time that a remote IPv6 node is considered reachable after a reachability confirmation event has occurred
+- `ipv6_reachable_time` (Number) The amount of time that a remote IPv6 node is considered reachable after a reachability confirmation event has occurred.
   - Range: `0`-`3600000`
-- `lldp_receive` (Boolean) LLDP receive configuraion.
-- `lldp_transmit` (Boolean) LLDP transmit configuraion.
+- `lldp_receive` (Boolean) LLDP receive configuration.
+- `lldp_transmit` (Boolean) LLDP transmit configuration.
 - `logical_name` (String) Logical name of the interface, unique on the device. Should not contain whitespace or slash characters.
-- `management_access` (Boolean) Whether to enable Management Access.
-- `management_access_network_objects` (Attributes Set) (see [below for nested schema](#nestedatt--management_access_network_objects))
+- `management_access` (Boolean) Enable Management Access.
+- `management_access_network_objects` (Attributes Set) Allowed networks for Management Access. (see [below for nested schema](#nestedatt--management_access_network_objects))
 - `management_only` (Boolean) Whether this interface limits traffic to management traffic; when true, through-the-box traffic is disallowed. Value true conflicts with mode INLINE, PASSIVE, TAP, ERSPAN, or with security_zone_id.
-- `mtu` (Number) Maximum transmission unit. Can only be used when logical_name is set.
-  - Range: `64`-`9000`
+- `mode` (String) Mode of the interface. Leave unset for interfaces that are (or are about to become) members of fmc_device_inline_set - FMC assigns INLINE (or TAP, when the inline set has tap_mode = true) on its own and rejects any attempt to set those values on an interface that is not a member yet. Set INLINE or TAP explicitly only to adopt an interface that already is a member. Defaults to NONE when not set on creation. Use ERSPAN only when both erspan_source_ip and erspan_flow_id are set.
+  - Choices: `INLINE`, `PASSIVE`, `TAP`, `ERSPAN`, `NONE`, `SWITCHPORT`
+- `mtu` (Number) Maximum transmission unit. Can only be used when `logical_name` is set.
+  - Range: `64`-`9198`
 - `nve_only` (Boolean) Used for VTEP's source interface to restrict it to NVE only. For routed mode (NONE mode) the `nve_only` restricts interface to VxLAN traffic and common management traffic. For transparent firewall modes, the `nve_only` is automatically enabled.
-- `override_default_fragment_setting_chain` (Number) Override Default Fragment Setting - Chain value
+- `override_default_fragment_setting_chain` (Number) Override Default Fragment Setting - Chain value.
   - Range: `1`-`8200`
-- `override_default_fragment_setting_size` (Number) Override Default Fragment Setting - Fragment Size value
+- `override_default_fragment_setting_size` (Number) Override Default Fragment Setting - Fragment Size value.
   - Range: `1`-`30000`
-- `override_default_fragment_setting_timeout` (Number) Override Default Fragment Setting - Time Out value
+- `override_default_fragment_setting_timeout` (Number) Override Default Fragment Setting - Time Out value.
   - Range: `1`-`30`
 - `priority` (Number) Priority. Can only be set for routed interfaces.
   - Range: `0`-`65535`
-- `security_zone_id` (String) Id of the assigned security zone. Can only be used when `logical_name` is set.
+- `security_zone_id` (String) Id of the assigned Security Zone. Can only be used when `logical_name` is set.
 - `sgt_propagate` (Boolean) Whether to propagate SGT.
-- `speed` (String) Speed configuraion, can be one of AUTO, TEN, HUNDRED, THOUSAND, TEN_THOUSAND, TWENTY_FIVE_THOUSAND, FORTY_THOUSAND, HUNDRED_THOUSAND, TWO_HUNDRED_THOUSAND, DETECT_SFP
+- `speed` (String) Speed configuration.
   - Choices: `AUTO`, `TEN`, `HUNDRED`, `THOUSAND`, `TEN_THOUSAND`, `TWENTY_FIVE_THOUSAND`, `FORTY_THOUSAND`, `HUNDRED_THOUSAND`, `TWO_HUNDRED_THOUSAND`, `DETECT_SFP`
 - `standby_mac_address` (String) MAC address for standby interface in format 0123.4567.89ab.
+- `switchport_access_vlan_id` (Number) VLAN Id assigned to the switch port in ACCESS mode (switchport_mode).
+  - Range: `1`-`4070`
+- `switchport_mode` (String) Switch port mode. Can only be used when `mode` is SWITCHPORT.
+  - Choices: `ACCESS`, `TRUNK`
+- `switchport_protected` (Boolean) Prevent the switch port from communicating with other protected switch ports on the same VLAN.
+- `switchport_trunk_allowed_vlan_ids` (String) Comma-separated list of VLAN Ids and ranges allowed on the switch port in TRUNK mode (switchport_mode), for example `2,4-6`.
+- `switchport_trunk_native_vlan_id` (Number) Native VLAN Id of the switch port in TRUNK mode (switchport_mode).
+  - Range: `1`-`4070`
 
 ### Read-Only
 
 - `id` (String) Id of the object
-- `type` (String) Type of the resource.
+- `type` (String) Type of the object.
 
 <a id="nestedatt--arp_table_entries"></a>
 ### Nested Schema for `arp_table_entries`
 
 Required:
 
-- `ip_address` (String) IP address for custom ARP entry
+- `ip_address` (String) IP address for custom ARP entry.
 - `mac_address` (String) MAC address for custom ARP entry in format 0123.4567.89ab.
 
 Optional:
 
-- `enabled` (Boolean) Enable Alias for custom ARP entry
+- `enabled` (Boolean) Enable Alias for custom ARP entry.
   - Default value: `true`
 
 
@@ -152,7 +159,7 @@ Required:
 
 Optional:
 
-- `enforce_eui` (Boolean) Whether to enforce IPv6 Extended Unique Identifier (EUI64 from RFC2373).
+- `enforce_eui` (Boolean) Enforce IPv6 Extended Unique Identifier (EUI64 from RFC2373).
 
 
 <a id="nestedatt--ipv6_prefixes"></a>
@@ -170,7 +177,7 @@ Optional:
 Optional:
 
 - `id` (String) ID of the network object (Host, Network or Range).
-- `type` (String) Type of the object
+- `type` (String) Type of the object.
 
 ## Import
 

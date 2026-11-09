@@ -91,7 +91,7 @@ func (r *DeviceLoopbackInterfaceResource) Schema(ctx context.Context, req resour
 				},
 			},
 			"type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Type of the object; this is always `LoopbackInterface`.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Type of the object; this value is always 'LoopbackInterface'.").String,
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
@@ -105,11 +105,11 @@ func (r *DeviceLoopbackInterfaceResource) Schema(ctx context.Context, req resour
 				},
 			},
 			"logical_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Logical name of the loopback interface").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Logical name of the loopback interface.").String,
 				Optional:            true,
 			},
 			"enabled": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether to enable the interface.").AddDefaultValueDescription("true").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Enable the interface.").AddDefaultValueDescription("true").String,
 				Optional:            true,
 				Computed:            true,
 				Default:             booldefault.StaticBool(true),
@@ -125,7 +125,7 @@ func (r *DeviceLoopbackInterfaceResource) Schema(ctx context.Context, req resour
 				},
 			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Object description.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Description of the object.").String,
 				Optional:            true,
 			},
 			"ipv4_static_address": schema.StringAttribute{
@@ -133,7 +133,7 @@ func (r *DeviceLoopbackInterfaceResource) Schema(ctx context.Context, req resour
 				Optional:            true,
 			},
 			"ipv4_static_netmask": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Netmask for ipv4_static_address.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Netmask for `ipv4_static_address`.").String,
 				Optional:            true,
 			},
 			"ipv6_addresses": schema.ListNestedAttribute{
