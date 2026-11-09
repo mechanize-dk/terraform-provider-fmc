@@ -136,6 +136,36 @@ fmc_authenticate() {
   return 0
 }
 
+# Asserts that a rule added to an EXISTING bulk resource (Update path) got
+# match_on's zone on FMC. Before the plan-time fill these rules were POSTed
+# without sourceInterface and plan still reported no changes.
+# Usage: assert_rule_zone <rtype> <rname> <list> <key> <endpoint> <want_zone_id> <label>
+assert_rule_zone() {
+  local rtype="$1" rname="$2" list="$3" key="$4" endpoint="$5" want="$6" label="$7"
+  local rid natp got
+  rid=$(terraform show -json | python3 -c "
+import sys, json
+s = json.load(sys.stdin)
+for r in s.get('values',{}).get('root_module',{}).get('resources',[]):
+    if r.get('type')=='${rtype}' and r.get('name')=='${rname}':
+        v = r.get('values',{}).get('${list}')
+        for k, it in (v.items() if isinstance(v, dict) else ((i.get('key'), i) for i in v)):
+            if k == '${key}': print(it.get('id',''))
+")
+  natp=$(terraform show -json | python3 -c "
+import sys, json
+for r in json.load(sys.stdin).get('values',{}).get('root_module',{}).get('resources',[]):
+    if r.get('type')=='fmc_ftd_nat_policy' and r.get('name')=='shared': print(r['values']['id'])
+")
+  [[ -z "$rid" ]] && fail "$label: no state id for ${rname}.${list}[${key}]"
+  fmc_authenticate || fail "$label: FMC re-auth failed"
+  got=$("${CURL[@]}" -H "X-auth-access-token: $AUTH_TOKEN" \
+    "${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/ftdnatpolicies/${natp}/${endpoint}/${rid}" \
+    | python3 -c "import sys,json;print(json.load(sys.stdin).get('sourceInterface',{}).get('id',''))")
+  [[ "$got" == "$want" ]] || fail "$label: rule $rid has sourceInterface '$got', want '$want'"
+  pass "$label: added rule carries match_on zone"
+}
+
 info "Pre-flight cleanup..."
 preflight_cleanup
 pass "Pre-flight done"
@@ -284,6 +314,7 @@ p.write_text(s.replace(needle, replacement, 1))
 PY
 terraform apply -auto-approve > /dev/null
 pass "rule_2 added"
+assert_rule_zone fmc_mze_manual_nat_rules tenant_a before_auto rule_2 manualnatrules "$ZONE_A" "SCENARIO 3"
 
 info "Swapping rule_1 and rule_2 positions..."
 python3 - <<'PY'
@@ -427,6 +458,7 @@ p.write_text(s.replace(needle, replacement, 1))
 PY
 terraform apply -auto-approve > /dev/null
 pass "Network rule added"
+assert_rule_zone fmc_mze_auto_nat_rules tenant_a_auto rules obj_a_net autonatrules "$ZONE_A" "SCENARIO 5"
 
 info "terraform plan -detailed-exitcode (expect 0 = no drift even though FMC reorders by specificity)..."
 if terraform plan -detailed-exitcode -out=/dev/null; then

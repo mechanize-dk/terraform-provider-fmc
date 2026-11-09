@@ -16,6 +16,7 @@ import (
 	"strings"
 
 	"github.com/CiscoDevNet/terraform-provider-fmc/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -77,6 +78,7 @@ type MzeManualNatRulesItem struct {
 var (
 	_ resource.Resource                = &MzeManualNatRulesResource{}
 	_ resource.ResourceWithImportState = &MzeManualNatRulesResource{}
+	_ resource.ResourceWithModifyPlan  = &MzeManualNatRulesResource{}
 )
 
 func NewMzeManualNatRulesResource() resource.Resource {
@@ -210,6 +212,41 @@ func (m *matchOnRequiresReplace) PlanModifyObject(_ context.Context, req planmod
 	}
 }
 
+// ModifyPlan fills each item's interface fields from match_on when config
+// omits them. See planMatchOnField.
+func (r *MzeManualNatRulesResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+	// A wholly unknown list or match_on can't be decoded into the model;
+	// applyAutoFill covers those at apply time.
+	for _, p := range []string{"match_on", "before_auto", "after_auto"} {
+		var v attr.Value
+		resp.Diagnostics.Append(req.Plan.GetAttribute(ctx, path.Root(p), &v)...)
+		if resp.Diagnostics.HasError() || v.IsUnknown() {
+			return
+		}
+	}
+	var plan, config MzeManualNatRules
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() || plan.MatchOn == nil {
+		return
+	}
+	fill := func(planItems, configItems []MzeManualNatRulesItem) {
+		for i := range planItems {
+			if i >= len(configItems) {
+				return
+			}
+			plan.MatchOn.planMatchOnFields(configItems[i].SourceInterfaceID, configItems[i].DestinationInterfaceID,
+				&planItems[i].SourceInterfaceID, &planItems[i].DestinationInterfaceID)
+		}
+	}
+	fill(plan.BeforeAuto, config.BeforeAuto)
+	fill(plan.AfterAuto, config.AfterAuto)
+	resp.Diagnostics.Append(resp.Plan.Set(ctx, &plan)...)
+}
+
 // ─── Private helpers ─────────────────────────────────────────────────────────
 
 // extract pulls a helpers.MatchOn out of the framework model.
@@ -273,6 +310,38 @@ func (it *MzeManualNatRulesItem) applyAutoFill(matcher helpers.MatchOn) {
 	} else if it.DestinationInterfaceID.IsUnknown() {
 		it.DestinationInterfaceID = types.StringNull()
 	}
+}
+
+// planMatchOnField returns the planned value of an item's interface field.
+// A field omitted in config takes match_on's value at plan time. Leaving it
+// to applyAutoFill is not enough: for an item added to an existing list the
+// framework plans the field as Null (not Unknown), applyAutoFill then treats
+// it as deliberately unset, and the rule is POSTed without its zone.
+func planMatchOnField(config, planned, matchOn types.String) types.String {
+	if !config.IsNull() {
+		return planned
+	}
+	if matchOn.IsUnknown() {
+		return types.StringUnknown()
+	}
+	if matchOn.IsNull() || matchOn.ValueString() == "" {
+		return planned
+	}
+	return matchOn
+}
+
+// planMatchOnFields applies planMatchOnField to both interface fields.
+func (m *MzeManualNatRulesMatchOn) planMatchOnFields(configSrc, configDst types.String, src, dst *types.String) {
+	*src = planMatchOnField(configSrc, *src, m.SourceInterfaceID)
+	*dst = planMatchOnField(configDst, *dst, m.DestinationInterfaceID)
+}
+
+// optionalID returns the string at path, or Null when FMC omits it.
+func optionalID(res gjson.Result, path string) types.String {
+	if v := res.Get(path); v.Exists() {
+		return types.StringValue(v.String())
+	}
+	return types.StringNull()
 }
 
 // toBody builds the FMC POST/PUT body for a single rule. The `section`
@@ -370,12 +439,14 @@ func (it *MzeManualNatRulesItem) fromBody(res gjson.Result) {
 			}
 		}
 	}
+	// Interface fields are always taken from FMC, absent included, so a rule
+	// that lost its zone shows up as drift and ModifyPlan restores it.
+	it.SourceInterfaceID = optionalID(res, "sourceInterface.id")
+	it.DestinationInterfaceID = optionalID(res, "destinationInterface.id")
 	for _, r := range []struct {
 		path string
 		dst  *types.String
 	}{
-		{"sourceInterface.id", &it.SourceInterfaceID},
-		{"destinationInterface.id", &it.DestinationInterfaceID},
 		{"originalSource.id", &it.OriginalSourceID},
 		{"originalDestination.id", &it.OriginalDestinationID},
 		{"originalSourcePort.id", &it.OriginalSourcePortID},
