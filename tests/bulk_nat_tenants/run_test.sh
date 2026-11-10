@@ -25,6 +25,8 @@ done
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
+# shellcheck source=../lib/fmc_api.sh
+source "$SCRIPT_DIR/../lib/fmc_api.sh"
 
 case "$(uname -s)" in
   MINGW*|MSYS*|CYGWIN*) PROVIDER_BIN="$SCRIPT_DIR/terraform-provider-fmc.exe" ;;
@@ -53,51 +55,70 @@ export FMC_USERNAME FMC_PASSWORD FMC_URL FMC_INSECURE=true
 cd "$SCRIPT_DIR"
 echo "ftdv_name = \"${FMC_FTDV_NAME}\"" > terraform.tfvars
 
-# Pre-flight: if a previous run was killed mid-cleanup, the FMC may still
-# carry tf-bulk-nat-test-* objects. Wipe them via the API so the apply below
-# starts clean.
-preflight_cleanup() {
-  fmc_authenticate || return 0
-  local API="${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}"
-  # NAT policies
-  local IDS=$("${CURL[@]}" -H "X-auth-access-token: $AUTH_TOKEN" \
-    "$API/policy/ftdnatpolicies?limit=100&expanded=true" \
-    | python3 -c "
-import sys,json
-d=json.loads(sys.stdin.read())
-print('\n'.join(it['id'] for it in d.get('items',[]) if 'tf-bulk-nat-test' in it.get('name','')))
-" 2>/dev/null)
-  for id in $IDS; do
-    [[ -z "$id" ]] && continue
-    # Unassign first, then delete.
-    "${CURL[@]}" -X PUT "$API/assignment/policyassignments/$id" \
-      -H "X-auth-access-token: $AUTH_TOKEN" -H "Content-Type: application/json" \
-      -d "{\"type\":\"PolicyAssignment\",\"policy\":{\"id\":\"$id\",\"type\":\"FTDNatPolicy\"},\"targets\":[]}" \
-      > /dev/null 2>&1 || true
-    "${CURL[@]}" -X DELETE "$API/policy/ftdnatpolicies/$id" -H "X-auth-access-token: $AUTH_TOKEN" > /dev/null 2>&1 || true
-  done
-  # Hosts + zones (delete in this order since hosts may be referenced by zones in some
-  # configurations — though not in this one).
-  for endpoint in object/hosts object/securityzones; do
-    IDS=$("${CURL[@]}" -H "X-auth-access-token: $AUTH_TOKEN" "$API/$endpoint?limit=200&expanded=true" \
-      | python3 -c "
-import sys,json
-d=json.loads(sys.stdin.read())
-print('\n'.join(it['id'] for it in d.get('items',[]) if it.get('name','').startswith('tf-bnt-') or it.get('name','').startswith('tf-bulk-nat-test-')))
-" 2>/dev/null)
-    for id in $IDS; do
-      [[ -z "$id" ]] && continue
-      "${CURL[@]}" -X DELETE "$API/$endpoint/$id" -H "X-auth-access-token: $AUTH_TOKEN" > /dev/null 2>&1 || true
-    done
-  done
+# Test objects are recognised by name prefix.
+TEST_PREFIXES="tf-bnt- tf-bulk-nat-test"
+LEFTOVER_ENDPOINTS="policy/ftdnatpolicies object/hosts object/networks object/securityzones"
+
+# Reads an FMC list response on stdin; prints "<id> <name>" for test objects.
+test_items() {
+  python3 -c "
+import sys, json
+prefixes = tuple(sys.argv[1].split())
+for it in json.load(sys.stdin).get('items', []):
+    if it.get('name', '').startswith(prefixes):
+        print(it['id'], it['name'])
+" "$TEST_PREFIXES"
 }
+
+# Prints "<endpoint> <id> <name>" for every test object still on the FMC.
+list_leftovers() {
+  local endpoint items
+  for endpoint in $LEFTOVER_ENDPOINTS; do
+    items=$(fmc_api GET "/$endpoint?limit=1000&expanded=true" | test_items) || return 1
+    if [[ -n "$items" ]]; then
+      sed "s|^|$endpoint |" <<< "$items"
+    fi
+  done
+  return 0
+}
+
+unassign_body() {
+  echo "{\"type\":\"PolicyAssignment\",\"policy\":{\"id\":\"$1\",\"type\":\"FTDNatPolicy\"},\"targets\":[]}"
+}
+
+# Pre-flight: if a previous run was killed mid-cleanup, the FMC may still
+# carry test objects. Wipe them via the API so the apply below starts clean.
+# Policies first: their rules are what keep the hosts and zones in use.
+preflight_cleanup() {
+  local leftovers endpoint id name
+  leftovers=$(list_leftovers) || fail "pre-flight: could not list FMC objects"
+  while read -r endpoint id name; do
+    [[ "$endpoint" == "policy/ftdnatpolicies" ]] || continue
+    info "pre-flight: removing NAT policy $name"
+    # PUT with empty targets is the supported unassign (DELETE returns 405);
+    # 404 = the policy was never assigned.
+    fmc_api --ok 404 PUT "/assignment/policyassignments/$id" "$(unassign_body "$id")" > /dev/null \
+      || fail "pre-flight: could not unassign NAT policy $name"
+    fmc_api --ok 404 DELETE "/policy/ftdnatpolicies/$id" > /dev/null \
+      || fail "pre-flight: could not delete NAT policy $name"
+  done <<< "$leftovers"
+  while read -r endpoint id name; do
+    [[ -z "$endpoint" || "$endpoint" == "policy/ftdnatpolicies" ]] && continue
+    info "pre-flight: removing $endpoint $name"
+    fmc_api --ok 404 DELETE "/$endpoint/$id" > /dev/null \
+      || fail "pre-flight: could not delete $endpoint $name"
+  done <<< "$leftovers"
+}
+
+# Runs on every exit. Each step reports its own failure instead of hiding it,
+# and the run only counts as passed if no test object is left on the FMC.
 cleanup() {
+  local rc=$? ok=1 out leftovers
   info "Cleaning up..."
   cd "$SCRIPT_DIR"
-  # Unassign any NAT policies still bound to a device — destroy of fmc_ftd_nat_policy
-  # fails (HTTP 400) when the policy is still assigned. PUT-empty-targets is the
-  # supported unassign path (DELETE on /assignment/policyassignments returns 405).
-  if [[ -f terraform.tfstate ]] && [[ -n "$AUTH_TOKEN" ]]; then
+  if [[ -f terraform.tfstate ]]; then
+    # destroy of fmc_ftd_nat_policy fails (HTTP 400) while the policy is
+    # still assigned to a device, so unassign it first.
     NATP_FOR_CLEANUP=$(terraform show -json 2>/dev/null | python3 -c "
 import sys, json
 try:
@@ -110,31 +131,32 @@ except Exception:
     pass
 " 2>/dev/null || true)
     if [[ -n "$NATP_FOR_CLEANUP" ]]; then
-      "${CURL[@]}" -X PUT "${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}/assignment/policyassignments/${NATP_FOR_CLEANUP}" \
-        -H "X-auth-access-token: ${AUTH_TOKEN}" -H "Content-Type: application/json" \
-        -d "{\"type\":\"PolicyAssignment\",\"policy\":{\"id\":\"${NATP_FOR_CLEANUP}\",\"type\":\"FTDNatPolicy\"},\"targets\":[]}" \
-        > /dev/null 2>&1 || true
+      fmc_api --ok 404 PUT "/assignment/policyassignments/${NATP_FOR_CLEANUP}" \
+        "$(unassign_body "$NATP_FOR_CLEANUP")" > /dev/null || ok=0
+    fi
+    if ! out=$(terraform destroy -auto-approve -no-color 2>&1); then
+      echo "$out" | tail -20
+      ok=0
     fi
   fi
-  [[ -f terraform.tfstate ]] && terraform destroy -auto-approve 2>/dev/null || true
-  rm -f terraform.tfstate terraform.tfstate.backup .terraform.lock.hcl terraform.tfvars "$PROVIDER_BIN" "$TFRC" "$AUTH_HDR_FILE"
+  rm -f terraform.tfstate terraform.tfstate.backup .terraform.lock.hcl terraform.tfvars "$PROVIDER_BIN" "$TFRC"
   rm -rf .terraform
+  if ! leftovers=$(list_leftovers); then
+    ok=0
+  elif [[ -n "$leftovers" ]]; then
+    echo -e "${RED}Test objects left on the FMC:${NC}"
+    echo "$leftovers"
+    ok=0
+  fi
+  if [[ $ok == 1 ]]; then
+    pass "Cleanup verified: no test objects left on the FMC"
+  else
+    echo -e "${RED}✗ Cleanup failed — see above. The next run's pre-flight removes leftovers.${NC}"
+    [[ $rc -ne 0 ]] || rc=1
+  fi
+  exit $rc
 }
 trap cleanup EXIT
-
-# Helper for FMC API auth (used by later scenarios)
-CURL=(curl -s -k)
-AUTH_HDR_FILE="$(mktemp)"
-AUTH_TOKEN=""
-DOMAIN_UUID=""
-fmc_authenticate() {
-  "${CURL[@]}" -D "$AUTH_HDR_FILE" -X POST "${FMC_URL}/api/fmc_platform/v1/auth/generatetoken" \
-    --user "${FMC_USERNAME}:${FMC_PASSWORD}" -H "Content-Type: application/json" -o /dev/null
-  AUTH_TOKEN="$(awk 'tolower($1)=="x-auth-access-token:"{print $2}' "$AUTH_HDR_FILE" | tr -d '\r\n')"
-  DOMAIN_UUID="$(awk 'tolower($1)=="domain_uuid:"{print $2}' "$AUTH_HDR_FILE" | tr -d '\r\n')"
-  [[ -z "$AUTH_TOKEN" ]] && return 1
-  return 0
-}
 
 # Asserts that a rule added to an EXISTING bulk resource (Update path) got
 # match_on's zone on FMC. Before the plan-time fill these rules were POSTed
@@ -158,10 +180,9 @@ for r in json.load(sys.stdin).get('values',{}).get('root_module',{}).get('resour
     if r.get('type')=='fmc_ftd_nat_policy' and r.get('name')=='shared': print(r['values']['id'])
 ")
   [[ -z "$rid" ]] && fail "$label: no state id for ${rname}.${list}[${key}]"
-  fmc_authenticate || fail "$label: FMC re-auth failed"
-  got=$("${CURL[@]}" -H "X-auth-access-token: $AUTH_TOKEN" \
-    "${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/ftdnatpolicies/${natp}/${endpoint}/${rid}" \
-    | python3 -c "import sys,json;print(json.load(sys.stdin).get('sourceInterface',{}).get('id',''))")
+  got=$(fmc_api GET "/policy/ftdnatpolicies/${natp}/${endpoint}/${rid}" \
+    | python3 -c "import sys,json;print(json.load(sys.stdin).get('sourceInterface',{}).get('id',''))") \
+    || fail "$label: could not read rule $rid from FMC"
   [[ "$got" == "$want" ]] || fail "$label: rule $rid has sourceInterface '$got', want '$want'"
   pass "$label: added rule carries match_on zone"
 }
@@ -207,9 +228,8 @@ info "Removing tenant_a manual_nat_rules from FMC + state..."
 terraform destroy -auto-approve -target=fmc_mze_manual_nat_rules.tenant_a > /dev/null
 
 info "Assigning NAT policy to '$FMC_FTDV_NAME' so FMC's content dedup activates..."
-fmc_authenticate || fail "FMC re-auth failed"
-DEV_RESP=$("${CURL[@]}" -H "X-auth-access-token: $AUTH_TOKEN" \
-  "${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}/devices/devicerecords?limit=1000&expanded=true")
+DEV_RESP=$(fmc_api GET "/devices/devicerecords?limit=1000&expanded=true") \
+  || fail "SCENARIO 2: could not list devices"
 DEVICE_ID=$(echo "$DEV_RESP" | FMC_FTDV_NAME="$FMC_FTDV_NAME" python3 -c "
 import sys, json, os
 want = os.environ['FMC_FTDV_NAME']
@@ -221,30 +241,15 @@ for it in d.get('items', []):
 ")
 [[ -z "$DEVICE_ID" ]] && fail "FTDv '$FMC_FTDV_NAME' not found"
 
-ASSIGN_PATH="/api/fmc_config/v1/domain/${DOMAIN_UUID}/assignment/policyassignments"
-ASSIGN_RESP=$("${CURL[@]}" -X POST "${FMC_URL}${ASSIGN_PATH}" \
-  -H "X-auth-access-token: ${AUTH_TOKEN}" -H "Content-Type: application/json" \
-  -d "{\"type\":\"PolicyAssignment\",\"policy\":{\"id\":\"${NATP_ID}\",\"type\":\"FTDNatPolicy\"},\"targets\":[{\"id\":\"${DEVICE_ID}\",\"type\":\"Device\",\"name\":\"${FMC_FTDV_NAME}\"}]}")
-ASSIGN_STATUS=$(echo "$ASSIGN_RESP" | python3 -c "
-import sys, json
-d = json.loads(sys.stdin.read())
-if 'id' in d:
-    print('OK')
-else:
-    msgs = d.get('error',{}).get('messages', [{}])
-    print(msgs[0].get('description', 'unknown'))
-")
-if [[ "$ASSIGN_STATUS" != "OK" ]]; then
-  info "Assignment returned: $ASSIGN_STATUS (may already be bound — continuing)"
-fi
+fmc_api POST "/assignment/policyassignments" \
+  "{\"type\":\"PolicyAssignment\",\"policy\":{\"id\":\"${NATP_ID}\",\"type\":\"FTDNatPolicy\"},\"targets\":[{\"id\":\"${DEVICE_ID}\",\"type\":\"Device\",\"name\":\"${FMC_FTDV_NAME}\"}]}" \
+  > /dev/null || fail "SCENARIO 2: could not assign NAT policy to '$FMC_FTDV_NAME'"
 pass "NAT policy assignment in place"
 
 info "Pre-creating a tenant_a-shaped manual NAT rule via API..."
-fmc_authenticate || fail "FMC re-auth failed"
-PRECREATE_RESP=$("${CURL[@]}" -X POST \
-  "${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/ftdnatpolicies/${NATP_ID}/manualnatrules?section=before_auto" \
-  -H "X-auth-access-token: ${AUTH_TOKEN}" -H "Content-Type: application/json" \
-  -d "{\"type\":\"FTDManualNatRule\",\"natType\":\"STATIC\",\"originalSource\":{\"id\":\"${SRC_A}\"},\"translatedSource\":{\"id\":\"${TRANS_A}\"},\"sourceInterface\":{\"id\":\"${ZONE_A}\"}}")
+PRECREATE_RESP=$(fmc_api POST "/policy/ftdnatpolicies/${NATP_ID}/manualnatrules?section=before_auto" \
+  "{\"type\":\"FTDManualNatRule\",\"natType\":\"STATIC\",\"originalSource\":{\"id\":\"${SRC_A}\"},\"translatedSource\":{\"id\":\"${TRANS_A}\"},\"sourceInterface\":{\"id\":\"${ZONE_A}\"}}") \
+  || fail "SCENARIO 2: pre-create failed"
 PRECREATED_ID=$(echo "$PRECREATE_RESP" | python3 -c "import sys,json;print(json.loads(sys.stdin.read()).get('id',''))")
 [[ -z "$PRECREATED_ID" ]] && fail "pre-create failed: $PRECREATE_RESP"
 pass "Pre-created rule id: $PRECREATED_ID"
@@ -377,7 +382,6 @@ trap cleanup EXIT  # restore normal cleanup-only trap
 # ─── SCENARIO 4 — out-of-band rule coexistence ───────────────────────────────
 header "SCENARIO 4 — out-of-band rule coexistence"
 
-fmc_authenticate || fail "FMC re-auth failed"
 NATP_ID=$(get_state_id fmc_ftd_nat_policy shared)
 ZONE_A=$(get_state_id fmc_security_zone tenant_a)
 SRC_A=$(get_state_id fmc_host src_a)
@@ -389,10 +393,9 @@ TRANS_B=$(get_state_id fmc_host trans_b)
 # tenant_a's items list. If cooperative ownership works, tenant_a will
 # ignore it.
 info "Creating an out-of-band rule in tenant_a's zone via API..."
-OOB_RESP=$("${CURL[@]}" -X POST \
-  "${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/ftdnatpolicies/${NATP_ID}/manualnatrules?section=before_auto" \
-  -H "X-auth-access-token: ${AUTH_TOKEN}" -H "Content-Type: application/json" \
-  -d "{\"type\":\"FTDManualNatRule\",\"natType\":\"STATIC\",\"originalSource\":{\"id\":\"${SRC_B}\"},\"translatedSource\":{\"id\":\"${TRANS_B}\"},\"sourceInterface\":{\"id\":\"${ZONE_A}\"},\"description\":\"out-of-band rule for SCENARIO 4\"}")
+OOB_RESP=$(fmc_api POST "/policy/ftdnatpolicies/${NATP_ID}/manualnatrules?section=before_auto" \
+  "{\"type\":\"FTDManualNatRule\",\"natType\":\"STATIC\",\"originalSource\":{\"id\":\"${SRC_B}\"},\"translatedSource\":{\"id\":\"${TRANS_B}\"},\"sourceInterface\":{\"id\":\"${ZONE_A}\"},\"description\":\"out-of-band rule for SCENARIO 4\"}") \
+  || fail "SCENARIO 4: OOB pre-create failed"
 OOB_ID=$(echo "$OOB_RESP" | python3 -c "import sys,json;print(json.loads(sys.stdin.read()).get('id',''))")
 [[ -z "$OOB_ID" ]] && fail "OOB pre-create failed: $OOB_RESP"
 pass "OOB rule id: $OOB_ID"
@@ -405,8 +408,8 @@ else
 fi
 
 info "Cleanup: delete OOB rule..."
-"${CURL[@]}" -X DELETE -H "X-auth-access-token: ${AUTH_TOKEN}" \
-  "${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/ftdnatpolicies/${NATP_ID}/manualnatrules/${OOB_ID}" > /dev/null
+fmc_api DELETE "/policy/ftdnatpolicies/${NATP_ID}/manualnatrules/${OOB_ID}" > /dev/null \
+  || fail "SCENARIO 4: could not delete OOB rule $OOB_ID"
 
 # ─── SCENARIO 5 — auto-NAT specificity ───────────────────────────────────────
 header "SCENARIO 5 — auto-NAT specificity"
@@ -560,7 +563,6 @@ reset_to_baseline 2>&1 | tail -3 || true
 # ─── SCENARIO 7 — Auto-NAT duplicate-recovery (FindDuplicateAutoNatRule) ─────
 header "SCENARIO 7 — auto-NAT duplicate-recovery end-to-end"
 
-fmc_authenticate || fail "SCENARIO 7: FMC re-auth failed"
 NATP_ID=$(get_state_id fmc_ftd_nat_policy shared)
 SRC_A=$(get_state_id fmc_host src_a)
 TRANS_A=$(get_state_id fmc_host trans_a)
@@ -571,16 +573,10 @@ PRE_AUTO_ID=$(mze_item_id fmc_mze_auto_nat_rules tenant_a_auto obj_a rules)
 info "Destroying tenant_a_auto so we can probe the duplicate-recovery path..."
 terraform destroy -auto-approve -target=fmc_mze_auto_nat_rules.tenant_a_auto > /dev/null
 
-# Re-auth right before the curl POST: FMC sometimes invalidates older tokens
-# when many tokens are active, and the destroy above takes long enough to
-# trip that.
-fmc_authenticate || fail "SCENARIO 7: FMC re-auth (pre-POST) failed"
-
 info "Pre-creating an auto-NAT rule (obj_a content) via API..."
-PRE_AUTO_RESP=$("${CURL[@]}" -X POST \
-  "${FMC_URL}/api/fmc_config/v1/domain/${DOMAIN_UUID}/policy/ftdnatpolicies/${NATP_ID}/autonatrules" \
-  -H "X-auth-access-token: ${AUTH_TOKEN}" -H "Content-Type: application/json" \
-  -d "{\"type\":\"FTDAutoNatRule\",\"natType\":\"STATIC\",\"originalNetwork\":{\"id\":\"${SRC_A}\",\"type\":\"Host\"},\"translatedNetwork\":{\"id\":\"${TRANS_A}\",\"type\":\"Host\"}}")
+PRE_AUTO_RESP=$(fmc_api POST "/policy/ftdnatpolicies/${NATP_ID}/autonatrules" \
+  "{\"type\":\"FTDAutoNatRule\",\"natType\":\"STATIC\",\"originalNetwork\":{\"id\":\"${SRC_A}\",\"type\":\"Host\"},\"translatedNetwork\":{\"id\":\"${TRANS_A}\",\"type\":\"Host\"}}") \
+  || fail "SCENARIO 7: pre-create failed"
 PRE_AUTO_NEW_ID=$(echo "$PRE_AUTO_RESP" | python3 -c "import sys,json;print(json.loads(sys.stdin.read()).get('id',''))")
 [[ -z "$PRE_AUTO_NEW_ID" ]] && fail "SCENARIO 7 pre-create failed: $PRE_AUTO_RESP"
 pass "Auto-NAT rule pre-created (id=$PRE_AUTO_NEW_ID)"
