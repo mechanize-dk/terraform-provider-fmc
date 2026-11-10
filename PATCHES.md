@@ -729,7 +729,8 @@ above for the breaking-change note).
   resource: unordered `map(rules)` (FMC sorts auto-NAT by specificity), map
   key is the tenant identifier.
 - `internal/provider/helpers/nat_match.go` — `MatchOn` evaluator: `Validate`
-  (plan-time conflict check), `AutoFill` (Create-time injection), `Hash`
+  (conflict check), `AutoFill` (apply-time injection; the plan-time fill is
+  `planMatchOnField` in the manual NAT resource file), `Hash`
   (16-char prefix used in the synthetic resource ID).
 - `internal/provider/helpers/nat_match_test.go` — unit tests for the above.
 - `internal/provider/helpers/dup_recovery_autonat.go` — auto-NAT duplicate-
@@ -787,6 +788,14 @@ above for the breaking-change note).
    10. **match_on validation error** — adds an item with
       `source_interface_id` pointing at the wrong tenant's zone; asserts
       `terraform apply` surfaces "conflicts with match_on".
+- All direct FMC requests in `run_test.sh` go through `tests/lib/fmc_api.sh`,
+  which logs in fresh for every request and fails on any unexpected HTTP
+  status. A new login by the same user cancels the previous token, and every
+  terraform run logs in. Before this, a token reused across terraform calls
+  silently got 401s, which left the scenario 4 rule and the NAT policy
+  assignment on the FMC. Cleanup now reports each failed step and finally
+  lists any `tf-bnt-*` / `tf-bulk-nat-test*` objects left on the FMC. The run
+  fails if any remain.
 - `tests/bulk_nat_tenants/probe_autonat_dup.sh` — one-shot probe used to
   determine the auto-NAT duplicate-error shape
 - `tests/bulk_nat_tenants/PROBE_AUTONAT.md` — captured probe result and
@@ -811,6 +820,25 @@ slice) from user-empty (`= []` → Go `[]T{}`). `Read.refresh()` returns
 `nil` unchanged rather than always producing `make([]T, 0, …)` so the
 two cases round-trip cleanly. The previous len==0→nil normalization
 broke user-explicit-empty.
+
+**match_on auto-fill happens at plan time (`ModifyPlan`):** found
+2026-11-09. Originally the item interface fields were only filled from
+`match_on` at apply time (`applyAutoFill`). That works in `Create`, where the
+framework plans them as Unknown. But for an item added to an existing
+resource, which includes every item after `terraform import`, the
+framework plans them as Null (`UseStateForUnknown` with no prior value).
+`applyAutoFill` treats Null as "deliberately unset", so the rule was POSTed
+**without its zone** and applied to all interfaces. `terraform plan`
+then reported no changes. Both resources now implement `ModifyPlan`, which
+calls `planMatchOnField` to put `match_on`'s value into the plan for every
+item whose config omits the field. If `match_on` is still unknown, the field
+is planned as Unknown and `applyAutoFill` fills it at apply time. `fromBody`
+also sets the interface fields to Null when FMC omits them, so a rule that
+lost its zone shows as drift and is repaired by a PUT. Side effect: after
+`terraform import` the re-POSTed rules are now identical to the existing
+ones. So when the policy is assigned to a device, FMC's duplicate check fires
+and Patch 11 adopts the existing rules instead of creating copies.
+Unit test: `internal/provider/mze_nat_match_plan_test.go`.
 
 **Spec and plan:**
 - `docs/superpowers/specs/2026-06-04-bulk-nat-tenant-resources-design.md`

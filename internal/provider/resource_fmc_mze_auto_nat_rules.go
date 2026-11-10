@@ -19,6 +19,7 @@ import (
 	"strings"
 
 	"github.com/CiscoDevNet/terraform-provider-fmc/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -65,6 +66,7 @@ type MzeAutoNatRulesItem struct {
 var (
 	_ resource.Resource                = &MzeAutoNatRulesResource{}
 	_ resource.ResourceWithImportState = &MzeAutoNatRulesResource{}
+	_ resource.ResourceWithModifyPlan  = &MzeAutoNatRulesResource{}
 )
 
 func NewMzeAutoNatRulesResource() resource.Resource { return &MzeAutoNatRulesResource{} }
@@ -125,6 +127,37 @@ func (r *MzeAutoNatRulesResource) Schema(_ context.Context, _ resource.SchemaReq
 			"rules": schema.MapNestedAttribute{Optional: true, NestedObject: autoItem},
 		},
 	}
+}
+
+// ModifyPlan fills each item's interface fields from match_on when config
+// omits them. See planMatchOnField.
+func (r *MzeAutoNatRulesResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+	for _, p := range []string{"match_on", "rules"} {
+		var v attr.Value
+		resp.Diagnostics.Append(req.Plan.GetAttribute(ctx, path.Root(p), &v)...)
+		if resp.Diagnostics.HasError() || v.IsUnknown() {
+			return
+		}
+	}
+	var plan, config MzeAutoNatRules
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() || plan.MatchOn == nil {
+		return
+	}
+	for k, it := range plan.Rules {
+		cfg, ok := config.Rules[k]
+		if !ok {
+			continue
+		}
+		plan.MatchOn.planMatchOnFields(cfg.SourceInterfaceID, cfg.DestinationInterfaceID,
+			&it.SourceInterfaceID, &it.DestinationInterfaceID)
+		plan.Rules[k] = it
+	}
+	resp.Diagnostics.Append(resp.Plan.Set(ctx, &plan)...)
 }
 
 // ─── Private helpers ─────────────────────────────────────────────────────────
@@ -217,12 +250,9 @@ func (it *MzeAutoNatRulesItem) fromBody(res gjson.Result) {
 	if v := res.Get("translatedNetwork.id"); v.Exists() {
 		it.TranslatedNetworkID = types.StringValue(v.String())
 	}
-	if v := res.Get("sourceInterface.id"); v.Exists() {
-		it.SourceInterfaceID = types.StringValue(v.String())
-	}
-	if v := res.Get("destinationInterface.id"); v.Exists() {
-		it.DestinationInterfaceID = types.StringValue(v.String())
-	}
+	// Absent included — see the manual NAT counterpart.
+	it.SourceInterfaceID = optionalID(res, "sourceInterface.id")
+	it.DestinationInterfaceID = optionalID(res, "destinationInterface.id")
 	// Int64 / Bool / String defaultable fields: only adopt FMC's value if
 	// state was already non-Null (drift refresh) or Unknown. See the manual
 	// NAT counterpart for rationale.
@@ -258,6 +288,15 @@ func (it *MzeAutoNatRulesItem) fromBody(res gjson.Result) {
 			}
 		}
 	}
+}
+
+// alignAdopted PUTs the planned body onto a rule adopted by duplicate
+// recovery. FMC reports an auto-NAT duplicate by original network alone, so
+// the existing rule can differ in any other field, e.g. a missing zone.
+func (r *MzeAutoNatRulesResource) alignAdopted(plan *MzeAutoNatRules, body string, rec gjson.Result) (gjson.Result, error) {
+	id := rec.Get("id").String()
+	b, _ := sjson.Set(body, "id", id)
+	return r.client.Put(plan.resourcePath()+"/"+id, b, fmc.DomainName(plan.Domain.ValueString()))
 }
 
 // ─── CRUD ────────────────────────────────────────────────────────────────────
@@ -316,6 +355,11 @@ func (r *MzeAutoNatRulesResource) Create(ctx context.Context, req resource.Creat
 				resp.Diagnostics.AddError("auto-NAT POST failed for key "+k, recErr.Error())
 				return
 			}
+			rec, recErr = r.alignAdopted(&plan, body, rec)
+			if recErr != nil {
+				resp.Diagnostics.AddError("PUT of adopted auto-NAT rule failed for key "+k, recErr.Error())
+				return
+			}
 			it.fromBody(rec)
 		} else {
 			it.fromBody(postRes)
@@ -363,6 +407,11 @@ func (r *MzeAutoNatRulesResource) Update(ctx context.Context, req resource.Updat
 					fmc.DomainName(plan.Domain.ValueString()))
 				if recErr != nil {
 					resp.Diagnostics.AddError("POST failed for key "+k, recErr.Error())
+					return
+				}
+				rec, recErr = r.alignAdopted(&plan, newBody, rec)
+				if recErr != nil {
+					resp.Diagnostics.AddError("PUT of adopted auto-NAT rule failed for key "+k, recErr.Error())
 					return
 				}
 				newIt.fromBody(rec)

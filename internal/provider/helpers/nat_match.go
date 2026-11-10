@@ -5,7 +5,8 @@
 // (fmc_mze_manual_nat_rules and fmc_mze_auto_nat_rules). MatchOn captures
 // a tenant-scope predicate — currently the source and/or destination
 // interface ID — and exposes Validate (plan-time check), AutoFill
-// (Create-time injection), and Hash (synthetic resource ID).
+// (apply-time injection; the plan-time fill is planMatchOnField in the
+// provider package), and Hash (synthetic resource ID).
 //
 // match_on is NOT a runtime ownership boundary; it's an authoring tool. See
 // "Cooperative ownership" in docs/superpowers/specs/2026-06-04-bulk-nat-tenant-resources-design.md.
@@ -61,7 +62,7 @@ func (m MatchOn) Hash() string {
 // Validate checks one item against the matcher. The item is represented as
 // a map of field name → optional value: nil means the field is null (user
 // omitted it in HCL), absence means the field is Unknown. Both cases pass
-// validation — the field will be auto-filled at apply time. Only an
+// validation — the field will be filled from match_on. Only an
 // explicit non-matching value is a conflict.
 //
 // itemLabel is included in any returned error so the user can identify the
